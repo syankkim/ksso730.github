@@ -1,0 +1,717 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="동글씨">
+    <title>Node 로 서버 생성하기 - 동글씨</title>
+    <meta name="author" content="Suyan Kim">
+    
+    
+    
+        <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
+    
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","ksso7300@gmail.com"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\n\nNode.js 에서 ES6 모듈 사용아래 명령어로 ES6 를 사용하기 위한 설치를 진행합니다.\nbabel 이란?\n최신 사양의 JS 코드를 ES5 이하 코드로 변환해준다. 덕분에 구형 IE 나 구형 브라우저에서도 동작할 수 있게 해준다.\n\nbabel-cli 설치1$ npm install @babel/cli @babel/core\n\n@babel/preset-env\n@babel/preset-env 는 함께 사용해야 하는 Babel 플러그인을 모아둔 것이다.필요한 플러그인들을 프로젝트 지원 환경에 맞춰 동적으로 결정해준다.\n\n1$ npm install @babel/preset-env\n\n… 작성중입니다.","dateCreated":"2020-02-20T14:42:47+09:00","dateModified":"2020-03-17T11:08:40+09:00","datePublished":"2020-02-20T14:42:47+09:00","description":"작성중Node.js 를 이용하여 서버를 생성해봅니다.ES6 문법을 사용할 수 있도록 설정합니다.","headline":"Node 로 서버 생성하기","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2020/02/20/Node-%EB%A1%9C-%EC%84%9C%EB%B2%84-%EC%83%9D%EC%84%B1%ED%95%98%EA%B8%B0/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","ksso7300@gmail.com"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2020/02/20/Node-%EB%A1%9C-%EC%84%9C%EB%B2%84-%EC%83%9D%EC%84%B1%ED%95%98%EA%B8%B0/","keywords":"Node.js, server"}</script>
+    <meta name="description" content="작성중Node.js 를 이용하여 서버를 생성해봅니다.ES6 문법을 사용할 수 있도록 설정합니다.">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="Node 로 서버 생성하기">
+<meta property="og:url" content="http://yoursite.com/2020/02/20/Node-%EB%A1%9C-%EC%84%9C%EB%B2%84-%EC%83%9D%EC%84%B1%ED%95%98%EA%B8%B0/index.html">
+<meta property="og:site_name" content="동글씨">
+<meta property="og:description" content="작성중Node.js 를 이용하여 서버를 생성해봅니다.ES6 문법을 사용할 수 있도록 설정합니다.">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-02-20T05:42:47.000Z">
+<meta property="article:modified_time" content="2020-03-17T02:08:40.903Z">
+<meta property="article:author" content="Suyan Kim">
+<meta property="article:tag" content="Node.js">
+<meta property="article:tag" content="server">
+<meta name="twitter:card" content="summary">
+    
+    
+        
+    
+    
+        <meta property="og:image" content="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=640"/>
+    
+    
+    
+    
+    <!--STYLES-->
+    
+<link rel="stylesheet" href="/assets/css/all.css">
+
+    
+<link rel="stylesheet" href="/assets/css/jquery.fancybox.css">
+
+    
+<link rel="stylesheet" href="/assets/css/thumbs.css">
+
+    
+<link rel="stylesheet" href="/assets/css/tranquilpeak.css">
+
+    <!--STYLES END-->
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-158530470-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-158530470-1');
+    </script>
+
+
+    
+
+    
+        
+    
+</head>
+
+    <body>
+        <div id="blog">
+            <!-- Define author's picture -->
+
+
+    
+        
+    
+
+<header id="header" data-behavior="5">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <div class="header-title">
+        <a
+            class="header-title-link"
+            href="/index.html"
+            aria-label=""
+        >
+            동글씨
+        </a>
+    </div>
+    
+        
+            <a
+                class="header-right-picture "
+                href="#about"
+                aria-label="Open the link: /#about"
+            >
+        
+        
+            <img class="header-picture" src="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=90" alt="Author&#39;s picture"/>
+        
+        </a>
+    
+</header>
+
+            <!-- function -->
+
+
+<!-- Define author's picture -->
+
+
+    
+
+<nav id="sidebar" data-behavior="5">
+    <div class="sidebar-container">
+        
+            <div class="sidebar-profile">
+                <a
+                    href="/#about"
+                    aria-label="Read more about the author"
+                >
+                    <img class="sidebar-profile-picture" src="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=110" alt="Author&#39;s picture"/>
+                </a>
+                <h4 class="sidebar-profile-name">Suyan Kim</h4>
+                
+                    <h5 class="sidebar-profile-bio"><p>author.bio</p>
+</h5>
+                
+            </div>
+        
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="Home"href="/index.html"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-home" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">Home</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="Categories"href="/all-categories"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-bookmark" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">Categories</span>
+                        </a>
+                    <!-- add -->
+                    
+                        
+                            
+                                <li><a class="side-tag" href="/categories/Git/">Git (2)</a></li>
+                            
+                        
+                            
+                        
+                            
+                                <li><a class="side-tag" href="/categories/Hexo/">Hexo (1)</a></li>
+                            
+                        
+                            
+                                <li><a class="side-tag" href="/categories/JPA/">JPA (9)</a></li>
+                            
+                        
+                            
+                        
+                            
+                                <li><a class="side-tag" href="/categories/Maven/">Maven (1)</a></li>
+                            
+                        
+                            
+                                <li><a class="side-tag" href="/categories/Node-js/">Node.js (1)</a></li>
+                            
+                        
+                            
+                                <li><a class="side-tag" href="/categories/Projects/">Projects (1)</a></li>
+                            
+                        
+                            
+                                <li><a class="side-tag" href="/categories/Python/">Python (1)</a></li>
+                            
+                        
+                            
+                                <li><a class="side-tag" href="/categories/Spring/">Spring (1)</a></li>
+                            
+                        
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="Tags"href="/all-tags"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-tags" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">Tags</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="Archives"href="/all-archives"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-archive" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">Archives</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="About"href="#about"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-question" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">About</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="https://github.com/ksso730" target="_blank" rel="noopener" title="my github">
+                    
+                    <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">my github</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/ksso7300@gmail.com"
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-envelope" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">contact me</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+        </ul>
+        
+    </div>
+</nav>
+
+            
+            <div id="main" data-behavior="5"
+                 class="
+                        hasCoverMetaIn
+                        ">
+                
+<article class="post">
+    
+    
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title">
+            Node 로 서버 생성하기
+        </h1>
+    
+    
+        <div class="post-meta">
+    <time datetime="2020-02-20T14:42:47+09:00">
+	
+		    Feb 20, 2020
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/Node-js/">Node.js</a>
+
+
+    
+</div>
+
+    
+</div>
+
+    
+    <div class="post-content markdown">
+        <div class="main-content-wrap">
+            <!-- excerpt -->
+
+<h1 id="table-of-contents">Contents</h1><ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#Node-js-에서-ES6-모듈-사용"><span class="toc-text">Node.js 에서 ES6 모듈 사용</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#babel-이란"><span class="toc-text">babel 이란?</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#babel-cli-설치"><span class="toc-text">babel-cli 설치</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#babel-preset-env"><span class="toc-text">@babel&#x2F;preset-env</span></a></li></ol></li></ol>
+
+<hr>
+<h4 id="Node-js-에서-ES6-모듈-사용"><a href="#Node-js-에서-ES6-모듈-사용" class="headerlink" title="Node.js 에서 ES6 모듈 사용"></a>Node.js 에서 ES6 모듈 사용</h4><p>아래 명령어로 ES6 를 사용하기 위한 설치를 진행합니다.</p>
+<h5 id="babel-이란"><a href="#babel-이란" class="headerlink" title="babel 이란?"></a>babel 이란?</h5><blockquote>
+<p>최신 사양의 JS 코드를 ES5 이하 코드로 변환해준다. 덕분에 구형 IE 나 구형 브라우저에서도 동작할 수 있게 해준다.</p>
+</blockquote>
+<h5 id="babel-cli-설치"><a href="#babel-cli-설치" class="headerlink" title="babel-cli 설치"></a>babel-cli 설치</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ npm install @babel/cli @babel/core</span><br></pre></td></tr></table></figure>
+
+<h5 id="babel-preset-env"><a href="#babel-preset-env" class="headerlink" title="@babel/preset-env"></a>@babel/preset-env</h5><blockquote>
+<p><code>@babel/preset-env</code> 는 함께 사용해야 하는 Babel 플러그인을 모아둔 것이다.<br>필요한 플러그인들을 프로젝트 지원 환경에 맞춰 동적으로 결정해준다.</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ npm install @babel/preset-env</span><br></pre></td></tr></table></figure>
+
+<p><em>… 작성중입니다.</em></p>
+            
+
+
+        </div>
+    </div>
+    <div id="post-footer" class="post-footer main-content-wrap">
+        
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">TAGGED IN</span><br/>
+                
+    <a class="tag tag--primary tag--small t-link" href="/tags/Node-js/" rel="tag">Node.js</a> <a class="tag tag--primary tag--small t-link" href="/tags/server/" rel="tag">server</a>
+
+            </div>
+        
+        
+            <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2020/02/20/%EA%B8%B0%EB%B3%B8%ED%82%A4-%EB%A7%A4%ED%95%91/"
+                    data-tooltip="JPA 기본키 매핑"
+                    aria-label="PREVIOUS: JPA 기본키 매핑"
+                >
+                    
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                    </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2020/02/18/Maven-501-HTTPS-Required-%EC%97%90%EB%9F%AC/"
+                    data-tooltip="Maven 501 HTTPS Required , protocol_version Error"
+                    aria-label="NEXT: Maven 501 HTTPS Required , protocol_version Error"
+                >
+                    
+                        <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a
+                class="post-action-btn btn btn--default btn-open-shareoptions"
+                href="#btn-open-shareoptions"
+                aria-label="Share this post"
+            >
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2020/02/20/Node-%EB%A1%9C-%EC%84%9C%EB%B2%84-%EC%83%9D%EC%84%B1%ED%95%98%EA%B8%B0/"
+                    title="Share on Facebook"
+                    aria-label="Share on Facebook"
+                >
+                    <i class="fab fa-facebook" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2020/02/20/Node-%EB%A1%9C-%EC%84%9C%EB%B2%84-%EC%83%9D%EC%84%B1%ED%95%98%EA%B8%B0/"
+                    title="Share on Twitter"
+                    aria-label="Share on Twitter"
+                >
+                    <i class="fab fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://plus.google.com/share?url=http://yoursite.com/2020/02/20/Node-%EB%A1%9C-%EC%84%9C%EB%B2%84-%EC%83%9D%EC%84%B1%ED%95%98%EA%B8%B0/"
+                    title="Share on Google+"
+                    aria-label="Share on Google+"
+                >
+                    <i class="fab fa-google-plus" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+                <li class="post-action">
+                    <a
+                        class="post-action-btn btn btn--default"
+                        href="#disqus_thread"
+                        aria-label="Leave a comment"
+                    >
+                        <i class="fa fa-comment"></i>
+                    </a>
+                </li>
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#table-of-contents" aria-label="Contents">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+        
+        
+            
+                <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a></noscript>
+</div>
+            
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2020 Suyan Kim. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="5">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2020/02/20/%EA%B8%B0%EB%B3%B8%ED%82%A4-%EB%A7%A4%ED%95%91/"
+                    data-tooltip="JPA 기본키 매핑"
+                    aria-label="PREVIOUS: JPA 기본키 매핑"
+                >
+                    
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                    </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2020/02/18/Maven-501-HTTPS-Required-%EC%97%90%EB%9F%AC/"
+                    data-tooltip="Maven 501 HTTPS Required , protocol_version Error"
+                    aria-label="NEXT: Maven 501 HTTPS Required , protocol_version Error"
+                >
+                    
+                        <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a
+                class="post-action-btn btn btn--default btn-open-shareoptions"
+                href="#btn-open-shareoptions"
+                aria-label="Share this post"
+            >
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2020/02/20/Node-%EB%A1%9C-%EC%84%9C%EB%B2%84-%EC%83%9D%EC%84%B1%ED%95%98%EA%B8%B0/"
+                    title="Share on Facebook"
+                    aria-label="Share on Facebook"
+                >
+                    <i class="fab fa-facebook" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2020/02/20/Node-%EB%A1%9C-%EC%84%9C%EB%B2%84-%EC%83%9D%EC%84%B1%ED%95%98%EA%B8%B0/"
+                    title="Share on Twitter"
+                    aria-label="Share on Twitter"
+                >
+                    <i class="fab fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://plus.google.com/share?url=http://yoursite.com/2020/02/20/Node-%EB%A1%9C-%EC%84%9C%EB%B2%84-%EC%83%9D%EC%84%B1%ED%95%98%EA%B8%B0/"
+                    title="Share on Google+"
+                    aria-label="Share on Google+"
+                >
+                    <i class="fab fa-google-plus" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+                <li class="post-action">
+                    <a
+                        class="post-action-btn btn btn--default"
+                        href="#disqus_thread"
+                        aria-label="Leave a comment"
+                    >
+                        <i class="fa fa-comment"></i>
+                    </a>
+                </li>
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#table-of-contents" aria-label="Contents">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                
+    <div id="share-options-bar" class="share-options-bar" data-behavior="5">
+        <i id="btn-close-shareoptions" class="fa fa-times"></i>
+        <ul class="share-options">
+            
+                
+                
+                <li class="share-option">
+                    <a
+                        class="share-option-btn"
+                        target="new"
+                        href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2020/02/20/Node-%EB%A1%9C-%EC%84%9C%EB%B2%84-%EC%83%9D%EC%84%B1%ED%95%98%EA%B8%B0/"
+                        aria-label="Share on Facebook"
+                    >
+                        <i class="fab fa-facebook" aria-hidden="true"></i><span>Share on Facebook</span>
+                    </a>
+                </li>
+            
+                
+                
+                <li class="share-option">
+                    <a
+                        class="share-option-btn"
+                        target="new"
+                        href="https://twitter.com/intent/tweet?text=http://yoursite.com/2020/02/20/Node-%EB%A1%9C-%EC%84%9C%EB%B2%84-%EC%83%9D%EC%84%B1%ED%95%98%EA%B8%B0/"
+                        aria-label="Share on Twitter"
+                    >
+                        <i class="fab fa-twitter" aria-hidden="true"></i><span>Share on Twitter</span>
+                    </a>
+                </li>
+            
+                
+                
+                <li class="share-option">
+                    <a
+                        class="share-option-btn"
+                        target="new"
+                        href="https://plus.google.com/share?url=http://yoursite.com/2020/02/20/Node-%EB%A1%9C-%EC%84%9C%EB%B2%84-%EC%83%9D%EC%84%B1%ED%95%98%EA%B8%B0/"
+                        aria-label="Share on Google+"
+                    >
+                        <i class="fab fa-google-plus" aria-hidden="true"></i><span>Share on Google+</span>
+                    </a>
+                </li>
+            
+        </ul>
+    </div>
+
+
+            
+        </div>
+        
+
+
+    
+
+<div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-times"></i>
+        </div>
+        
+            <img id="about-card-picture" src="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=110" alt="Author&#39;s picture"/>
+        
+            <h4 id="about-card-name">Suyan Kim</h4>
+        <!--  -->
+            <!-- <div id="about-card-bio"><p>author.bio</p>
+</div> -->
+            <div id="about-card-bio">안녕하세요, 동글씨의 개발 블로그 입니다.</div>
+        <!--  -->
+        <!--  -->
+            <div id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <!-- <p>Backend Developer</p>
+ -->
+                Backend Developer
+            </div>
+        <!--  -->
+        
+            <div id="about-card-location">
+                <i class="fa fa-map-marker-alt"></i>
+                <br/>
+                Korea
+            </div>
+        
+    </div>
+</div>
+
+        
+        
+<div id="cover" style="background-image:url('/assets/images/sky.png');"></div>
+        <!--SCRIPTS-->
+
+<script src="/assets/js/jquery.js"></script>
+
+
+<script src="/assets/js/jquery.fancybox.js"></script>
+
+
+<script src="/assets/js/thumbs.js"></script>
+
+
+<script src="/assets/js/tranquilpeak.js"></script>
+
+<!--SCRIPTS END-->
+
+
+    
+        <script>
+          var disqus_config = function() {
+            this.page.url = 'http://yoursite.com/2020/02/20/Node-%EB%A1%9C-%EC%84%9C%EB%B2%84-%EC%83%9D%EC%84%B1%ED%95%98%EA%B8%B0/';
+              
+            this.page.identifier = '2020/02/20/Node-로-서버-생성하기/';
+              
+          };
+          (function() {
+            var d = document, s = d.createElement('script');
+            var disqus_shortname = 'ksso730-github-io';
+            s.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+          })();
+        </script>
+    
+
+
+
+
+    </body>
+</html>
