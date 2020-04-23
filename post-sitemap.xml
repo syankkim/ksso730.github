@@ -8,16 +8,64 @@
     </url>
 
     <url>
-        <loc>http://yoursite.com/2020/03/16/gradle-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-MariaDB-%EC%97%B0%EB%8F%99/</loc>
-        <lastmod>2020-03-27T05:34:28.145Z</lastmod>
+        <loc>http://yoursite.com/2020/04/22/%ED%8C%8C%EC%9D%B4%EC%8D%AC-%EC%8A%A4%ED%84%B0%EB%94%94-20200422/</loc>
+        <lastmod>2020-04-23T02:55:26.681Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
 
     </url>
 
     <url>
-        <loc>http://yoursite.com/2020/03/26/%EC%8A%A4%EB%A5%B4%EB%A7%81-%EC%8B%9C%ED%81%90%EB%A6%AC%ED%8B%B0-OAuth-%EC%82%AC%EC%9A%A9%ED%95%9C-%EB%A1%9C%EA%B7%B8%EC%9D%B8-%EA%B8%B0%EB%8A%A5%EA%B5%AC%ED%98%84/</loc>
-        <lastmod>2020-03-27T05:31:56.535Z</lastmod>
+        <loc>http://yoursite.com/2020/04/22/CODING-TEST-with-Java-0/</loc>
+        <lastmod>2020-04-23T02:55:26.680Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>http://yoursite.com/2020/04/14/coding-test-with-Java/</loc>
+        <lastmod>2020-04-23T02:55:26.680Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>http://yoursite.com/2020/04/12/CODING-TEST-with-Python/</loc>
+        <lastmod>2020-04-22T07:46:04.328Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>http://yoursite.com/2020/03/26/%EC%8A%A4%ED%94%84%EB%A7%81-%EC%8B%9C%ED%81%90%EB%A6%AC%ED%8B%B0%20%EB%A1%9C%EA%B7%B8%EC%9D%B8%EA%B5%AC%ED%98%84/</loc>
+        <lastmod>2020-04-22T07:02:27.564Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>http://yoursite.com/2020/02/29/Python-%EA%B0%80%EC%83%81%ED%99%98%EA%B2%BD-%EA%B5%AC%EC%84%B1-py-%EC%8B%A4%ED%96%89/</loc>
+        <lastmod>2020-04-22T07:02:27.563Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>http://yoursite.com/2020/02/20/Node-%EB%A1%9C-%EC%84%9C%EB%B2%84-%EC%83%9D%EC%84%B1%ED%95%98%EA%B8%B0/</loc>
+        <lastmod>2020-04-22T07:02:27.562Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>http://yoursite.com/2020/03/16/gradle-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-MariaDB-%EC%97%B0%EB%8F%99/</loc>
+        <lastmod>2020-03-27T05:34:28.145Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
 
@@ -64,8 +112,8 @@
     </url>
 
     <url>
-        <loc>http://yoursite.com/2020/02/29/Python-%EA%B0%80%EC%83%81%ED%99%98%EA%B2%BD-%EA%B5%AC%EC%84%B1-py-%EC%8B%A4%ED%96%89/</loc>
-        <lastmod>2020-03-17T02:08:40.904Z</lastmod>
+        <loc>http://yoursite.com/2020/02/18/Maven-501-HTTPS-Required-%EC%97%90%EB%9F%AC/</loc>
+        <lastmod>2020-03-17T02:08:40.903Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
 
@@ -80,16 +128,8 @@
     </url>
 
     <url>
-        <loc>http://yoursite.com/2020/02/18/Maven-501-HTTPS-Required-%EC%97%90%EB%9F%AC/</loc>
-        <lastmod>2020-03-17T02:08:40.903Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>http://yoursite.com/2020/02/20/Node-%EB%A1%9C-%EC%84%9C%EB%B2%84-%EC%83%9D%EC%84%B1%ED%95%98%EA%B8%B0/</loc>
-        <lastmod>2020-03-17T02:08:40.903Z</lastmod>
+        <loc>http://yoursite.com/2020/03/04/JPA-%EA%B3%B5%ED%86%B5-%EB%A7%A4%ED%95%91%EC%A0%95%EB%B3%B4-%EC%82%AC%EC%9A%A9/</loc>
+        <lastmod>2020-03-17T02:08:40.902Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
 
@@ -112,8 +152,8 @@
     </url>
 
     <url>
-        <loc>http://yoursite.com/2020/03/04/JPA-%EA%B3%B5%ED%86%B5-%EB%A7%A4%ED%95%91%EC%A0%95%EB%B3%B4-%EC%82%AC%EC%9A%A9/</loc>
-        <lastmod>2020-03-17T02:08:40.902Z</lastmod>
+        <loc>http://yoursite.com/2020/01/18/Git-%EB%B8%94%EB%A1%9C%EA%B7%B8-%EC%83%9D%EC%84%B1-with-hexo/</loc>
+        <lastmod>2020-03-17T02:08:40.901Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
 
@@ -129,14 +169,6 @@
 
     <url>
         <loc>http://yoursite.com/2020/02/14/JPA-maven-%EC%97%B0%EB%8F%99/</loc>
-        <lastmod>2020-03-17T02:08:40.901Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>http://yoursite.com/2020/01/18/Git-%EB%B8%94%EB%A1%9C%EA%B7%B8-%EC%83%9D%EC%84%B1-with-hexo/</loc>
         <lastmod>2020-03-17T02:08:40.901Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>

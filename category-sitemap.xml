@@ -8,6 +8,34 @@
     </url>
 
     <url>
+        <loc>http://yoursite.com/categories/Python/</loc>
+        <lastmod>2020-04-23T02:55:26.681Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://yoursite.com/categories/coding-test/</loc>
+        <lastmod>2020-04-23T02:55:26.680Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://yoursite.com/categories/Spring/</loc>
+        <lastmod>2020-04-22T07:02:27.564Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://yoursite.com/categories/%25EC%259E%2591%25EC%2584%25B1%25EC%25A4%2591-%25EA%25B8%2580/</loc>
+        <lastmod>2020-04-22T07:02:27.563Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
         <loc>http://yoursite.com/categories/Projects/JPA/</loc>
         <lastmod>2020-03-27T05:34:28.145Z</lastmod>
         <changefreq>weekly</changefreq>
@@ -22,13 +50,6 @@
     </url>
 
     <url>
-        <loc>http://yoursite.com/categories/Spring/</loc>
-        <lastmod>2020-03-27T05:31:56.535Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
         <loc>http://yoursite.com/categories/Git/</loc>
         <lastmod>2020-03-20T10:12:09.311Z</lastmod>
         <changefreq>weekly</changefreq>
@@ -38,20 +59,6 @@
     <url>
         <loc>http://yoursite.com/categories/JPA/</loc>
         <lastmod>2020-03-17T02:08:40.906Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://yoursite.com/categories/Python/</loc>
-        <lastmod>2020-03-17T02:08:40.904Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://yoursite.com/categories/Node-js/</loc>
-        <lastmod>2020-03-17T02:08:40.903Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>

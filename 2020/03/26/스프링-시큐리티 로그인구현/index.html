@@ -1,0 +1,750 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="동글씨">
+    <title>스프링 시큐리티 OAuth 사용한 로그인 기능구현 - 동글씨</title>
+    <meta name="author" content="Suyan Kim">
+    
+    
+    
+        <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
+    
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","ksso7300@gmail.com"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\n\n\n스프링 시큐리티 Spring Security\n인증(Authentication)과 인가(Authorization) (권한부여)를 가진 프레임워크이다.\n\n\n2.0 버전에서 부터는 client 인증정보만 필요로 하게 되었다.\n\nGoogle Cloud Platform 에서 인증용 API 신청하기\n구글클라우드 플랫폼 에 접속하여 프로젝트를 생성한다. 여기서 발급된 인증정보 clientId, clientSecret 을 통해 스프링 시큐리티를 사용한 로그인 기능을 구현할 수 있다.\n\n생성된 프로젝트에서 OAuth 동의화면을 구성한다.\n웹 어플리케이션 유형의 사용자 인증정보를 만든다.\n아래와 같이 웹 어플리케이션의 클라이언트ID가 생성되었다.\n로그인 구현을 위한 설정build.gradle\n12345implementation 'org.springframework.cloud:spring-cloud-starter-security:2.1.2.RELEASE'implementation 'org.springframework.cloud:spring-cloud-starter-oauth2:2.1.2.RELEASE'compile('org.springframework.security:spring-security-oauth2-client')compile('org.springframework.security:spring-security-oauth2-jose')\n\n application-oauth.properties /src/main/resources/static/application-oauth.properties 파일을 추가한다.\n123spring.security.oauth2.client.registration.google.client-id=&#123;클라이언트 ID&#125;spring.security.oauth2.client.registration.google.client-secret=&#123;secret 코드&#125;spring.security.oauth2.client.registration.google.scope=profile,email\n\n.gitIgnore해당 설정파일을 gitIgnore 에 넣어준다.\n1application-oauth.properties\n\napplication.ymlinclude: oauth 를 추가한다.\n1234spring:  profiles:     active: local    include: oauth\n\n소셜 인증 구현하기ClientResources 클래스프로퍼티 설정을 편리하게 이용 할 수 있다.\n123456789101112131415public class ClientResources &#123;\t\t@NestedConfigurationProperty\tprivate AuthorizationCodeResourceDetails client = new AuthorizationCodeResourceDetails();\t@NestedConfigurationProperty\tprivate ResourceServerProperties resource = new ResourceServerProperties();\t\tpublic AuthorizationCodeResourceDetails geClient() &#123;\t\treturn client;\t&#125;\tpublic ResourceServerProperties getResource() &#123;\t\treturn resource;\t&#125;&#125;\n\n** 혹시나 AuthorizationCodeResourceDetails 이 추가되지 않으면 oauth2-autoconfigure 디펜던시가 필요하다.   build.gradle 에 아래와 같이 추가해준다.\n1compile 'org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure:2.1.7.RELEASE'\n\nSecurityConfig 클래스 작성12345678910@EnableWebSecurity@EnableOAuth2Clientpublic class SecurityConfig extends WebSecurityConfigAdapter()&#123;  @Bean  @ConfigurationProperties(\"google\")  public ClientResources google()&#123;    return new ClientResources();  &#125;&#125;\n\n12345678// 인증 요청에 따른 리다이렉션을 위한 빈 등록@Beanpublic FilterRegistrationBean oauth2ClientFilterRegistration(OAuth2ClientContextFilter filter) &#123;\tFilterRegistrationBean registration = new FilterRegistrationBean();\tregistration.setFilter(filter);\tregistration.setOrder(-100); //Spring Security 필터보다 우선순위를 낮게 둔다.\treturn registration;&#125;\n\n\n123456789101112131415161718192021private Filter ssoFilter() &#123;\tCompositeFilter filter = new CompositeFilter();\tList&lt;Filter&gt; filters = new ArrayList&lt;Filter&gt;();\t\tfilters.add(ssoFilter(google(), \"/login/google\"));\tfilter.setFilters(filters);\treturn filter;&#125;private Filter ssoFilter(ClientResources client, String path) &#123;\t// OAuth2ClientAuthenticationProcessingFilter\t// -&gt; OAuth2 인증 서버에서 OAuth2 액세스 토큰을 획득.\t// -&gt; 인증 객체를 SecurityContext 에 로드하는 데 사용할 수 있는 OAuth2 클라이언트 필터\tOAuth2ClientAuthenticationProcessingFilter filter = new OAuth2ClientAuthenticationProcessingFilter(path);\tOAuth2RestTemplate restTemplate = new OAuth2RestTemplate(client.getClient(), oauth2ClientContext);\tfilter.setRestTemplate(restTemplate);\tUserInfoTokenServices tokenServices = \t\t\tnew UserInfoTokenServices(client.getResource().getUserInfoUri(), client.getClient().getClientId());\tfilter.setTokenServices(tokenServices);\treturn filter;&#125;","dateCreated":"2020-03-26T22:17:40+09:00","dateModified":"2020-04-22T16:02:27+09:00","datePublished":"2020-03-26T22:17:40+09:00","description":"🍃 SpringBoot, SpringSecurity, OAuth2 를 이용해 Google 로그인을 구현해 봅니다.","headline":"스프링 시큐리티 OAuth 사용한 로그인 기능구현","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2020/03/26/%EC%8A%A4%ED%94%84%EB%A7%81-%EC%8B%9C%ED%81%90%EB%A6%AC%ED%8B%B0%20%EB%A1%9C%EA%B7%B8%EC%9D%B8%EA%B5%AC%ED%98%84/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","ksso7300@gmail.com"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2020/03/26/%EC%8A%A4%ED%94%84%EB%A7%81-%EC%8B%9C%ED%81%90%EB%A6%AC%ED%8B%B0%20%EB%A1%9C%EA%B7%B8%EC%9D%B8%EA%B5%AC%ED%98%84/","keywords":"spring, OAuth2"}</script>
+    <meta name="description" content="🍃 SpringBoot, SpringSecurity, OAuth2 를 이용해 Google 로그인을 구현해 봅니다.">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="스프링 시큐리티 OAuth 사용한 로그인 기능구현">
+<meta property="og:url" content="http://yoursite.com/2020/03/26/%EC%8A%A4%ED%94%84%EB%A7%81-%EC%8B%9C%ED%81%90%EB%A6%AC%ED%8B%B0%20%EB%A1%9C%EA%B7%B8%EC%9D%B8%EA%B5%AC%ED%98%84/index.html">
+<meta property="og:site_name" content="동글씨">
+<meta property="og:description" content="🍃 SpringBoot, SpringSecurity, OAuth2 를 이용해 Google 로그인을 구현해 봅니다.">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://user-images.githubusercontent.com/28856435/77653327-e1b7c380-6fb2-11ea-98bd-5ac9eb7393db.png">
+<meta property="og:image" content="https://user-images.githubusercontent.com/28856435/77651410-17a77880-6fb0-11ea-9bf4-5ee0d1c1fed2.png">
+<meta property="og:image" content="https://user-images.githubusercontent.com/28856435/77651295-ecbd2480-6faf-11ea-85b2-09bbb8da3f9d.png">
+<meta property="article:published_time" content="2020-03-26T13:17:40.000Z">
+<meta property="article:modified_time" content="2020-04-22T07:02:27.564Z">
+<meta property="article:author" content="Suyan Kim">
+<meta property="article:tag" content="spring">
+<meta property="article:tag" content="OAuth2">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://user-images.githubusercontent.com/28856435/77653327-e1b7c380-6fb2-11ea-98bd-5ac9eb7393db.png">
+    
+    
+        
+    
+    
+        <meta property="og:image" content="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=640"/>
+    
+    
+    
+    
+    <!--STYLES-->
+    
+<link rel="stylesheet" href="/assets/css/all.css">
+
+    
+<link rel="stylesheet" href="/assets/css/jquery.fancybox.css">
+
+    
+<link rel="stylesheet" href="/assets/css/thumbs.css">
+
+    
+<link rel="stylesheet" href="/assets/css/tranquilpeak.css">
+
+    <!--STYLES END-->
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-158530470-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-158530470-1');
+    </script>
+
+
+    
+
+    
+        
+    
+</head>
+
+    <body>
+        <div id="blog">
+            <!-- Define author's picture -->
+
+
+    
+        
+    
+
+<header id="header" data-behavior="5">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <div class="header-title">
+        <a
+            class="header-title-link"
+            href="/index.html"
+            aria-label=""
+        >
+            동글씨
+        </a>
+    </div>
+    
+        
+            <a
+                class="header-right-picture "
+                href="#about"
+                aria-label="Open the link: /#about"
+            >
+        
+        
+            <img class="header-picture" src="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=90" alt="Author&#39;s picture"/>
+        
+        </a>
+    
+</header>
+
+            <!-- function -->
+
+
+<!-- Define author's picture -->
+
+
+    
+
+<nav id="sidebar" data-behavior="5">
+    <div class="sidebar-container">
+        
+            <div class="sidebar-profile">
+                <a
+                    href="/#about"
+                    aria-label="Read more about the author"
+                >
+                    <img class="sidebar-profile-picture" src="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=110" alt="Author&#39;s picture"/>
+                </a>
+                <h4 class="sidebar-profile-name">Suyan Kim</h4>
+                
+                    <h5 class="sidebar-profile-bio"><p>author.bio</p>
+</h5>
+                
+            </div>
+        
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="Home"href="/index.html"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-home" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">Home</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="Categories"href="/all-categories"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-bookmark" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">Categories</span>
+                        </a>
+                    <!-- add -->
+                    
+                        
+                            
+                                <li><a class="side-tag" href="/categories/Git/">Git (2)</a></li>
+                            
+                        
+                            
+                        
+                            
+                                <li><a class="side-tag" href="/categories/Hexo/">Hexo (1)</a></li>
+                            
+                        
+                            
+                                <li><a class="side-tag" href="/categories/JPA/">JPA (9)</a></li>
+                            
+                        
+                            
+                        
+                            
+                                <li><a class="side-tag" href="/categories/Maven/">Maven (1)</a></li>
+                            
+                        
+                            
+                                <li><a class="side-tag" href="/categories/Projects/">Projects (1)</a></li>
+                            
+                        
+                            
+                                <li><a class="side-tag" href="/categories/Python/">Python (1)</a></li>
+                            
+                        
+                            
+                                <li><a class="side-tag" href="/categories/Spring/">Spring (1)</a></li>
+                            
+                        
+                            
+                                <li><a class="side-tag" href="/categories/coding-test/">coding test (3)</a></li>
+                            
+                        
+                            
+                                <li><a class="side-tag" href="/categories/%EC%9E%91%EC%84%B1%EC%A4%91-%EA%B8%80/">작성중 글 (2)</a></li>
+                            
+                        
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="Tags"href="/all-tags"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-tags" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">Tags</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="Archives"href="/all-archives"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-archive" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">Archives</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="About"href="#about"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-question" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">About</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="https://github.com/ksso730" target="_blank" rel="noopener" title="my github">
+                    
+                    <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">my github</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/ksso7300@gmail.com"
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-envelope" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">contact me</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+        </ul>
+        
+    </div>
+</nav>
+
+            
+            <div id="main" data-behavior="5"
+                 class="
+                        hasCoverMetaIn
+                        ">
+                
+<article class="post">
+    
+    
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title">
+            스프링 시큐리티 OAuth 사용한 로그인 기능구현
+        </h1>
+    
+    
+        <div class="post-meta">
+    <time datetime="2020-03-26T22:17:40+09:00">
+	
+		    Mar 26, 2020
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/Spring/">Spring</a>
+
+
+    
+</div>
+
+    
+</div>
+
+    
+    <div class="post-content markdown">
+        <div class="main-content-wrap">
+            <!-- excerpt -->
+<h1 id="table-of-contents">Contents</h1><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#스프링-시큐리티-Spring-Security"><span class="toc-text">스프링 시큐리티 Spring Security</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Google-Cloud-Platform-에서-인증용-API-신청하기"><span class="toc-text">Google Cloud Platform 에서 인증용 API 신청하기</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#로그인-구현을-위한-설정"><span class="toc-text">로그인 구현을 위한 설정</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#소셜-인증-구현하기"><span class="toc-text">소셜 인증 구현하기</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#ClientResources-클래스"><span class="toc-text">ClientResources 클래스</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#SecurityConfig-클래스-작성"><span class="toc-text">SecurityConfig 클래스 작성</span></a></li></ol></li></ol>
+
+<hr>
+<br/>
+
+<h3 id="스프링-시큐리티-Spring-Security"><a href="#스프링-시큐리티-Spring-Security" class="headerlink" title="스프링 시큐리티 Spring Security"></a>스프링 시큐리티 Spring Security</h3><blockquote>
+<p>인증(Authentication)과 인가(Authorization) (권한부여)를 가진 프레임워크이다.</p>
+</blockquote>
+<ul>
+<li>2.0 버전에서 부터는 client 인증정보만 필요로 하게 되었다.</li>
+</ul>
+<h3 id="Google-Cloud-Platform-에서-인증용-API-신청하기"><a href="#Google-Cloud-Platform-에서-인증용-API-신청하기" class="headerlink" title="Google Cloud Platform 에서 인증용 API 신청하기"></a>Google Cloud Platform 에서 인증용 API 신청하기</h3><blockquote>
+<p><a href="https://console.cloud.google.com/home/dashboard?project=fruite" target="_blank" rel="noopener">구글클라우드 플랫폼</a> 에 접속하여 프로젝트를 생성한다. 여기서 발급된 인증정보 <code>clientId</code>, <code>clientSecret</code> 을 통해 스프링 시큐리티를 사용한 로그인 기능을 구현할 수 있다.</p>
+</blockquote>
+<p><strong>생성된 프로젝트에서 OAuth 동의화면을 구성한다.</strong><br><img src="https://user-images.githubusercontent.com/28856435/77653327-e1b7c380-6fb2-11ea-98bd-5ac9eb7393db.png" alt="image"><br><br/></p>
+<p><strong>웹 어플리케이션 유형의 사용자 인증정보를 만든다.</strong><br><img src="https://user-images.githubusercontent.com/28856435/77651410-17a77880-6fb0-11ea-9bf4-5ee0d1c1fed2.png" alt="image"><br><br/></p>
+<p><strong>아래와 같이 웹 어플리케이션의 클라이언트ID가 생성되었다.</strong><br><img src="https://user-images.githubusercontent.com/28856435/77651295-ecbd2480-6faf-11ea-85b2-09bbb8da3f9d.png" alt="image"><br><br/></p>
+<h3 id="로그인-구현을-위한-설정"><a href="#로그인-구현을-위한-설정" class="headerlink" title="로그인 구현을 위한 설정"></a>로그인 구현을 위한 설정</h3><p><strong>build.gradle</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">implementation <span class="string">'org.springframework.cloud:spring-cloud-starter-security:2.1.2.RELEASE'</span></span><br><span class="line">implementation <span class="string">'org.springframework.cloud:spring-cloud-starter-oauth2:2.1.2.RELEASE'</span></span><br><span class="line"></span><br><span class="line">compile(<span class="string">'org.springframework.security:spring-security-oauth2-client'</span>)</span><br><span class="line">compile(<span class="string">'org.springframework.security:spring-security-oauth2-jose'</span>)</span><br></pre></td></tr></table></figure>
+
+<p> <strong>application-oauth.properties</strong><br> /src/main/resources/static/application-oauth.properties 파일을 추가한다.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">spring.security.oauth2.client.registration.google.client-id=&#123;클라이언트 ID&#125;</span><br><span class="line">spring.security.oauth2.client.registration.google.client-secret=&#123;secret 코드&#125;</span><br><span class="line">spring.security.oauth2.client.registration.google.scope=profile,email</span><br></pre></td></tr></table></figure>
+
+<p><strong>.gitIgnore</strong><br>해당 설정파일을 gitIgnore 에 넣어준다.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">application-oauth.properties</span><br></pre></td></tr></table></figure>
+
+<p><strong>application.yml</strong><br><code>include: oauth</code> 를 추가한다.</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">profiles:</span> </span><br><span class="line">    <span class="attr">active:</span> <span class="string">local</span></span><br><span class="line">    <span class="attr">include:</span> <span class="string">oauth</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="소셜-인증-구현하기"><a href="#소셜-인증-구현하기" class="headerlink" title="소셜 인증 구현하기"></a>소셜 인증 구현하기</h3><h4 id="ClientResources-클래스"><a href="#ClientResources-클래스" class="headerlink" title="ClientResources 클래스"></a>ClientResources 클래스</h4><p>프로퍼티 설정을 편리하게 이용 할 수 있다.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ClientResources</span> </span>&#123;</span><br><span class="line">	</span><br><span class="line">	<span class="meta">@NestedConfigurationProperty</span></span><br><span class="line">	<span class="keyword">private</span> AuthorizationCodeResourceDetails client = <span class="keyword">new</span> AuthorizationCodeResourceDetails();</span><br><span class="line">	<span class="meta">@NestedConfigurationProperty</span></span><br><span class="line">	<span class="keyword">private</span> ResourceServerProperties resource = <span class="keyword">new</span> ResourceServerProperties();</span><br><span class="line">	</span><br><span class="line">	<span class="function"><span class="keyword">public</span> AuthorizationCodeResourceDetails <span class="title">geClient</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> client;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> ResourceServerProperties <span class="title">getResource</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> resource;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>** 혹시나 AuthorizationCodeResourceDetails 이 추가되지 않으면 oauth2-autoconfigure 디펜던시가 필요하다.<br>   build.gradle 에 아래와 같이 추가해준다.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">compile <span class="string">'org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure:2.1.7.RELEASE'</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="SecurityConfig-클래스-작성"><a href="#SecurityConfig-클래스-작성" class="headerlink" title="SecurityConfig 클래스 작성"></a>SecurityConfig 클래스 작성</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@EnableWebSecurity</span></span><br><span class="line"><span class="meta">@EnableOAuth</span>2Client</span><br><span class="line"><span class="function"><span class="keyword">public</span> class SecurityConfig extends <span class="title">WebSecurityConfigAdapter</span><span class="params">()</span></span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Bean</span></span><br><span class="line">  <span class="meta">@ConfigurationProperties</span>(<span class="string">"google"</span>)</span><br><span class="line">  <span class="function"><span class="keyword">public</span> ClientResources <span class="title">google</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> ClientResources();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 인증 요청에 따른 리다이렉션을 위한 빈 등록</span></span><br><span class="line"><span class="meta">@Bean</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> FilterRegistrationBean <span class="title">oauth2ClientFilterRegistration</span><span class="params">(OAuth2ClientContextFilter filter)</span> </span>&#123;</span><br><span class="line">	FilterRegistrationBean registration = <span class="keyword">new</span> FilterRegistrationBean();</span><br><span class="line">	registration.setFilter(filter);</span><br><span class="line">	registration.setOrder(-<span class="number">100</span>); <span class="comment">//Spring Security 필터보다 우선순위를 낮게 둔다.</span></span><br><span class="line">	<span class="keyword">return</span> registration;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> Filter <span class="title">ssoFilter</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	CompositeFilter filter = <span class="keyword">new</span> CompositeFilter();</span><br><span class="line">	List&lt;Filter&gt; filters = <span class="keyword">new</span> ArrayList&lt;Filter&gt;();</span><br><span class="line">	</span><br><span class="line">	filters.add(ssoFilter(google(), <span class="string">"/login/google"</span>));</span><br><span class="line">	filter.setFilters(filters);</span><br><span class="line">	<span class="keyword">return</span> filter;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> Filter <span class="title">ssoFilter</span><span class="params">(ClientResources client, String path)</span> </span>&#123;</span><br><span class="line">	<span class="comment">// OAuth2ClientAuthenticationProcessingFilter</span></span><br><span class="line">	<span class="comment">// -&gt; OAuth2 인증 서버에서 OAuth2 액세스 토큰을 획득.</span></span><br><span class="line">	<span class="comment">// -&gt; 인증 객체를 SecurityContext 에 로드하는 데 사용할 수 있는 OAuth2 클라이언트 필터</span></span><br><span class="line">	OAuth2ClientAuthenticationProcessingFilter filter = <span class="keyword">new</span> OAuth2ClientAuthenticationProcessingFilter(path);</span><br><span class="line">	OAuth2RestTemplate restTemplate = <span class="keyword">new</span> OAuth2RestTemplate(client.getClient(), oauth2ClientContext);</span><br><span class="line">	filter.setRestTemplate(restTemplate);</span><br><span class="line">	UserInfoTokenServices tokenServices = </span><br><span class="line">			<span class="keyword">new</span> UserInfoTokenServices(client.getResource().getUserInfoUri(), client.getClient().getClientId());</span><br><span class="line">	filter.setTokenServices(tokenServices);</span><br><span class="line">	<span class="keyword">return</span> filter;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+            
+
+
+        </div>
+    </div>
+    <div id="post-footer" class="post-footer main-content-wrap">
+        
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">TAGGED IN</span><br/>
+                
+    <a class="tag tag--primary tag--small t-link" href="/tags/OAuth2/" rel="tag">OAuth2</a> <a class="tag tag--primary tag--small t-link" href="/tags/spring/" rel="tag">spring</a>
+
+            </div>
+        
+        
+            <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2020/04/12/CODING-TEST-with-Python/"
+                    data-tooltip="CODING TEST with Python"
+                    aria-label="PREVIOUS: CODING TEST with Python"
+                >
+                    
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                    </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2020/03/17/Git-pull-%EC%98%A4%EB%A5%98-Nothing-to-fetch/"
+                    data-tooltip="Git pull 오류: Nothing to fetch"
+                    aria-label="NEXT: Git pull 오류: Nothing to fetch"
+                >
+                    
+                        <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a
+                class="post-action-btn btn btn--default btn-open-shareoptions"
+                href="#btn-open-shareoptions"
+                aria-label="Share this post"
+            >
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2020/03/26/%EC%8A%A4%ED%94%84%EB%A7%81-%EC%8B%9C%ED%81%90%EB%A6%AC%ED%8B%B0%20%EB%A1%9C%EA%B7%B8%EC%9D%B8%EA%B5%AC%ED%98%84/"
+                    title="Share on Facebook"
+                    aria-label="Share on Facebook"
+                >
+                    <i class="fab fa-facebook" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2020/03/26/%EC%8A%A4%ED%94%84%EB%A7%81-%EC%8B%9C%ED%81%90%EB%A6%AC%ED%8B%B0%20%EB%A1%9C%EA%B7%B8%EC%9D%B8%EA%B5%AC%ED%98%84/"
+                    title="Share on Twitter"
+                    aria-label="Share on Twitter"
+                >
+                    <i class="fab fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://plus.google.com/share?url=http://yoursite.com/2020/03/26/%EC%8A%A4%ED%94%84%EB%A7%81-%EC%8B%9C%ED%81%90%EB%A6%AC%ED%8B%B0%20%EB%A1%9C%EA%B7%B8%EC%9D%B8%EA%B5%AC%ED%98%84/"
+                    title="Share on Google+"
+                    aria-label="Share on Google+"
+                >
+                    <i class="fab fa-google-plus" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+                <li class="post-action">
+                    <a
+                        class="post-action-btn btn btn--default"
+                        href="#disqus_thread"
+                        aria-label="Leave a comment"
+                    >
+                        <i class="fa fa-comment"></i>
+                    </a>
+                </li>
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#table-of-contents" aria-label="Contents">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+        
+        
+            
+                <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a></noscript>
+</div>
+            
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2020 Suyan Kim. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="5">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2020/04/12/CODING-TEST-with-Python/"
+                    data-tooltip="CODING TEST with Python"
+                    aria-label="PREVIOUS: CODING TEST with Python"
+                >
+                    
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                    </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2020/03/17/Git-pull-%EC%98%A4%EB%A5%98-Nothing-to-fetch/"
+                    data-tooltip="Git pull 오류: Nothing to fetch"
+                    aria-label="NEXT: Git pull 오류: Nothing to fetch"
+                >
+                    
+                        <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a
+                class="post-action-btn btn btn--default btn-open-shareoptions"
+                href="#btn-open-shareoptions"
+                aria-label="Share this post"
+            >
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2020/03/26/%EC%8A%A4%ED%94%84%EB%A7%81-%EC%8B%9C%ED%81%90%EB%A6%AC%ED%8B%B0%20%EB%A1%9C%EA%B7%B8%EC%9D%B8%EA%B5%AC%ED%98%84/"
+                    title="Share on Facebook"
+                    aria-label="Share on Facebook"
+                >
+                    <i class="fab fa-facebook" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2020/03/26/%EC%8A%A4%ED%94%84%EB%A7%81-%EC%8B%9C%ED%81%90%EB%A6%AC%ED%8B%B0%20%EB%A1%9C%EA%B7%B8%EC%9D%B8%EA%B5%AC%ED%98%84/"
+                    title="Share on Twitter"
+                    aria-label="Share on Twitter"
+                >
+                    <i class="fab fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://plus.google.com/share?url=http://yoursite.com/2020/03/26/%EC%8A%A4%ED%94%84%EB%A7%81-%EC%8B%9C%ED%81%90%EB%A6%AC%ED%8B%B0%20%EB%A1%9C%EA%B7%B8%EC%9D%B8%EA%B5%AC%ED%98%84/"
+                    title="Share on Google+"
+                    aria-label="Share on Google+"
+                >
+                    <i class="fab fa-google-plus" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+                <li class="post-action">
+                    <a
+                        class="post-action-btn btn btn--default"
+                        href="#disqus_thread"
+                        aria-label="Leave a comment"
+                    >
+                        <i class="fa fa-comment"></i>
+                    </a>
+                </li>
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#table-of-contents" aria-label="Contents">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                
+    <div id="share-options-bar" class="share-options-bar" data-behavior="5">
+        <i id="btn-close-shareoptions" class="fa fa-times"></i>
+        <ul class="share-options">
+            
+                
+                
+                <li class="share-option">
+                    <a
+                        class="share-option-btn"
+                        target="new"
+                        href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2020/03/26/%EC%8A%A4%ED%94%84%EB%A7%81-%EC%8B%9C%ED%81%90%EB%A6%AC%ED%8B%B0%20%EB%A1%9C%EA%B7%B8%EC%9D%B8%EA%B5%AC%ED%98%84/"
+                        aria-label="Share on Facebook"
+                    >
+                        <i class="fab fa-facebook" aria-hidden="true"></i><span>Share on Facebook</span>
+                    </a>
+                </li>
+            
+                
+                
+                <li class="share-option">
+                    <a
+                        class="share-option-btn"
+                        target="new"
+                        href="https://twitter.com/intent/tweet?text=http://yoursite.com/2020/03/26/%EC%8A%A4%ED%94%84%EB%A7%81-%EC%8B%9C%ED%81%90%EB%A6%AC%ED%8B%B0%20%EB%A1%9C%EA%B7%B8%EC%9D%B8%EA%B5%AC%ED%98%84/"
+                        aria-label="Share on Twitter"
+                    >
+                        <i class="fab fa-twitter" aria-hidden="true"></i><span>Share on Twitter</span>
+                    </a>
+                </li>
+            
+                
+                
+                <li class="share-option">
+                    <a
+                        class="share-option-btn"
+                        target="new"
+                        href="https://plus.google.com/share?url=http://yoursite.com/2020/03/26/%EC%8A%A4%ED%94%84%EB%A7%81-%EC%8B%9C%ED%81%90%EB%A6%AC%ED%8B%B0%20%EB%A1%9C%EA%B7%B8%EC%9D%B8%EA%B5%AC%ED%98%84/"
+                        aria-label="Share on Google+"
+                    >
+                        <i class="fab fa-google-plus" aria-hidden="true"></i><span>Share on Google+</span>
+                    </a>
+                </li>
+            
+        </ul>
+    </div>
+
+
+            
+        </div>
+        
+
+
+    
+
+<div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-times"></i>
+        </div>
+        
+            <img id="about-card-picture" src="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=110" alt="Author&#39;s picture"/>
+        
+            <h4 id="about-card-name">Suyan Kim</h4>
+        <!--  -->
+            <!-- <div id="about-card-bio"><p>author.bio</p>
+</div> -->
+            <div id="about-card-bio">안녕하세요, 동글씨의 개발 블로그 입니다.</div>
+        <!--  -->
+        <!--  -->
+            <div id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <!-- <p>Backend Developer</p>
+ -->
+                Backend Developer
+            </div>
+        <!--  -->
+        
+            <div id="about-card-location">
+                <i class="fa fa-map-marker-alt"></i>
+                <br/>
+                Korea
+            </div>
+        
+    </div>
+</div>
+
+        
+        
+<div id="cover" style="background-image:url('/assets/images/sky.png');"></div>
+        <!--SCRIPTS-->
+
+<script src="/assets/js/jquery.js"></script>
+
+
+<script src="/assets/js/jquery.fancybox.js"></script>
+
+
+<script src="/assets/js/thumbs.js"></script>
+
+
+<script src="/assets/js/tranquilpeak.js"></script>
+
+<!--SCRIPTS END-->
+
+
+    
+        <script>
+          var disqus_config = function() {
+            this.page.url = 'http://yoursite.com/2020/03/26/%EC%8A%A4%ED%94%84%EB%A7%81-%EC%8B%9C%ED%81%90%EB%A6%AC%ED%8B%B0%20%EB%A1%9C%EA%B7%B8%EC%9D%B8%EA%B5%AC%ED%98%84/';
+              
+            this.page.identifier = '2020/03/26/스프링-시큐리티 로그인구현/';
+              
+          };
+          (function() {
+            var d = document, s = d.createElement('script');
+            var disqus_shortname = 'ksso730-github-io';
+            s.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+          })();
+        </script>
+    
+
+
+
+
+    </body>
+</html>
