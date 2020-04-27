@@ -8,78 +8,50 @@
     </url>
 
     <url>
-        <loc>http://yoursite.com/categories/Python/</loc>
-        <lastmod>2020-04-23T02:55:26.681Z</lastmod>
+        <loc>http://yoursite.com/categories/%25E2%2598%2581%25EF%25B8%258F-DataBase/</loc>
+        <lastmod>2020-04-27T04:41:09.234Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>http://yoursite.com/categories/coding-test/</loc>
-        <lastmod>2020-04-23T02:55:26.680Z</lastmod>
+        <loc>http://yoursite.com/categories/%25E2%2598%2581%25EF%25B8%258F-JPA/</loc>
+        <lastmod>2020-04-27T03:20:37.907Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>http://yoursite.com/categories/Spring/</loc>
-        <lastmod>2020-04-22T07:02:27.564Z</lastmod>
+        <loc>http://yoursite.com/categories/%25E2%2598%2581%25EF%25B8%258F-coding-test/</loc>
+        <lastmod>2020-04-23T05:50:46.436Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>http://yoursite.com/categories/%25EC%259E%2591%25EC%2584%25B1%25EC%25A4%2591-%25EA%25B8%2580/</loc>
-        <lastmod>2020-04-22T07:02:27.563Z</lastmod>
+        <loc>http://yoursite.com/categories/%25E2%2598%2581%25EF%25B8%258F-Config/</loc>
+        <lastmod>2020-04-23T03:28:11.014Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>http://yoursite.com/categories/Projects/JPA/</loc>
-        <lastmod>2020-03-27T05:34:28.145Z</lastmod>
+        <loc>http://yoursite.com/categories/%25E2%2598%2581%25EF%25B8%258F-Spring/</loc>
+        <lastmod>2020-04-23T03:27:00.723Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>http://yoursite.com/categories/Projects/</loc>
-        <lastmod>2020-03-27T05:34:28.145Z</lastmod>
+        <loc>http://yoursite.com/categories/%25E2%2598%2581%25EF%25B8%258F-Python/</loc>
+        <lastmod>2020-04-23T03:20:56.245Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>http://yoursite.com/categories/Git/</loc>
-        <lastmod>2020-03-20T10:12:09.311Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://yoursite.com/categories/JPA/</loc>
-        <lastmod>2020-03-17T02:08:40.906Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://yoursite.com/categories/Maven/</loc>
-        <lastmod>2020-03-17T02:08:40.903Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://yoursite.com/categories/Hexo/Git/</loc>
-        <lastmod>2020-03-17T02:08:40.901Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://yoursite.com/categories/Hexo/</loc>
-        <lastmod>2020-03-17T02:08:40.901Z</lastmod>
+        <loc>http://yoursite.com/categories/%25E2%2598%2581%25EF%25B8%258F-Git/</loc>
+        <lastmod>2020-04-23T03:20:25.750Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>

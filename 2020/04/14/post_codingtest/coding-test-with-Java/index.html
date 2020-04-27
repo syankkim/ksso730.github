@@ -1,0 +1,691 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="동글씨">
+    <title>CODING TEST with Java - 동글씨</title>
+    <meta name="author" content="Suyan Kim">
+    
+    
+    
+        <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
+    
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","ksso7300@gmail.com"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\n최대공약수와 최소공배수1234567891011121314151617181920212223242526272829303132333435363738394041424344454647484950515253// =====================================================================================================// 문제 설명// 두 수를 입력받아 두 수의 최대공약수와 최소공배수를 반환하는 함수,// solution을 완성해 보세요. 배열의 맨 앞에 최대공약수, 그다음 최소공배수를 넣어 반환하면 됩니다.// 예를 들어 두 수 3, 12의 최대공약수는 3, 최소공배수는 12이므로 solution(3, 12)는 [3, 12]를 반환해야 합니다.// 제한 사항// 두 수는 1이상 1000000이하의 자연수입니다.// =====================================================================================================public int[] solution(int n, int m) &#123;    int[] answer = new int[2];    int min = 1000000; int max=0;        int fstnum =0;    int sndnum = 0;    List&lt;Integer&gt; fstnumArr = new ArrayList&lt;&gt;();    int multi = 1;    if(n&lt;m)&#123;        fstnum= n;        sndnum = m;    &#125;else&#123; fstnum =m; sndnum=n; &#125;        System.out.println(\"fstnum : \"+fstnum);    for(int i=1; i&lt;=fstnum; i++)&#123;        System.out.println(String.format(\"i= %d/ fstnum 나머지= %d\", i, fstnum%i));        if(fstnum%i==0) &#123;            fstnumArr.add(i);        &#125;    &#125;    System.out.println(\"fstnumArr : \"+ fstnumArr);        for(int i= fstnumArr.size()-1; i&gt;=0; i--)&#123;        if(sndnum%fstnumArr.get(i)==0)&#123;            if(min&gt;fstnumArr.get(i))&#123;                min = fstnumArr.get(i);            &#125;            multi *= fstnumArr.get(i);        &#125;    &#125;    System.out.println(\"최대 공약수 : \" + min);    System.out.println(\"multi : \" + multi);        // 최대공배수는 각 2개 숫자를 (최소공약수들의 곱의 값으로 나눈 수)* (최소공약수들의 곱)    max = (n/multi) * (m/multi) * multi;    System.out.println(\"최소 공배수 : \"+ max);        return answer;&#125;public static void main(String args[]) throws Exception&#123;    int[] answer = new Solution().solution(3, 12);&#125;\n\n\n행렬의 덧셈12345678910111213141516171819202122232425    // =====================================================================================================    // 문제 설명    // 행렬의 덧셈은 행과 열의 크기가 같은 두 행렬의 같은 행, 같은 열의 값을 서로 더한 결과가 됩니다.     // 2개의 행렬 arr1과 arr2를 입력받아, 행렬 덧셈의 결과를 반환하는 함수, solution을 완성해주세요.    // =====================================================================================================public int[][] solution2(int[][] arr1, int[][] arr2) &#123;    int len = arr1.length;    int[][] answer =  new int[len][arr1[0].length];        for(int i=0; i&lt;2; i++)&#123;        for(int j=0; j&lt;arr1[i].length; j++)&#123;            answer[i][j] = arr1[i][j] + arr2[i][j];            System.out.println(\"answer : \"+ Arrays.deepToString(answer));            //1차원 배열에서는 toString 가능, 2차원 이상에서는 Arrays.deepToString(answer)         &#125;    &#125;        return answer;&#125;public static void main(String args[]) throws Exception&#123;    // int[] answer = new Solution().solution(3, 12);    int[][] arr1 = &#123;&#123;1&#125;,&#123;3&#125;&#125;;    int[][] arr2 = &#123;&#123;2&#125;,&#123;3&#125;&#125;;    int[][] answer = new Solution().solution2(arr1, arr2);&#125;","dateCreated":"2020-04-14T00:05:31+09:00","dateModified":"2020-04-23T12:29:40+09:00","datePublished":"2020-04-14T00:05:31+09:00","description":"📜 매일매일 코딩테스트 with 자바\n1) 최대공약수와 최소공배수를 반환하는 함수 구현2) 행렬의 덧셈을 반환하는 함수구현","headline":"CODING TEST with Java","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2020/04/14/post_codingtest/coding-test-with-Java/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","ksso7300@gmail.com"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2020/04/14/post_codingtest/coding-test-with-Java/"}</script>
+    <meta name="description" content="📜 매일매일 코딩테스트 with 자바 1) 최대공약수와 최소공배수를 반환하는 함수 구현2) 행렬의 덧셈을 반환하는 함수구현">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="CODING TEST with Java">
+<meta property="og:url" content="http://yoursite.com/2020/04/14/post_codingtest/coding-test-with-Java/index.html">
+<meta property="og:site_name" content="동글씨">
+<meta property="og:description" content="📜 매일매일 코딩테스트 with 자바 1) 최대공약수와 최소공배수를 반환하는 함수 구현2) 행렬의 덧셈을 반환하는 함수구현">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-04-13T15:05:31.000Z">
+<meta property="article:modified_time" content="2020-04-23T03:29:40.216Z">
+<meta property="article:author" content="Suyan Kim">
+<meta name="twitter:card" content="summary">
+    
+    
+        
+    
+    
+        <meta property="og:image" content="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=640"/>
+    
+    
+    
+    
+    <!--STYLES-->
+    
+<link rel="stylesheet" href="/assets/css/all.css">
+
+    
+<link rel="stylesheet" href="/assets/css/jquery.fancybox.css">
+
+    
+<link rel="stylesheet" href="/assets/css/thumbs.css">
+
+    
+<link rel="stylesheet" href="/assets/css/tranquilpeak.css">
+
+    <!--STYLES END-->
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-158530470-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-158530470-1');
+    </script>
+
+
+    
+
+    
+        
+    
+</head>
+
+    <body>
+        <div id="blog">
+            <!-- Define author's picture -->
+
+
+    
+        
+    
+
+<header id="header" data-behavior="5">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <div class="header-title">
+        <a
+            class="header-title-link"
+            href="/index.html"
+            aria-label=""
+        >
+            동글씨
+        </a>
+    </div>
+    
+        
+            <a
+                class="header-right-picture "
+                href="#about"
+                aria-label="Open the link: /#about"
+            >
+        
+        
+            <img class="header-picture" src="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=90" alt="Author&#39;s picture"/>
+        
+        </a>
+    
+</header>
+
+            <!-- function -->
+
+
+<!-- Define author's picture -->
+
+
+    
+
+<nav id="sidebar" data-behavior="5">
+    <div class="sidebar-container">
+        
+            <div class="sidebar-profile">
+                <a
+                    href="/#about"
+                    aria-label="Read more about the author"
+                >
+                    <img class="sidebar-profile-picture" src="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=110" alt="Author&#39;s picture"/>
+                </a>
+                <h4 class="sidebar-profile-name">Suyan Kim</h4>
+                
+                    <h5 class="sidebar-profile-bio"><p>author.bio</p>
+</h5>
+                
+            </div>
+        
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="Home"href="/index.html"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-home" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">Home</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="Categories"href="/all-categories"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-bookmark" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">Categories</span>
+                        </a>
+                    <!-- add -->
+                    
+                        
+                            
+                                <li><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Config/">☁️ Config (2)</a></li>
+                            
+                        
+                            
+                                <li><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-DataBase/">☁️ DataBase (1)</a></li>
+                            
+                        
+                            
+                                <li><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Git/">☁️ Git (3)</a></li>
+                            
+                        
+                            
+                                <li><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-JPA/">☁️ JPA (9)</a></li>
+                            
+                        
+                            
+                                <li><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Python/">☁️ Python (1)</a></li>
+                            
+                        
+                            
+                                <li><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Spring/">☁️ Spring (1)</a></li>
+                            
+                        
+                            
+                                <li><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-coding-test/">☁️ coding test (4)</a></li>
+                            
+                        
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="Tags"href="/all-tags"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-tags" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">Tags</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="Archives"href="/all-archives"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-archive" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">Archives</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="About"href="#about"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-question" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">About</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="https://github.com/ksso730" target="_blank" rel="noopener" title="my github">
+                    
+                    <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">my github</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/ksso7300@gmail.com"
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-envelope" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">contact me</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+        </ul>
+        
+    </div>
+</nav>
+
+            
+            <div id="main" data-behavior="5"
+                 class="
+                        hasCoverMetaIn
+                        ">
+                
+<article class="post">
+    
+    
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title">
+            CODING TEST with Java
+        </h1>
+    
+    
+        <div class="post-meta">
+    <time datetime="2020-04-14T00:05:31+09:00">
+	
+		    Apr 14, 2020
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/%E2%98%81%EF%B8%8F-coding-test/">☁️ coding test</a>
+
+
+    
+</div>
+
+    
+</div>
+
+    
+    <div class="post-content markdown">
+        <div class="main-content-wrap">
+            <!-- excerpt -->
+<h1 id="table-of-contents">Contents</h1><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#최대공약수와-최소공배수"><span class="toc-text">최대공약수와 최소공배수</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#행렬의-덧셈"><span class="toc-text">행렬의 덧셈</span></a></li></ol>
+
+<hr>
+<h2 id="최대공약수와-최소공배수"><a href="#최대공약수와-최소공배수" class="headerlink" title="최대공약수와 최소공배수"></a>최대공약수와 최소공배수</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// =====================================================================================================</span></span><br><span class="line"><span class="comment">// 문제 설명</span></span><br><span class="line"><span class="comment">// 두 수를 입력받아 두 수의 최대공약수와 최소공배수를 반환하는 함수,</span></span><br><span class="line"><span class="comment">// solution을 완성해 보세요. 배열의 맨 앞에 최대공약수, 그다음 최소공배수를 넣어 반환하면 됩니다.</span></span><br><span class="line"><span class="comment">// 예를 들어 두 수 3, 12의 최대공약수는 3, 최소공배수는 12이므로 solution(3, 12)는 [3, 12]를 반환해야 합니다.</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 제한 사항</span></span><br><span class="line"><span class="comment">// 두 수는 1이상 1000000이하의 자연수입니다.</span></span><br><span class="line"><span class="comment">// =====================================================================================================</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">int</span>[] solution(<span class="keyword">int</span> n, <span class="keyword">int</span> m) &#123;</span><br><span class="line">    <span class="keyword">int</span>[] answer = <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">2</span>];</span><br><span class="line">    <span class="keyword">int</span> min = <span class="number">1000000</span>; <span class="keyword">int</span> max=<span class="number">0</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">int</span> fstnum =<span class="number">0</span>;</span><br><span class="line">    <span class="keyword">int</span> sndnum = <span class="number">0</span>;</span><br><span class="line">    List&lt;Integer&gt; fstnumArr = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">    <span class="keyword">int</span> multi = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">if</span>(n&lt;m)&#123;</span><br><span class="line">        fstnum= n;</span><br><span class="line">        sndnum = m;</span><br><span class="line">    &#125;<span class="keyword">else</span>&#123; fstnum =m; sndnum=n; &#125;</span><br><span class="line">    </span><br><span class="line">    System.out.println(<span class="string">"fstnum : "</span>+fstnum);</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>; i&lt;=fstnum; i++)&#123;</span><br><span class="line">        System.out.println(String.format(<span class="string">"i= %d/ fstnum 나머지= %d"</span>, i, fstnum%i));</span><br><span class="line">        <span class="keyword">if</span>(fstnum%i==<span class="number">0</span>) &#123;</span><br><span class="line">            fstnumArr.add(i);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    System.out.println(<span class="string">"fstnumArr : "</span>+ fstnumArr);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i= fstnumArr.size()-<span class="number">1</span>; i&gt;=<span class="number">0</span>; i--)&#123;</span><br><span class="line">        <span class="keyword">if</span>(sndnum%fstnumArr.get(i)==<span class="number">0</span>)&#123;</span><br><span class="line">            <span class="keyword">if</span>(min&gt;fstnumArr.get(i))&#123;</span><br><span class="line">                min = fstnumArr.get(i);</span><br><span class="line">            &#125;</span><br><span class="line">            multi *= fstnumArr.get(i);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    System.out.println(<span class="string">"최대 공약수 : "</span> + min);</span><br><span class="line">    System.out.println(<span class="string">"multi : "</span> + multi);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 최대공배수는 각 2개 숫자를 (최소공약수들의 곱의 값으로 나눈 수)* (최소공약수들의 곱)</span></span><br><span class="line">    max = (n/multi) * (m/multi) * multi;</span><br><span class="line">    System.out.println(<span class="string">"최소 공배수 : "</span>+ max);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> answer;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String args[])</span> <span class="keyword">throws</span> Exception</span>&#123;</span><br><span class="line">    <span class="keyword">int</span>[] answer = <span class="keyword">new</span> Solution().solution(<span class="number">3</span>, <span class="number">12</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="행렬의-덧셈"><a href="#행렬의-덧셈" class="headerlink" title="행렬의 덧셈"></a>행렬의 덧셈</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">    <span class="comment">// =====================================================================================================</span></span><br><span class="line">    <span class="comment">// 문제 설명</span></span><br><span class="line">    <span class="comment">// 행렬의 덧셈은 행과 열의 크기가 같은 두 행렬의 같은 행, 같은 열의 값을 서로 더한 결과가 됩니다. </span></span><br><span class="line">    <span class="comment">// 2개의 행렬 arr1과 arr2를 입력받아, 행렬 덧셈의 결과를 반환하는 함수, solution을 완성해주세요.</span></span><br><span class="line">    <span class="comment">// =====================================================================================================</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">int</span>[][] solution2(<span class="keyword">int</span>[][] arr1, <span class="keyword">int</span>[][] arr2) &#123;</span><br><span class="line">    <span class="keyword">int</span> len = arr1.length;</span><br><span class="line">    <span class="keyword">int</span>[][] answer =  <span class="keyword">new</span> <span class="keyword">int</span>[len][arr1[<span class="number">0</span>].length];</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;<span class="number">2</span>; i++)&#123;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> j=<span class="number">0</span>; j&lt;arr1[i].length; j++)&#123;</span><br><span class="line">            answer[i][j] = arr1[i][j] + arr2[i][j];</span><br><span class="line">            System.out.println(<span class="string">"answer : "</span>+ Arrays.deepToString(answer));</span><br><span class="line">            <span class="comment">//1차원 배열에서는 toString 가능, 2차원 이상에서는 Arrays.deepToString(answer) </span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> answer;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String args[])</span> <span class="keyword">throws</span> Exception</span>&#123;</span><br><span class="line">    <span class="comment">// int[] answer = new Solution().solution(3, 12);</span></span><br><span class="line">    <span class="keyword">int</span>[][] arr1 = &#123;&#123;<span class="number">1</span>&#125;,&#123;<span class="number">3</span>&#125;&#125;;</span><br><span class="line">    <span class="keyword">int</span>[][] arr2 = &#123;&#123;<span class="number">2</span>&#125;,&#123;<span class="number">3</span>&#125;&#125;;</span><br><span class="line">    <span class="keyword">int</span>[][] answer = <span class="keyword">new</span> Solution().solution2(arr1, arr2);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+            
+
+
+        </div>
+    </div>
+    <div id="post-footer" class="post-footer main-content-wrap">
+        
+        
+            <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2020/04/14/post_codingtest/coding-test-with-Java%20copy/"
+                    data-tooltip="CODING TEST with Java"
+                    aria-label="PREVIOUS: CODING TEST with Java"
+                >
+                    
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                    </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2020/04/12/post_codingtest/CODING-TEST-with-Python/"
+                    data-tooltip="CODING TEST with Python"
+                    aria-label="NEXT: CODING TEST with Python"
+                >
+                    
+                        <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a
+                class="post-action-btn btn btn--default btn-open-shareoptions"
+                href="#btn-open-shareoptions"
+                aria-label="Share this post"
+            >
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2020/04/14/post_codingtest/coding-test-with-Java/"
+                    title="Share on Facebook"
+                    aria-label="Share on Facebook"
+                >
+                    <i class="fab fa-facebook" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2020/04/14/post_codingtest/coding-test-with-Java/"
+                    title="Share on Twitter"
+                    aria-label="Share on Twitter"
+                >
+                    <i class="fab fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://plus.google.com/share?url=http://yoursite.com/2020/04/14/post_codingtest/coding-test-with-Java/"
+                    title="Share on Google+"
+                    aria-label="Share on Google+"
+                >
+                    <i class="fab fa-google-plus" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+                <li class="post-action">
+                    <a
+                        class="post-action-btn btn btn--default"
+                        href="#disqus_thread"
+                        aria-label="Leave a comment"
+                    >
+                        <i class="fa fa-comment"></i>
+                    </a>
+                </li>
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#table-of-contents" aria-label="Contents">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+        
+        
+            
+                <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a></noscript>
+</div>
+            
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2020 Suyan Kim. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="5">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2020/04/14/post_codingtest/coding-test-with-Java%20copy/"
+                    data-tooltip="CODING TEST with Java"
+                    aria-label="PREVIOUS: CODING TEST with Java"
+                >
+                    
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                    </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2020/04/12/post_codingtest/CODING-TEST-with-Python/"
+                    data-tooltip="CODING TEST with Python"
+                    aria-label="NEXT: CODING TEST with Python"
+                >
+                    
+                        <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a
+                class="post-action-btn btn btn--default btn-open-shareoptions"
+                href="#btn-open-shareoptions"
+                aria-label="Share this post"
+            >
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2020/04/14/post_codingtest/coding-test-with-Java/"
+                    title="Share on Facebook"
+                    aria-label="Share on Facebook"
+                >
+                    <i class="fab fa-facebook" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2020/04/14/post_codingtest/coding-test-with-Java/"
+                    title="Share on Twitter"
+                    aria-label="Share on Twitter"
+                >
+                    <i class="fab fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://plus.google.com/share?url=http://yoursite.com/2020/04/14/post_codingtest/coding-test-with-Java/"
+                    title="Share on Google+"
+                    aria-label="Share on Google+"
+                >
+                    <i class="fab fa-google-plus" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+                <li class="post-action">
+                    <a
+                        class="post-action-btn btn btn--default"
+                        href="#disqus_thread"
+                        aria-label="Leave a comment"
+                    >
+                        <i class="fa fa-comment"></i>
+                    </a>
+                </li>
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#table-of-contents" aria-label="Contents">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                
+    <div id="share-options-bar" class="share-options-bar" data-behavior="5">
+        <i id="btn-close-shareoptions" class="fa fa-times"></i>
+        <ul class="share-options">
+            
+                
+                
+                <li class="share-option">
+                    <a
+                        class="share-option-btn"
+                        target="new"
+                        href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2020/04/14/post_codingtest/coding-test-with-Java/"
+                        aria-label="Share on Facebook"
+                    >
+                        <i class="fab fa-facebook" aria-hidden="true"></i><span>Share on Facebook</span>
+                    </a>
+                </li>
+            
+                
+                
+                <li class="share-option">
+                    <a
+                        class="share-option-btn"
+                        target="new"
+                        href="https://twitter.com/intent/tweet?text=http://yoursite.com/2020/04/14/post_codingtest/coding-test-with-Java/"
+                        aria-label="Share on Twitter"
+                    >
+                        <i class="fab fa-twitter" aria-hidden="true"></i><span>Share on Twitter</span>
+                    </a>
+                </li>
+            
+                
+                
+                <li class="share-option">
+                    <a
+                        class="share-option-btn"
+                        target="new"
+                        href="https://plus.google.com/share?url=http://yoursite.com/2020/04/14/post_codingtest/coding-test-with-Java/"
+                        aria-label="Share on Google+"
+                    >
+                        <i class="fab fa-google-plus" aria-hidden="true"></i><span>Share on Google+</span>
+                    </a>
+                </li>
+            
+        </ul>
+    </div>
+
+
+            
+        </div>
+        
+
+
+    
+
+<div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-times"></i>
+        </div>
+        
+            <img id="about-card-picture" src="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=110" alt="Author&#39;s picture"/>
+        
+            <h4 id="about-card-name">Suyan Kim</h4>
+        <!--  -->
+            <!-- <div id="about-card-bio"><p>author.bio</p>
+</div> -->
+            <div id="about-card-bio">안녕하세요, 동글씨의 개발 블로그 입니다.</div>
+        <!--  -->
+        <!--  -->
+            <div id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <!-- <p>Backend Developer</p>
+ -->
+                Backend Developer
+            </div>
+        <!--  -->
+        
+            <div id="about-card-location">
+                <i class="fa fa-map-marker-alt"></i>
+                <br/>
+                Korea
+            </div>
+        
+    </div>
+</div>
+
+        
+        
+<div id="cover" style="background-image:url('/assets/images/sky.png');"></div>
+        <!--SCRIPTS-->
+
+<script src="/assets/js/jquery.js"></script>
+
+
+<script src="/assets/js/jquery.fancybox.js"></script>
+
+
+<script src="/assets/js/thumbs.js"></script>
+
+
+<script src="/assets/js/tranquilpeak.js"></script>
+
+<!--SCRIPTS END-->
+
+
+    
+        <script>
+          var disqus_config = function() {
+            this.page.url = 'http://yoursite.com/2020/04/14/post_codingtest/coding-test-with-Java/';
+              
+            this.page.identifier = '2020/04/14/post_codingtest/coding-test-with-Java/';
+              
+          };
+          (function() {
+            var d = document, s = d.createElement('script');
+            var disqus_shortname = 'ksso730-github-io';
+            s.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+          })();
+        </script>
+    
+
+
+
+
+    </body>
+</html>
