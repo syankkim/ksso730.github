@@ -1,0 +1,710 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="동글씨">
+    <title>Python 내장함수 - 동글씨</title>
+    <meta name="author" content="Suyan Kim">
+    
+    
+    
+        <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
+    
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","ksso7300@gmail.com"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\nzip 내장 함수, 이진연산zip() 은 길이가 같은 자료형을 묶어준다.예를 들면, 다음과 같다.\n12zip([3,4,5], [1,2,3]) =&gt; (3,1),(4,2),(5,3)zip('ABC', [1,2,3])   =&gt; (A,1), (B,2), (C,3)\n\n(1)두 배열을 받아, n 을 받아 (2)binary 연산후 (3)자릿수만큼 빈곳은 “#”을 채운다.12345678910111213def ziplist(n):    arr1 =[3,4,5]    arr2 = [1,2,3]    n = 5    for num1, num2 in zip(arr1, arr2):        print(num1, num2)        tmp = bin(num1|num2)[2:] # 여기서 파이썬의만의 '문자열 슬라이싱' 아래에서 개념확인        print('이진연산 후 '+tmp)        tmp = tmp.rjust(n, '#')        print('결과 '+tmp)    return tmp\n출력결과\n123456789(3, 1)이진연산 후 11결과 ###11(4, 2)이진연산 후 110결과 ##110(5, 3)이진연산 후 111결과 ##111\n\n\npython 문자열 슬라이싱12345&gt;&gt;&gt; a = \"Pithon\"&gt;&gt;&gt; a[:1]'P'&gt;&gt;&gt; a[2:]'thon'\n\nrJust 함수 : N자릿수로 리턴(빈곳은”#” 으로 채우기)123456789def rjst(n):    list= ['1','2','3']    tostring = \"\".join(list)    if n &gt; len(tostring):        tostring = tostring.rjust(n, '#')    print(\"tostring : \" + tostring)    # tostring : #######123 rjst(10)\n\n(번외) 숫자를 한 자리수로 잘라 각각 리스트에 담기123456def numToList(number):    n = 234    list = [ int(i) for i in str(n)]    print(list)    return list    # list= [2, 3, 4]","dateCreated":"2020-04-22T16:10:28+09:00","dateModified":"2020-04-28T10:36:01+09:00","datePublished":"2020-04-22T16:10:28+09:00","description":"1) 알고리즘 문제 예제를 통해 zip 내장 함수, 이진연산, rJust함수 알아보기2) (번외) 숫자를 한 자리수로 잘라 각각 리스트에 담기","headline":"Python 내장함수","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2020/04/22/Python%20%EB%82%B4%EC%9E%A5%ED%95%A8%EC%88%98/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","ksso7300@gmail.com"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2020/04/22/Python%20%EB%82%B4%EC%9E%A5%ED%95%A8%EC%88%98/","keywords":"python, python 이진연산, rJust"}</script>
+    <meta name="description" content="1) 알고리즘 문제 예제를 통해 zip 내장 함수, 이진연산, rJust함수 알아보기2) (번외) 숫자를 한 자리수로 잘라 각각 리스트에 담기">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="Python 내장함수">
+<meta property="og:url" content="http://yoursite.com/2020/04/22/Python%20%EB%82%B4%EC%9E%A5%ED%95%A8%EC%88%98/index.html">
+<meta property="og:site_name" content="동글씨">
+<meta property="og:description" content="1) 알고리즘 문제 예제를 통해 zip 내장 함수, 이진연산, rJust함수 알아보기2) (번외) 숫자를 한 자리수로 잘라 각각 리스트에 담기">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-04-22T07:10:28.000Z">
+<meta property="article:modified_time" content="2020-04-28T01:36:01.147Z">
+<meta property="article:author" content="Suyan Kim">
+<meta property="article:tag" content="python">
+<meta property="article:tag" content="python 이진연산">
+<meta property="article:tag" content="rJust">
+<meta name="twitter:card" content="summary">
+    
+    
+        
+    
+    
+        <meta property="og:image" content="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=640"/>
+    
+    
+    
+    
+    <!--STYLES-->
+    
+<link rel="stylesheet" href="/assets/css/all.css">
+
+    
+<link rel="stylesheet" href="/assets/css/jquery.fancybox.css">
+
+    
+<link rel="stylesheet" href="/assets/css/thumbs.css">
+
+    
+<link rel="stylesheet" href="/assets/css/tranquilpeak.css">
+
+    <!--STYLES END-->
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-158530470-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-158530470-1');
+    </script>
+
+
+    
+
+    
+        
+    
+</head>
+
+    <body>
+        <div id="blog">
+            <!-- Define author's picture -->
+
+
+    
+        
+    
+
+<header id="header" data-behavior="4">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <div class="header-title">
+        <a
+            class="header-title-link"
+            href="/index.html"
+            aria-label=""
+        >
+            동글씨
+        </a>
+    </div>
+    
+        
+            <a
+                class="header-right-picture "
+                href="#about"
+                aria-label="Open the link: /#about"
+            >
+        
+        
+            <img class="header-picture" src="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=90" alt="Author&#39;s picture"/>
+        
+        </a>
+    
+</header>
+
+            <!-- function -->
+
+
+<!-- Define author's picture -->
+
+
+    
+
+<nav id="sidebar" data-behavior="4">
+    <div class="sidebar-container">
+        
+            <div class="sidebar-profile">
+                <a
+                    href="/#about"
+                    aria-label="Read more about the author"
+                >
+                    <img class="sidebar-profile-picture" src="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=110" alt="Author&#39;s picture"/>
+                </a>
+                <h4 class="sidebar-profile-name">Suyan Kim</h4>
+                
+                    <h5 class="sidebar-profile-bio"><p>▲ Who Am I</p>
+</h5>
+                
+            </div>
+        
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="Home"href="/index.html"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-home" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">Home</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="Categories"href="/all-categories"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-bookmark" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">Categories</span>
+                        </a>
+                    <!-- add -->
+                    
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Config/">☁️ Config (2)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-DataBase/">☁️ DataBase (1)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Git/">☁️ Git (3)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-JPA/">☁️ JPA (10)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Python/">☁️ Python (1)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Spring/">☁️ Spring (1)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-coding-test/">☁️ coding test (4)</a></li>
+                            
+                        
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="Tags"href="/all-tags"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-tags" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">Tags</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="Archives"href="/all-archives"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-archive" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">Archives</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="About"href="#about"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-question" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">About</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="https://github.com/ksso730" target="_blank" rel="noopener" title="my github">
+                    
+                    <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">my github</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/ksso7300@gmail.com"
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-envelope" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">contact me</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+        </ul>
+        
+    </div>
+</nav>
+
+            
+            <div id="main" data-behavior="4"
+                 class="
+                        hasCoverMetaIn
+                        ">
+                
+<article class="post">
+    
+    
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title">
+            Python 내장함수
+        </h1>
+    
+    
+        <div class="post-meta">
+    <time datetime="2020-04-22T16:10:28+09:00">
+	
+		    Apr 22, 2020
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/%E2%98%81%EF%B8%8F-Python/">☁️ Python</a>
+
+
+    
+</div>
+
+    
+</div>
+
+    
+    <div class="post-content markdown">
+        <div class="main-content-wrap">
+            <!-- excerpt -->
+<h1 id="table-of-contents">Contents</h1><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#zip-내장-함수-이진연산"><span class="toc-text">zip 내장 함수, 이진연산</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#zip-은-길이가-같은-자료형을-묶어준다"><span class="toc-text">zip() 은 길이가 같은 자료형을 묶어준다.</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-두-배열을-받아-n-을-받아-2-binary-연산후-3-자릿수만큼-빈곳은-“-”을-채운다"><span class="toc-text">(1)두 배열을 받아, n 을 받아 (2)binary 연산후 (3)자릿수만큼 빈곳은 “#”을 채운다.</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#python-문자열-슬라이싱"><span class="toc-text">python 문자열 슬라이싱</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#rJust-함수-N자릿수로-리턴-빈곳은”-”-으로-채우기"><span class="toc-text">rJust 함수 : N자릿수로 리턴(빈곳은”#” 으로 채우기)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#번외-숫자를-한-자리수로-잘라-각각-리스트에-담기"><span class="toc-text">(번외) 숫자를 한 자리수로 잘라 각각 리스트에 담기</span></a></li></ol>
+
+
+<h3 id="zip-내장-함수-이진연산"><a href="#zip-내장-함수-이진연산" class="headerlink" title="zip 내장 함수, 이진연산"></a>zip 내장 함수, 이진연산</h3><h4 id="zip-은-길이가-같은-자료형을-묶어준다"><a href="#zip-은-길이가-같은-자료형을-묶어준다" class="headerlink" title="zip() 은 길이가 같은 자료형을 묶어준다."></a>zip() 은 길이가 같은 자료형을 묶어준다.</h4><p><strong>예를 들면, 다음과 같다.</strong></p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">zip([3,4,5], [1,2,3]) =&gt; (3,1),(4,2),(5,3)</span><br><span class="line">zip('ABC', [1,2,3])   =&gt; (A,1), (B,2), (C,3)</span><br></pre></td></tr></table></figure>
+
+<h4 id="1-두-배열을-받아-n-을-받아-2-binary-연산후-3-자릿수만큼-빈곳은-“-”을-채운다"><a href="#1-두-배열을-받아-n-을-받아-2-binary-연산후-3-자릿수만큼-빈곳은-“-”을-채운다" class="headerlink" title="(1)두 배열을 받아, n 을 받아 (2)binary 연산후 (3)자릿수만큼 빈곳은 “#”을 채운다."></a>(1)두 배열을 받아, n 을 받아 (2)binary 연산후 (3)자릿수만큼 빈곳은 “#”을 채운다.</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">ziplist</span><span class="params">(n)</span>:</span></span><br><span class="line">    arr1 =[<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>]</span><br><span class="line">    arr2 = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>]</span><br><span class="line">    n = <span class="number">5</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> num1, num2 <span class="keyword">in</span> zip(arr1, arr2):</span><br><span class="line">        print(num1, num2)</span><br><span class="line">        tmp = bin(num1|num2)[<span class="number">2</span>:] <span class="comment"># 여기서 파이썬의만의 '문자열 슬라이싱' 아래에서 개념확인</span></span><br><span class="line">        print(<span class="string">'이진연산 후 '</span>+tmp)</span><br><span class="line"></span><br><span class="line">        tmp = tmp.rjust(n, <span class="string">'#'</span>)</span><br><span class="line">        print(<span class="string">'결과 '</span>+tmp)</span><br><span class="line">    <span class="keyword">return</span> tmp</span><br></pre></td></tr></table></figure>
+<p><strong>출력결과</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">(3, 1)</span><br><span class="line">이진연산 후 11</span><br><span class="line">결과 ###11</span><br><span class="line">(4, 2)</span><br><span class="line">이진연산 후 110</span><br><span class="line">결과 ##110</span><br><span class="line">(5, 3)</span><br><span class="line">이진연산 후 111</span><br><span class="line">결과 ##111</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="python-문자열-슬라이싱"><a href="#python-문자열-슬라이싱" class="headerlink" title="python 문자열 슬라이싱"></a>python 문자열 슬라이싱</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>a = <span class="string">"Pithon"</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a[:<span class="number">1</span>]</span><br><span class="line"><span class="string">'P'</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a[<span class="number">2</span>:]</span><br><span class="line"><span class="string">'thon'</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="rJust-함수-N자릿수로-리턴-빈곳은”-”-으로-채우기"><a href="#rJust-함수-N자릿수로-리턴-빈곳은”-”-으로-채우기" class="headerlink" title="rJust 함수 : N자릿수로 리턴(빈곳은”#” 으로 채우기)"></a>rJust 함수 : N자릿수로 리턴(빈곳은”#” 으로 채우기)</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">rjst</span><span class="params">(n)</span>:</span></span><br><span class="line">    list= [<span class="string">'1'</span>,<span class="string">'2'</span>,<span class="string">'3'</span>]</span><br><span class="line">    tostring = <span class="string">""</span>.join(list)</span><br><span class="line">    <span class="keyword">if</span> n &gt; len(tostring):</span><br><span class="line">        tostring = tostring.rjust(n, <span class="string">'#'</span>)</span><br><span class="line">    print(<span class="string">"tostring : "</span> + tostring)</span><br><span class="line">    <span class="comment"># tostring : #######123</span></span><br><span class="line"></span><br><span class="line"> rjst(<span class="number">10</span>)</span><br></pre></td></tr></table></figure>
+
+<h3 id="번외-숫자를-한-자리수로-잘라-각각-리스트에-담기"><a href="#번외-숫자를-한-자리수로-잘라-각각-리스트에-담기" class="headerlink" title="(번외) 숫자를 한 자리수로 잘라 각각 리스트에 담기"></a>(번외) 숫자를 한 자리수로 잘라 각각 리스트에 담기</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">numToList</span><span class="params">(number)</span>:</span></span><br><span class="line">    n = <span class="number">234</span></span><br><span class="line">    list = [ int(i) <span class="keyword">for</span> i <span class="keyword">in</span> str(n)]</span><br><span class="line">    print(list)</span><br><span class="line">    <span class="keyword">return</span> list</span><br><span class="line">    <span class="comment"># list= [2, 3, 4]</span></span><br></pre></td></tr></table></figure>
+            
+
+
+        </div>
+    </div>
+    <div id="post-footer" class="post-footer main-content-wrap">
+        
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">TAGGED IN</span><br/>
+                
+    <a class="tag tag--primary tag--small t-link" href="/tags/python/" rel="tag">python</a> <a class="tag tag--primary tag--small t-link" href="/tags/python-%EC%9D%B4%EC%A7%84%EC%97%B0%EC%82%B0/" rel="tag">python 이진연산</a> <a class="tag tag--primary tag--small t-link" href="/tags/rJust/" rel="tag">rJust</a>
+
+            </div>
+        
+        
+            <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2020/04/27/DB-Connection-Pool/"
+                    data-tooltip="개발일지🌟 DB Connection Pool Error (DBCP)"
+                    aria-label="PREVIOUS: 개발일지🌟 DB Connection Pool Error (DBCP)"
+                >
+                    
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                    </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2020/04/22/CODING-TEST-with-Java-0/"
+                    data-tooltip="CODING TEST {&#34;싱글숫자 구하기&#34;} with Java"
+                    aria-label="NEXT: CODING TEST {&#34;싱글숫자 구하기&#34;} with Java"
+                >
+                    
+                        <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a
+                class="post-action-btn btn btn--default btn-open-shareoptions"
+                href="#btn-open-shareoptions"
+                aria-label="Share this post"
+            >
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2020/04/22/Python%20%EB%82%B4%EC%9E%A5%ED%95%A8%EC%88%98/"
+                    title="Share on Facebook"
+                    aria-label="Share on Facebook"
+                >
+                    <i class="fab fa-facebook" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2020/04/22/Python%20%EB%82%B4%EC%9E%A5%ED%95%A8%EC%88%98/"
+                    title="Share on Twitter"
+                    aria-label="Share on Twitter"
+                >
+                    <i class="fab fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://plus.google.com/share?url=http://yoursite.com/2020/04/22/Python%20%EB%82%B4%EC%9E%A5%ED%95%A8%EC%88%98/"
+                    title="Share on Google+"
+                    aria-label="Share on Google+"
+                >
+                    <i class="fab fa-google-plus" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+                <li class="post-action">
+                    <a
+                        class="post-action-btn btn btn--default"
+                        href="#disqus_thread"
+                        aria-label="Leave a comment"
+                    >
+                        <i class="fa fa-comment"></i>
+                    </a>
+                </li>
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#table-of-contents" aria-label="Contents">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+        
+        
+            
+                <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a></noscript>
+</div>
+            
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2020 Suyan Kim. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2020/04/27/DB-Connection-Pool/"
+                    data-tooltip="개발일지🌟 DB Connection Pool Error (DBCP)"
+                    aria-label="PREVIOUS: 개발일지🌟 DB Connection Pool Error (DBCP)"
+                >
+                    
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                    </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2020/04/22/CODING-TEST-with-Java-0/"
+                    data-tooltip="CODING TEST {&#34;싱글숫자 구하기&#34;} with Java"
+                    aria-label="NEXT: CODING TEST {&#34;싱글숫자 구하기&#34;} with Java"
+                >
+                    
+                        <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a
+                class="post-action-btn btn btn--default btn-open-shareoptions"
+                href="#btn-open-shareoptions"
+                aria-label="Share this post"
+            >
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2020/04/22/Python%20%EB%82%B4%EC%9E%A5%ED%95%A8%EC%88%98/"
+                    title="Share on Facebook"
+                    aria-label="Share on Facebook"
+                >
+                    <i class="fab fa-facebook" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2020/04/22/Python%20%EB%82%B4%EC%9E%A5%ED%95%A8%EC%88%98/"
+                    title="Share on Twitter"
+                    aria-label="Share on Twitter"
+                >
+                    <i class="fab fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://plus.google.com/share?url=http://yoursite.com/2020/04/22/Python%20%EB%82%B4%EC%9E%A5%ED%95%A8%EC%88%98/"
+                    title="Share on Google+"
+                    aria-label="Share on Google+"
+                >
+                    <i class="fab fa-google-plus" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+                <li class="post-action">
+                    <a
+                        class="post-action-btn btn btn--default"
+                        href="#disqus_thread"
+                        aria-label="Leave a comment"
+                    >
+                        <i class="fa fa-comment"></i>
+                    </a>
+                </li>
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#table-of-contents" aria-label="Contents">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                
+    <div id="share-options-bar" class="share-options-bar" data-behavior="4">
+        <i id="btn-close-shareoptions" class="fa fa-times"></i>
+        <ul class="share-options">
+            
+                
+                
+                <li class="share-option">
+                    <a
+                        class="share-option-btn"
+                        target="new"
+                        href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2020/04/22/Python%20%EB%82%B4%EC%9E%A5%ED%95%A8%EC%88%98/"
+                        aria-label="Share on Facebook"
+                    >
+                        <i class="fab fa-facebook" aria-hidden="true"></i><span>Share on Facebook</span>
+                    </a>
+                </li>
+            
+                
+                
+                <li class="share-option">
+                    <a
+                        class="share-option-btn"
+                        target="new"
+                        href="https://twitter.com/intent/tweet?text=http://yoursite.com/2020/04/22/Python%20%EB%82%B4%EC%9E%A5%ED%95%A8%EC%88%98/"
+                        aria-label="Share on Twitter"
+                    >
+                        <i class="fab fa-twitter" aria-hidden="true"></i><span>Share on Twitter</span>
+                    </a>
+                </li>
+            
+                
+                
+                <li class="share-option">
+                    <a
+                        class="share-option-btn"
+                        target="new"
+                        href="https://plus.google.com/share?url=http://yoursite.com/2020/04/22/Python%20%EB%82%B4%EC%9E%A5%ED%95%A8%EC%88%98/"
+                        aria-label="Share on Google+"
+                    >
+                        <i class="fab fa-google-plus" aria-hidden="true"></i><span>Share on Google+</span>
+                    </a>
+                </li>
+            
+        </ul>
+    </div>
+
+
+            
+        </div>
+        
+
+
+    
+
+<div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-times"></i>
+        </div>
+        
+            <img id="about-card-picture" src="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=110" alt="Author&#39;s picture"/>
+        
+            <h4 id="about-card-name">Suyan Kim</h4>
+        <!--  -->
+            <!-- <div id="about-card-bio"><p>author.bio</p>
+</div> -->
+            <div id="about-card-bio">안녕하세요, 서버 백엔드 개발자 동글씨입니다.</div>
+        <!--  -->
+        <!--  -->
+            <div id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <!-- <p>Backend Developer</p>
+ -->
+                Backend Developer
+            </div>
+        <!--  -->
+        
+            <div id="about-card-location">
+                <i class="fa fa-map-marker-alt"></i>
+                <br/>
+                Korea
+            </div>
+        
+    </div>
+</div>
+
+        
+        
+<div id="cover" style="background-image:url('/assets/images/sky.png');"></div>
+        <!--SCRIPTS-->
+
+<script src="/assets/js/jquery.js"></script>
+
+
+<script src="/assets/js/jquery.fancybox.js"></script>
+
+
+<script src="/assets/js/thumbs.js"></script>
+
+
+<script src="/assets/js/tranquilpeak.js"></script>
+
+<!--SCRIPTS END-->
+
+
+    
+        <script>
+          var disqus_config = function() {
+            this.page.url = 'http://yoursite.com/2020/04/22/Python%20%EB%82%B4%EC%9E%A5%ED%95%A8%EC%88%98/';
+              
+            this.page.identifier = '2020/04/22/Python 내장함수/';
+              
+          };
+          (function() {
+            var d = document, s = d.createElement('script');
+            var disqus_shortname = 'ksso730-github-io';
+            s.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+          })();
+        </script>
+    
+
+
+
+
+    </body>
+</html>

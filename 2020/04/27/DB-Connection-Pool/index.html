@@ -6,24 +6,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="동글씨">
-    <title>DB Connection Pool (DBCP) - 동글씨</title>
+    <title>개발일지🌟 DB Connection Pool Error (DBCP) - 동글씨</title>
     <meta name="author" content="Suyan Kim">
     
     
     
         <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
     
-    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","ksso7300@gmail.com"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n일반적으로 DB 에서 Connection 을 얻어오는 과정1) DB 서버접속을 위한 JDBC 드라이버를 로드한다.2) DB 접속정보와 DriverManager.getConnection() 을 통해 DB Connection 을 얻는다.3) Connection 객체로부터 쿼리 수행을 위한 PreparedStatement 객체를 받는다.4) executeQuery 를 수행후 ResultSet 객체로 결과를 처리한다.5) 완료 후, 사용된 리소스들을 close() 하여 반환한다.\nDB Connection Pool [DBCP]최근 발생한 이슈 중 하나인데, 근본적인 원인은 아래와 같았다.DB Connection pool error timeout waiting for idle object\n1234 DatabaseException - nested exception is org.apache.ibatis.exceptions.PersistenceException:### Error updating database.  Cause: org.springframework.jdbc.CannotGetJdbcConnectionException: Could not get JDBC Connection; nested exception is java.sql.SQLException: Cannot get a connection, pool error Timeout waiting for idle object\n\n웹 애플리케이션은 HTTP 요청에 의해 Thread 를 생성하게 되고 대부분의 비지니스 로직은 DB 서버로부터 데이터를 얻게 된다.웹 어플리케이션을 지탱하는 WAS 에서 DB 서버에 접근을 시작하고 데이터를 가져오기까지 어느 단계에서 가장 많은 비용이 소비될까.\n\n위와 같은 모든 요청에의해 DB접속을 위한 Driver를 로드하고 Connection 객체를 생성하여 연결한다면 물리적으로 DB 서버에 지속적으로 접근해야 한다.\n이러한 문제를 해결하기 위해 나온 것이 DBCP 이다. DB Connection 객체를 생성하고 연결하는데 드는 비용과 시간을 줄이고 네트워크 연결에 대한 부담을 줄여준다.","dateCreated":"2020-04-27T10:43:05+09:00","dateModified":"2020-04-27T13:41:09+09:00","datePublished":"2020-04-27T10:43:05+09:00","description":"DB Connection Pool 이 무엇인지,max-active, min-idle, max-idle 설정값에 대해 알아봅니다.","headline":"DB Connection Pool (DBCP)","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2020/04/27/DB-Connection-Pool/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","ksso7300@gmail.com"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2020/04/27/DB-Connection-Pool/","keywords":"DBCP, DataBase"}</script>
-    <meta name="description" content="DB Connection Pool 이 무엇인지,max-active, min-idle, max-idle 설정값에 대해 알아봅니다.">
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","ksso7300@gmail.com"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\n\n\nISSUE[1] DB Connection Pool ERROR현상\nDB Connection pool error timeout waiting for idle object\n\n1234 DatabaseException - nested exception is org.apache.ibatis.exceptions.PersistenceException:### Error updating database.  Cause: org.springframework.jdbc.CannotGetJdbcConnectionException: Could not get JDBC Connection; nested exception is java.sql.SQLException: Cannot get a connection, pool error Timeout waiting for idle object\n\n당시 DataBase config#max-active #min-idle #max-idle\n\n\n풀의 초기 커넥션 갯수 : 10\nIdle상태에 풀이 소유한 최소 커넥션 갯수 : 10\nIdle상태에 풀이 소유한 최대 커넥션 갯수 : 30\n최대 커넥션 갯수 : 50\n커넥션이 존재하지 않을 때, 커넥션을 얻기까지 대기하는 최대 대기시간 : 5000\n\n\n원인 : @Transaction특정 API 에서 @Trnasaction 이 걸려있었던 상태.이 transaction이 commit 되지 않은 상태에서 이 API 의 요청이 급증하면서 connection 이 부족하게 되고, DB Dead Lock 에 빠지게 되었다.\n게다가 해당 API 내에서 또다른 API나 외부호출 기능 수행단계는 7단계를 거쳐야 했다. 그러니 요청이 많이 오거나 중간단계에서 실패하면 부하가 걸릴 수 밖에 없었던 것이다.\n해결결론적으로는 @Transactional 어노테이션이 제거하기로 하였다.\n\n\n\n\nJDBC DBCP\n일반적으로 DB 에서 Connection 을 얻어오는 과정\n\nDB 서버접속을 위한 JDBC 드라이버를 로드한다.\nDB 접속정보와 DriverManager.getConnection() 을 통해 DB Connection 을 얻는다.\nConnection 객체로부터 쿼리 수행을 위한 PreparedStatement 객체를 받는다.\nexecuteQuery 를 수행후 ResultSet 객체로 결과를 처리한다.\n완료 후, 사용된 리소스들을 close() 하여 반환한다.\n\n\n웹 애플리케이션은 HTTP 요청에 의해 Thread 를 생성하게 되고 대부분의 비지니스 로직은 DB 서버로부터 데이터를 얻게 된다.웹 어플리케이션을 지탱하는 WAS 에서 DB 서버에 접근을 시작하고 데이터를 가져오기까지 어느 단계에서 가장 많은 비용이 소비될까.\n\n위와 같은 모든 요청에의해 DB접속을 위한 Driver를 로드하고 Connection 객체를 생성하여 연결한다면 물리적으로 DB 서버에 지속적으로 접근해야 한다.\nDBCP (HikariCP)\n이러한 문제를 해결하기 위해 나온 것이 DBCP 이다. DB Connection 객체를 생성하고 연결하는데 드는 비용과 시간을 줄이고 네트워크 연결에 대한 부담을 줄여준다.SpringBoot 2.x 출범 이후 HikariCP 를 기본JDBC Connection Pool 로 사용 가능하게 되었다고 한다. 다른 Connection Pool 에 비해 성능이 압도적이라고 한다.HikariCP Dead lock에서 벗어나기 - 우아한형제들 기술블로그 를 바탕으로 작성되었습니다.\n\ngetConnection1. hikariPool.getConnection()Thread 는 HikariCP 로부터 connection 을 요청한다.\n2. hikariPool.concurrentBag.borrow()2-a) 현재 Thread 가 이전에 사용했던 connection 리스트 중에 현재 사용가능한(idle) connection이 있는가?connection:2-b2-b) hikari pool 전체 connection 중 현재 사용가능한(idle) connection이 있는가?connection:2-c2-c) concurrentBag.handOffQueue (다른 Thread 가 쓰고 반납) 에 사용가능한(idle) connection이 있는가?connection:2-d2-d) connectionTimeout 이 지났는지 확인한다. (HikariCP default Connection Timeout 은 30초)\nconnection.close()transaction 이 정상적으로 commit 혹은 오류로 인한 rollback 이 되면 connection.close() 가 호출되어 connection 을 Pool 에 반납한다.\n\nThread : connection.close() \nHiraki2-a) poolEntry.setState(SATE_NOT_IN_USE) idle Connetion 으로 변환.2-b) concurrentBag.handOffQueue.off(poolEntry)\n\n마치며위에서 해결한 connection pool error 의 원인은 transaction 에 의한 오류였다. 다음 포스팅에서는 이상적인 #max-active #min-idle #max-idle 을 설정하기 위해서는 무엇을 고려해봐야 하는지 끄적여보려 한다.","dateCreated":"2020-04-27T10:43:05+09:00","dateModified":"2020-05-28T14:39:32+09:00","datePublished":"2020-04-27T10:43:05+09:00","description":"DB Connection Pool Error 의 원인을 찾아보며DB Connection Pool 이 무엇인지, DBCP 의 개념, Hikari Pool 의 작동방식을 공부.","headline":"개발일지🌟 DB Connection Pool Error (DBCP)","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2020/04/27/DB-Connection-Pool/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","ksso7300@gmail.com"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2020/04/27/DB-Connection-Pool/","keywords":"DBCP, DataBase"}</script>
+    <meta name="description" content="DB Connection Pool Error 의 원인을 찾아보며DB Connection Pool 이 무엇인지, DBCP 의 개념, Hikari Pool 의 작동방식을 공부.">
 <meta property="og:type" content="blog">
-<meta property="og:title" content="DB Connection Pool (DBCP)">
+<meta property="og:title" content="개발일지🌟 DB Connection Pool Error (DBCP)">
 <meta property="og:url" content="http://yoursite.com/2020/04/27/DB-Connection-Pool/index.html">
 <meta property="og:site_name" content="동글씨">
-<meta property="og:description" content="DB Connection Pool 이 무엇인지,max-active, min-idle, max-idle 설정값에 대해 알아봅니다.">
+<meta property="og:description" content="DB Connection Pool Error 의 원인을 찾아보며DB Connection Pool 이 무엇인지, DBCP 의 개념, Hikari Pool 의 작동방식을 공부.">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://user-images.githubusercontent.com/28856435/80331215-6764b280-8882-11ea-93f6-277ba2a0a99d.png">
 <meta property="article:published_time" content="2020-04-27T01:43:05.000Z">
-<meta property="article:modified_time" content="2020-04-27T04:41:09.234Z">
+<meta property="article:modified_time" content="2020-05-28T05:39:32.737Z">
 <meta property="article:author" content="Suyan Kim">
 <meta property="article:tag" content="DBCP">
 <meta property="article:tag" content="DataBase">
@@ -80,7 +80,7 @@
         
     
 
-<header id="header" data-behavior="5">
+<header id="header" data-behavior="4">
     <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
     <div class="header-title">
         <a
@@ -114,7 +114,7 @@
 
     
 
-<nav id="sidebar" data-behavior="5">
+<nav id="sidebar" data-behavior="4">
     <div class="sidebar-container">
         
             <div class="sidebar-profile">
@@ -126,7 +126,7 @@
                 </a>
                 <h4 class="sidebar-profile-name">Suyan Kim</h4>
                 
-                    <h5 class="sidebar-profile-bio"><p>author.bio</p>
+                    <h5 class="sidebar-profile-bio"><p>▲ Who Am I</p>
 </h5>
                 
             </div>
@@ -164,31 +164,31 @@
                     
                         
                             
-                                <li><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Config/">☁️ Config (2)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Config/">☁️ Config (2)</a></li>
                             
                         
                             
-                                <li><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-DataBase/">☁️ DataBase (1)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-DataBase/">☁️ DataBase (1)</a></li>
                             
                         
                             
-                                <li><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Git/">☁️ Git (3)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Git/">☁️ Git (3)</a></li>
                             
                         
                             
-                                <li><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-JPA/">☁️ JPA (9)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-JPA/">☁️ JPA (10)</a></li>
                             
                         
                             
-                                <li><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Python/">☁️ Python (1)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Python/">☁️ Python (1)</a></li>
                             
                         
                             
-                                <li><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Spring/">☁️ Spring (1)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Spring/">☁️ Spring (1)</a></li>
                             
                         
                             
-                                <li><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-coding-test/">☁️ coding test (4)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-coding-test/">☁️ coding test (4)</a></li>
                             
                         
                     
@@ -273,7 +273,7 @@
 </nav>
 
             
-            <div id="main" data-behavior="5"
+            <div id="main" data-behavior="4"
                  class="
                         hasCoverMetaIn
                         ">
@@ -284,7 +284,7 @@
         <div class="post-header main-content-wrap text-left">
     
         <h1 class="post-title">
-            DB Connection Pool (DBCP)
+            개발일지🌟 DB Connection Pool Error (DBCP)
         </h1>
     
     
@@ -310,16 +310,57 @@
     <div class="post-content markdown">
         <div class="main-content-wrap">
             <!-- excerpt -->
-<h1 id="table-of-contents">Contents</h1><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#일반적으로-DB-에서-Connection-을-얻어오는-과정"><span class="toc-text">일반적으로 DB 에서 Connection 을 얻어오는 과정</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#DB-Connection-Pool-DBCP"><span class="toc-text">DB Connection Pool [DBCP]</span></a></li></ol>
+<h1 id="table-of-contents">Contents</h1><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#ISSUE-1-DB-Connection-Pool-ERROR"><span class="toc-text">ISSUE[1] DB Connection Pool ERROR</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#현상"><span class="toc-text">현상</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#당시-DataBase-config"><span class="toc-text">당시 DataBase config</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#원인-Transaction"><span class="toc-text">원인 : @Transaction</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#해결"><span class="toc-text">해결</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#일반적으로-DB-에서-Connection-을-얻어오는-과정"><span class="toc-text">일반적으로 DB 에서 Connection 을 얻어오는 과정</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#DBCP-HikariCP"><span class="toc-text">DBCP (HikariCP)</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#getConnection"><span class="toc-text">getConnection</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#connection-close"><span class="toc-text">connection.close()</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#마치며"><span class="toc-text">마치며</span></a></li></ol>
 
-<h2 id="일반적으로-DB-에서-Connection-을-얻어오는-과정"><a href="#일반적으로-DB-에서-Connection-을-얻어오는-과정" class="headerlink" title="일반적으로 DB 에서 Connection 을 얻어오는 과정"></a>일반적으로 DB 에서 Connection 을 얻어오는 과정</h2><p>1) DB 서버접속을 위한 JDBC 드라이버를 로드한다.<br>2) DB 접속정보와 DriverManager.getConnection() 을 통해 DB Connection 을 얻는다.<br>3) Connection 객체로부터 쿼리 수행을 위한 PreparedStatement 객체를 받는다.<br>4) executeQuery 를 수행후 ResultSet 객체로 결과를 처리한다.<br>5) 완료 후, 사용된 리소스들을 close() 하여 반환한다.</p>
-<h2 id="DB-Connection-Pool-DBCP"><a href="#DB-Connection-Pool-DBCP" class="headerlink" title="DB Connection Pool [DBCP]"></a>DB Connection Pool [DBCP]</h2><p>최근 발생한 이슈 중 하나인데, 근본적인 원인은 아래와 같았다.<br><strong>DB Connection pool error timeout waiting for idle object</strong></p>
+<hr>
+<br/>
+
+<h2 id="ISSUE-1-DB-Connection-Pool-ERROR"><a href="#ISSUE-1-DB-Connection-Pool-ERROR" class="headerlink" title="ISSUE[1] DB Connection Pool ERROR"></a>ISSUE[1] DB Connection Pool ERROR</h2><h3 id="현상"><a href="#현상" class="headerlink" title="현상"></a>현상</h3><blockquote>
+<p><strong>DB Connection pool error timeout waiting for idle object</strong></p>
+</blockquote>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"> DatabaseException - nested exception is org.apache.ibatis.exceptions.PersistenceException:</span><br><span class="line">### Error updating database.  Cause: org.springframework.jdbc.CannotGetJdbcConnectionException: </span><br><span class="line">Could not get JDBC Connection; nested exception is java.sql.SQLException: Cannot get a </span><br><span class="line">connection, pool error Timeout waiting for idle object</span><br></pre></td></tr></table></figure>
 
+<h3 id="당시-DataBase-config"><a href="#당시-DataBase-config" class="headerlink" title="당시 DataBase config"></a>당시 DataBase config</h3><p><code>#max-active</code> <code>#min-idle</code> <code>#max-idle</code></p>
+<blockquote>
+<ul>
+<li>풀의 초기 커넥션 갯수 : 10</li>
+<li>Idle상태에 풀이 소유한 최소 커넥션 갯수 : 10</li>
+<li>Idle상태에 풀이 소유한 최대 커넥션 갯수 : 30</li>
+<li>최대 커넥션 갯수 : 50</li>
+<li>커넥션이 존재하지 않을 때, 커넥션을 얻기까지 대기하는 최대 대기시간 : 5000</li>
+</ul>
+</blockquote>
+<h3 id="원인-Transaction"><a href="#원인-Transaction" class="headerlink" title="원인 : @Transaction"></a>원인 : @Transaction</h3><p>특정 API 에서 <code>@Trnasaction</code> 이 걸려있었던 상태.<br>이 <code>transaction</code>이 <code>commit</code> 되지 않은 상태에서 이 API 의 요청이 급증하면서 connection 이 부족하게 되고, <strong>DB Dead Lock</strong> 에 빠지게 되었다.</p>
+<p>게다가 해당 API 내에서 또다른 API나 외부호출 기능 수행단계는 7단계를 거쳐야 했다. 그러니 요청이 많이 오거나 중간단계에서 실패하면 부하가 걸릴 수 밖에 없었던 것이다.</p>
+<h3 id="해결"><a href="#해결" class="headerlink" title="해결"></a>해결</h3><p>결론적으로는 @Transactional 어노테이션이 제거하기로 하였다.</p>
+<hr>
+<br/>
+
+
+<p><code>JDBC</code> <code>DBCP</code></p>
+<h2 id="일반적으로-DB-에서-Connection-을-얻어오는-과정"><a href="#일반적으로-DB-에서-Connection-을-얻어오는-과정" class="headerlink" title="일반적으로 DB 에서 Connection 을 얻어오는 과정"></a>일반적으로 DB 에서 Connection 을 얻어오는 과정</h2><blockquote>
+<ol>
+<li>DB 서버접속을 위한 JDBC 드라이버를 로드한다.</li>
+<li>DB 접속정보와 DriverManager.getConnection() 을 통해 DB Connection 을 얻는다.</li>
+<li>Connection 객체로부터 쿼리 수행을 위한 PreparedStatement 객체를 받는다.</li>
+<li>executeQuery 를 수행후 ResultSet 객체로 결과를 처리한다.</li>
+<li>완료 후, 사용된 리소스들을 close() 하여 반환한다.</li>
+</ol>
+</blockquote>
 <p>웹 애플리케이션은 HTTP 요청에 의해 Thread 를 생성하게 되고 대부분의 비지니스 로직은 DB 서버로부터 데이터를 얻게 된다.<br>웹 어플리케이션을 지탱하는 WAS 에서 DB 서버에 접근을 시작하고 데이터를 가져오기까지 어느 단계에서 가장 많은 비용이 소비될까.</p>
 <p><img src="https://user-images.githubusercontent.com/28856435/80331215-6764b280-8882-11ea-93f6-277ba2a0a99d.png" alt="image"></p>
 <p>위와 같은 모든 요청에의해 DB접속을 위한 Driver를 로드하고 Connection 객체를 생성하여 연결한다면 물리적으로 DB 서버에 지속적으로 접근해야 한다.</p>
-<p>이러한 문제를 해결하기 위해 나온 것이 DBCP 이다. DB Connection 객체를 생성하고 연결하는데 드는 비용과 시간을 줄이고 네트워크 연결에 대한 부담을 줄여준다.</p>
+<h2 id="DBCP-HikariCP"><a href="#DBCP-HikariCP" class="headerlink" title="DBCP (HikariCP)"></a>DBCP (HikariCP)</h2><blockquote>
+<p>이러한 문제를 해결하기 위해 나온 것이 <strong>DBCP</strong> 이다. DB Connection 객체를 생성하고 연결하는데 드는 비용과 시간을 줄이고 네트워크 연결에 대한 부담을 줄여준다.<br>SpringBoot 2.x 출범 이후 HikariCP 를 기본JDBC Connection Pool 로 사용 가능하게 되었다고 한다. 다른 Connection Pool 에 비해 성능이 압도적이라고 한다.<br><em><a href="https://woowabros.github.io/experience/2020/02/06/hikaricp-avoid-dead-lock.html" target="_blank" rel="noopener">HikariCP Dead lock에서 벗어나기 - 우아한형제들 기술블로그</a> 를 바탕으로 작성되었습니다.</em></p>
+</blockquote>
+<h3 id="getConnection"><a href="#getConnection" class="headerlink" title="getConnection"></a>getConnection</h3><p><strong>1. hikariPool.<em>getConnection()</em></strong><br>Thread 는 HikariCP 로부터 <code>connection</code> 을 요청한다.</p>
+<p><strong>2. hikariPool.<em>concurrentBag.borrow()</em></strong><br><strong>2-a)</strong> 현재 Thread 가 이전에 사용했던 <code>connection</code> 리스트 중에 현재 사용가능한(idle) connection이 있는가<br><code>?connection:2-b</code><br><strong>2-b)</strong> hikari pool 전체 connection 중 현재 사용가능한(idle) connection이 있는가<br><code>?connection:2-c</code><br><strong>2-c)</strong> <em>concurrentBag.handOffQueue</em> (다른 Thread 가 쓰고 반납) 에 사용가능한(idle) connection이 있는가<br><code>?connection:2-d</code><br><strong>2-d)</strong> connectionTimeout 이 지났는지 확인한다. (HikariCP default Connection Timeout 은 30초)</p>
+<h3 id="connection-close"><a href="#connection-close" class="headerlink" title="connection.close()"></a>connection.close()</h3><p>transaction 이 정상적으로 commit 혹은 오류로 인한 rollback 이 되면 <code>connection.close()</code> 가 호출되어 connection 을 Pool 에 반납한다.</p>
+<ol>
+<li>Thread : connection.close() </li>
+<li>Hiraki<br>2-a) poolEntry.setState(SATE_NOT_IN_USE) idle Connetion 으로 변환.<br>2-b) concurrentBag.handOffQueue.off(poolEntry)</li>
+</ol>
+<h2 id="마치며"><a href="#마치며" class="headerlink" title="마치며"></a>마치며</h2><p>위에서 해결한 connection pool error 의 원인은 transaction 에 의한 오류였다. 다음 포스팅에서는 이상적인 <code>#max-active</code> <code>#min-idle</code> <code>#max-idle</code> 을 설정하기 위해서는 무엇을 고려해봐야 하는지 끄적여보려 한다.</p>
             
 
 
@@ -340,11 +381,14 @@
         <ul class="post-actions post-action-nav">
             <li class="post-action">
                 
-                    <a
-                        class="post-action-btn btn btn--disabled"
-                        aria-hidden="true"
-                    >
-                        
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2020/05/05/JPA-Projection/"
+                    data-tooltip="JPA-QueryDsl 간단 쿼리 작성법"
+                    aria-label="PREVIOUS: JPA-QueryDsl 간단 쿼리 작성법"
+                >
+                    
                         <i class="fa fa-angle-left" aria-hidden="true"></i>
                         <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
                     </a>
@@ -354,7 +398,7 @@
                     
                 <a
                     class="post-action-btn btn btn--default tooltip--top"
-                    href="/2020/04/22/post_python/Python%20%EB%82%B4%EC%9E%A5%ED%95%A8%EC%88%98/"
+                    href="/2020/04/22/Python%20%EB%82%B4%EC%9E%A5%ED%95%A8%EC%88%98/"
                     data-tooltip="Python 내장함수"
                     aria-label="NEXT: Python 내장함수"
                 >
@@ -460,17 +504,20 @@
 
             </div>
             
-                <div id="bottom-bar" class="post-bottom-bar" data-behavior="5">
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">
                     <div class="post-actions-wrap">
     <nav>
         <ul class="post-actions post-action-nav">
             <li class="post-action">
                 
-                    <a
-                        class="post-action-btn btn btn--disabled"
-                        aria-hidden="true"
-                    >
-                        
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2020/05/05/JPA-Projection/"
+                    data-tooltip="JPA-QueryDsl 간단 쿼리 작성법"
+                    aria-label="PREVIOUS: JPA-QueryDsl 간단 쿼리 작성법"
+                >
+                    
                         <i class="fa fa-angle-left" aria-hidden="true"></i>
                         <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
                     </a>
@@ -480,7 +527,7 @@
                     
                 <a
                     class="post-action-btn btn btn--default tooltip--top"
-                    href="/2020/04/22/post_python/Python%20%EB%82%B4%EC%9E%A5%ED%95%A8%EC%88%98/"
+                    href="/2020/04/22/Python%20%EB%82%B4%EC%9E%A5%ED%95%A8%EC%88%98/"
                     data-tooltip="Python 내장함수"
                     aria-label="NEXT: Python 내장함수"
                 >
@@ -567,7 +614,7 @@
 
                 </div>
                 
-    <div id="share-options-bar" class="share-options-bar" data-behavior="5">
+    <div id="share-options-bar" class="share-options-bar" data-behavior="4">
         <i id="btn-close-shareoptions" class="fa fa-times"></i>
         <ul class="share-options">
             
@@ -633,7 +680,7 @@
         <!--  -->
             <!-- <div id="about-card-bio"><p>author.bio</p>
 </div> -->
-            <div id="about-card-bio">안녕하세요, 동글씨의 개발 블로그 입니다.</div>
+            <div id="about-card-bio">안녕하세요, 서버 백엔드 개발자 동글씨입니다.</div>
         <!--  -->
         <!--  -->
             <div id="about-card-job">

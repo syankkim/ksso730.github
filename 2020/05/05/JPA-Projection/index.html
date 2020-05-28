@@ -1,0 +1,728 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="동글씨">
+    <title>JPA-QueryDsl 간단 쿼리 작성법 - 동글씨</title>
+    <meta name="author" content="Suyan Kim">
+    
+    
+    
+        <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
+    
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","ksso7300@gmail.com"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\n\n\n@BeforeEach각 테스트를 실행하기 전에 값을 세팅해준다.\n12345678910111213141516171819@BeforeEach    public void before()&#123;        queryFactory = new JPAQueryFactory(em);        Team teamA = new Team(\"teamA\");        Team teamB = new Team(\"teamB\");        em.persist(teamA);        em.persist(teamB);        Member mem1 = new Member(\"mem1\", 10, teamA);        Member mem2 = new Member(\"mem2\",20, teamA);        Member mem3 = new Member(\"mem3\",30, teamB);        Member mem4 = new Member(\"mem4\",40, teamB);        em.persist(mem1);        em.persist(mem2);        em.persist(mem3);        em.persist(mem4);    &#125;\n\nQ-type 활용1234567891011121314151617@Testpublic void startQuerydsl()&#123;        queryFactory = new JPAQueryFactory(em);// Q-type 활용 방법1//        QMember m1 = new QMember(\"m1\");// Q-type 활용 방법2//        QMember m1 = QMember.member;// Q-type 활용 방법3 -권장 static method QMember.member        Member findMember = queryFactory                .select(member)                .from(member)                .where(member.username.eq(\"mem1\"))  // PrepareStatement 의 parameterBinding 방식을 사용함.                .fetchOne();        assertThat(findMember.getUsername()).isEqualTo(\"mem1\");    &#125;\n\n검색 조건fetch : 리스트 조회, 데이터 없으면 null 반환fetchOne : 단건 조회&nbsp;&nbsp;&nbsp; - 결과 없으면 null&nbsp;&nbsp;&nbsp; - 둘 이상이면 com.querydsl.core.NoneUniqueResultExceptionfetchFirst = limit(1).fetchOne()fetchResults : 페이징 정보를 포함. (+)total count 쿼리fetchCount : count 쿼리로 변경하여 실행\n123456789101112131415161718192021222324252627282930313233@Test    public void resultFetch()&#123;        // 1 여러건 조회       List&lt;Member&gt; fetch = queryFactory               .select(member)               .fetch();       // 2 단건조회       Member fetchOne = queryFactory               .selectFrom(member)               .fetchOne();       // 3 처음 한건 조회       Member fetchFirst = queryFactory               .selectFrom(member)               .fetchFirst();        // 4 페이징에서 사용.        //   쿼리를 두 번 실행함.        QueryResults&lt;Member&gt; results = queryFactory                .selectFrom(member)                .fetchResults();        long total = results.getTotal();        System.out.println(\"total =&gt; \"+total);        List&lt;Member&gt; content = results.getResults();        // 5 count 만 조회       long count = queryFactory               .selectFrom(member)               .fetchCount();    &#125;\n\n\n4 페이징에서 사용 QueryResults 를 사용하여 실행되는 쿼리를 확인해보면count 를 조회하는 쿼리, 실제 member데이터들을 조회하는 쿼리, 2번 실행되는 것을 볼 수 있다.\n\n따라서 성능을 따진다면 count 쿼리를 따로 작성하여 실행해야 한다.\n\n12345678910111213142020-05-06 22:22:57.278 DEBUG 15676 --- [    Test worker] org.hibernate.SQL                        :     select        count(member0_.member_id) as col_0_0_     from        member member0_2020-05-06 22:22:57.418 DEBUG 15676 --- [    Test worker] org.hibernate.SQL                        :     select        member0_.member_id as member_i1_0_,        member0_.age as age2_0_,        member0_.team_id as team_id4_0_,        member0_.username as username3_0_     from        member member0_total =&gt; 4\n\n\n5 count 만 조회\n1234select       count(member0_.member_id) as col_0_0_    from       member member0_\n\n\n페이징1234567891011121314151617181920212223242526@Test   public void paging1()&#123;       List&lt;Member&gt; results = queryFactory               .select(member)               .orderBy(member.username.desc())               .offset(1)               .limit(2)               .fetch();       assertThat(results.size()).isEqualTo(2);   &#125;   @Test   public void paging2()&#123;       QueryResults&lt;Member&gt; results = queryFactory               .select(member)               .orderBy(member.username.desc())               .offset(1)               .limit(2)               .fetchResults();       assertThat(results.getTotal()).isEqualTo(4);       assertThat(results.getLimit()).isEqualTo(2);       assertThat(results.getTotal()).isEqualTo(1);       assertThat(results.getResults().size()).isEqualTo(2);   &#125;\n\n\n집합 함수12345678910111213141516171819202122// 집합함수    @Test    public void aggregation()&#123;        List&lt;Tuple&gt; result = queryFactory                .select(                        member.count(),                        member.age.sum(),                        member.age.avg(),                        member.age.max(),                        member.age.min()                )                .from(member)                .fetch();        // 한개만 조회됨        Tuple tuple = result.get(0);        assertThat(tuple.get(member.count())).isEqualTo(4);        assertThat(tuple.get(member.age.sum())).isEqualTo(100);        assertThat(tuple.get(member.age.avg())).isEqualTo(25);        assertThat(tuple.get(member.age.max())).isEqualTo(40);        assertThat(tuple.get(member.age.min())).isEqualTo(10);    &#125;\n\n\n그룹 groupBy , having\n팀의 이름과 각 팀의 평균연령을 구하는 예제\n\n1234567891011121314151617@Testpublic void groupBy()&#123;    List&lt;Tuple&gt; results = queryFactory            .select(team.name, member.age.avg())            .from(member)            .join(member.team, team)            .groupBy(team.name)            .fetch();    Tuple teamA = results.get(0);    Tuple teamB = results.get(1);    assertThat(teamA.get(team.name)).isEqualTo(\"teamA\");    assertThat(teamA.get(member.age.avg())).isEqualTo(15);    assertThat(teamB.get(team.name)).isEqualTo(\"teamB\");    assertThat(teamB.get(member.age.avg())).isEqualTo(35);&#125;","dateCreated":"2020-05-05T02:45:47+09:00","dateModified":"2020-05-28T14:39:32+09:00","datePublished":"2020-05-05T02:45:47+09:00","description":"JPA 의 Querydsl 여러 문법에 활용하는 예제를 통해 쿼리를 작성해봅니다.Q-type 검색조건 fetch() fetchCount() QueryResults 페이징집합함수 groupBy","headline":"JPA-QueryDsl 간단 쿼리 작성법","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2020/05/05/JPA-Projection/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","ksso7300@gmail.com"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2020/05/05/JPA-Projection/","keywords":"jpa, querydsl"}</script>
+    <meta name="description" content="JPA 의 Querydsl 여러 문법에 활용하는 예제를 통해 쿼리를 작성해봅니다.Q-type 검색조건 fetch() fetchCount() QueryResults 페이징집합함수 groupBy">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="JPA-QueryDsl 간단 쿼리 작성법">
+<meta property="og:url" content="http://yoursite.com/2020/05/05/JPA-Projection/index.html">
+<meta property="og:site_name" content="동글씨">
+<meta property="og:description" content="JPA 의 Querydsl 여러 문법에 활용하는 예제를 통해 쿼리를 작성해봅니다.Q-type 검색조건 fetch() fetchCount() QueryResults 페이징집합함수 groupBy">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-05-04T17:45:47.000Z">
+<meta property="article:modified_time" content="2020-05-28T05:39:32.740Z">
+<meta property="article:author" content="Suyan Kim">
+<meta property="article:tag" content="jpa">
+<meta property="article:tag" content="querydsl">
+<meta name="twitter:card" content="summary">
+    
+    
+        
+    
+    
+        <meta property="og:image" content="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=640"/>
+    
+    
+    
+    
+    <!--STYLES-->
+    
+<link rel="stylesheet" href="/assets/css/all.css">
+
+    
+<link rel="stylesheet" href="/assets/css/jquery.fancybox.css">
+
+    
+<link rel="stylesheet" href="/assets/css/thumbs.css">
+
+    
+<link rel="stylesheet" href="/assets/css/tranquilpeak.css">
+
+    <!--STYLES END-->
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-158530470-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-158530470-1');
+    </script>
+
+
+    
+
+    
+        
+    
+</head>
+
+    <body>
+        <div id="blog">
+            <!-- Define author's picture -->
+
+
+    
+        
+    
+
+<header id="header" data-behavior="4">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <div class="header-title">
+        <a
+            class="header-title-link"
+            href="/index.html"
+            aria-label=""
+        >
+            동글씨
+        </a>
+    </div>
+    
+        
+            <a
+                class="header-right-picture "
+                href="#about"
+                aria-label="Open the link: /#about"
+            >
+        
+        
+            <img class="header-picture" src="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=90" alt="Author&#39;s picture"/>
+        
+        </a>
+    
+</header>
+
+            <!-- function -->
+
+
+<!-- Define author's picture -->
+
+
+    
+
+<nav id="sidebar" data-behavior="4">
+    <div class="sidebar-container">
+        
+            <div class="sidebar-profile">
+                <a
+                    href="/#about"
+                    aria-label="Read more about the author"
+                >
+                    <img class="sidebar-profile-picture" src="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=110" alt="Author&#39;s picture"/>
+                </a>
+                <h4 class="sidebar-profile-name">Suyan Kim</h4>
+                
+                    <h5 class="sidebar-profile-bio"><p>▲ Who Am I</p>
+</h5>
+                
+            </div>
+        
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="Home"href="/index.html"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-home" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">Home</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="Categories"href="/all-categories"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-bookmark" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">Categories</span>
+                        </a>
+                    <!-- add -->
+                    
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Config/">☁️ Config (2)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-DataBase/">☁️ DataBase (1)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Git/">☁️ Git (3)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-JPA/">☁️ JPA (10)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Python/">☁️ Python (1)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Spring/">☁️ Spring (1)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-coding-test/">☁️ coding test (4)</a></li>
+                            
+                        
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="Tags"href="/all-tags"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-tags" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">Tags</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="Archives"href="/all-archives"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-archive" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">Archives</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="About"href="#about"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-question" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">About</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="https://github.com/ksso730" target="_blank" rel="noopener" title="my github">
+                    
+                    <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">my github</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/ksso7300@gmail.com"
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-envelope" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">contact me</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+        </ul>
+        
+    </div>
+</nav>
+
+            
+            <div id="main" data-behavior="4"
+                 class="
+                        hasCoverMetaIn
+                        ">
+                
+<article class="post">
+    
+    
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title">
+            JPA-QueryDsl 간단 쿼리 작성법
+        </h1>
+    
+    
+        <div class="post-meta">
+    <time datetime="2020-05-05T02:45:47+09:00">
+	
+		    May 05, 2020
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/%E2%98%81%EF%B8%8F-JPA/">☁️ JPA</a>
+
+
+    
+</div>
+
+    
+</div>
+
+    
+    <div class="post-content markdown">
+        <div class="main-content-wrap">
+            <!-- excerpt -->
+<h1 id="table-of-contents">Contents</h1><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#BeforeEach"><span class="toc-text">@BeforeEach</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Q-type-활용"><span class="toc-text">Q-type 활용</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#검색-조건"><span class="toc-text">검색 조건</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#페이징"><span class="toc-text">페이징</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#집합-함수"><span class="toc-text">집합 함수</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#그룹-groupBy-having"><span class="toc-text">그룹 groupBy , having</span></a></li></ol>
+
+<hr>
+<br/>
+
+<h2 id="BeforeEach"><a href="#BeforeEach" class="headerlink" title="@BeforeEach"></a>@BeforeEach</h2><p>각 테스트를 실행하기 전에 값을 세팅해준다.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@BeforeEach</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">before</span><span class="params">()</span></span>&#123;</span><br><span class="line">        queryFactory = <span class="keyword">new</span> JPAQueryFactory(em);</span><br><span class="line">        Team teamA = <span class="keyword">new</span> Team(<span class="string">"teamA"</span>);</span><br><span class="line">        Team teamB = <span class="keyword">new</span> Team(<span class="string">"teamB"</span>);</span><br><span class="line"></span><br><span class="line">        em.persist(teamA);</span><br><span class="line">        em.persist(teamB);</span><br><span class="line"></span><br><span class="line">        Member mem1 = <span class="keyword">new</span> Member(<span class="string">"mem1"</span>, <span class="number">10</span>, teamA);</span><br><span class="line">        Member mem2 = <span class="keyword">new</span> Member(<span class="string">"mem2"</span>,<span class="number">20</span>, teamA);</span><br><span class="line">        Member mem3 = <span class="keyword">new</span> Member(<span class="string">"mem3"</span>,<span class="number">30</span>, teamB);</span><br><span class="line">        Member mem4 = <span class="keyword">new</span> Member(<span class="string">"mem4"</span>,<span class="number">40</span>, teamB);</span><br><span class="line"></span><br><span class="line">        em.persist(mem1);</span><br><span class="line">        em.persist(mem2);</span><br><span class="line">        em.persist(mem3);</span><br><span class="line">        em.persist(mem4);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="Q-type-활용"><a href="#Q-type-활용" class="headerlink" title="Q-type 활용"></a>Q-type 활용</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">startQuerydsl</span><span class="params">()</span></span>&#123;</span><br><span class="line">        queryFactory = <span class="keyword">new</span> JPAQueryFactory(em);</span><br><span class="line"><span class="comment">// Q-type 활용 방법1</span></span><br><span class="line"><span class="comment">//        QMember m1 = new QMember("m1");</span></span><br><span class="line"><span class="comment">// Q-type 활용 방법2</span></span><br><span class="line"><span class="comment">//        QMember m1 = QMember.member;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// Q-type 활용 방법3 -권장 static method QMember.member</span></span><br><span class="line">        Member findMember = queryFactory</span><br><span class="line">                .select(member)</span><br><span class="line">                .from(member)</span><br><span class="line">                .where(member.username.eq(<span class="string">"mem1"</span>))  <span class="comment">// PrepareStatement 의 parameterBinding 방식을 사용함.</span></span><br><span class="line">                .fetchOne();</span><br><span class="line"></span><br><span class="line">        assertThat(findMember.getUsername()).isEqualTo(<span class="string">"mem1"</span>);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="검색-조건"><a href="#검색-조건" class="headerlink" title="검색 조건"></a>검색 조건</h2><p><code>fetch</code> : 리스트 조회, 데이터 없으면 <code>null</code> 반환<br><code>fetchOne</code> : 단건 조회<br>&nbsp;&nbsp;&nbsp; - 결과 없으면 <code>null</code><br>&nbsp;&nbsp;&nbsp; - 둘 이상이면 <code>com.querydsl.core.NoneUniqueResultException</code><br><code>fetchFirst</code> = limit(1).fetchOne()<br><code>fetchResults</code> : 페이징 정보를 포함. (+)total count 쿼리<br><code>fetchCount</code> : count 쿼리로 변경하여 실행</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">resultFetch</span><span class="params">()</span></span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 1 여러건 조회</span></span><br><span class="line">       List&lt;Member&gt; fetch = queryFactory</span><br><span class="line">               .select(member)</span><br><span class="line">               .fetch();</span><br><span class="line"></span><br><span class="line">       <span class="comment">// 2 단건조회</span></span><br><span class="line">       Member fetchOne = queryFactory</span><br><span class="line">               .selectFrom(member)</span><br><span class="line">               .fetchOne();</span><br><span class="line"></span><br><span class="line">       <span class="comment">// 3 처음 한건 조회</span></span><br><span class="line">       Member fetchFirst = queryFactory</span><br><span class="line">               .selectFrom(member)</span><br><span class="line">               .fetchFirst();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 4 페이징에서 사용.</span></span><br><span class="line">        <span class="comment">//   쿼리를 두 번 실행함.</span></span><br><span class="line">        QueryResults&lt;Member&gt; results = queryFactory</span><br><span class="line">                .selectFrom(member)</span><br><span class="line">                .fetchResults();</span><br><span class="line">        <span class="keyword">long</span> total = results.getTotal();</span><br><span class="line">        System.out.println(<span class="string">"total =&gt; "</span>+total);</span><br><span class="line">        List&lt;Member&gt; content = results.getResults();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 5 count 만 조회</span></span><br><span class="line">       <span class="keyword">long</span> count = queryFactory</span><br><span class="line">               .selectFrom(member)</span><br><span class="line">               .fetchCount();</span><br><span class="line"></span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+
+<p><strong>4 페이징에서 사용</strong> <code>QueryResults</code> 를 사용하여 실행되는 쿼리를 확인해보면<br>count 를 조회하는 쿼리, 실제 member데이터들을 조회하는 쿼리, 2번 실행되는 것을 볼 수 있다.</p>
+<blockquote>
+<p>따라서 성능을 따진다면 count 쿼리를 따로 작성하여 실행해야 한다.</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">2020-05-06 22:22:57.278 DEBUG 15676 --- [    Test worker] org.hibernate.SQL                        : </span><br><span class="line">    select</span><br><span class="line">        count(member0_.member_id) as col_0_0_ </span><br><span class="line">    from</span><br><span class="line">        member member0_</span><br><span class="line">2020-05-06 22:22:57.418 DEBUG 15676 --- [    Test worker] org.hibernate.SQL                        : </span><br><span class="line">    select</span><br><span class="line">        member0_.member_id as member_i1_0_,</span><br><span class="line">        member0_.age as age2_0_,</span><br><span class="line">        member0_.team_id as team_id4_0_,</span><br><span class="line">        member0_.username as username3_0_ </span><br><span class="line">    from</span><br><span class="line">        member member0_</span><br><span class="line">total =&gt; 4</span><br></pre></td></tr></table></figure>
+
+
+<p><strong>5 count 만 조회</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">select</span><br><span class="line">       count(member0_.member_id) as col_0_0_ </span><br><span class="line">   from</span><br><span class="line">       member member0_</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="페이징"><a href="#페이징" class="headerlink" title="페이징"></a>페이징</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">paging1</span><span class="params">()</span></span>&#123;</span><br><span class="line">       List&lt;Member&gt; results = queryFactory</span><br><span class="line">               .select(member)</span><br><span class="line">               .orderBy(member.username.desc())</span><br><span class="line">               .offset(<span class="number">1</span>)</span><br><span class="line">               .limit(<span class="number">2</span>)</span><br><span class="line">               .fetch();</span><br><span class="line"></span><br><span class="line">       assertThat(results.size()).isEqualTo(<span class="number">2</span>);</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="meta">@Test</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">paging2</span><span class="params">()</span></span>&#123;</span><br><span class="line">       QueryResults&lt;Member&gt; results = queryFactory</span><br><span class="line">               .select(member)</span><br><span class="line">               .orderBy(member.username.desc())</span><br><span class="line">               .offset(<span class="number">1</span>)</span><br><span class="line">               .limit(<span class="number">2</span>)</span><br><span class="line">               .fetchResults();</span><br><span class="line"></span><br><span class="line">       assertThat(results.getTotal()).isEqualTo(<span class="number">4</span>);</span><br><span class="line">       assertThat(results.getLimit()).isEqualTo(<span class="number">2</span>);</span><br><span class="line">       assertThat(results.getTotal()).isEqualTo(<span class="number">1</span>);</span><br><span class="line">       assertThat(results.getResults().size()).isEqualTo(<span class="number">2</span>);</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="집합-함수"><a href="#집합-함수" class="headerlink" title="집합 함수"></a>집합 함수</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 집합함수</span></span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">aggregation</span><span class="params">()</span></span>&#123;</span><br><span class="line">        List&lt;Tuple&gt; result = queryFactory</span><br><span class="line">                .select(</span><br><span class="line">                        member.count(),</span><br><span class="line">                        member.age.sum(),</span><br><span class="line">                        member.age.avg(),</span><br><span class="line">                        member.age.max(),</span><br><span class="line">                        member.age.min()</span><br><span class="line">                )</span><br><span class="line">                .from(member)</span><br><span class="line">                .fetch();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 한개만 조회됨</span></span><br><span class="line">        Tuple tuple = result.get(<span class="number">0</span>);</span><br><span class="line">        assertThat(tuple.get(member.count())).isEqualTo(<span class="number">4</span>);</span><br><span class="line">        assertThat(tuple.get(member.age.sum())).isEqualTo(<span class="number">100</span>);</span><br><span class="line">        assertThat(tuple.get(member.age.avg())).isEqualTo(<span class="number">25</span>);</span><br><span class="line">        assertThat(tuple.get(member.age.max())).isEqualTo(<span class="number">40</span>);</span><br><span class="line">        assertThat(tuple.get(member.age.min())).isEqualTo(<span class="number">10</span>);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="그룹-groupBy-having"><a href="#그룹-groupBy-having" class="headerlink" title="그룹 groupBy , having"></a>그룹 groupBy , having</h2><blockquote>
+<p>팀의 이름과 각 팀의 평균연령을 구하는 예제</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">groupBy</span><span class="params">()</span></span>&#123;</span><br><span class="line">    List&lt;Tuple&gt; results = queryFactory</span><br><span class="line">            .select(team.name, member.age.avg())</span><br><span class="line">            .from(member)</span><br><span class="line">            .join(member.team, team)</span><br><span class="line">            .groupBy(team.name)</span><br><span class="line">            .fetch();</span><br><span class="line"></span><br><span class="line">    Tuple teamA = results.get(<span class="number">0</span>);</span><br><span class="line">    Tuple teamB = results.get(<span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">    assertThat(teamA.get(team.name)).isEqualTo(<span class="string">"teamA"</span>);</span><br><span class="line">    assertThat(teamA.get(member.age.avg())).isEqualTo(<span class="number">15</span>);</span><br><span class="line">    assertThat(teamB.get(team.name)).isEqualTo(<span class="string">"teamB"</span>);</span><br><span class="line">    assertThat(teamB.get(member.age.avg())).isEqualTo(<span class="number">35</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+            
+
+
+        </div>
+    </div>
+    <div id="post-footer" class="post-footer main-content-wrap">
+        
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">TAGGED IN</span><br/>
+                
+    <a class="tag tag--primary tag--small t-link" href="/tags/jpa/" rel="tag">jpa</a> <a class="tag tag--primary tag--small t-link" href="/tags/querydsl/" rel="tag">querydsl</a>
+
+            </div>
+        
+        
+            <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2020/05/24/Hooks-%EB%A7%9B%EB%B3%B4%EA%B8%B01/"
+                    data-tooltip="Hooks 맛보기1"
+                    aria-label="PREVIOUS: Hooks 맛보기1"
+                >
+                    
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                    </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2020/04/27/DB-Connection-Pool/"
+                    data-tooltip="개발일지🌟 DB Connection Pool Error (DBCP)"
+                    aria-label="NEXT: 개발일지🌟 DB Connection Pool Error (DBCP)"
+                >
+                    
+                        <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a
+                class="post-action-btn btn btn--default btn-open-shareoptions"
+                href="#btn-open-shareoptions"
+                aria-label="Share this post"
+            >
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2020/05/05/JPA-Projection/"
+                    title="Share on Facebook"
+                    aria-label="Share on Facebook"
+                >
+                    <i class="fab fa-facebook" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2020/05/05/JPA-Projection/"
+                    title="Share on Twitter"
+                    aria-label="Share on Twitter"
+                >
+                    <i class="fab fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://plus.google.com/share?url=http://yoursite.com/2020/05/05/JPA-Projection/"
+                    title="Share on Google+"
+                    aria-label="Share on Google+"
+                >
+                    <i class="fab fa-google-plus" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+                <li class="post-action">
+                    <a
+                        class="post-action-btn btn btn--default"
+                        href="#disqus_thread"
+                        aria-label="Leave a comment"
+                    >
+                        <i class="fa fa-comment"></i>
+                    </a>
+                </li>
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#table-of-contents" aria-label="Contents">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+        
+        
+            
+                <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a></noscript>
+</div>
+            
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2020 Suyan Kim. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2020/05/24/Hooks-%EB%A7%9B%EB%B3%B4%EA%B8%B01/"
+                    data-tooltip="Hooks 맛보기1"
+                    aria-label="PREVIOUS: Hooks 맛보기1"
+                >
+                    
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                    </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2020/04/27/DB-Connection-Pool/"
+                    data-tooltip="개발일지🌟 DB Connection Pool Error (DBCP)"
+                    aria-label="NEXT: 개발일지🌟 DB Connection Pool Error (DBCP)"
+                >
+                    
+                        <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a
+                class="post-action-btn btn btn--default btn-open-shareoptions"
+                href="#btn-open-shareoptions"
+                aria-label="Share this post"
+            >
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2020/05/05/JPA-Projection/"
+                    title="Share on Facebook"
+                    aria-label="Share on Facebook"
+                >
+                    <i class="fab fa-facebook" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2020/05/05/JPA-Projection/"
+                    title="Share on Twitter"
+                    aria-label="Share on Twitter"
+                >
+                    <i class="fab fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://plus.google.com/share?url=http://yoursite.com/2020/05/05/JPA-Projection/"
+                    title="Share on Google+"
+                    aria-label="Share on Google+"
+                >
+                    <i class="fab fa-google-plus" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+                <li class="post-action">
+                    <a
+                        class="post-action-btn btn btn--default"
+                        href="#disqus_thread"
+                        aria-label="Leave a comment"
+                    >
+                        <i class="fa fa-comment"></i>
+                    </a>
+                </li>
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#table-of-contents" aria-label="Contents">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                
+    <div id="share-options-bar" class="share-options-bar" data-behavior="4">
+        <i id="btn-close-shareoptions" class="fa fa-times"></i>
+        <ul class="share-options">
+            
+                
+                
+                <li class="share-option">
+                    <a
+                        class="share-option-btn"
+                        target="new"
+                        href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2020/05/05/JPA-Projection/"
+                        aria-label="Share on Facebook"
+                    >
+                        <i class="fab fa-facebook" aria-hidden="true"></i><span>Share on Facebook</span>
+                    </a>
+                </li>
+            
+                
+                
+                <li class="share-option">
+                    <a
+                        class="share-option-btn"
+                        target="new"
+                        href="https://twitter.com/intent/tweet?text=http://yoursite.com/2020/05/05/JPA-Projection/"
+                        aria-label="Share on Twitter"
+                    >
+                        <i class="fab fa-twitter" aria-hidden="true"></i><span>Share on Twitter</span>
+                    </a>
+                </li>
+            
+                
+                
+                <li class="share-option">
+                    <a
+                        class="share-option-btn"
+                        target="new"
+                        href="https://plus.google.com/share?url=http://yoursite.com/2020/05/05/JPA-Projection/"
+                        aria-label="Share on Google+"
+                    >
+                        <i class="fab fa-google-plus" aria-hidden="true"></i><span>Share on Google+</span>
+                    </a>
+                </li>
+            
+        </ul>
+    </div>
+
+
+            
+        </div>
+        
+
+
+    
+
+<div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-times"></i>
+        </div>
+        
+            <img id="about-card-picture" src="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=110" alt="Author&#39;s picture"/>
+        
+            <h4 id="about-card-name">Suyan Kim</h4>
+        <!--  -->
+            <!-- <div id="about-card-bio"><p>author.bio</p>
+</div> -->
+            <div id="about-card-bio">안녕하세요, 서버 백엔드 개발자 동글씨입니다.</div>
+        <!--  -->
+        <!--  -->
+            <div id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <!-- <p>Backend Developer</p>
+ -->
+                Backend Developer
+            </div>
+        <!--  -->
+        
+            <div id="about-card-location">
+                <i class="fa fa-map-marker-alt"></i>
+                <br/>
+                Korea
+            </div>
+        
+    </div>
+</div>
+
+        
+        
+<div id="cover" style="background-image:url('/assets/images/sky.png');"></div>
+        <!--SCRIPTS-->
+
+<script src="/assets/js/jquery.js"></script>
+
+
+<script src="/assets/js/jquery.fancybox.js"></script>
+
+
+<script src="/assets/js/thumbs.js"></script>
+
+
+<script src="/assets/js/tranquilpeak.js"></script>
+
+<!--SCRIPTS END-->
+
+
+    
+        <script>
+          var disqus_config = function() {
+            this.page.url = 'http://yoursite.com/2020/05/05/JPA-Projection/';
+              
+            this.page.identifier = '2020/05/05/JPA-Projection/';
+              
+          };
+          (function() {
+            var d = document, s = d.createElement('script');
+            var disqus_shortname = 'ksso730-github-io';
+            s.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+          })();
+        </script>
+    
+
+
+
+
+    </body>
+</html>
