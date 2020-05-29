@@ -1,0 +1,783 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="동글씨">
+    <title>Hooks 로 함수형 코딩을 해보자 - 동글씨</title>
+    <meta name="author" content="Suyan Kim">
+    
+    
+    
+        <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
+    
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","ksso7300@gmail.com"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\nHooks ?\n클래스에서 사용했던 기능을 함수에서도 사용할 수 있도록 해줌.\n\nuseState\n const [변수명, 메소드]= useState(“[]”)\n\n\nEX1const [music, setMusic] = useState([]);\n\n\n\nuseEffect\nReact의 class  방식의 componentDidMount 생명주기를 흉내낼 수 있다.useEffect(fn, [])\n\n\n클래스 방식\n123componentDidMount()&#123;    this.setstate(&#123;music:&#125;) &#125;\n함수 방식 : useState 에서 정의해주었던 music 변수를 저장하고 있는 setMusic state를 사용.\n1234567useEffect(() =&gt; &#123;        axios.get(\"http://localhost:3000/music.json\")            .then((res) =&gt; &#123;   // res에 데이터 불러옴                setMusic(res.data);                console.log(res.data);            &#125;)    &#125;,[]);\n\n그런데 [] 는 뭔가요? deps 란?\n\nmount 할때마다 실행. =&gt; componentDidMount, componentDidUpdate시작하자마자 한번만 읽어로려면, 즉 didMount 에만 함수를 적용하고 싶다면,함수의 2번째 인자로 [] deps 를 줘야함.내용 갱신 시에는 deps 를 쓰지 않는다.\n\n\n\n\n\n잠깐 문법1234567891011// 이렇게 하면 forEach 가능한데props.music.forEach((m)=&gt;&#123;         ...       &#125;)// html 에서 스크립트를 만들 때는 forEach 적용이 안됨.const html = music.map((m)=&gt;        &lt;tr&gt;            &lt;td&gt;&#123;m.rank&#125;&lt;/td&gt;        &lt;/tr&gt;)\n\n\n\n\n\n검색 이벤트 등록\n사용 함수AppMain() : main 함수이다.SearchBar()MusicTable()\n\nhandleUserInput 라는 이벤트 등록함수를 만들어 준다.\n\n이렇게 이벤트를 넘겨주는 방식은 callByReference 방식이다.callByReference 는 주소값을 넘겨준다. javaScript 는 pointer 로 이루어져 있어 주소값으로 넘겨준다면 이 값은 변할 수 있다.\n\n변수 str 을 넘겨주는 방식은 callByValue 방식이다.복사라고 생각하면 된다. 가지고 있는 걸 사용하는 것이 아닌, 새로 똑같은 값을 만들어준다.\n\n\nAppMain()\n1234567891011121314151617181920212223242526function App3() &#123;\t// 변수 설정    const [music, setMusic] = useState([]);    // 변수 초기값    const [str, setStr]= useState(\"\");    useEffect(()=&gt;&#123;        axios.get(\"http://localhost:3000/music.json\")            .then((res)=&gt;&#123;                setMusic(res.data);            &#125;)    &#125;,[])  // mount 할때마다 실행. =&gt; componentDidMount, componentDidUpdate    // 이벤트 등록    const handleUserInput= (str)=&gt;&#123;        setStr(str);    &#125;     return(        &lt;div className=&#123;\"row\"&#125;&gt;            &lt;H/&gt;            &lt;SearchBar str=&#123;str&#125; onUserInput=&#123;handleUserInput&#125;/&gt;            &lt;div style=&#123;&#123;\"height\":\"30px\"&#125;&#125;&gt;&lt;/div&gt;            &lt;MusicTable music=&#123;music&#125; str=&#123;str&#125;/&gt;        &lt;/div&gt;    )&#125;\n\n\nonUserInput 이벤트를 연결한다. 이벤트가 발생한 곳의 값(input 태그의 값)을 가져와 onUserInput에 값을 넣어준다.SearchBar(str)123456789101112131415161718function SearchBar(props) &#123;    // useCallBack    const onChange=(e)=&gt;&#123;        props.onUserInput(e.target.value);    &#125;    return(        &lt;table className=&#123;\"table\"&#125;&gt;            &lt;tr&gt;                &lt;td&gt;                    &lt;input type=&#123;\"text\"&#125; size=&#123;\"25\"&#125; className=&#123;\"input-sm\"&#125;                        placeholder=&#123;\"search\"&#125; onChange=&#123;onChange&#125; value=&#123;props.str&#125;/&gt;                &lt;/td&gt;            &lt;/tr&gt;        &lt;/table&gt;    )&#125;\n\n\n\nCallBack : useCallBack()\n\nhooks 의 기능중 useCallBack() 함수를 사용한다. :함수의 주소를 기억하고 있다. Paging 에서 많이 사용된다.Memory 누수가 안됨.\n\n\n\n2번 째 인자로 deps :[str] 을 준다. : 검색내용이 변경 될 때에만 함수가 handleUserInput 호출되도록 변경해준다.123const handleUserInput= useCallback((str)=&gt;&#123;  setStr(str);&#125;, [str]) // str 이 변경될 때에만 호출된다.\n\n\n\n\n\n실제로 데이터를 출력해주는 함수MusicTable()1234567891011121314151617181920212223242526function MusicTable(props) &#123;    let row=[];    props.music.forEach((m)=&gt;&#123;        if(m.title.indexOf(props.str)==-1)&#123;            return;        &#125;        // 배열에 추가        row.push(&lt;MusicRow music=&#123;m&#125;/&gt;);    &#125;)    return(        &lt;table className=&#123;\"table\"&#125;&gt;            &lt;thead&gt;                &lt;tr className=&#123;\"danger\"&#125;&gt;                    &lt;th&gt;순위&lt;/th&gt;                    &lt;th&gt;&lt;/th&gt;                    &lt;th&gt;노래명&lt;/th&gt;                    &lt;th&gt;가수&lt;/th&gt;                &lt;/tr&gt;            &lt;/thead&gt;            &lt;tbody&gt;            &#123;row&#125;            &lt;/tbody&gt;        &lt;/table&gt;    )&#125;\n\n\n\nReact.memo\n\nReact 는 컴포넌트를 렌더링 한 뒤, 이전 렌더링 된 결과와 비교하여 DOM 업데이트를 결정한다. 이전 렌더링 결과와 비교하는 과정은 충분히 빠르지만 이 과정에서 속도를 줄일 수 있다.\n\n\n\nReact.memo 로 매핑될 때, React 는 컴퍼넌트를 렌더링 후 그 결과를 메모이징(Memoizing) 한다. 그 다음 렌더링 시 props 가 같다면 메모이징 했던 내용을 재사용한다.[출처] https://ui.toast.com/weekly-pick/ko_20190731/\n\n위에서 진행했던 예제로 계속 설명을 한다면,\n\nSearchBar 에  입력할 때마다 즉, onUserInput 이벤트가 발생할 때마다  MusicTable 을 재렌더링 한다.그 때마다 H1 태그는 글자 색상을 랜덤으로 가져온다. Math.random()*5\n\n즉, input 창에 뭔가를 적을 때마다 반짝반짝 하며 타이틀 색상이 수시로 바뀌게 되는 …뭔가 고쳐주고 싶은 현상을 발견한다.\n\n이 때 사용하는것이 바로 memo\n\nReact.memo 적용전\n123456789const H=()=&gt;&#123;    // memo : 호출한것 기억.    const color = ['red','blue','green','yellow','pink'];    const no = parseInt(Math.random()*5);   // 배열 인덱스 5개중 랜덤수 선택    return(        &lt;h1 className=&#123;\"text-center\"&#125; style=&#123;&#123;\"color\":color[no]&#125;&#125;&gt;Music Top 50&lt;/h1&gt;    )&#125;\nReact.memo 적용 후: searchBar 에 입력해도 변하지 않음.\n123456789const H=React.memo(()=&gt;&#123;    // memo : 호출한것 기억.    const color = ['red','blue','green','yellow','pink'];    const no = parseInt(Math.random()*5);   // 배열 인덱스 5개중 랜덤수 선택    return(        &lt;h1 className=&#123;\"text-center\"&#125; style=&#123;&#123;\"color\":color[no]&#125;&#125;&gt;Music Top 50&lt;/h1&gt;    )&#125;)\n","dateCreated":"2020-05-29T09:38:23+09:00","dateModified":"2020-05-29T09:54:56+09:00","datePublished":"2020-05-29T09:38:23+09:00","description":"클래스에서 사용했던 기능을 함수에서도 사용할 수 있도록 해주는 HOOKS 를 사용해봅니다.useState useEffect useMemo, useCallBack","headline":"Hooks 로 함수형 코딩을 해보자","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2020/05/29/Hooks/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","ksso7300@gmail.com"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2020/05/29/Hooks/","keywords":"Hooks, react"}</script>
+    <meta name="description" content="클래스에서 사용했던 기능을 함수에서도 사용할 수 있도록 해주는 HOOKS 를 사용해봅니다.useState useEffect useMemo, useCallBack">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="Hooks 로 함수형 코딩을 해보자">
+<meta property="og:url" content="http://yoursite.com/2020/05/29/Hooks/index.html">
+<meta property="og:site_name" content="동글씨">
+<meta property="og:description" content="클래스에서 사용했던 기능을 함수에서도 사용할 수 있도록 해주는 HOOKS 를 사용해봅니다.useState useEffect useMemo, useCallBack">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-05-29T00:38:23.000Z">
+<meta property="article:modified_time" content="2020-05-29T00:54:56.749Z">
+<meta property="article:author" content="Suyan Kim">
+<meta property="article:tag" content="Hooks">
+<meta property="article:tag" content="react">
+<meta name="twitter:card" content="summary">
+    
+    
+        
+    
+    
+        <meta property="og:image" content="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=640"/>
+    
+    
+    
+    
+    <!--STYLES-->
+    
+<link rel="stylesheet" href="/assets/css/all.css">
+
+    
+<link rel="stylesheet" href="/assets/css/jquery.fancybox.css">
+
+    
+<link rel="stylesheet" href="/assets/css/thumbs.css">
+
+    
+<link rel="stylesheet" href="/assets/css/tranquilpeak.css">
+
+    <!--STYLES END-->
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-158530470-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-158530470-1');
+    </script>
+
+
+    
+
+    
+        
+    
+</head>
+
+    <body>
+        <div id="blog">
+            <!-- Define author's picture -->
+
+
+    
+        
+    
+
+<header id="header" data-behavior="4">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <div class="header-title">
+        <a
+            class="header-title-link"
+            href="/index.html"
+            aria-label=""
+        >
+            동글씨
+        </a>
+    </div>
+    
+        
+            <a
+                class="header-right-picture "
+                href="#about"
+                aria-label="Open the link: /#about"
+            >
+        
+        
+            <img class="header-picture" src="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=90" alt="Author&#39;s picture"/>
+        
+        </a>
+    
+</header>
+
+            <!-- function -->
+
+
+<!-- Define author's picture -->
+
+
+    
+
+<nav id="sidebar" data-behavior="4">
+    <div class="sidebar-container">
+        
+            <div class="sidebar-profile">
+                <a
+                    href="/#about"
+                    aria-label="Read more about the author"
+                >
+                    <img class="sidebar-profile-picture" src="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=110" alt="Author&#39;s picture"/>
+                </a>
+                <h4 class="sidebar-profile-name">Suyan Kim</h4>
+                
+                    <h5 class="sidebar-profile-bio"><p>▲ Who Am I</p>
+</h5>
+                
+            </div>
+        
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="Home"href="/index.html"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-home" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">Home</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="Categories"href="/all-categories"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-bookmark" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">Categories</span>
+                        </a>
+                    <!-- add -->
+                    
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Config/">☁️ Config (2)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-DataBase/">☁️ DataBase (1)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Git/">☁️ Git (3)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-JPA/">☁️ JPA (10)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Python/">☁️ Python (1)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-React/">☁️ React (2)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Spring/">☁️ Spring (1)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-coding-test/">☁️ coding test (4)</a></li>
+                            
+                        
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="Tags"href="/all-tags"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-tags" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">Tags</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="Archives"href="/all-archives"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-archive" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">Archives</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="About"href="#about"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-question" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">About</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="https://github.com/ksso730" target="_blank" rel="noopener" title="my github">
+                    
+                    <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">my github</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/ksso7300@gmail.com"
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-envelope" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">contact me</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+        </ul>
+        
+    </div>
+</nav>
+
+            
+            <div id="main" data-behavior="4"
+                 class="
+                        hasCoverMetaIn
+                        ">
+                
+<article class="post">
+    
+    
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title">
+            Hooks 로 함수형 코딩을 해보자
+        </h1>
+    
+    
+        <div class="post-meta">
+    <time datetime="2020-05-29T09:38:23+09:00">
+	
+		    May 29, 2020
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/%E2%98%81%EF%B8%8F-React/">☁️ React</a>
+
+
+    
+</div>
+
+    
+</div>
+
+    
+    <div class="post-content markdown">
+        <div class="main-content-wrap">
+            <!-- excerpt -->
+<h1 id="table-of-contents">Contents</h1><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Hooks"><span class="toc-text">Hooks ?</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#useState"><span class="toc-text">useState</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#useEffect"><span class="toc-text">useEffect</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#검색-이벤트-등록"><span class="toc-text">검색 이벤트 등록</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#CallBack-useCallBack"><span class="toc-text">CallBack : useCallBack()</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#React-memo"><span class="toc-text">React.memo</span></a></li></ol></li></ol>
+
+<hr>
+<h1 id="Hooks"><a href="#Hooks" class="headerlink" title="Hooks ?"></a>Hooks ?</h1><blockquote>
+<p>클래스에서 사용했던 기능을 함수에서도 사용할 수 있도록 해줌.</p>
+</blockquote>
+<h2 id="useState"><a href="#useState" class="headerlink" title="useState"></a>useState</h2><blockquote>
+<p> const [변수명, 메소드]= useState(“[]”)</p>
+</blockquote>
+<ul>
+<li>EX<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> [music, setMusic] = useState([]);</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h2 id="useEffect"><a href="#useEffect" class="headerlink" title="useEffect"></a>useEffect</h2><blockquote>
+<p>React의 class  방식의 componentDidMount 생명주기를 흉내낼 수 있다.<br>useEffect(fn, [])</p>
+</blockquote>
+<ul>
+<li><p>클래스 방식</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">componentDidMount()&#123;</span><br><span class="line">    <span class="keyword">this</span>.setstate(&#123;<span class="attr">music</span>:&#125;)</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure></li>
+<li><p>함수 방식 : <code>useState</code> 에서 정의해주었던 <code>music</code> 변수를 저장하고 있는 <code>setMusic</code> state를 사용.</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">useEffect(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">        axios.get(<span class="string">"http://localhost:3000/music.json"</span>)</span><br><span class="line">            .then(<span class="function">(<span class="params">res</span>) =&gt;</span> &#123;   <span class="comment">// res에 데이터 불러옴</span></span><br><span class="line">                setMusic(res.data);</span><br><span class="line">                <span class="built_in">console</span>.log(res.data);</span><br><span class="line">            &#125;)</span><br><span class="line">    &#125;,[]);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>그런데 <code>[]</code> 는 뭔가요? deps 란?</p>
+<blockquote>
+<p>mount 할때마다 실행. =&gt; componentDidMount, componentDidUpdate<br>시작하자마자 한번만 읽어로려면, 즉 didMount 에만 함수를 적용하고 싶다면,<br>함수의 2번째 인자로 <code>[] deps</code> 를 줘야함.<br>내용 갱신 시에는 deps 를 쓰지 않는다.</p>
+</blockquote>
+</li>
+</ul>
+<hr>
+<ul>
+<li>잠깐 문법<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 이렇게 하면 forEach 가능한데</span></span><br><span class="line">props.music.forEach(<span class="function">(<span class="params">m</span>)=&gt;</span>&#123;</span><br><span class="line">         ...   </span><br><span class="line">    &#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment">// html 에서 스크립트를 만들 때는 forEach 적용이 안됨.</span></span><br><span class="line"><span class="keyword">const</span> html = music.map(<span class="function">(<span class="params">m</span>)=&gt;</span></span><br><span class="line">        &lt;tr&gt;</span><br><span class="line">            &lt;td&gt;&#123;m.rank&#125;&lt;<span class="regexp">/td&gt;</span></span><br><span class="line"><span class="regexp">        &lt;/</span>tr&gt;</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<hr>
+<h3 id="검색-이벤트-등록"><a href="#검색-이벤트-등록" class="headerlink" title="검색 이벤트 등록"></a>검색 이벤트 등록</h3><ul>
+<li><p>사용 함수<br>AppMain() : main 함수이다.<br>SearchBar()<br>MusicTable()</p>
+</li>
+<li><p><code>handleUserInput</code> 라는 이벤트 등록함수를 만들어 준다.</p>
+</li>
+<li><p>이렇게 이벤트를 넘겨주는 방식은 <code>callByReference</code> 방식이다.<br>callByReference 는 주소값을 넘겨준다. javaScript 는 pointer 로 이루어져 있어 주소값으로 넘겨준다면 이 값은 변할 수 있다.</p>
+</li>
+<li><p>변수 str 을 넘겨주는 방식은 <code>callByValue</code> 방식이다.<br>복사라고 생각하면 된다. 가지고 있는 걸 사용하는 것이 아닌, 새로 똑같은 값을 만들어준다.</p>
+</li>
+</ul>
+<p><strong>AppMain()</strong></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">App3</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">	<span class="comment">// 변수 설정</span></span><br><span class="line">    <span class="keyword">const</span> [music, setMusic] = useState([]);</span><br><span class="line">    <span class="comment">// 변수 초기값</span></span><br><span class="line">    <span class="keyword">const</span> [str, setStr]= useState(<span class="string">""</span>);</span><br><span class="line"></span><br><span class="line">    useEffect(<span class="function"><span class="params">()</span>=&gt;</span>&#123;</span><br><span class="line">        axios.get(<span class="string">"http://localhost:3000/music.json"</span>)</span><br><span class="line">            .then(<span class="function">(<span class="params">res</span>)=&gt;</span>&#123;</span><br><span class="line">                setMusic(res.data);</span><br><span class="line">            &#125;)</span><br><span class="line">    &#125;,[])  <span class="comment">// mount 할때마다 실행. =&gt; componentDidMount, componentDidUpdate</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 이벤트 등록</span></span><br><span class="line">    <span class="keyword">const</span> handleUserInput= <span class="function">(<span class="params">str</span>)=&gt;</span>&#123;</span><br><span class="line">        setStr(str);</span><br><span class="line">    &#125;</span><br><span class="line">     <span class="keyword">return</span>(</span><br><span class="line">        &lt;div className=&#123;<span class="string">"row"</span>&#125;&gt;</span><br><span class="line">            &lt;H/&gt;</span><br><span class="line">            &lt;SearchBar str=&#123;str&#125; onUserInput=&#123;handleUserInput&#125;/&gt;</span><br><span class="line">            &lt;div style=&#123;&#123;<span class="string">"height"</span>:<span class="string">"30px"</span>&#125;&#125;&gt;<span class="xml"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line">            &lt;MusicTable music=&#123;music&#125; str=&#123;str&#125;/&gt;</span><br><span class="line">        &lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp">    )</span></span><br><span class="line"><span class="regexp">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>onUserInput</code> 이벤트를 연결한다. 이벤트가 발생한 곳의 값(input 태그의 값)을 가져와 <code>onUserInput</code>에 값을 넣어준다.<br><strong>SearchBar(str)</strong><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">SearchBar</span>(<span class="params">props</span>) </span>&#123;</span><br><span class="line">    <span class="comment">// useCallBack</span></span><br><span class="line">    <span class="keyword">const</span> onChange=<span class="function">(<span class="params">e</span>)=&gt;</span>&#123;</span><br><span class="line">        props.onUserInput(e.target.value);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span>(</span><br><span class="line">        &lt;table className=&#123;<span class="string">"table"</span>&#125;&gt;</span><br><span class="line">            &lt;tr&gt;</span><br><span class="line">                &lt;td&gt;</span><br><span class="line">                    &lt;input type=&#123;<span class="string">"text"</span>&#125; size=&#123;<span class="string">"25"</span>&#125; className=&#123;<span class="string">"input-sm"</span>&#125;</span><br><span class="line">                        placeholder=&#123;<span class="string">"search"</span>&#125; onChange=&#123;onChange&#125; value=&#123;props.str&#125;/&gt;</span><br><span class="line">                &lt;<span class="regexp">/td&gt;</span></span><br><span class="line"><span class="regexp">            &lt;/</span>tr&gt;</span><br><span class="line">        &lt;<span class="regexp">/table&gt;</span></span><br><span class="line"><span class="regexp">    )</span></span><br><span class="line"><span class="regexp">&#125;</span></span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h2 id="CallBack-useCallBack"><a href="#CallBack-useCallBack" class="headerlink" title="CallBack : useCallBack()"></a>CallBack : useCallBack()</h2><blockquote>
+<ul>
+<li>hooks 의 기능중 <code>useCallBack()</code> 함수를 사용한다. :함수의 주소를 기억하고 있다. Paging 에서 많이 사용된다.<br>Memory 누수가 안됨.</li>
+</ul>
+</blockquote>
+<ul>
+<li>2번 째 인자로 deps :[str] 을 준다. : 검색내용이 변경 될 때에만 함수가 <code>handleUserInput</code> 호출되도록 변경해준다.<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> handleUserInput= useCallback(<span class="function">(<span class="params">str</span>)=&gt;</span>&#123;</span><br><span class="line">  setStr(str);</span><br><span class="line">&#125;, [str]) <span class="comment">// str 이 변경될 때에만 호출된다.</span></span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<ul>
+<li>실제로 데이터를 출력해주는 함수<br><strong>MusicTable()</strong><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">MusicTable</span>(<span class="params">props</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">let</span> row=[];</span><br><span class="line">    props.music.forEach(<span class="function">(<span class="params">m</span>)=&gt;</span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(m.title.indexOf(props.str)==<span class="number">-1</span>)&#123;</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 배열에 추가</span></span><br><span class="line">        row.push(<span class="xml"><span class="tag">&lt;<span class="name">MusicRow</span> <span class="attr">music</span>=<span class="string">&#123;m&#125;/</span>&gt;</span>);</span></span><br><span class="line"><span class="xml">    &#125;)</span></span><br><span class="line"></span><br><span class="line"><span class="xml">    return(</span></span><br><span class="line">        &lt;table className=&#123;"table"&#125;&gt;</span><br><span class="line">            &lt;thead&gt;</span><br><span class="line">                &lt;tr className=&#123;"danger"&#125;&gt;</span><br><span class="line">                    &lt;th&gt;순위&lt;/th&gt;</span><br><span class="line">                    &lt;th&gt;&lt;/th&gt;</span><br><span class="line">                    &lt;th&gt;노래명&lt;/th&gt;</span><br><span class="line">                    &lt;th&gt;가수&lt;/th&gt;</span><br><span class="line">                &lt;/tr&gt;</span><br><span class="line">            &lt;/thead&gt;</span><br><span class="line">            &lt;tbody&gt;</span><br><span class="line">            &#123;row&#125;</span><br><span class="line">            &lt;/tbody&gt;</span><br><span class="line"><span class="xml">        <span class="tag">&lt;/<span class="name">table</span>&gt;</span></span></span><br><span class="line"><span class="xml">    )</span></span><br><span class="line"><span class="xml">&#125;</span></span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h2 id="React-memo"><a href="#React-memo" class="headerlink" title="React.memo"></a>React.memo</h2><blockquote>
+<ul>
+<li>React 는 컴포넌트를 렌더링 한 뒤, 이전 렌더링 된 결과와 비교하여 DOM 업데이트를 결정한다. 이전 렌더링 결과와 비교하는 과정은 충분히 빠르지만 이 과정에서 속도를 줄일 수 있다.</li>
+</ul>
+</blockquote>
+<ul>
+<li><p><code>React.memo</code> 로 매핑될 때, React 는 컴퍼넌트를 렌더링 후 그 결과를 <code>메모이징(Memoizing)</code> 한다. 그 다음 렌더링 시 <code>props</code> 가 같다면 메모이징 했던 내용을 재사용한다.<br>[출처] <a href="https://ui.toast.com/weekly-pick/ko_20190731/" target="_blank" rel="noopener">https://ui.toast.com/weekly-pick/ko_20190731/</a></p>
+</li>
+<li><p>위에서 진행했던 예제로 계속 설명을 한다면,</p>
+</li>
+<li><p>SearchBar 에  입력할 때마다 즉, <code>onUserInput</code> 이벤트가 발생할 때마다  <code>MusicTable</code> 을 재렌더링 한다.<br>그 때마다 H1 태그는 글자 색상을 랜덤으로 가져온다. <code>Math.random()*5</code></p>
+</li>
+<li><p>즉, input 창에 뭔가를 적을 때마다 반짝반짝 하며 타이틀 색상이 수시로 바뀌게 되는 …뭔가 고쳐주고 싶은 현상을 발견한다.</p>
+</li>
+<li><p>이 때 사용하는것이 바로 <code>memo</code></p>
+</li>
+<li><p>React.memo 적용전</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> H=<span class="function"><span class="params">()</span>=&gt;</span>&#123;</span><br><span class="line">    <span class="comment">// memo : 호출한것 기억.</span></span><br><span class="line">    <span class="keyword">const</span> color = [<span class="string">'red'</span>,<span class="string">'blue'</span>,<span class="string">'green'</span>,<span class="string">'yellow'</span>,<span class="string">'pink'</span>];</span><br><span class="line">    <span class="keyword">const</span> no = <span class="built_in">parseInt</span>(<span class="built_in">Math</span>.random()*<span class="number">5</span>);</span><br><span class="line">   <span class="comment">// 배열 인덱스 5개중 랜덤수 선택</span></span><br><span class="line">    <span class="keyword">return</span>(</span><br><span class="line">        &lt;h1 className=&#123;<span class="string">"text-center"</span>&#125; style=&#123;&#123;<span class="string">"color"</span>:color[no]&#125;&#125;&gt;Music Top <span class="number">50</span>&lt;<span class="regexp">/h1&gt;</span></span><br><span class="line"><span class="regexp">    )</span></span><br><span class="line"><span class="regexp">&#125;</span></span><br></pre></td></tr></table></figure></li>
+<li><p>React.memo 적용 후: searchBar 에 입력해도 변하지 않음.</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> H=React.memo(<span class="function"><span class="params">()</span>=&gt;</span>&#123;</span><br><span class="line">    <span class="comment">// memo : 호출한것 기억.</span></span><br><span class="line">    <span class="keyword">const</span> color = [<span class="string">'red'</span>,<span class="string">'blue'</span>,<span class="string">'green'</span>,<span class="string">'yellow'</span>,<span class="string">'pink'</span>];</span><br><span class="line">    <span class="keyword">const</span> no = <span class="built_in">parseInt</span>(<span class="built_in">Math</span>.random()*<span class="number">5</span>);</span><br><span class="line">   <span class="comment">// 배열 인덱스 5개중 랜덤수 선택</span></span><br><span class="line">    <span class="keyword">return</span>(</span><br><span class="line">        &lt;h1 className=&#123;<span class="string">"text-center"</span>&#125; style=&#123;&#123;<span class="string">"color"</span>:color[no]&#125;&#125;&gt;Music Top <span class="number">50</span>&lt;<span class="regexp">/h1&gt;</span></span><br><span class="line"><span class="regexp">    )</span></span><br><span class="line"><span class="regexp">&#125;)</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+            
+
+
+        </div>
+    </div>
+    <div id="post-footer" class="post-footer main-content-wrap">
+        
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">TAGGED IN</span><br/>
+                
+    <a class="tag tag--primary tag--small t-link" href="/tags/Hooks/" rel="tag">Hooks</a> <a class="tag tag--primary tag--small t-link" href="/tags/react/" rel="tag">react</a>
+
+            </div>
+        
+        
+            <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a
+                        class="post-action-btn btn btn--disabled"
+                        aria-hidden="true"
+                    >
+                        
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                    </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2020/05/24/React-start/"
+                    data-tooltip="React 입문해보자"
+                    aria-label="NEXT: React 입문해보자"
+                >
+                    
+                        <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a
+                class="post-action-btn btn btn--default btn-open-shareoptions"
+                href="#btn-open-shareoptions"
+                aria-label="Share this post"
+            >
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2020/05/29/Hooks/"
+                    title="Share on Facebook"
+                    aria-label="Share on Facebook"
+                >
+                    <i class="fab fa-facebook" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2020/05/29/Hooks/"
+                    title="Share on Twitter"
+                    aria-label="Share on Twitter"
+                >
+                    <i class="fab fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://plus.google.com/share?url=http://yoursite.com/2020/05/29/Hooks/"
+                    title="Share on Google+"
+                    aria-label="Share on Google+"
+                >
+                    <i class="fab fa-google-plus" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+                <li class="post-action">
+                    <a
+                        class="post-action-btn btn btn--default"
+                        href="#disqus_thread"
+                        aria-label="Leave a comment"
+                    >
+                        <i class="fa fa-comment"></i>
+                    </a>
+                </li>
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#table-of-contents" aria-label="Contents">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+        
+        
+            
+                <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a></noscript>
+</div>
+            
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2020 Suyan Kim. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a
+                        class="post-action-btn btn btn--disabled"
+                        aria-hidden="true"
+                    >
+                        
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                    </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2020/05/24/React-start/"
+                    data-tooltip="React 입문해보자"
+                    aria-label="NEXT: React 입문해보자"
+                >
+                    
+                        <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a
+                class="post-action-btn btn btn--default btn-open-shareoptions"
+                href="#btn-open-shareoptions"
+                aria-label="Share this post"
+            >
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2020/05/29/Hooks/"
+                    title="Share on Facebook"
+                    aria-label="Share on Facebook"
+                >
+                    <i class="fab fa-facebook" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2020/05/29/Hooks/"
+                    title="Share on Twitter"
+                    aria-label="Share on Twitter"
+                >
+                    <i class="fab fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://plus.google.com/share?url=http://yoursite.com/2020/05/29/Hooks/"
+                    title="Share on Google+"
+                    aria-label="Share on Google+"
+                >
+                    <i class="fab fa-google-plus" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+                <li class="post-action">
+                    <a
+                        class="post-action-btn btn btn--default"
+                        href="#disqus_thread"
+                        aria-label="Leave a comment"
+                    >
+                        <i class="fa fa-comment"></i>
+                    </a>
+                </li>
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#table-of-contents" aria-label="Contents">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                
+    <div id="share-options-bar" class="share-options-bar" data-behavior="4">
+        <i id="btn-close-shareoptions" class="fa fa-times"></i>
+        <ul class="share-options">
+            
+                
+                
+                <li class="share-option">
+                    <a
+                        class="share-option-btn"
+                        target="new"
+                        href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2020/05/29/Hooks/"
+                        aria-label="Share on Facebook"
+                    >
+                        <i class="fab fa-facebook" aria-hidden="true"></i><span>Share on Facebook</span>
+                    </a>
+                </li>
+            
+                
+                
+                <li class="share-option">
+                    <a
+                        class="share-option-btn"
+                        target="new"
+                        href="https://twitter.com/intent/tweet?text=http://yoursite.com/2020/05/29/Hooks/"
+                        aria-label="Share on Twitter"
+                    >
+                        <i class="fab fa-twitter" aria-hidden="true"></i><span>Share on Twitter</span>
+                    </a>
+                </li>
+            
+                
+                
+                <li class="share-option">
+                    <a
+                        class="share-option-btn"
+                        target="new"
+                        href="https://plus.google.com/share?url=http://yoursite.com/2020/05/29/Hooks/"
+                        aria-label="Share on Google+"
+                    >
+                        <i class="fab fa-google-plus" aria-hidden="true"></i><span>Share on Google+</span>
+                    </a>
+                </li>
+            
+        </ul>
+    </div>
+
+
+            
+        </div>
+        
+
+
+    
+
+<div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-times"></i>
+        </div>
+        
+            <img id="about-card-picture" src="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=110" alt="Author&#39;s picture"/>
+        
+            <h4 id="about-card-name">Suyan Kim</h4>
+        <!--  -->
+            <!-- <div id="about-card-bio"><p>author.bio</p>
+</div> -->
+            <div id="about-card-bio">안녕하세요, 서버 백엔드 개발자 동글씨입니다.</div>
+        <!--  -->
+        <!--  -->
+            <div id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <!-- <p>Backend Developer</p>
+ -->
+                Backend Developer
+            </div>
+        <!--  -->
+        
+            <div id="about-card-location">
+                <i class="fa fa-map-marker-alt"></i>
+                <br/>
+                Korea
+            </div>
+        
+    </div>
+</div>
+
+        
+        
+<div id="cover" style="background-image:url('/assets/images/sky.png');"></div>
+        <!--SCRIPTS-->
+
+<script src="/assets/js/jquery.js"></script>
+
+
+<script src="/assets/js/jquery.fancybox.js"></script>
+
+
+<script src="/assets/js/thumbs.js"></script>
+
+
+<script src="/assets/js/tranquilpeak.js"></script>
+
+<!--SCRIPTS END-->
+
+
+    
+        <script>
+          var disqus_config = function() {
+            this.page.url = 'http://yoursite.com/2020/05/29/Hooks/';
+              
+            this.page.identifier = '2020/05/29/Hooks/';
+              
+          };
+          (function() {
+            var d = document, s = d.createElement('script');
+            var disqus_shortname = 'ksso730-github-io';
+            s.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+          })();
+        </script>
+    
+
+
+
+
+    </body>
+</html>

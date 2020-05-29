@@ -8,16 +8,24 @@
     </url>
 
     <url>
-        <loc>http://yoursite.com/2020/05/05/JPA-Projection/</loc>
-        <lastmod>2020-05-28T05:39:32.740Z</lastmod>
+        <loc>http://yoursite.com/2020/05/24/React-start/</loc>
+        <lastmod>2020-05-29T00:55:24.354Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
 
     </url>
 
     <url>
-        <loc>http://yoursite.com/2020/05/24/Hooks-%EB%A7%9B%EB%B3%B4%EA%B8%B01/</loc>
-        <lastmod>2020-05-28T05:39:32.739Z</lastmod>
+        <loc>http://yoursite.com/2020/05/29/Hooks/</loc>
+        <lastmod>2020-05-29T00:54:56.749Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>http://yoursite.com/2020/05/05/JPA-Projection/</loc>
+        <lastmod>2020-05-28T05:39:32.740Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
 
@@ -64,7 +72,7 @@
     </url>
 
     <url>
-        <loc>http://yoursite.com/2020/03/16/gradle-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-MariaDB-%EC%97%B0%EB%8F%99/</loc>
+        <loc>http://yoursite.com/2020/04/14/coding-test-with-Java/</loc>
         <lastmod>2020-04-28T01:36:01.150Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -72,7 +80,7 @@
     </url>
 
     <url>
-        <loc>http://yoursite.com/2020/04/14/coding-test-with-Java/</loc>
+        <loc>http://yoursite.com/2020/03/16/gradle-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-MariaDB-%EC%97%B0%EB%8F%99/</loc>
         <lastmod>2020-04-28T01:36:01.150Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -176,7 +184,7 @@
     </url>
 
     <url>
-        <loc>http://yoursite.com/2020/03/17/Git-pull-%EC%98%A4%EB%A5%98-Nothing-to-fetch/</loc>
+        <loc>http://yoursite.com/2020/01/18/Git-%EB%B8%94%EB%A1%9C%EA%B7%B8-%EC%83%9D%EC%84%B1-with-hexo/</loc>
         <lastmod>2020-04-28T01:36:01.139Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -184,7 +192,7 @@
     </url>
 
     <url>
-        <loc>http://yoursite.com/2020/01/18/Git-%EB%B8%94%EB%A1%9C%EA%B7%B8-%EC%83%9D%EC%84%B1-with-hexo/</loc>
+        <loc>http://yoursite.com/2020/03/17/Git-pull-%EC%98%A4%EB%A5%98-Nothing-to-fetch/</loc>
         <lastmod>2020-04-28T01:36:01.139Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
