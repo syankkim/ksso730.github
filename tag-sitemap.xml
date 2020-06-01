@@ -3,15 +3,22 @@
 
 
     <url>
+        <loc>http://yoursite.com/tags/react-router/</loc>
+        <lastmod>2020-06-01T06:15:07.821Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
         <loc>http://yoursite.com/tags/react/</loc>
-        <lastmod>2020-05-29T01:25:28.070Z</lastmod>
+        <lastmod>2020-06-01T06:15:07.821Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
         <loc>http://yoursite.com/tags/Hooks/</loc>
-        <lastmod>2020-05-29T01:25:28.070Z</lastmod>
+        <lastmod>2020-06-01T06:15:07.821Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
@@ -122,13 +129,6 @@
     </url>
 
     <url>
-        <loc>http://yoursite.com/tags/virtualenv/</loc>
-        <lastmod>2020-04-28T01:36:01.147Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
         <loc>http://yoursite.com/tags/rJust/</loc>
         <lastmod>2020-04-28T01:36:01.147Z</lastmod>
         <changefreq>weekly</changefreq>
@@ -137,6 +137,13 @@
 
     <url>
         <loc>http://yoursite.com/tags/python-%25EC%259D%25B4%25EC%25A7%2584%25EC%2597%25B0%25EC%2582%25B0/</loc>
+        <lastmod>2020-04-28T01:36:01.147Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://yoursite.com/tags/virtualenv/</loc>
         <lastmod>2020-04-28T01:36:01.147Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>

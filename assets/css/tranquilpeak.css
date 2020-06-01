@@ -166,13 +166,15 @@ pre > code {
   font-size: 1.4rem; }
 
 code {
-  font-size: 1.5rem;
+  font-size: 1.3rem;
   display: inline-block;
   font-family: "Source Code Pro", "NanumSquareRound", Consolas;
   font-weight: 400;
-  background-color: #ebeef2;
-  padding: 0 10px;
-  color: darkcyan; }
+  line-height: 2rem;
+  padding: 0 6px;
+  color: darkcyan;
+  border: 2px solid darkcyan;
+  border-radius: 5px; }
 
 acronym,
 abbr {
@@ -180,12 +182,12 @@ abbr {
 
 blockquote {
   color: #00477a;
-  border-left: 7px solid #0086b3;
+  border-left: 7px dotted #0086b3;
   padding: 0 15px;
   font-style: initial;
   margin: 1.5em 0 0;
   background-color: #ffffd7;
-  padding: 1%;
+  padding: 1% 2% 1% 2%;
   margin-bottom: 20px; }
   blockquote cite:before {
     content: ' — ';
@@ -1512,7 +1514,7 @@ figure.highlight,
       float: right; }
   figure.highlight .gutter,
   .codeblock .gutter {
-    border-right: 1px solid;
+    border-right: 1px solid darkcyan;
     padding: 0.3em 15px; }
   figure.highlight .code,
   .codeblock .code {
@@ -1763,7 +1765,7 @@ a.fancybox {
 
 .main-content-wrap {
   display: block;
-  max-width: 750px;
+  max-width: 960px;
   margin: 0 auto;
   padding-right: 20px;
   padding-left: 20px; }
@@ -2732,11 +2734,7 @@ a.tag--small,
     transform: translateY(-50%); }
 
 pre > code {
-  background: #f7f8f8;
   color: #333; }
-
-code {
-  background-color: #f7f8f8; }
 
 .codeblock--tabbed figcaption .tab.active {
   background: #349ef3;
@@ -2744,15 +2742,12 @@ code {
 
 figure.highlight,
 .codeblock {
-  background: #f7f8f8;
   color: #333; }
   figure.highlight figcaption,
   .codeblock figcaption {
-    background: #f7f8f8;
     color: #999999; }
   figure.highlight .gutter,
   .codeblock .gutter {
-    background: #f7f8f8;
     border-right-color: #e6e6e6; }
     figure.highlight .gutter .line,
     .codeblock .gutter .line {
