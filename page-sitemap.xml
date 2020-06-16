@@ -8,14 +8,14 @@
     </url>
     
     <url>
-        <loc>http://yoursite.com/all-categories/</loc>
+        <loc>http://yoursite.com/all-tags/</loc>
         <lastmod>2020-03-17T02:08:40.907Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.8</priority>
     </url>
     
     <url>
-        <loc>http://yoursite.com/all-tags/</loc>
+        <loc>http://yoursite.com/all-categories/</loc>
         <lastmod>2020-03-17T02:08:40.907Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.8</priority>

@@ -8,8 +8,40 @@
     </url>
 
     <url>
+        <loc>http://yoursite.com/2020/06/03/nginx-tomcat-%EB%B9%84%EA%B5%90/</loc>
+        <lastmod>2020-06-16T02:47:45.023Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>http://yoursite.com/2020/04/22/CODING-TEST-with%20Python_0616/</loc>
+        <lastmod>2020-06-16T02:46:49.045Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>http://yoursite.com/2020/04/22/CODING-TEST-with%20Python_0615/</loc>
+        <lastmod>2020-06-16T02:45:49.578Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>http://yoursite.com/2020/04/22/CODING-TEST-with-Java-0/</loc>
+        <lastmod>2020-06-15T01:27:34.691Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
         <loc>http://yoursite.com/2020/06/01/react-router-%EC%82%AC%EC%9A%A9%ED%95%98%EA%B8%B0/</loc>
-        <lastmod>2020-06-01T06:15:07.821Z</lastmod>
+        <lastmod>2020-06-01T06:30:42.521Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
 
@@ -80,7 +112,7 @@
     </url>
 
     <url>
-        <loc>http://yoursite.com/2020/03/16/gradle-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-MariaDB-%EC%97%B0%EB%8F%99/</loc>
+        <loc>http://yoursite.com/2020/04/14/coding-test-with-Java/</loc>
         <lastmod>2020-04-28T01:36:01.150Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -88,7 +120,7 @@
     </url>
 
     <url>
-        <loc>http://yoursite.com/2020/04/14/coding-test-with-Java/</loc>
+        <loc>http://yoursite.com/2020/03/16/gradle-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-MariaDB-%EC%97%B0%EB%8F%99/</loc>
         <lastmod>2020-04-28T01:36:01.150Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -112,7 +144,7 @@
     </url>
 
     <url>
-        <loc>http://yoursite.com/2020/02/29/Python-%EA%B0%80%EC%83%81%ED%99%98%EA%B2%BD-%EA%B5%AC%EC%84%B1-py-%EC%8B%A4%ED%96%89/</loc>
+        <loc>http://yoursite.com/2020/04/22/Python%20%EB%82%B4%EC%9E%A5%ED%95%A8%EC%88%98/</loc>
         <lastmod>2020-04-28T01:36:01.147Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -120,7 +152,7 @@
     </url>
 
     <url>
-        <loc>http://yoursite.com/2020/04/22/Python%20%EB%82%B4%EC%9E%A5%ED%95%A8%EC%88%98/</loc>
+        <loc>http://yoursite.com/2020/02/29/Python-%EA%B0%80%EC%83%81%ED%99%98%EA%B2%BD-%EA%B5%AC%EC%84%B1-py-%EC%8B%A4%ED%96%89/</loc>
         <lastmod>2020-04-28T01:36:01.147Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -210,14 +242,6 @@
     <url>
         <loc>http://yoursite.com/2020/04/12/CODING-TEST-with-Python/</loc>
         <lastmod>2020-04-28T01:36:01.137Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>http://yoursite.com/2020/04/22/CODING-TEST-with-Java-0/</loc>
-        <lastmod>2020-04-28T01:36:01.136Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
 
