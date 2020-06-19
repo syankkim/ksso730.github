@@ -182,11 +182,12 @@ abbr {
 
 blockquote {
   color: #00477a;
-  border-left: 7px dotted #0086b3;
+  border-left: 2px dashed #008b8b;
+  border-bottom: 2px double #008b8b;
   padding: 0 15px;
   font-style: initial;
   margin: 1.5em 0 0;
-  background-color: #ffffd7;
+  background-color: #f3f3f3db;
   padding: 1% 2% 1% 2%;
   margin-bottom: 20px; }
   blockquote cite:before {
@@ -664,7 +665,7 @@ blockquote {
   #sidebar .sidebar-container {
     overflow: auto; }
   #sidebar .sidebar-profile {
-    color: #1c7ceb;
+    color: #0c6c6c;
     text-align: center;
     padding-top: 18px;
     margin-bottom: 15px; }
@@ -685,12 +686,12 @@ blockquote {
       height: 50px;
       line-height: 50px; }
       #sidebar ul.sidebar-buttons li.sidebar-button .sidebar-button-link {
-        color: #1c7ceb;
+        color: #0c6c6c;
         display: block;
         height: 100%; }
         #sidebar ul.sidebar-buttons li.sidebar-button .sidebar-button-link:hover, #sidebar ul.sidebar-buttons li.sidebar-button .sidebar-button-link:active {
           text-decoration: none;
-          color: #07284e;
+          color: black;
           border-color: rgba(255, 27, 27, 0.662745); }
     #sidebar ul.sidebar-buttons:first-child {
       margin-top: 5px; }
@@ -1052,7 +1053,7 @@ blockquote {
       #sidebar[data-behavior="1"] .sidebar-profile .sidebar-profile-location {
         font-weight: 400;
         font-size: 1.8rem;
-        color: #1c7ceb; }
+        color: #0c6c6c; }
       #sidebar[data-behavior="1"] .sidebar-profile .sidebar-profile-job,
       #sidebar[data-behavior="1"] .sidebar-profile .sidebar-profile-location {
         margin-top: 0;
@@ -1196,7 +1197,7 @@ blockquote {
       #sidebar[data-behavior="4"] .sidebar-profile .sidebar-profile-location {
         font-weight: 400;
         font-size: 1.8rem;
-        color: #1c7ceb; }
+        color: #0c6c6c; }
       #sidebar[data-behavior="4"] .sidebar-profile .sidebar-profile-job,
       #sidebar[data-behavior="4"] .sidebar-profile .sidebar-profile-location {
         margin-top: 0;
@@ -2185,14 +2186,17 @@ a.fancybox {
       transform: translate3d(75px, 0, 0); } }
 
 .postShorten-group .postShorten {
-  margin-top: 15px;
-  border-bottom: 1px solid #eef2f8; }
+  margin-top: 30px; }
 
 .postShorten {
   position: relative;
-  width: 100%;
+  width: 95%;
   display: inline-block;
-  vertical-align: top; }
+  vertical-align: middle;
+  padding: 30px;
+  border-radius: 10px;
+  border: 3px double #008b8b;
+  margin-top: 50px; }
   .postShorten .postShorten-thumbnailimg {
     overflow: hidden; }
   .postShorten .postShorten-header .postShorten-title {
@@ -2234,6 +2238,8 @@ a.fancybox {
       max-width: 100%; }
   .postShorten .postShorten-excerpt {
     margin-top: 15px; }
+  .postShorten .postShorten-excerpt img {
+    width: 400px; }
   .postShorten .postShorten-content {
     margin-top: 25px; }
 
@@ -2385,7 +2391,7 @@ a.side-tag,
   height: 40px;
   cursor: pointer;
   line-height: 40px;
-  color: #327cb8;
+  color: #020808d1;
   text-decoration: none;
   text-decoration-style: none;
   padding-left: 30px;
