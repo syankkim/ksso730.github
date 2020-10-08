@@ -1101,12 +1101,14 @@ blockquote {
             width: auto;
             height: 35px;
             line-height: 35px;
-            font-size: 2.2rem;
+            font-size: 2.0rem;
             letter-spacing: 0.3px;
             vertical-align: middle;
             overflow: hidden;
             white-space: nowrap;
             text-overflow: ellipsis; }
+          #sidebar[data-behavior="1"] ul.sidebar-buttons li.sidebar-button .sidebar-button-link a.side-tag, #sidebar[data-behavior="1"] ul.sidebar-buttons li.sidebar-button .sidebar-button-link .side-tag {
+            font-size: 1.8rem; }
         #sidebar[data-behavior="1"] ul.sidebar-buttons li.sidebar-button:nth-child(odd) {
           padding-right: 20px; }
     #sidebar[data-behavior="1"].pushed {
@@ -1245,12 +1247,14 @@ blockquote {
             width: auto;
             height: 35px;
             line-height: 35px;
-            font-size: 2.2rem;
+            font-size: 2.0rem;
             letter-spacing: 0.3px;
             vertical-align: middle;
             overflow: hidden;
             white-space: nowrap;
             text-overflow: ellipsis; }
+          #sidebar[data-behavior="4"] ul.sidebar-buttons li.sidebar-button .sidebar-button-link a.side-tag, #sidebar[data-behavior="4"] ul.sidebar-buttons li.sidebar-button .sidebar-button-link .side-tag {
+            font-size: 1.8rem; }
         #sidebar[data-behavior="4"] ul.sidebar-buttons li.sidebar-button:nth-child(odd) {
           padding-right: 20px; }
     #sidebar[data-behavior="4"].pushed {
@@ -2210,7 +2214,7 @@ a.fancybox {
   vertical-align: middle;
   padding: 30px;
   border-radius: 10px;
-  border: 3px double #008b8b;
+  border: 0.7rem outset #31aaaa;
   margin-top: 50px; }
   .postShorten .postShorten-thumbnailimg {
     overflow: hidden; }
@@ -2234,7 +2238,7 @@ a.fancybox {
   .postShorten .postShorten-excerpt_link {
     font-family: "NanumSquareRound", "Helvetica Neue", sans-serif;
     font-size: 1.3rem;
-    font-weight: 400; }
+    font-weight: 600; }
   .postShorten .postShorten-excerpt,
   .postShorten .postShorten-content {
     text-rendering: optimizelegibility;

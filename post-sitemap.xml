@@ -8,6 +8,22 @@
     </url>
 
     <url>
+        <loc>http://yoursite.com/2020/10/08/%ED%8C%8C%EC%9D%B4%EC%8D%AC-init-%EA%B3%BC-self/</loc>
+        <lastmod>2020-10-08T03:49:16.789Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>http://yoursite.com/2020/06/03/nginx-tomcat-%EB%B9%84%EA%B5%90/</loc>
+        <lastmod>2020-10-08T02:56:10.741Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
         <loc>http://yoursite.com/2020/06/15/CODING-TEST-with-Python-0615/</loc>
         <lastmod>2020-06-16T02:59:34.278Z</lastmod>
         <changefreq>weekly</changefreq>
@@ -18,14 +34,6 @@
     <url>
         <loc>http://yoursite.com/2020/06/16/CODING-TEST-with-Python-0616/</loc>
         <lastmod>2020-06-16T02:58:14.894Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>http://yoursite.com/2020/06/03/nginx-tomcat-%EB%B9%84%EA%B5%90/</loc>
-        <lastmod>2020-06-16T02:47:45.023Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
 
