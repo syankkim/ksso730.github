@@ -6,31 +6,27 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="동글씨">
-    <title>Nginx &amp; Tomcat 비교 - 동글씨</title>
+    <title>⚙️ 운영체제(2) 컴퓨터 구조 - 동글씨</title>
     <meta name="author" content="Suyan Kim">
     
     
     
         <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
     
-    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","ksso7300@gmail.com"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\nNginx 란,\napache 의 C10K 문제점 해결을 위해 만들어진 Event-Driven 구조의 웹서버SW 라고 합니다.  OSI7 Layer 중 application Level 아래의 Level 에서 Nginx 같은 웹서버가 HTTP 통신을 담당합니다.\n\nC10K 일만개의 클라이언트 문제한 시스템에 동시 접속자수가 1만명이 넘어갈 때 효율적방안\n\nNginx &amp; ApacheNginx 는 Tomcat 과 비교되어 그 장점을 설명할 수 있습니다.\nApacheMPM 방식으로 HTTP 요청을 처리합니다.\n\nMPM : Multi-Process Module 은 크게 두 가지 방식이 있습니다.PreFork 방식 Worker 방식\n\n\nPreFork MPM (다중 프로세스)o Client 요청에 대해 apache 자식 프로세스를 생성하여 처리합니다.o 요청이 많을 경우 Process 를 생성하여 처리합니다. 이 방식은 Apache 설치시 default 로 설정되어 있습니다.o 하나의 자식프로세스당 하나의 스레드 를 갖습니다. (최대 1024개)o 스레드간 메모리 공유를 하지 않습니다. 이 방식은 독립적이기에 안정적인 반면, 메모리 소모가 크다는 단점이 있습니다.\n\nWorker MPM (멀티 프로세스-스레드)o Prefork 보다 메모리 사용량이 적고 동시접속자가 많은 사이트에 적합합니다. 각 프로세스의 스레드를 생성해 처리하는 구조입니다.o 스레드 간의 메모리 공유가 가능합니다.o 프로세스 당 최대 64개의 스레드처리가 가능하며, 각 스레드는 하나의 연결만을 부여받습니다.\n\n\nApache 의 한계\n클라이언트 접속마다 Process 혹은 Thread 를 생성하는 구조입니다. 1만 클라이언트로부터 동시접속 요청이 들어온다면 CPU 와 메모리 사용이 증가하고 추가적인 Process/Tread 생성비용이 드는 등 대용량 요청에서 한계를 보입니다.또한, Apache 서버의 프로세스가 blocking 될 때 요청을 처리하지 못하고 처리가 완료될 때까지 대기상태에 있습니다. 이는 Keep Alive(접속대기) 로 해결이 가능하지만, 효율이 떨어집니다.\n\n\n다시 Nginx 를 살펴봅시다.\nNginx 는 위에서 언급했듯이 Event-Driven 방식으로 동작합니다. 즉, 프로그램 흐름이 이벤트에 의해 결정이 됩니다.한 개 또는 고정된 프로세스만 생성하고, 그 내부에서 비동기로 효율적인 방식으로 task 를 처리합니다. Apache 와 달리 동시접속자 수가 많아져도 추가적인 생성비용이 들지 않습니다.\n\no 비동기 이벤트 기반으로 요청하여 적은양의 스레드가 사용되기 때문에 CPU소모가 적습니다.o Apache 와 달리 CPU 와 관계없이 I/O 들을 전부 Event Listener로 미루기 때문에 흐름이 끊이지 않습니다.o context switching 비용이 적습니다.\n[Context Switching]Context: 스레드가 작업을 진행하는동안 작업정보 (레지스터, 커널스택, 사용자스택 등)를 보관O/S 는 A작업을 진행할 때 A스레드의 Context를 읽어오며, B스레드로 전환 할 때 A스레드의 Context를 저장하고 B스레드의 Context를 읽어오는 일련의 반복작업을 합니다.즉, 스레드 갯수가 많아질 수록 context switching 작업은 더 빈번하게 일어나고 이 때문에 성능이 저하될 수 있습니다.\nApache &amp; Nginx 장점O Apache 는 Nginx 에 비해 모듈이 다양합니다.O Apache 의 안정성, 확장성, 호환성을 장점으로 들자면, Nginx 는 성능이 우세하다는 장점이 있습니다.\n어느것이 더 나은가\nApache 나 Nginx 모두 각 웹서버마다의 장단점을 가지고 있으므로 사용에 있어서 정답은 없습니다. 상황과 비용에 따라, 혹은 안정성이나 효율성에 따라 적합한 웹서버를 사용한면 되지 않을까 합니다.\n","dateCreated":"2020-06-03T22:12:06+09:00","dateModified":"2020-10-08T11:56:10+09:00","datePublished":"2020-06-03T22:12:06+09:00","description":"\napache nginx C10K MPM PreFork Worker","headline":"Nginx & Tomcat 비교","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2020/06/03/nginx-tomcat-%EB%B9%84%EA%B5%90/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","ksso7300@gmail.com"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2020/06/03/nginx-tomcat-%EB%B9%84%EA%B5%90/","keywords":"apache, nginx, C10K, MPM, PreFork, Worker"}</script>
-    <meta name="description" content="apache nginx C10K MPM PreFork Worker">
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","ksso7300@gmail.com"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\n\n앞서서.. 운영체제 역할은 뭐라고 했었나?하드웨어를 관리하는 일.\n어떻게?운영체제가 하드웨어를 알지 못해도 쉽게 사용할 수 있도록,하드웨어의 효율적인 일처리, 최대의 성능을 발휘할 수 있도록 한다.\n그래서,운영체제-하드웨어 함께 다니는 이 둘 때문에 컴퓨터 구조는 당연히, 알아야 한다고.\n\n\n\n우리가 알아야 할 것들\n\n\n\n프로그램 실행 기본 플로우\nFetch > Decode > Execution\n\n\nCPU\n중앙처리 장치로 모든 연산, 명령 담당. 컴퓨터의 뇌.CPU 를 어떻게 관리하는가?\n\n\n\nALU (Arithtic Logic Unit)\n연산 담당하는 주체. 산술, 논리 연산\n\n\n\nControl Unit\nCPU 가 처리해야 할 명령어들을 해석. 그 결과에 따라 적절한 신호를 CPU의 다른 블록에 전송.\n\n\n\n메인메모리\n램(RAM) : 컴파일 완료된 소스가 올라가서 실행되는 영역.프로그램 실행을 위해 존재하는 메모리.메모리를 어떻게 관리하는가?\n\n\n\n장치제어기 (I/O Controller = Device Contorller)\n입력/출력/저장 기능을 하는 주변장치를 인식하여 제어해준다.(모니터, 프린터, 마우스, 키보드, USB 따위들)\n\n주변장치들은 플러그와 소켓을 통해 연결되는데, 소켓과 Device Controller와 연결되어 있다.\n어떤 장치를 연결하면 드라이버를 다운 받아야 한다. 이 드라이버는 운영체제가 장치와 호환가능하도록 해주는 하나의 코드이며, 이 코드를 디바이스 컨트롤러가 인식하는 것.\n\nInstruction Register(IR) : CPU의 명령을 저장.\nData Register(IR) : 값을 읽어옴.I/O 장치를 어떻게 관리하는가?\n\n\n\n입출력버스\n컴퓨터를 구성하는 요소들 간의 데이터 통로\n\n\n어드레스 버스 : 주소 이동\n데이터 버스 : 데이터 이동\n컨트롤 버스 : 컨트롤 신호 이동. CPU와 메모리 간의 통신.\n하드디스크, 메인메모리, CPU 등 모두 버스와 연결.\n버스 인터페이스 : 버스 프로토콜, 통신방식을 알고 있는것.\n\n\n\n\n※ 이 글은 아래 블로그 글을 바탕으로 혼자 공부하며 간단히 필기해본 내용입니다.좋은 자료를 공유해주신 블로그님께 감사드립니다.🔗블로그 주소","dateCreated":"2020-10-19T11:31:21+09:00","dateModified":"2020-10-19T12:27:01+09:00","datePublished":"2020-10-19T11:31:21+09:00","description":"운영체제도 조금씩 알아보자.컴퓨터 구조","headline":"⚙️ 운영체제(2) 컴퓨터 구조","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2020/10/19/%EC%9A%B4%EC%98%81%EC%B2%B4%EC%A0%9C-2-%EC%BB%B4%ED%93%A8%ED%84%B0-%EA%B5%AC%EC%A1%B0/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","ksso7300@gmail.com"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2020/10/19/%EC%9A%B4%EC%98%81%EC%B2%B4%EC%A0%9C-2-%EC%BB%B4%ED%93%A8%ED%84%B0-%EA%B5%AC%EC%A1%B0/"}</script>
+    <meta name="description" content="운영체제도 조금씩 알아보자.컴퓨터 구조">
 <meta property="og:type" content="blog">
-<meta property="og:title" content="Nginx &amp; Tomcat 비교">
-<meta property="og:url" content="http://yoursite.com/2020/06/03/nginx-tomcat-%EB%B9%84%EA%B5%90/index.html">
+<meta property="og:title" content="⚙️ 운영체제(2) 컴퓨터 구조">
+<meta property="og:url" content="http://yoursite.com/2020/10/19/%EC%9A%B4%EC%98%81%EC%B2%B4%EC%A0%9C-2-%EC%BB%B4%ED%93%A8%ED%84%B0-%EA%B5%AC%EC%A1%B0/index.html">
 <meta property="og:site_name" content="동글씨">
-<meta property="og:description" content="apache nginx C10K MPM PreFork Worker">
+<meta property="og:description" content="운영체제도 조금씩 알아보자.컴퓨터 구조">
 <meta property="og:locale" content="en_US">
-<meta property="article:published_time" content="2020-06-03T13:12:06.000Z">
-<meta property="article:modified_time" content="2020-10-08T02:56:10.741Z">
+<meta property="og:image" content="https://user-images.githubusercontent.com/28856435/96395180-e538c380-11fe-11eb-8743-0c13568964f4.png">
+<meta property="article:published_time" content="2020-10-19T02:31:21.000Z">
+<meta property="article:modified_time" content="2020-10-19T03:27:01.715Z">
 <meta property="article:author" content="Suyan Kim">
-<meta property="article:tag" content="apache">
-<meta property="article:tag" content="nginx">
-<meta property="article:tag" content="C10K">
-<meta property="article:tag" content="MPM">
-<meta property="article:tag" content="PreFork">
-<meta property="article:tag" content="Worker">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://user-images.githubusercontent.com/28856435/96395180-e538c380-11fe-11eb-8743-0c13568964f4.png">
     
     
         
@@ -298,20 +294,20 @@
         <div class="post-header main-content-wrap text-left">
     
         <h1 class="post-title">
-            Nginx &amp; Tomcat 비교
+            ⚙️ 운영체제(2) 컴퓨터 구조
         </h1>
     
     
         <div class="post-meta">
-    <time datetime="2020-06-03T22:12:06+09:00">
+    <time datetime="2020-10-19T11:31:21+09:00">
 	
-		    Jun 03, 2020
+		    Oct 19, 2020
     	
     </time>
     
         <span>in </span>
         
-    <a class="category-link" href="/categories/%E2%98%81%EF%B8%8F-Web/">☁️ Web</a>
+    <a class="category-link" href="/categories/%E2%98%81%EF%B8%8F-OS/">☁️ OS</a>
 
 
     
@@ -324,37 +320,69 @@
     <div class="post-content markdown">
         <div class="main-content-wrap">
             <!-- excerpt -->
-<h1 id="table-of-contents">Contents</h1><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Nginx-란"><span class="toc-text">Nginx 란,</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Nginx-amp-Apache"><span class="toc-text">Nginx &amp; Apache</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Apache"><span class="toc-text">Apache</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Apache-의-한계"><span class="toc-text">Apache 의 한계</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#다시-Nginx-를-살펴봅시다"><span class="toc-text">다시 Nginx 를 살펴봅시다.</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Apache-amp-Nginx-장점"><span class="toc-text">Apache &amp; Nginx 장점</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#어느것이-더-나은가"><span class="toc-text">어느것이 더 나은가</span></a></li></ol>
-
-<h2 id="Nginx-란"><a href="#Nginx-란" class="headerlink" title="Nginx 란,"></a>Nginx 란,</h2><blockquote>
-<p>apache 의 C10K 문제점 해결을 위해 만들어진 <code>Event-Driven</code> 구조의 웹서버SW 라고 합니다.  OSI7 Layer 중 application Level 아래의 Level 에서 Nginx 같은 웹서버가 HTTP 통신을 담당합니다.</p>
-</blockquote>
-<p><strong><code>C10K</code> 일만개의 클라이언트 문제</strong><br>한 시스템에 동시 접속자수가 1만명이 넘어갈 때 효율적방안</p>
+<h1 id="table-of-contents">Contents</h1><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#CPU"><span class="toc-text">CPU</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ALU-Arithtic-Logic-Unit"><span class="toc-text">ALU (Arithtic Logic Unit)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Control-Unit"><span class="toc-text">Control Unit</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#메인메모리"><span class="toc-text">메인메모리</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#장치제어기-I-O-Controller-Device-Contorller"><span class="toc-text">장치제어기 (I&#x2F;O Controller &#x3D; Device Contorller)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#입출력버스"><span class="toc-text">입출력버스</span></a></li></ol>
 <hr>
-<h2 id="Nginx-amp-Apache"><a href="#Nginx-amp-Apache" class="headerlink" title="Nginx &amp; Apache"></a>Nginx &amp; Apache</h2><p><code>Nginx</code> 는 <code>Tomcat</code> 과 비교되어 그 장점을 설명할 수 있습니다.</p>
-<h3 id="Apache"><a href="#Apache" class="headerlink" title="Apache"></a>Apache</h3><p><code>MPM 방식</code>으로 HTTP 요청을 처리합니다.</p>
-<blockquote>
-<p>MPM : Multi-Process Module 은 크게 두 가지 방식이 있습니다.<br><code>PreFork 방식</code> <code>Worker 방식</code></p>
+<br/>
+
+<p><strong><em>앞서서.. 운영체제 역할은 뭐라고 했었나?</em></strong><br>하드웨어를 관리하는 일.</p>
+<p><strong><em>어떻게?</em></strong><br>운영체제가 하드웨어를 알지 못해도 쉽게 사용할 수 있도록,<br>하드웨어의 효율적인 일처리, 최대의 성능을 발휘할 수 있도록 한다.</p>
+<p><strong><em>그래서,</em></strong><br>운영체제-하드웨어 함께 다니는 이 둘 때문에 <code>컴퓨터 구조</code>는 당연히, 알아야 한다고.</p>
+<hr>
+<br/>
+
+<center><strong>우리가 알아야 할 것들</strong></center>
+
+<img width="300" src="https://user-images.githubusercontent.com/28856435/96395180-e538c380-11fe-11eb-8743-0c13568964f4.png">
+
+<center><strong>프로그램 실행 기본 플로우</strong></center>
+<center>Fetch > Decode > Execution</center>
+
+
+<h2 id="CPU"><a href="#CPU" class="headerlink" title="CPU"></a>CPU</h2><blockquote>
+<p>중앙처리 장치로 모든 연산, 명령 담당. 컴퓨터의 뇌.<br><code>CPU 를 어떻게 관리하는가?</code></p>
+</blockquote>
+<br/>
+
+<h2 id="ALU-Arithtic-Logic-Unit"><a href="#ALU-Arithtic-Logic-Unit" class="headerlink" title="ALU (Arithtic Logic Unit)"></a>ALU (Arithtic Logic Unit)</h2><blockquote>
+<p>연산 담당하는 주체. 산술, 논리 연산</p>
+</blockquote>
+<br/>
+
+<h2 id="Control-Unit"><a href="#Control-Unit" class="headerlink" title="Control Unit"></a>Control Unit</h2><blockquote>
+<p>CPU 가 처리해야 할 명령어들을 해석. 그 결과에 따라 적절한 신호를 CPU의 다른 블록에 전송.</p>
+</blockquote>
+<br/>
+
+<h2 id="메인메모리"><a href="#메인메모리" class="headerlink" title="메인메모리"></a>메인메모리</h2><blockquote>
+<p><strong>램(RAM)</strong> : 컴파일 완료된 소스가 올라가서 실행되는 영역.<br>프로그램 실행을 위해 존재하는 메모리.<br><code>메모리를 어떻게 관리하는가?</code></p>
+</blockquote>
+<br/>
+
+<h2 id="장치제어기-I-O-Controller-Device-Contorller"><a href="#장치제어기-I-O-Controller-Device-Contorller" class="headerlink" title="장치제어기 (I/O Controller = Device Contorller)"></a>장치제어기 (I/O Controller = Device Contorller)</h2><blockquote>
+<p>입력/출력/저장 기능을 하는 주변장치를 인식하여 제어해준다.<br>(모니터, 프린터, 마우스, 키보드, USB 따위들)</p>
+</blockquote>
+<p>주변장치들은 플러그와 소켓을 통해 연결되는데, 소켓과 Device Controller와 연결되어 있다.</p>
+<p>어떤 장치를 연결하면 드라이버를 다운 받아야 한다. 이 드라이버는 운영체제가 장치와 호환가능하도록 해주는 하나의 코드이며, 이 코드를 디바이스 컨트롤러가 인식하는 것.</p>
+<ul>
+<li>Instruction Register(IR) : CPU의 명령을 저장.</li>
+<li>Data Register(IR) : 값을 읽어옴.<br><code>I/O 장치를 어떻게 관리하는가?</code></li>
+</ul>
+<br/>
+
+<h2 id="입출력버스"><a href="#입출력버스" class="headerlink" title="입출력버스"></a>입출력버스</h2><blockquote>
+<p><strong>컴퓨터를 구성하는 요소들 간의 데이터 통로</strong></p>
 </blockquote>
 <ul>
-<li><p><strong>PreFork MPM (다중 프로세스)</strong><br>o Client 요청에 대해 apache 자식 프로세스를 생성하여 처리합니다.<br>o 요청이 많을 경우 Process 를 생성하여 처리합니다. 이 방식은 Apache 설치시 default 로 설정되어 있습니다.<br>o 하나의 자식프로세스당 <code>하나의 스레드</code> 를 갖습니다. (최대 1024개)<br>o 스레드간 메모리 공유를 하지 않습니다. 이 방식은 독립적이기에 안정적인 반면, 메모리 소모가 크다는 단점이 있습니다.</p>
-</li>
-<li><p><strong>Worker MPM (멀티 프로세스-스레드)</strong><br>o Prefork 보다 메모리 사용량이 적고 동시접속자가 많은 사이트에 적합합니다. 각 프로세스의 스레드를 생성해 처리하는 구조입니다.<br>o 스레드 간의 메모리 공유가 가능합니다.<br>o 프로세스 당 최대 64개의 스레드처리가 가능하며, 각 스레드는 하나의 연결만을 부여받습니다.</p>
-</li>
+<li>어드레스 버스 : 주소 이동</li>
+<li>데이터 버스 : 데이터 이동</li>
+<li>컨트롤 버스 : 컨트롤 신호 이동. CPU와 메모리 간의 통신.</li>
+<li>하드디스크, 메인메모리, CPU 등 모두 버스와 연결.</li>
+<li>버스 인터페이스 : 버스 프로토콜, 통신방식을 알고 있는것.</li>
 </ul>
-<h3 id="Apache-의-한계"><a href="#Apache-의-한계" class="headerlink" title="Apache 의 한계"></a>Apache 의 한계</h3><blockquote>
-<p><strong>클라이언트 접속마다 Process 혹은 Thread 를 생성하는 구조입니다.</strong> 1만 클라이언트로부터 동시접속 요청이 들어온다면 CPU 와 메모리 사용이 증가하고 추가적인 Process/Tread 생성비용이 드는 등 대용량 요청에서 한계를 보입니다.<br>또한, Apache 서버의 프로세스가 <code>blocking</code> 될 때 요청을 처리하지 못하고 처리가 완료될 때까지 대기상태에 있습니다. 이는 <code>Keep Alive(접속대기)</code> 로 해결이 가능하지만, 효율이 떨어집니다.</p>
-</blockquote>
 <hr>
-<h3 id="다시-Nginx-를-살펴봅시다"><a href="#다시-Nginx-를-살펴봅시다" class="headerlink" title="다시 Nginx 를 살펴봅시다."></a>다시 Nginx 를 살펴봅시다.</h3><blockquote>
-<p>Nginx 는 위에서 언급했듯이 Event-Driven 방식으로 동작합니다. 즉, 프로그램 흐름이 이벤트에 의해 결정이 됩니다.<br>한 개 또는 고정된 프로세스만 생성하고, 그 내부에서 비동기로 효율적인 방식으로 task 를 처리합니다. Apache 와 달리 동시접속자 수가 많아져도 추가적인 생성비용이 들지 않습니다.</p>
-</blockquote>
-<p>o 비동기 이벤트 기반으로 요청하여 적은양의 스레드가 사용되기 때문에 CPU소모가 적습니다.<br>o Apache 와 달리 CPU 와 관계없이 I/O 들을 전부 Event Listener로 미루기 때문에 흐름이 끊이지 않습니다.<br>o <code>context switching</code> 비용이 적습니다.</p>
-<p><strong><code>[Context Switching]</code></strong><br><code>Context: 스레드가 작업을 진행하는동안 작업정보 (레지스터, 커널스택, 사용자스택 등)를 보관</code><br><code>O/S 는 A작업을 진행할 때 A스레드의 Context를 읽어오며, B스레드로 전환 할 때 A스레드의 Context를 저장하고 B스레드의 Context를 읽어오는 일련의 반복작업을 합니다.</code><br><code>즉, 스레드 갯수가 많아질 수록 context switching 작업은 더 빈번하게 일어나고 이 때문에 성능이 저하될 수 있습니다.</code></p>
-<h3 id="Apache-amp-Nginx-장점"><a href="#Apache-amp-Nginx-장점" class="headerlink" title="Apache &amp; Nginx 장점"></a>Apache &amp; Nginx 장점</h3><p>O Apache 는 Nginx 에 비해 모듈이 다양합니다.<br>O Apache 의 안정성, 확장성, 호환성을 장점으로 들자면, Nginx 는 성능이 우세하다는 장점이 있습니다.</p>
-<h2 id="어느것이-더-나은가"><a href="#어느것이-더-나은가" class="headerlink" title="어느것이 더 나은가"></a>어느것이 더 나은가</h2><blockquote>
-<p>Apache 나 Nginx 모두 각 웹서버마다의 장단점을 가지고 있으므로 사용에 있어서 정답은 없습니다. 상황과 비용에 따라, 혹은 안정성이나 효율성에 따라 적합한 웹서버를 사용한면 되지 않을까 합니다.</p>
-</blockquote>
+<br/>
+
+<p><em>※ 이 글은 아래 블로그 글을 바탕으로 혼자 공부하며 간단히 필기해본 내용입니다.<br>좋은 자료를 공유해주신 블로그님께 감사드립니다.</em><br>🔗<a href="https://jhnyang.tistory.com/16" target="_blank" rel="noopener">블로그 주소</a></p>
             
 
 
@@ -362,27 +390,17 @@
     </div>
     <div id="post-footer" class="post-footer main-content-wrap">
         
-            <div class="post-footer-tags">
-                <span class="text-color-light text-small">TAGGED IN</span><br/>
-                
-    <a class="tag tag--primary tag--small t-link" href="/tags/C10K/" rel="tag">C10K</a> <a class="tag tag--primary tag--small t-link" href="/tags/MPM/" rel="tag">MPM</a> <a class="tag tag--primary tag--small t-link" href="/tags/PreFork/" rel="tag">PreFork</a> <a class="tag tag--primary tag--small t-link" href="/tags/Worker/" rel="tag">Worker</a> <a class="tag tag--primary tag--small t-link" href="/tags/apache/" rel="tag">apache</a> <a class="tag tag--primary tag--small t-link" href="/tags/nginx/" rel="tag">nginx</a>
-
-            </div>
-        
         
             <div class="post-actions-wrap">
     <nav>
         <ul class="post-actions post-action-nav">
             <li class="post-action">
                 
-                    
-                <a
-                    class="post-action-btn btn btn--default tooltip--top"
-                    href="/2020/06/15/CODING-TEST-with-Python-0615/"
-                    data-tooltip="CODING TEST  {SockMerchant} with Python"
-                    aria-label="PREVIOUS: CODING TEST  {SockMerchant} with Python"
-                >
-                    
+                    <a
+                        class="post-action-btn btn btn--disabled"
+                        aria-hidden="true"
+                    >
+                        
                         <i class="fa fa-angle-left" aria-hidden="true"></i>
                         <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
                     </a>
@@ -392,9 +410,9 @@
                     
                 <a
                     class="post-action-btn btn btn--default tooltip--top"
-                    href="/2020/06/01/react-router-%EC%82%AC%EC%9A%A9%ED%95%98%EA%B8%B0/"
-                    data-tooltip="react router 사용하기"
-                    aria-label="NEXT: react router 사용하기"
+                    href="/2020/10/19/%EC%9A%B4%EC%98%81%EC%B2%B4%EC%A0%9C-1-%EA%B8%B0%EB%8A%A5-%EB%AA%A9%EC%A0%81-%EA%B5%AC%EC%A1%B0/"
+                    data-tooltip="⚙️ 운영체제(1) 기능,목적,구조"
+                    aria-label="NEXT: ⚙️ 운영체제(1) 기능,목적,구조"
                 >
                     
                         <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
@@ -419,7 +437,7 @@
             <li class="post-action hide-xs">
                 <a
                     class="post-action-btn btn btn--default"
-                    target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2020/06/03/nginx-tomcat-%EB%B9%84%EA%B5%90/"
+                    target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2020/10/19/%EC%9A%B4%EC%98%81%EC%B2%B4%EC%A0%9C-2-%EC%BB%B4%ED%93%A8%ED%84%B0-%EA%B5%AC%EC%A1%B0/"
                     title="Share on Facebook"
                     aria-label="Share on Facebook"
                 >
@@ -432,7 +450,7 @@
             <li class="post-action hide-xs">
                 <a
                     class="post-action-btn btn btn--default"
-                    target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2020/06/03/nginx-tomcat-%EB%B9%84%EA%B5%90/"
+                    target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2020/10/19/%EC%9A%B4%EC%98%81%EC%B2%B4%EC%A0%9C-2-%EC%BB%B4%ED%93%A8%ED%84%B0-%EA%B5%AC%EC%A1%B0/"
                     title="Share on Twitter"
                     aria-label="Share on Twitter"
                 >
@@ -445,7 +463,7 @@
             <li class="post-action hide-xs">
                 <a
                     class="post-action-btn btn btn--default"
-                    target="new" href="https://plus.google.com/share?url=http://yoursite.com/2020/06/03/nginx-tomcat-%EB%B9%84%EA%B5%90/"
+                    target="new" href="https://plus.google.com/share?url=http://yoursite.com/2020/10/19/%EC%9A%B4%EC%98%81%EC%B2%B4%EC%A0%9C-2-%EC%BB%B4%ED%93%A8%ED%84%B0-%EA%B5%AC%EC%A1%B0/"
                     title="Share on Google+"
                     aria-label="Share on Google+"
                 >
@@ -504,14 +522,11 @@
         <ul class="post-actions post-action-nav">
             <li class="post-action">
                 
-                    
-                <a
-                    class="post-action-btn btn btn--default tooltip--top"
-                    href="/2020/06/15/CODING-TEST-with-Python-0615/"
-                    data-tooltip="CODING TEST  {SockMerchant} with Python"
-                    aria-label="PREVIOUS: CODING TEST  {SockMerchant} with Python"
-                >
-                    
+                    <a
+                        class="post-action-btn btn btn--disabled"
+                        aria-hidden="true"
+                    >
+                        
                         <i class="fa fa-angle-left" aria-hidden="true"></i>
                         <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
                     </a>
@@ -521,9 +536,9 @@
                     
                 <a
                     class="post-action-btn btn btn--default tooltip--top"
-                    href="/2020/06/01/react-router-%EC%82%AC%EC%9A%A9%ED%95%98%EA%B8%B0/"
-                    data-tooltip="react router 사용하기"
-                    aria-label="NEXT: react router 사용하기"
+                    href="/2020/10/19/%EC%9A%B4%EC%98%81%EC%B2%B4%EC%A0%9C-1-%EA%B8%B0%EB%8A%A5-%EB%AA%A9%EC%A0%81-%EA%B5%AC%EC%A1%B0/"
+                    data-tooltip="⚙️ 운영체제(1) 기능,목적,구조"
+                    aria-label="NEXT: ⚙️ 운영체제(1) 기능,목적,구조"
                 >
                     
                         <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
@@ -548,7 +563,7 @@
             <li class="post-action hide-xs">
                 <a
                     class="post-action-btn btn btn--default"
-                    target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2020/06/03/nginx-tomcat-%EB%B9%84%EA%B5%90/"
+                    target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2020/10/19/%EC%9A%B4%EC%98%81%EC%B2%B4%EC%A0%9C-2-%EC%BB%B4%ED%93%A8%ED%84%B0-%EA%B5%AC%EC%A1%B0/"
                     title="Share on Facebook"
                     aria-label="Share on Facebook"
                 >
@@ -561,7 +576,7 @@
             <li class="post-action hide-xs">
                 <a
                     class="post-action-btn btn btn--default"
-                    target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2020/06/03/nginx-tomcat-%EB%B9%84%EA%B5%90/"
+                    target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2020/10/19/%EC%9A%B4%EC%98%81%EC%B2%B4%EC%A0%9C-2-%EC%BB%B4%ED%93%A8%ED%84%B0-%EA%B5%AC%EC%A1%B0/"
                     title="Share on Twitter"
                     aria-label="Share on Twitter"
                 >
@@ -574,7 +589,7 @@
             <li class="post-action hide-xs">
                 <a
                     class="post-action-btn btn btn--default"
-                    target="new" href="https://plus.google.com/share?url=http://yoursite.com/2020/06/03/nginx-tomcat-%EB%B9%84%EA%B5%90/"
+                    target="new" href="https://plus.google.com/share?url=http://yoursite.com/2020/10/19/%EC%9A%B4%EC%98%81%EC%B2%B4%EC%A0%9C-2-%EC%BB%B4%ED%93%A8%ED%84%B0-%EA%B5%AC%EC%A1%B0/"
                     title="Share on Google+"
                     aria-label="Share on Google+"
                 >
@@ -618,7 +633,7 @@
                     <a
                         class="share-option-btn"
                         target="new"
-                        href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2020/06/03/nginx-tomcat-%EB%B9%84%EA%B5%90/"
+                        href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2020/10/19/%EC%9A%B4%EC%98%81%EC%B2%B4%EC%A0%9C-2-%EC%BB%B4%ED%93%A8%ED%84%B0-%EA%B5%AC%EC%A1%B0/"
                         aria-label="Share on Facebook"
                     >
                         <i class="fab fa-facebook" aria-hidden="true"></i><span>Share on Facebook</span>
@@ -631,7 +646,7 @@
                     <a
                         class="share-option-btn"
                         target="new"
-                        href="https://twitter.com/intent/tweet?text=http://yoursite.com/2020/06/03/nginx-tomcat-%EB%B9%84%EA%B5%90/"
+                        href="https://twitter.com/intent/tweet?text=http://yoursite.com/2020/10/19/%EC%9A%B4%EC%98%81%EC%B2%B4%EC%A0%9C-2-%EC%BB%B4%ED%93%A8%ED%84%B0-%EA%B5%AC%EC%A1%B0/"
                         aria-label="Share on Twitter"
                     >
                         <i class="fab fa-twitter" aria-hidden="true"></i><span>Share on Twitter</span>
@@ -644,7 +659,7 @@
                     <a
                         class="share-option-btn"
                         target="new"
-                        href="https://plus.google.com/share?url=http://yoursite.com/2020/06/03/nginx-tomcat-%EB%B9%84%EA%B5%90/"
+                        href="https://plus.google.com/share?url=http://yoursite.com/2020/10/19/%EC%9A%B4%EC%98%81%EC%B2%B4%EC%A0%9C-2-%EC%BB%B4%ED%93%A8%ED%84%B0-%EA%B5%AC%EC%A1%B0/"
                         aria-label="Share on Google+"
                     >
                         <i class="fab fa-google-plus" aria-hidden="true"></i><span>Share on Google+</span>
@@ -717,9 +732,9 @@
     
         <script>
           var disqus_config = function() {
-            this.page.url = 'http://yoursite.com/2020/06/03/nginx-tomcat-%EB%B9%84%EA%B5%90/';
+            this.page.url = 'http://yoursite.com/2020/10/19/%EC%9A%B4%EC%98%81%EC%B2%B4%EC%A0%9C-2-%EC%BB%B4%ED%93%A8%ED%84%B0-%EA%B5%AC%EC%A1%B0/';
               
-            this.page.identifier = '2020/06/03/nginx-tomcat-비교/';
+            this.page.identifier = '2020/10/19/운영체제-2-컴퓨터-구조/';
               
           };
           (function() {
