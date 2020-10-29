@@ -1,0 +1,746 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="동글씨">
+    <title>💻 Linux 빈 파일생성을 위한 cat, cp 성능비교 및 strace - 동글씨</title>
+    <meta name="author" content="Suyan Kim">
+    
+    
+    
+        <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
+    
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","ksso7300@gmail.com"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\n\n\n\ncp /dev/null {filename} VS cat /dev/null&gt;&gt;{filename}두 명령어의 성능을 비교하기 위해 strace 명령을 사용했다.\n\nstrace : 특정 프로그램의 시스템 콜과 시그널을 추적하는 명령명령어 추적 결과, ✔️cat 의 성능이 더 좋다는 사실.\n\n\n\nstrace 결과 : cat /dev/null &gt;&gt; {filename}\n123456789101112131415161718&gt; strace -c cat dev&#x2F;null&gt;&gt; access_test.log   cat: dev&#x2F;null: No such file or directory% time     seconds  usecs&#x2F;call     calls    errors syscall------ ----------- ----------- --------- --------- ----------------  0.00    0.000000           0         3           read  0.00    0.000000           0         4           write  0.00    0.000000           0        11         7 open  0.00    0.000000           0         6           close  0.00    0.000000           0         5           fstat  0.00    0.000000           0        10           mmap  0.00    0.000000           0         3           mprotect  0.00    0.000000           0         2           munmap  0.00    0.000000           0         3           brk  0.00    0.000000           0         1         1 access  0.00    0.000000           0         1           execve  0.00    0.000000           0         1           arch_prctl------ ----------- ----------- --------- --------- ----------------100.00    0.000000                    50         8 total\n\n\n\n1234567891011121314&gt; strace -e open cat dev&#x2F;null&gt;&gt; access_test.log   open(&quot;&#x2F;etc&#x2F;ld.so.cache&quot;, O_RDONLY)      &#x3D; 3open(&quot;&#x2F;lib64&#x2F;libc.so.6&quot;, O_RDONLY)      &#x3D; 3open(&quot;&#x2F;usr&#x2F;lib&#x2F;locale&#x2F;locale-archive&quot;, O_RDONLY) &#x3D; 3open(&quot;dev&#x2F;null&quot;, O_RDONLY)              &#x3D; -1 ENOENT (No such file or directory)cat: dev&#x2F;nullopen(&quot;&#x2F;usr&#x2F;share&#x2F;locale&#x2F;locale.alias&quot;, O_RDONLY|O_CLOEXEC) &#x3D; 3open(&quot;&#x2F;usr&#x2F;share&#x2F;locale&#x2F;en_US.UTF-8&#x2F;LC_MESSAGES&#x2F;libc.mo&quot;, O_RDONLY) &#x3D; -1 ENOENT (No such file or directory)open(&quot;&#x2F;usr&#x2F;share&#x2F;locale&#x2F;en_US.utf8&#x2F;LC_MESSAGES&#x2F;libc.mo&quot;, O_RDONLY) &#x3D; -1 ENOENT (No such file or directory)open(&quot;&#x2F;usr&#x2F;share&#x2F;locale&#x2F;en_US&#x2F;LC_MESSAGES&#x2F;libc.mo&quot;, O_RDONLY) &#x3D; -1 ENOENT (No such file or directory)open(&quot;&#x2F;usr&#x2F;share&#x2F;locale&#x2F;en.UTF-8&#x2F;LC_MESSAGES&#x2F;libc.mo&quot;, O_RDONLY) &#x3D; -1 ENOENT (No such file or directory)open(&quot;&#x2F;usr&#x2F;share&#x2F;locale&#x2F;en.utf8&#x2F;LC_MESSAGES&#x2F;libc.mo&quot;, O_RDONLY) &#x3D; -1 ENOENT (No such file or directory)open(&quot;&#x2F;usr&#x2F;share&#x2F;locale&#x2F;en&#x2F;LC_MESSAGES&#x2F;libc.mo&quot;, O_RDONLY) &#x3D; -1 ENOENT (No such file or directory): No such file or directory+++ exited with 1 +++\n\n\n\n\nstrace 결과 : cp /dev/null {filename}\n123456789101112131415161718192021222324252627&gt; strace -c cp dev&#x2F;null access_test.log   cp: cannot stat &#96;dev&#x2F;null&#39;: No such file or directory% time     seconds  usecs&#x2F;call     calls    errors syscall------ ----------- ----------- --------- --------- ----------------  0.00    0.000000           0        11           read  0.00    0.000000           0         4           write  0.00    0.000000           0        23        11 open  0.00    0.000000           0        15           close  0.00    0.000000           0         2         1 stat  0.00    0.000000           0        12           fstat  0.00    0.000000           0        27           mmap  0.00    0.000000           0        15           mprotect  0.00    0.000000           0         3           munmap  0.00    0.000000           0         3           brk  0.00    0.000000           0         2           rt_sigaction  0.00    0.000000           0         1           rt_sigprocmask  0.00    0.000000           0         1         1 access  0.00    0.000000           0         1           execve  0.00    0.000000           0         1           getrlimit  0.00    0.000000           0         1           geteuid  0.00    0.000000           0         1           statfs  0.00    0.000000           0         1           arch_prctl  0.00    0.000000           0         2         1 futex  0.00    0.000000           0         1           set_tid_address  0.00    0.000000           0         1           set_robust_list------ ----------- ----------- --------- --------- ----------------100.00    0.000000                   128        14 total\n\n\n\n\n1234567891011121314151617181920212223242526&gt; strace -e open cp dev&#x2F;null access_test.log  open(&quot;&#x2F;etc&#x2F;ld.so.cache&quot;, O_RDONLY)      &#x3D; 3open(&quot;&#x2F;lib64&#x2F;libselinux.so.1&quot;, O_RDONLY) &#x3D; 3open(&quot;&#x2F;lib64&#x2F;librt.so.1&quot;, O_RDONLY)     &#x3D; 3open(&quot;&#x2F;lib64&#x2F;libacl.so.1&quot;, O_RDONLY)    &#x3D; 3open(&quot;&#x2F;lib64&#x2F;libattr.so.1&quot;, O_RDONLY)   &#x3D; 3open(&quot;&#x2F;lib64&#x2F;libc.so.6&quot;, O_RDONLY)      &#x3D; 3open(&quot;&#x2F;lib64&#x2F;libdl.so.2&quot;, O_RDONLY)     &#x3D; 3open(&quot;&#x2F;lib64&#x2F;libpthread.so.0&quot;, O_RDONLY) &#x3D; 3open(&quot;&#x2F;proc&#x2F;filesystems&quot;, O_RDONLY)     &#x3D; 3open(&quot;&#x2F;usr&#x2F;lib&#x2F;locale&#x2F;locale-archive&quot;, O_RDONLY) &#x3D; 3open(&quot;&#x2F;usr&#x2F;share&#x2F;locale&#x2F;locale.alias&quot;, O_RDONLY|O_CLOEXEC) &#x3D; 3open(&quot;&#x2F;usr&#x2F;share&#x2F;locale&#x2F;en_US.UTF-8&#x2F;LC_MESSAGES&#x2F;coreutils.mo&quot;, O_RDONLY) &#x3D; -1 ENOENT (No such file or directory)open(&quot;&#x2F;usr&#x2F;share&#x2F;locale&#x2F;en_US.utf8&#x2F;LC_MESSAGES&#x2F;coreutils.mo&quot;, O_RDONLY) &#x3D; -1 ENOENT (No such file or directory)open(&quot;&#x2F;usr&#x2F;share&#x2F;locale&#x2F;en_US&#x2F;LC_MESSAGES&#x2F;coreutils.mo&quot;, O_RDONLY) &#x3D; -1 ENOENT (No such file or directory)open(&quot;&#x2F;usr&#x2F;share&#x2F;locale&#x2F;en.UTF-8&#x2F;LC_MESSAGES&#x2F;coreutils.mo&quot;, O_RDONLY) &#x3D; -1 ENOENT (No such file or directory)open(&quot;&#x2F;usr&#x2F;share&#x2F;locale&#x2F;en.utf8&#x2F;LC_MESSAGES&#x2F;coreutils.mo&quot;, O_RDONLY) &#x3D; -1 ENOENT (No such file or directory)open(&quot;&#x2F;usr&#x2F;share&#x2F;locale&#x2F;en&#x2F;LC_MESSAGES&#x2F;coreutils.mo&quot;, O_RDONLY) &#x3D; 3cp: cannot stat &#96;dev&#x2F;null&#39;open(&quot;&#x2F;usr&#x2F;share&#x2F;locale&#x2F;en_US.UTF-8&#x2F;LC_MESSAGES&#x2F;libc.mo&quot;, O_RDONLY) &#x3D; -1 ENOENT (No such file or directory)open(&quot;&#x2F;usr&#x2F;share&#x2F;locale&#x2F;en_US.utf8&#x2F;LC_MESSAGES&#x2F;libc.mo&quot;, O_RDONLY) &#x3D; -1 ENOENT (No such file or directory)open(&quot;&#x2F;usr&#x2F;share&#x2F;locale&#x2F;en_US&#x2F;LC_MESSAGES&#x2F;libc.mo&quot;, O_RDONLY) &#x3D; -1 ENOENT (No such file or directory)open(&quot;&#x2F;usr&#x2F;share&#x2F;locale&#x2F;en.UTF-8&#x2F;LC_MESSAGES&#x2F;libc.mo&quot;, O_RDONLY) &#x3D; -1 ENOENT (No such file or directory)open(&quot;&#x2F;usr&#x2F;share&#x2F;locale&#x2F;en.utf8&#x2F;LC_MESSAGES&#x2F;libc.mo&quot;, O_RDONLY) &#x3D; -1 ENOENT (No such file or directory)open(&quot;&#x2F;usr&#x2F;share&#x2F;locale&#x2F;en&#x2F;LC_MESSAGES&#x2F;libc.mo&quot;, O_RDONLY) &#x3D; -1 ENOENT (No such file or directory): No such file or directory+++ exited with 1 +++\n\n\n\n\n\n결과 비교💡 위 결과를 눈대중으로만 봐도 cat 은 적은 양의 라이브러리를 참조하며, open 하는 파일의 횟수도 상대적으로 적다.그에 반해 cp 는 cat보다 많은 양의 라이브러리를 참조하는것을 알 수 있으며, open file 도 많고, system call 또한 상대적으로 빈번하게 일어난다.\n\n\n\nBash 에서 파일 생성법그래서 cat 을 파일생성에 사용하기로 했다.사용법은 위에서 strace 시험에서 쓰인 명령어 처럼 하면된다.\n\ncat dev/null&gt;&gt; {filename}\n","dateCreated":"2020-10-29T11:03:52+09:00","dateModified":"2020-10-29T12:21:17+09:00","datePublished":"2020-10-29T11:03:52+09:00","description":"📁 vi 에서 파일 생성법 배우기.Bash 실행파일을 만들다가 로그를 찍기위해 찾아보게 되었습니다.linux strace cat cp","headline":"💻 Linux 빈 파일생성을 위한 cat, cp 성능비교 및 strace","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2020/10/29/Linux-%EB%B9%88%ED%8C%8C%EC%9D%BC%EC%83%9D%EC%84%B1/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","ksso7300@gmail.com"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2020/10/29/Linux-%EB%B9%88%ED%8C%8C%EC%9D%BC%EC%83%9D%EC%84%B1/","keywords":"linux, vi, bash"}</script>
+    <meta name="description" content="📁 vi 에서 파일 생성법 배우기.Bash 실행파일을 만들다가 로그를 찍기위해 찾아보게 되었습니다.linux strace cat cp">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="💻 Linux 빈 파일생성을 위한 cat, cp 성능비교 및 strace">
+<meta property="og:url" content="http://yoursite.com/2020/10/29/Linux-%EB%B9%88%ED%8C%8C%EC%9D%BC%EC%83%9D%EC%84%B1/index.html">
+<meta property="og:site_name" content="동글씨">
+<meta property="og:description" content="📁 vi 에서 파일 생성법 배우기.Bash 실행파일을 만들다가 로그를 찍기위해 찾아보게 되었습니다.linux strace cat cp">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-10-29T02:03:52.000Z">
+<meta property="article:modified_time" content="2020-10-29T03:21:17.154Z">
+<meta property="article:author" content="Suyan Kim">
+<meta property="article:tag" content="linux">
+<meta property="article:tag" content="vi">
+<meta property="article:tag" content="bash">
+<meta name="twitter:card" content="summary">
+    
+    
+        
+    
+    
+        <meta property="og:image" content="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=640"/>
+    
+    
+    
+    
+    <!--STYLES-->
+    
+<link rel="stylesheet" href="/assets/css/all.css">
+
+    
+<link rel="stylesheet" href="/assets/css/jquery.fancybox.css">
+
+    
+<link rel="stylesheet" href="/assets/css/thumbs.css">
+
+    
+<link rel="stylesheet" href="/assets/css/tranquilpeak.css">
+
+    <!--STYLES END-->
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-158530470-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-158530470-1');
+    </script>
+
+
+    
+
+    
+        
+    
+</head>
+
+    <body>
+        <div id="blog">
+            <!-- Define author's picture -->
+
+
+    
+        
+    
+
+<header id="header" data-behavior="4">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <div class="header-title">
+        <a
+            class="header-title-link"
+            href="/index.html"
+            aria-label=""
+        >
+            동글씨
+        </a>
+    </div>
+    
+        
+            <a
+                class="header-right-picture "
+                href="#about"
+                aria-label="Open the link: /#about"
+            >
+        
+        
+            <img class="header-picture" src="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=90" alt="Author&#39;s picture"/>
+        
+        </a>
+    
+</header>
+
+            <!-- function -->
+
+
+<!-- Define author's picture -->
+
+
+    
+
+<nav id="sidebar" data-behavior="4">
+    <div class="sidebar-container">
+        
+            <div class="sidebar-profile">
+                <a
+                    href="/#about"
+                    aria-label="Read more about the author"
+                >
+                    <img class="sidebar-profile-picture" src="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=110" alt="Author&#39;s picture"/>
+                </a>
+                <h4 class="sidebar-profile-name">Suyan Kim</h4>
+                
+                    <h5 class="sidebar-profile-bio"><p>▲ Who Am I</p>
+</h5>
+                
+            </div>
+        
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="Home"href="/index.html"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-home" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">Home</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="Categories"href="/all-categories"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-bookmark" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">Categories</span>
+                        </a>
+                    <!-- add -->
+                    
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Config/">☁️ Config (2)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-DataBase/">☁️ DataBase (1)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Git/">☁️ Git (3)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-JPA/">☁️ JPA (10)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Linux/">☁️ Linux (1)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-OS/">☁️ OS (2)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Python/">☁️ Python (2)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-React/">☁️ React (3)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Spring/">☁️ Spring (1)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Web/">☁️ Web (1)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-coding-test/">☁️ coding test (6)</a></li>
+                            
+                        
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="Tags"href="/all-tags"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-tags" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">Tags</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="Archives"href="/all-archives"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-archive" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">Archives</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="About"href="#about"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-question" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">About</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="https://github.com/ksso730" target="_blank" rel="noopener" title="my github">
+                    
+                    <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">my github</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/ksso7300@gmail.com"
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-envelope" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">contact me</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+        </ul>
+        
+    </div>
+</nav>
+
+            
+            <div id="main" data-behavior="4"
+                 class="
+                        hasCoverMetaIn
+                        ">
+                
+<article class="post">
+    
+    
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title">
+            💻 Linux 빈 파일생성을 위한 cat, cp 성능비교 및 strace
+        </h1>
+    
+    
+        <div class="post-meta">
+    <time datetime="2020-10-29T11:03:52+09:00">
+	
+		    Oct 29, 2020
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/%E2%98%81%EF%B8%8F-Linux/">☁️ Linux</a>
+
+
+    
+</div>
+
+    
+</div>
+
+    
+    <div class="post-content markdown">
+        <div class="main-content-wrap">
+            <!-- excerpt -->
+<h1 id="table-of-contents">Contents</h1><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#cp-dev-null-filename-VS-cat-dev-null-gt-gt-filename"><span class="toc-text">cp &#x2F;dev&#x2F;null {filename} VS cat &#x2F;dev&#x2F;null&gt;&gt;{filename}</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#strace-결과-cat-dev-null-gt-gt-filename"><span class="toc-text">strace 결과 : cat &#x2F;dev&#x2F;null &gt;&gt; {filename}</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#strace-결과-cp-dev-null-filename"><span class="toc-text">strace 결과 : cp &#x2F;dev&#x2F;null {filename}</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#결과-비교"><span class="toc-text">결과 비교</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Bash-에서-파일-생성법"><span class="toc-text">Bash 에서 파일 생성법</span></a></li></ol>
+
+<hr>
+<br/>
+
+
+<h2 id="cp-dev-null-filename-VS-cat-dev-null-gt-gt-filename"><a href="#cp-dev-null-filename-VS-cat-dev-null-gt-gt-filename" class="headerlink" title="cp /dev/null {filename} VS cat /dev/null&gt;&gt;{filename}"></a>cp /dev/null {filename} VS cat /dev/null&gt;&gt;{filename}</h2><p>두 명령어의 성능을 비교하기 위해 <code>strace</code> 명령을 사용했다.</p>
+<blockquote>
+<p>strace : 특정 프로그램의 시스템 콜과 시그널을 추적하는 명령<br>명령어 추적 결과, ✔️cat 의 성능이 더 좋다는 사실.</p>
+</blockquote>
+<br/>
+
+<h3 id="strace-결과-cat-dev-null-gt-gt-filename"><a href="#strace-결과-cat-dev-null-gt-gt-filename" class="headerlink" title="strace 결과 : cat /dev/null &gt;&gt; {filename}"></a>strace 결과 : cat /dev/null &gt;&gt; {filename}</h3><div style="border: 1px solid #CACACA; border-radius: 0.5em; padding: 0.1em">
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">&gt; strace -c cat dev&#x2F;null&gt;&gt; access_test.log   </span><br><span class="line">cat: dev&#x2F;null: No such file or directory</span><br><span class="line">% time     seconds  usecs&#x2F;call     calls    errors syscall</span><br><span class="line">------ ----------- ----------- --------- --------- ----------------</span><br><span class="line">  0.00    0.000000           0         3           read</span><br><span class="line">  0.00    0.000000           0         4           write</span><br><span class="line">  0.00    0.000000           0        11         7 open</span><br><span class="line">  0.00    0.000000           0         6           close</span><br><span class="line">  0.00    0.000000           0         5           fstat</span><br><span class="line">  0.00    0.000000           0        10           mmap</span><br><span class="line">  0.00    0.000000           0         3           mprotect</span><br><span class="line">  0.00    0.000000           0         2           munmap</span><br><span class="line">  0.00    0.000000           0         3           brk</span><br><span class="line">  0.00    0.000000           0         1         1 access</span><br><span class="line">  0.00    0.000000           0         1           execve</span><br><span class="line">  0.00    0.000000           0         1           arch_prctl</span><br><span class="line">------ ----------- ----------- --------- --------- ----------------</span><br><span class="line">100.00    0.000000                    50         8 total</span><br></pre></td></tr></table></figure>
+</div>
+<br/>
+<div style="border: 1px solid #CACACA; border-radius: 0.5em; padding: 0.1em">
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">&gt; strace -e open cat dev&#x2F;null&gt;&gt; access_test.log   </span><br><span class="line">open(&quot;&#x2F;etc&#x2F;ld.so.cache&quot;, O_RDONLY)      &#x3D; 3</span><br><span class="line">open(&quot;&#x2F;lib64&#x2F;libc.so.6&quot;, O_RDONLY)      &#x3D; 3</span><br><span class="line">open(&quot;&#x2F;usr&#x2F;lib&#x2F;locale&#x2F;locale-archive&quot;, O_RDONLY) &#x3D; 3</span><br><span class="line">open(&quot;dev&#x2F;null&quot;, O_RDONLY)              &#x3D; -1 ENOENT (No such file or directory)</span><br><span class="line">cat: dev&#x2F;nullopen(&quot;&#x2F;usr&#x2F;share&#x2F;locale&#x2F;locale.alias&quot;, O_RDONLY|O_CLOEXEC) &#x3D; 3</span><br><span class="line">open(&quot;&#x2F;usr&#x2F;share&#x2F;locale&#x2F;en_US.UTF-8&#x2F;LC_MESSAGES&#x2F;libc.mo&quot;, O_RDONLY) &#x3D; -1 ENOENT (No such file or directory)</span><br><span class="line">open(&quot;&#x2F;usr&#x2F;share&#x2F;locale&#x2F;en_US.utf8&#x2F;LC_MESSAGES&#x2F;libc.mo&quot;, O_RDONLY) &#x3D; -1 ENOENT (No such file or directory)</span><br><span class="line">open(&quot;&#x2F;usr&#x2F;share&#x2F;locale&#x2F;en_US&#x2F;LC_MESSAGES&#x2F;libc.mo&quot;, O_RDONLY) &#x3D; -1 ENOENT (No such file or directory)</span><br><span class="line">open(&quot;&#x2F;usr&#x2F;share&#x2F;locale&#x2F;en.UTF-8&#x2F;LC_MESSAGES&#x2F;libc.mo&quot;, O_RDONLY) &#x3D; -1 ENOENT (No such file or directory)</span><br><span class="line">open(&quot;&#x2F;usr&#x2F;share&#x2F;locale&#x2F;en.utf8&#x2F;LC_MESSAGES&#x2F;libc.mo&quot;, O_RDONLY) &#x3D; -1 ENOENT (No such file or directory)</span><br><span class="line">open(&quot;&#x2F;usr&#x2F;share&#x2F;locale&#x2F;en&#x2F;LC_MESSAGES&#x2F;libc.mo&quot;, O_RDONLY) &#x3D; -1 ENOENT (No such file or directory)</span><br><span class="line">: No such file or directory</span><br><span class="line">+++ exited with 1 +++</span><br></pre></td></tr></table></figure>
+</div>
+
+<br/>
+
+<h3 id="strace-결과-cp-dev-null-filename"><a href="#strace-결과-cp-dev-null-filename" class="headerlink" title="strace 결과 : cp /dev/null {filename}"></a>strace 결과 : cp /dev/null {filename}</h3><div style="border: 1px solid #CACACA; border-radius: 0.5em; padding: 0.1em">
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">&gt; strace -c cp dev&#x2F;null access_test.log   </span><br><span class="line">cp: cannot stat &#96;dev&#x2F;null&#39;: No such file or directory</span><br><span class="line">% time     seconds  usecs&#x2F;call     calls    errors syscall</span><br><span class="line">------ ----------- ----------- --------- --------- ----------------</span><br><span class="line">  0.00    0.000000           0        11           read</span><br><span class="line">  0.00    0.000000           0         4           write</span><br><span class="line">  0.00    0.000000           0        23        11 open</span><br><span class="line">  0.00    0.000000           0        15           close</span><br><span class="line">  0.00    0.000000           0         2         1 stat</span><br><span class="line">  0.00    0.000000           0        12           fstat</span><br><span class="line">  0.00    0.000000           0        27           mmap</span><br><span class="line">  0.00    0.000000           0        15           mprotect</span><br><span class="line">  0.00    0.000000           0         3           munmap</span><br><span class="line">  0.00    0.000000           0         3           brk</span><br><span class="line">  0.00    0.000000           0         2           rt_sigaction</span><br><span class="line">  0.00    0.000000           0         1           rt_sigprocmask</span><br><span class="line">  0.00    0.000000           0         1         1 access</span><br><span class="line">  0.00    0.000000           0         1           execve</span><br><span class="line">  0.00    0.000000           0         1           getrlimit</span><br><span class="line">  0.00    0.000000           0         1           geteuid</span><br><span class="line">  0.00    0.000000           0         1           statfs</span><br><span class="line">  0.00    0.000000           0         1           arch_prctl</span><br><span class="line">  0.00    0.000000           0         2         1 futex</span><br><span class="line">  0.00    0.000000           0         1           set_tid_address</span><br><span class="line">  0.00    0.000000           0         1           set_robust_list</span><br><span class="line">------ ----------- ----------- --------- --------- ----------------</span><br><span class="line">100.00    0.000000                   128        14 total</span><br></pre></td></tr></table></figure>
+</div>
+
+<br/>
+<div style="border: 1px solid #CACACA; border-radius: 0.5em; padding: 0.1em">
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">&gt; strace -e open cp dev&#x2F;null access_test.log  </span><br><span class="line">open(&quot;&#x2F;etc&#x2F;ld.so.cache&quot;, O_RDONLY)      &#x3D; 3</span><br><span class="line">open(&quot;&#x2F;lib64&#x2F;libselinux.so.1&quot;, O_RDONLY) &#x3D; 3</span><br><span class="line">open(&quot;&#x2F;lib64&#x2F;librt.so.1&quot;, O_RDONLY)     &#x3D; 3</span><br><span class="line">open(&quot;&#x2F;lib64&#x2F;libacl.so.1&quot;, O_RDONLY)    &#x3D; 3</span><br><span class="line">open(&quot;&#x2F;lib64&#x2F;libattr.so.1&quot;, O_RDONLY)   &#x3D; 3</span><br><span class="line">open(&quot;&#x2F;lib64&#x2F;libc.so.6&quot;, O_RDONLY)      &#x3D; 3</span><br><span class="line">open(&quot;&#x2F;lib64&#x2F;libdl.so.2&quot;, O_RDONLY)     &#x3D; 3</span><br><span class="line">open(&quot;&#x2F;lib64&#x2F;libpthread.so.0&quot;, O_RDONLY) &#x3D; 3</span><br><span class="line">open(&quot;&#x2F;proc&#x2F;filesystems&quot;, O_RDONLY)     &#x3D; 3</span><br><span class="line">open(&quot;&#x2F;usr&#x2F;lib&#x2F;locale&#x2F;locale-archive&quot;, O_RDONLY) &#x3D; 3</span><br><span class="line">open(&quot;&#x2F;usr&#x2F;share&#x2F;locale&#x2F;locale.alias&quot;, O_RDONLY|O_CLOEXEC) &#x3D; 3</span><br><span class="line">open(&quot;&#x2F;usr&#x2F;share&#x2F;locale&#x2F;en_US.UTF-8&#x2F;LC_MESSAGES&#x2F;coreutils.mo&quot;, O_RDONLY) &#x3D; -1 ENOENT (No such file or directory)</span><br><span class="line">open(&quot;&#x2F;usr&#x2F;share&#x2F;locale&#x2F;en_US.utf8&#x2F;LC_MESSAGES&#x2F;coreutils.mo&quot;, O_RDONLY) &#x3D; -1 ENOENT (No such file or directory)</span><br><span class="line">open(&quot;&#x2F;usr&#x2F;share&#x2F;locale&#x2F;en_US&#x2F;LC_MESSAGES&#x2F;coreutils.mo&quot;, O_RDONLY) &#x3D; -1 ENOENT (No such file or directory)</span><br><span class="line">open(&quot;&#x2F;usr&#x2F;share&#x2F;locale&#x2F;en.UTF-8&#x2F;LC_MESSAGES&#x2F;coreutils.mo&quot;, O_RDONLY) &#x3D; -1 ENOENT (No such file or directory)</span><br><span class="line">open(&quot;&#x2F;usr&#x2F;share&#x2F;locale&#x2F;en.utf8&#x2F;LC_MESSAGES&#x2F;coreutils.mo&quot;, O_RDONLY) &#x3D; -1 ENOENT (No such file or directory)</span><br><span class="line">open(&quot;&#x2F;usr&#x2F;share&#x2F;locale&#x2F;en&#x2F;LC_MESSAGES&#x2F;coreutils.mo&quot;, O_RDONLY) &#x3D; 3</span><br><span class="line">cp: cannot stat &#96;dev&#x2F;null&#39;open(&quot;&#x2F;usr&#x2F;share&#x2F;locale&#x2F;en_US.UTF-8&#x2F;LC_MESSAGES&#x2F;libc.mo&quot;, O_RDONLY) &#x3D; -1 ENOENT (No such file or directory)</span><br><span class="line">open(&quot;&#x2F;usr&#x2F;share&#x2F;locale&#x2F;en_US.utf8&#x2F;LC_MESSAGES&#x2F;libc.mo&quot;, O_RDONLY) &#x3D; -1 ENOENT (No such file or directory)</span><br><span class="line">open(&quot;&#x2F;usr&#x2F;share&#x2F;locale&#x2F;en_US&#x2F;LC_MESSAGES&#x2F;libc.mo&quot;, O_RDONLY) &#x3D; -1 ENOENT (No such file or directory)</span><br><span class="line">open(&quot;&#x2F;usr&#x2F;share&#x2F;locale&#x2F;en.UTF-8&#x2F;LC_MESSAGES&#x2F;libc.mo&quot;, O_RDONLY) &#x3D; -1 ENOENT (No such file or directory)</span><br><span class="line">open(&quot;&#x2F;usr&#x2F;share&#x2F;locale&#x2F;en.utf8&#x2F;LC_MESSAGES&#x2F;libc.mo&quot;, O_RDONLY) &#x3D; -1 ENOENT (No such file or directory)</span><br><span class="line">open(&quot;&#x2F;usr&#x2F;share&#x2F;locale&#x2F;en&#x2F;LC_MESSAGES&#x2F;libc.mo&quot;, O_RDONLY) &#x3D; -1 ENOENT (No such file or directory)</span><br><span class="line">: No such file or directory</span><br><span class="line">+++ exited with 1 +++</span><br></pre></td></tr></table></figure>
+</div>
+
+<br/>
+
+
+<h2 id="결과-비교"><a href="#결과-비교" class="headerlink" title="결과 비교"></a>결과 비교</h2><p>💡 위 결과를 눈대중으로만 봐도 <code>cat</code> 은 적은 양의 라이브러리를 참조하며, open 하는 파일의 횟수도 상대적으로 적다.<br>그에 반해 <code>cp</code> 는 <code>cat</code>보다 많은 양의 라이브러리를 참조하는것을 알 수 있으며, open file 도 많고, system call 또한 상대적으로 빈번하게 일어난다.</p>
+<hr>
+<br/>
+
+<h2 id="Bash-에서-파일-생성법"><a href="#Bash-에서-파일-생성법" class="headerlink" title="Bash 에서 파일 생성법"></a>Bash 에서 파일 생성법</h2><p>그래서 <code>cat</code> 을 파일생성에 사용하기로 했다.<br>사용법은 위에서 strace 시험에서 쓰인 명령어 처럼 하면된다.</p>
+<blockquote>
+<p>cat dev/null&gt;&gt; {filename}</p>
+</blockquote>
+            
+
+
+        </div>
+    </div>
+    <div id="post-footer" class="post-footer main-content-wrap">
+        
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">TAGGED IN</span><br/>
+                
+    <a class="tag tag--primary tag--small t-link" href="/tags/bash/" rel="tag">bash</a> <a class="tag tag--primary tag--small t-link" href="/tags/linux/" rel="tag">linux</a> <a class="tag tag--primary tag--small t-link" href="/tags/vi/" rel="tag">vi</a>
+
+            </div>
+        
+        
+            <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a
+                        class="post-action-btn btn btn--disabled"
+                        aria-hidden="true"
+                    >
+                        
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                    </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2020/10/19/%EC%9A%B4%EC%98%81%EC%B2%B4%EC%A0%9C-2-%EC%BB%B4%ED%93%A8%ED%84%B0-%EA%B5%AC%EC%A1%B0/"
+                    data-tooltip="⚙️ 운영체제(2) 컴퓨터 구조"
+                    aria-label="NEXT: ⚙️ 운영체제(2) 컴퓨터 구조"
+                >
+                    
+                        <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a
+                class="post-action-btn btn btn--default btn-open-shareoptions"
+                href="#btn-open-shareoptions"
+                aria-label="Share this post"
+            >
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2020/10/29/Linux-%EB%B9%88%ED%8C%8C%EC%9D%BC%EC%83%9D%EC%84%B1/"
+                    title="Share on Facebook"
+                    aria-label="Share on Facebook"
+                >
+                    <i class="fab fa-facebook" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2020/10/29/Linux-%EB%B9%88%ED%8C%8C%EC%9D%BC%EC%83%9D%EC%84%B1/"
+                    title="Share on Twitter"
+                    aria-label="Share on Twitter"
+                >
+                    <i class="fab fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://plus.google.com/share?url=http://yoursite.com/2020/10/29/Linux-%EB%B9%88%ED%8C%8C%EC%9D%BC%EC%83%9D%EC%84%B1/"
+                    title="Share on Google+"
+                    aria-label="Share on Google+"
+                >
+                    <i class="fab fa-google-plus" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+                <li class="post-action">
+                    <a
+                        class="post-action-btn btn btn--default"
+                        href="#disqus_thread"
+                        aria-label="Leave a comment"
+                    >
+                        <i class="fa fa-comment"></i>
+                    </a>
+                </li>
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#table-of-contents" aria-label="Contents">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+        
+        
+            
+                <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a></noscript>
+</div>
+            
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2020 Suyan Kim. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a
+                        class="post-action-btn btn btn--disabled"
+                        aria-hidden="true"
+                    >
+                        
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                    </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2020/10/19/%EC%9A%B4%EC%98%81%EC%B2%B4%EC%A0%9C-2-%EC%BB%B4%ED%93%A8%ED%84%B0-%EA%B5%AC%EC%A1%B0/"
+                    data-tooltip="⚙️ 운영체제(2) 컴퓨터 구조"
+                    aria-label="NEXT: ⚙️ 운영체제(2) 컴퓨터 구조"
+                >
+                    
+                        <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a
+                class="post-action-btn btn btn--default btn-open-shareoptions"
+                href="#btn-open-shareoptions"
+                aria-label="Share this post"
+            >
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2020/10/29/Linux-%EB%B9%88%ED%8C%8C%EC%9D%BC%EC%83%9D%EC%84%B1/"
+                    title="Share on Facebook"
+                    aria-label="Share on Facebook"
+                >
+                    <i class="fab fa-facebook" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2020/10/29/Linux-%EB%B9%88%ED%8C%8C%EC%9D%BC%EC%83%9D%EC%84%B1/"
+                    title="Share on Twitter"
+                    aria-label="Share on Twitter"
+                >
+                    <i class="fab fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://plus.google.com/share?url=http://yoursite.com/2020/10/29/Linux-%EB%B9%88%ED%8C%8C%EC%9D%BC%EC%83%9D%EC%84%B1/"
+                    title="Share on Google+"
+                    aria-label="Share on Google+"
+                >
+                    <i class="fab fa-google-plus" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+                <li class="post-action">
+                    <a
+                        class="post-action-btn btn btn--default"
+                        href="#disqus_thread"
+                        aria-label="Leave a comment"
+                    >
+                        <i class="fa fa-comment"></i>
+                    </a>
+                </li>
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#table-of-contents" aria-label="Contents">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                
+    <div id="share-options-bar" class="share-options-bar" data-behavior="4">
+        <i id="btn-close-shareoptions" class="fa fa-times"></i>
+        <ul class="share-options">
+            
+                
+                
+                <li class="share-option">
+                    <a
+                        class="share-option-btn"
+                        target="new"
+                        href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2020/10/29/Linux-%EB%B9%88%ED%8C%8C%EC%9D%BC%EC%83%9D%EC%84%B1/"
+                        aria-label="Share on Facebook"
+                    >
+                        <i class="fab fa-facebook" aria-hidden="true"></i><span>Share on Facebook</span>
+                    </a>
+                </li>
+            
+                
+                
+                <li class="share-option">
+                    <a
+                        class="share-option-btn"
+                        target="new"
+                        href="https://twitter.com/intent/tweet?text=http://yoursite.com/2020/10/29/Linux-%EB%B9%88%ED%8C%8C%EC%9D%BC%EC%83%9D%EC%84%B1/"
+                        aria-label="Share on Twitter"
+                    >
+                        <i class="fab fa-twitter" aria-hidden="true"></i><span>Share on Twitter</span>
+                    </a>
+                </li>
+            
+                
+                
+                <li class="share-option">
+                    <a
+                        class="share-option-btn"
+                        target="new"
+                        href="https://plus.google.com/share?url=http://yoursite.com/2020/10/29/Linux-%EB%B9%88%ED%8C%8C%EC%9D%BC%EC%83%9D%EC%84%B1/"
+                        aria-label="Share on Google+"
+                    >
+                        <i class="fab fa-google-plus" aria-hidden="true"></i><span>Share on Google+</span>
+                    </a>
+                </li>
+            
+        </ul>
+    </div>
+
+
+            
+        </div>
+        
+
+
+    
+
+<div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-times"></i>
+        </div>
+        
+            <img id="about-card-picture" src="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=110" alt="Author&#39;s picture"/>
+        
+            <h4 id="about-card-name">Suyan Kim</h4>
+        <!--  -->
+            <!-- <div id="about-card-bio"><p>author.bio</p>
+</div> -->
+            <div id="about-card-bio">안녕하세요, 서버 백엔드 개발자 동글씨입니다.</div>
+        <!--  -->
+        <!--  -->
+            <div id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <!-- <p>Backend Developer</p>
+ -->
+                Backend Developer
+            </div>
+        <!--  -->
+        
+            <div id="about-card-location">
+                <i class="fa fa-map-marker-alt"></i>
+                <br/>
+                Korea
+            </div>
+        
+    </div>
+</div>
+
+        
+        
+<div id="cover" style="background-image:url('/assets/images/null');"></div>
+        <!--SCRIPTS-->
+
+<script src="/assets/js/jquery.js"></script>
+
+
+<script src="/assets/js/jquery.fancybox.js"></script>
+
+
+<script src="/assets/js/thumbs.js"></script>
+
+
+<script src="/assets/js/tranquilpeak.js"></script>
+
+<!--SCRIPTS END-->
+
+
+    
+        <script>
+          var disqus_config = function() {
+            this.page.url = 'http://yoursite.com/2020/10/29/Linux-%EB%B9%88%ED%8C%8C%EC%9D%BC%EC%83%9D%EC%84%B1/';
+              
+            this.page.identifier = '2020/10/29/Linux-빈파일생성/';
+              
+          };
+          (function() {
+            var d = document, s = d.createElement('script');
+            var disqus_shortname = 'ksso730-github-io';
+            s.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+          })();
+        </script>
+    
+
+
+
+
+    </body>
+</html>
