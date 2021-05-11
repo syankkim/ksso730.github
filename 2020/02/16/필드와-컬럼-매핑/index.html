@@ -13,7 +13,7 @@
     
         <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
     
-    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","ksso7300@gmail.com"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\n\n데이터 베이스 생성아래와 같은 Member.java 객체가 있다.\n123456789101112131415161718192021222324252627@Entity@Tablepublic class Member &#123;    @Id    private Long id;    @Column(name =\"name\")    private String username;    private Integer age;    @Enumerated(EnumType.STRING)    private RoleType roleType;    @Temporal(TemporalType.TIMESTAMP)    private Date createDate;    @Temporal(TemporalType.TIMESTAMP)    private Date lastModifiedDate;    @Lob    private String description;    public Member() &#123;    &#125;&#125;\nhibernate.hbm2ddl.auto 를 create 으로 두고,위 소스를 JPA 로 돌리면 아래와 같은 SQL이 실행되고 테이블이 생성된다.\n123456789101112Hibernate:         create table Member (       id bigint not null,        age integer,        createDate timestamp,        description clob,        lastModifiedDate timestamp,        roleType varchar(255),        name varchar(255),        primary key (id)    )\n\nH2 콘솔에서도 생성된 Member 테이블이 확인된다.\n\n\n@Colunmupdatable등록, 변경 가능여부 (기본 true)\n12@Column(name =\"name\", updatable= false)   private String username;\n\nnullablenull 값 허용 여부를 설정한다. (fales = not null)\n12@Column(name =\"name\", updatable= false)   private String username;\n\n\nunique@Table 의 uniqueConstraints 와 같고 한 컬럼에 제약조건을 걸때 사용한다.\n1234@Entity@Table(uniqueConstraints = )public class Member &#123;    ...&#125;\n\nnullable데이터베이스 컬럼 정보를 직접 지정가능하다.\n12@Column(name =\"name\", columnDefinition = \"varchar(100) defalt 'EMPTY'\")   private String username;\n\nprecision큰 수나 소수점을 쓸 때 사용한다.\n@Enumerate\nenum 타입을 매핑할 때 사용한다.\n\n주의점은 ORDINAL 타입을 사용하지 않으면 된다.\n12@Enumerated(EnumType.ORDINAL)  // 사용X   private RoleType roleType;\n\nORDINAL 타입을 사용한 경우123public enum RoleType &#123;    GUEST, USER, ADMIN&#125;\n\n\nORDINAL 타입은 INTEGER 로 입력된다.\n\n아래와 같이 ROLETYPE 컬럼을 보면 enum Type 클래스에 맨 앞에 GUEST 를 추가해 주었다.새로운 3L RoleType.GUEST 를 insert 결과, 다시 0번으로 중복된 값이 들어갔다.\n\n따라서 STRING 을 사용12@Enumerated(EnumType.STRING)  private RoleType roleType;\n\n@Temporal\n날짜 타입을 매핑할 수 있다.아래처럼도 작성 가능하지만,\n\n12345@Temporal(TemporalType.TIMESTAMP)  private Date createDate;@Temporal(TemporalType.TIMESTAMP)  private Date lastModifiedDate;\n\nLocalDate, LocalDateTime 을 사용할 경우, 아래와 같이 생략할 수 있다.\n12private LocalDate testLocalDate;private LocalDateTime testLocalDateTime;\n\n@Lab\n필드타입이문자 -&gt; clab나머지는 -&gt; blab \n\n12@Lab   private String description;","dateCreated":"2020-02-16T18:14:24+09:00","dateModified":"2020-04-28T10:36:01+09:00","datePublished":"2020-02-16T18:14:24+09:00","description":"필드와 컬럼 매핑.@Column, @Enumerate, @Temporal, @Lab 등의 어노테이션에 대해 알아봅니다.","headline":"JPA-필드와 컬럼 매핑","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2020/02/16/%ED%95%84%EB%93%9C%EC%99%80-%EC%BB%AC%EB%9F%BC-%EB%A7%A4%ED%95%91/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","ksso7300@gmail.com"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2020/02/16/%ED%95%84%EB%93%9C%EC%99%80-%EC%BB%AC%EB%9F%BC-%EB%A7%A4%ED%95%91/","keywords":"JPA, H2"}</script>
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\n\n데이터 베이스 생성아래와 같은 Member.java 객체가 있다.\n123456789101112131415161718192021222324252627@Entity@Tablepublic class Member &#123;    @Id    private Long id;    @Column(name =\"name\")    private String username;    private Integer age;    @Enumerated(EnumType.STRING)    private RoleType roleType;    @Temporal(TemporalType.TIMESTAMP)    private Date createDate;    @Temporal(TemporalType.TIMESTAMP)    private Date lastModifiedDate;    @Lob    private String description;    public Member() &#123;    &#125;&#125;\nhibernate.hbm2ddl.auto 를 create 으로 두고,위 소스를 JPA 로 돌리면 아래와 같은 SQL이 실행되고 테이블이 생성된다.\n123456789101112Hibernate:         create table Member (       id bigint not null,        age integer,        createDate timestamp,        description clob,        lastModifiedDate timestamp,        roleType varchar(255),        name varchar(255),        primary key (id)    )\n\nH2 콘솔에서도 생성된 Member 테이블이 확인된다.\n\n\n@Colunmupdatable등록, 변경 가능여부 (기본 true)\n12@Column(name =\"name\", updatable= false)   private String username;\n\nnullablenull 값 허용 여부를 설정한다. (fales = not null)\n12@Column(name =\"name\", updatable= false)   private String username;\n\n\nunique@Table 의 uniqueConstraints 와 같고 한 컬럼에 제약조건을 걸때 사용한다.\n1234@Entity@Table(uniqueConstraints = )public class Member &#123;    ...&#125;\n\nnullable데이터베이스 컬럼 정보를 직접 지정가능하다.\n12@Column(name =\"name\", columnDefinition = \"varchar(100) defalt 'EMPTY'\")   private String username;\n\nprecision큰 수나 소수점을 쓸 때 사용한다.\n@Enumerate\nenum 타입을 매핑할 때 사용한다.\n\n주의점은 ORDINAL 타입을 사용하지 않으면 된다.\n12@Enumerated(EnumType.ORDINAL)  // 사용X   private RoleType roleType;\n\nORDINAL 타입을 사용한 경우123public enum RoleType &#123;    GUEST, USER, ADMIN&#125;\n\n\nORDINAL 타입은 INTEGER 로 입력된다.\n\n아래와 같이 ROLETYPE 컬럼을 보면 enum Type 클래스에 맨 앞에 GUEST 를 추가해 주었다.새로운 3L RoleType.GUEST 를 insert 결과, 다시 0번으로 중복된 값이 들어갔다.\n\n따라서 STRING 을 사용12@Enumerated(EnumType.STRING)  private RoleType roleType;\n\n@Temporal\n날짜 타입을 매핑할 수 있다.아래처럼도 작성 가능하지만,\n\n12345@Temporal(TemporalType.TIMESTAMP)  private Date createDate;@Temporal(TemporalType.TIMESTAMP)  private Date lastModifiedDate;\n\nLocalDate, LocalDateTime 을 사용할 경우, 아래와 같이 생략할 수 있다.\n12private LocalDate testLocalDate;private LocalDateTime testLocalDateTime;\n\n@Lab\n필드타입이문자 -&gt; clab나머지는 -&gt; blab \n\n12@Lab   private String description;","dateCreated":"2020-02-16T18:14:24+09:00","dateModified":"2020-04-28T10:36:01+09:00","datePublished":"2020-02-16T18:14:24+09:00","description":"필드와 컬럼 매핑.@Column, @Enumerate, @Temporal, @Lab 등의 어노테이션에 대해 알아봅니다.","headline":"JPA-필드와 컬럼 매핑","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2020/02/16/%ED%95%84%EB%93%9C%EC%99%80-%EC%BB%AC%EB%9F%BC-%EB%A7%A4%ED%95%91/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2020/02/16/%ED%95%84%EB%93%9C%EC%99%80-%EC%BB%AC%EB%9F%BC-%EB%A7%A4%ED%95%91/","keywords":"JPA, H2"}</script>
     <meta name="description" content="필드와 컬럼 매핑.@Column, @Enumerate, @Temporal, @Lab 등의 어노테이션에 대해 알아봅니다.">
 <meta property="og:type" content="blog">
 <meta property="og:title" content="JPA-필드와 컬럼 매핑">
@@ -123,7 +123,7 @@
                     href="/#about"
                     aria-label="Read more about the author"
                 >
-                    <img class="sidebar-profile-picture" src="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=110" alt="Author&#39;s picture"/>
+                    <img class="sidebar-profile-picture" src="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=800" alt="Author&#39;s picture"/>
                 </a>
                 <h4 class="sidebar-profile-name">Suyan Kim</h4>
                 
@@ -139,12 +139,12 @@
                     
                         <a  class="sidebar-button-link "
                              
-                                title="Home"href="/index.html"
+                                title="home"href="/index.html"
                                 
                                 >
                     
                     <i class="sidebar-button-icon fa fa-home" aria-hidden="true"></i>
-                    <span class="sidebar-button-desc">Home</span>
+                    <span class="sidebar-button-desc">home</span>
                         </a>
                     <!-- add -->
                     
@@ -154,15 +154,34 @@
                     
                         <a  class="sidebar-button-link "
                              
-                                title="Categories"href="/all-categories"
+                                title="archives"href="/all-archives"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-archive" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">archives</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="categories"href="/all-categories"
                                 
                                 >
                     
                     <i class="sidebar-button-icon fa fa-bookmark" aria-hidden="true"></i>
-                    <span class="sidebar-button-desc">Categories</span>
+                    <span class="sidebar-button-desc">categories</span>
                         </a>
                     <!-- add -->
                     
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (7)</a></li>
+                            
                         
                             
                                 <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Config/">☁️ Config (2)</a></li>
@@ -181,11 +200,15 @@
                             
                         
                             
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Java/">☁️ Java (0)</a></li>
+                            
+                        
+                            
                                 <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Linux/">☁️ Linux (1)</a></li>
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-OS/">☁️ OS (2)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-OS/">☁️ OS (10)</a></li>
                             
                         
                             
@@ -201,11 +224,11 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Web/">☁️ Web (1)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-TIL/">☁️ TIL (2)</a></li>
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-coding-test/">☁️ coding test (6)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Web/">☁️ Web (1)</a></li>
                             
                         
                     
@@ -215,12 +238,12 @@
                     
                         <a  class="sidebar-button-link "
                              
-                                title="Tags"href="/all-tags"
+                                title="tags"href="/all-tags"
                                 
                                 >
                     
                     <i class="sidebar-button-icon fa fa-tags" aria-hidden="true"></i>
-                    <span class="sidebar-button-desc">Tags</span>
+                    <span class="sidebar-button-desc">tags</span>
                         </a>
                     <!-- add -->
                     
@@ -230,27 +253,12 @@
                     
                         <a  class="sidebar-button-link "
                              
-                                title="Archives"href="/all-archives"
-                                
-                                >
-                    
-                    <i class="sidebar-button-icon fa fa-archive" aria-hidden="true"></i>
-                    <span class="sidebar-button-desc">Archives</span>
-                        </a>
-                    <!-- add -->
-                    
-                </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a  class="sidebar-button-link "
-                             
-                                title="About"href="#about"
+                                title="about"href="#about"
                                 
                                 >
                     
                     <i class="sidebar-button-icon fa fa-question" aria-hidden="true"></i>
-                    <span class="sidebar-button-desc">About</span>
+                    <span class="sidebar-button-desc">about</span>
                         </a>
                     <!-- add -->
                     
@@ -262,10 +270,10 @@
             
                 <li class="sidebar-button">
                     
-                        <a  class="sidebar-button-link " href="https://github.com/ksso730" target="_blank" rel="noopener" title="my github">
+                        <a  class="sidebar-button-link " href="https://github.com/ksso730" target="_blank" rel="noopener" title="github">
                     
                     <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
-                    <span class="sidebar-button-desc">my github</span>
+                    <span class="sidebar-button-desc">github</span>
                         </a>
                     <!-- add -->
                     
@@ -273,12 +281,10 @@
             
                 <li class="sidebar-button">
                     
-                        <a  class="sidebar-button-link "
-                             href="/ksso7300@gmail.com"
-                                >
+                        <a  class="sidebar-button-link " href="https://www.instagram.com/syankkim/" target="_blank" rel="noopener" title="life">
                     
-                    <i class="sidebar-button-icon fa fa-envelope" aria-hidden="true"></i>
-                    <span class="sidebar-button-desc">contact me</span>
+                    <i class="sidebar-button-icon fab fa-instagram" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">life</span>
                         </a>
                     <!-- add -->
                     
@@ -517,7 +523,7 @@ H2 콘솔에서도 생성된 Member 테이블이 확인된다.
 
                 <footer id="footer" class="main-content-wrap">
     <span class="copyrights">
-        Copyrights &copy; 2020 Suyan Kim. All Rights Reserved.
+        Copyrights &copy; 2021 Suyan Kim. All Rights Reserved.
     </span>
 </footer>
 

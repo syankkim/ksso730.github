@@ -1,0 +1,823 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="동글씨">
+    <title>✅ 스케줄링 알고리즘 - 동글씨</title>
+    <meta name="author" content="Suyan Kim">
+    
+    
+    
+        <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
+    
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\n💬 해당 강의는 fastcampus 에서 ‘컴공 전공자 따라잡기 온라인 완주반’ 강의를 들으며 스스로의 학습을 위해 작성한 포스팅입니다. 문제가 된다면 연락 부탁드립니다.\n\n\n스케줄링 알고리즘\n어느 순서대로 프로세스를 실행할까?\n\n\n목표\n시분할 시스템: 프로세스 응답시간을 최소화.\n멀티 프로그래밍: CPU 활용도를 높여서 프로세스를 빨리 실행\n\n\n\n\n\n프로세스? (Process)\n메모리에 올려져서 실행중인 프로그램을 의미한다. : 폰노이만 구조\n작업, task, job 이라는 용어롸 혼용\n응용 프로그램 != 프로세스\n하나의 응용 프로그램은 여러개의 프로세스로가 상호작용하며 실행 할 수 있다.\n간단한 C/C++ 프로그램을 만든다면 ?\n하나의 프로세스를 갖는 여러 프로그램을 만들어, 서로 통신하며 프로그램을 작성 하는 방법도 있다. (IPC 기법)\n\n\n\n스케줄러와 프로세스\n스케줄러는 프로세스 실행을 관리한다.\n\n\nFIFO 스케줄러\n프로세스가 저장매체를 읽거나 프린팅하는 작업 없이 CPU(프로세서)를 온전히 사용.\n\n\n가장 간단한 스케줄러 (배치처리 시스템)\n=FCFS (First Come First Served)\n\n우선순위 기반 (SJF) 스케줄러\nSJF (Shortest Job First)\n수행시간이 가장 짧은 작업부터 처리\n\n\n\nPriority-Based 스케줄러\n정적 우선순위 : 프로세스마다 우선순위를 미리 지정\n동적 우선순위 : 스케줄러가 상황에 따라 우선순위를 동적으로 변경\nProcss [3(10), 2(20), 2(20), 2(20), 1(1)](괄호안 숫자는 미리 정한 우선순위)\nCPU 처리 순서\n2 (20) -&gt; 2 (20) -&gt; 2 (20) -&gt; 3 (10) -&gt; 1 (1)\n\n\n\nRound Robin 스케줄러\nRR이라고 이야기 하기도 한다.\n시분할 시스템을 위해 설계된 스케줄링 중 하나이며\n프로세스들의 우선순위를 신경쓰지 않습니다.\n다만 시분할 시스템처럼 최초 요청부터 순서대로 프로세서들에게 일정한 시간단위로 공평하게 CPU를 할당.\n순서대로 공평하게 CPU를 할당해주기 때문에 그 시간에 프로세스가 완료되지 않을 경우 다시 뒤로 배치가 되서 차례를 기다린다.\nProcess [3, 3, 2, 2, 2, 1]\n\n\nRR Ready Queue\nCPU\n\n\n\n[3, 2, 1]\n[1]\n\n\n[3, 2]\n[1, 2]\n\n\n[2, 3]\n[1, 2, 3]\n\n\n[3, 2]\n[1, 2, 3, 2]\n\n\n[2, 3]\n[1, 2, 3, 2, 3]\n\n\n[2]\n[1, 2, 3, 2, 3, 2]\n\n\n\n\n\n\n\n[+] RTOS VS GPOS\nGeneral Purpose OS (GPOS):\n프로세스 실행시간에 민감하지 않고, 일반적으로 사용되는 OS : Windows, Linux\n\n\nRealTime OS (RTOS): 응용 프로그램 실시간 성능 보장을 목표로 하는 OS\n정확하게 프로그램 시작, 완료시간을 보장\nHardware RTOS, Software RTOS\n\n\n","dateCreated":"2021-05-04T23:40:25+09:00","dateModified":"2021-05-11T10:52:08+09:00","datePublished":"2021-05-04T23:40:25+09:00","description":"스케줄링 알고리즘의 기본 종류와 사용.scheduling_algorithm FIFO SJF","headline":"✅ 스케줄링 알고리즘","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2021/05/04/%EC%8A%A4%EC%BC%80%EC%A4%84%EB%A7%81-%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2021/05/04/%EC%8A%A4%EC%BC%80%EC%A4%84%EB%A7%81-%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98/","keywords":"algorithm, OS"}</script>
+    <meta name="description" content="스케줄링 알고리즘의 기본 종류와 사용.scheduling_algorithm FIFO SJF">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="✅ 스케줄링 알고리즘">
+<meta property="og:url" content="http://yoursite.com/2021/05/04/%EC%8A%A4%EC%BC%80%EC%A4%84%EB%A7%81-%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98/index.html">
+<meta property="og:site_name" content="동글씨">
+<meta property="og:description" content="스케줄링 알고리즘의 기본 종류와 사용.scheduling_algorithm FIFO SJF">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2021-05-04T14:40:25.000Z">
+<meta property="article:modified_time" content="2021-05-11T01:52:08.020Z">
+<meta property="article:author" content="Suyan Kim">
+<meta property="article:tag" content="algorithm">
+<meta property="article:tag" content="OS">
+<meta name="twitter:card" content="summary">
+    
+    
+        
+    
+    
+        <meta property="og:image" content="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=640"/>
+    
+    
+    
+    
+    <!--STYLES-->
+    
+<link rel="stylesheet" href="/assets/css/all.css">
+
+    
+<link rel="stylesheet" href="/assets/css/jquery.fancybox.css">
+
+    
+<link rel="stylesheet" href="/assets/css/thumbs.css">
+
+    
+<link rel="stylesheet" href="/assets/css/tranquilpeak.css">
+
+    <!--STYLES END-->
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-158530470-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-158530470-1');
+    </script>
+
+
+    
+
+    
+        
+    
+</head>
+
+    <body>
+        <div id="blog">
+            <!-- Define author's picture -->
+
+
+    
+        
+    
+
+<header id="header" data-behavior="4">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <div class="header-title">
+        <a
+            class="header-title-link"
+            href="/index.html"
+            aria-label=""
+        >
+            동글씨
+        </a>
+    </div>
+    
+        
+            <a
+                class="header-right-picture "
+                href="#about"
+                aria-label="Open the link: /#about"
+            >
+        
+        
+            <img class="header-picture" src="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=90" alt="Author&#39;s picture"/>
+        
+        </a>
+    
+</header>
+
+            <!-- function -->
+
+
+<!-- Define author's picture -->
+
+
+    
+
+<nav id="sidebar" data-behavior="4">
+    <div class="sidebar-container">
+        
+            <div class="sidebar-profile">
+                <a
+                    href="/#about"
+                    aria-label="Read more about the author"
+                >
+                    <img class="sidebar-profile-picture" src="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=800" alt="Author&#39;s picture"/>
+                </a>
+                <h4 class="sidebar-profile-name">Suyan Kim</h4>
+                
+                    <h5 class="sidebar-profile-bio"><p>▲ Who Am I</p>
+</h5>
+                
+            </div>
+        
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="home"href="/index.html"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-home" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">home</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="archives"href="/all-archives"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-archive" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">archives</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="categories"href="/all-categories"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-bookmark" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">categories</span>
+                        </a>
+                    <!-- add -->
+                    
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (7)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Config/">☁️ Config (2)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-DataBase/">☁️ DataBase (1)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Git/">☁️ Git (3)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-JPA/">☁️ JPA (10)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Java/">☁️ Java (0)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Linux/">☁️ Linux (1)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-OS/">☁️ OS (10)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Python/">☁️ Python (2)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-React/">☁️ React (3)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Spring/">☁️ Spring (1)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-TIL/">☁️ TIL (2)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Web/">☁️ Web (1)</a></li>
+                            
+                        
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="tags"href="/all-tags"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-tags" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">tags</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="about"href="#about"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-question" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">about</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="https://github.com/ksso730" target="_blank" rel="noopener" title="github">
+                    
+                    <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">github</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="https://www.instagram.com/syankkim/" target="_blank" rel="noopener" title="life">
+                    
+                    <i class="sidebar-button-icon fab fa-instagram" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">life</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+        </ul>
+        
+    </div>
+</nav>
+
+            
+            <div id="main" data-behavior="4"
+                 class="
+                        hasCoverMetaIn
+                        ">
+                
+<article class="post">
+    
+    
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title">
+            ✅ 스케줄링 알고리즘
+        </h1>
+    
+    
+        <div class="post-meta">
+    <time datetime="2021-05-04T23:40:25+09:00">
+	
+		    May 04, 2021
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/%E2%98%81%EF%B8%8F-OS/">☁️ OS</a>
+
+
+    
+</div>
+
+    
+</div>
+
+    
+    <div class="post-content markdown">
+        <div class="main-content-wrap">
+            <!-- excerpt -->
+<h1 id="table-of-contents">Contents</h1><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#스케줄링-알고리즘"><span class="toc-text">스케줄링 알고리즘</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#프로세스-Process"><span class="toc-text">프로세스? (Process)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#스케줄러와-프로세스"><span class="toc-text">스케줄러와 프로세스</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#FIFO-스케줄러"><span class="toc-text">FIFO 스케줄러</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#우선순위-기반-SJF-스케줄러"><span class="toc-text">우선순위 기반 (SJF) 스케줄러</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Priority-Based-스케줄러"><span class="toc-text">Priority-Based 스케줄러</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Round-Robin-스케줄러"><span class="toc-text">Round Robin 스케줄러</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#RTOS-VS-GPOS"><span class="toc-text">[+] RTOS VS GPOS</span></a></li></ol>
+
+<hr>
+<p><em>💬 해당 강의는 fastcampus 에서 ‘컴공 전공자 따라잡기 온라인 완주반’ 강의를 들으며 스스로의 학습을 위해 작성한 포스팅입니다. 문제가 된다면 연락 부탁드립니다.</em></p>
+<br>
+
+<h1 id="스케줄링-알고리즘"><a href="#스케줄링-알고리즘" class="headerlink" title="스케줄링 알고리즘"></a>스케줄링 알고리즘</h1><blockquote>
+<p>어느 순서대로 프로세스를 실행할까?</p>
+</blockquote>
+<ul>
+<li>목표<ul>
+<li>시분할 시스템: 프로세스 응답시간을 최소화.</li>
+<li>멀티 프로그래밍: CPU 활용도를 높여서 프로세스를 빨리 실행</li>
+</ul>
+</li>
+</ul>
+<br>
+
+<h2 id="프로세스-Process"><a href="#프로세스-Process" class="headerlink" title="프로세스? (Process)"></a>프로세스? (Process)</h2><ul>
+<li><code>메모리</code>에 올려져서 실행중인 프로그램을 의미한다. : <code>폰노이만</code> 구조</li>
+<li>작업, task, job 이라는 용어롸 혼용</li>
+<li>응용 프로그램 != 프로세스</li>
+<li>하나의 응용 프로그램은 여러개의 프로세스로가 상호작용하며 실행 할 수 있다.</li>
+<li>간단한 C/C++ 프로그램을 만든다면 ?<ul>
+<li>하나의 프로세스를 갖는 여러 프로그램을 만들어, 서로 통신하며 프로그램을 작성 하는 방법도 있다. (IPC 기법)</li>
+</ul>
+</li>
+</ul>
+<h2 id="스케줄러와-프로세스"><a href="#스케줄러와-프로세스" class="headerlink" title="스케줄러와 프로세스"></a>스케줄러와 프로세스</h2><blockquote>
+<p><code>스케줄러</code>는 <code>프로세스 실행</code>을 관리한다.</p>
+</blockquote>
+<hr>
+<h2 id="FIFO-스케줄러"><a href="#FIFO-스케줄러" class="headerlink" title="FIFO 스케줄러"></a>FIFO 스케줄러</h2><blockquote>
+<p>프로세스가 저장매체를 읽거나 프린팅하는 작업 없이 CPU(프로세서)를 온전히 사용.</p>
+</blockquote>
+<ul>
+<li>가장 간단한 스케줄러 (배치처리 시스템)</li>
+<li>=FCFS (First Come First Served)</li>
+</ul>
+<h2 id="우선순위-기반-SJF-스케줄러"><a href="#우선순위-기반-SJF-스케줄러" class="headerlink" title="우선순위 기반 (SJF) 스케줄러"></a>우선순위 기반 (SJF) 스케줄러</h2><ul>
+<li>SJF (Shortest Job First)<ul>
+<li>수행시간이 가장 짧은 작업부터 처리</li>
+</ul>
+</li>
+</ul>
+<h2 id="Priority-Based-스케줄러"><a href="#Priority-Based-스케줄러" class="headerlink" title="Priority-Based 스케줄러"></a>Priority-Based 스케줄러</h2><ul>
+<li>정적 우선순위 : 프로세스마다 우선순위를 미리 지정</li>
+<li>동적 우선순위 : 스케줄러가 상황에 따라 우선순위를 동적으로 변경</li>
+<li><code>Procss</code> [3(10), 2(20), 2(20), 2(20), 1(1)]<br>(괄호안 숫자는 미리 정한 우선순위)</li>
+<li><code>CPU</code> 처리 순서<ul>
+<li>2 <strong>(20)</strong> -&gt; 2 <strong>(20)</strong> -&gt; 2 <strong>(20)</strong> -&gt; 3 <strong>(10)</strong> -&gt; 1 <strong>(1)</strong></li>
+</ul>
+</li>
+</ul>
+<h2 id="Round-Robin-스케줄러"><a href="#Round-Robin-스케줄러" class="headerlink" title="Round Robin 스케줄러"></a>Round Robin 스케줄러</h2><ul>
+<li>RR이라고 이야기 하기도 한다.</li>
+<li>시분할 시스템을 위해 설계된 스케줄링 중 하나이며</li>
+<li>프로세스들의 우선순위를 신경쓰지 않습니다.</li>
+<li>다만 시분할 시스템처럼 최초 요청부터 순서대로 프로세서들에게 일정한 시간단위로 공평하게 CPU를 할당.</li>
+<li>순서대로 공평하게 CPU를 할당해주기 때문에 그 시간에 프로세스가 완료되지 않을 경우 다시 뒤로 배치가 되서 차례를 기다린다.</li>
+<li><code>Process</code> [3, 3, 2, 2, 2, 1]<table>
+<thead>
+<tr>
+<th>RR Ready Queue</th>
+<th>CPU</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>[3, 2, 1]</td>
+<td>[1]</td>
+</tr>
+<tr>
+<td>[3, 2]</td>
+<td>[1, 2]</td>
+</tr>
+<tr>
+<td>[2, 3]</td>
+<td>[1, 2, 3]</td>
+</tr>
+<tr>
+<td>[3, 2]</td>
+<td>[1, 2, 3, 2]</td>
+</tr>
+<tr>
+<td>[2, 3]</td>
+<td>[1, 2, 3, 2, 3]</td>
+</tr>
+<tr>
+<td>[2]</td>
+<td>[1, 2, 3, 2, 3, 2]</td>
+</tr>
+</tbody></table>
+</li>
+</ul>
+<hr>
+<br>
+
+<h1 id="RTOS-VS-GPOS"><a href="#RTOS-VS-GPOS" class="headerlink" title="[+] RTOS VS GPOS"></a>[+] RTOS VS GPOS</h1><ul>
+<li><code>General Purpose OS</code> (GPOS):<ul>
+<li>프로세스 실행시간에 민감하지 않고, 일반적으로 사용되는 OS : Windows, Linux</li>
+</ul>
+</li>
+<li><code>RealTime OS</code> (RTOS): 응용 프로그램 실시간 성능 보장을 목표로 하는 OS<ul>
+<li>정확하게 프로그램 시작, 완료시간을 보장</li>
+<li>Hardware RTOS, Software RTOS</li>
+</ul>
+</li>
+</ul>
+            
+
+
+        </div>
+    </div>
+    <div id="post-footer" class="post-footer main-content-wrap">
+        
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">TAGGED IN</span><br/>
+                
+    <a class="tag tag--primary tag--small t-link" href="/tags/OS/" rel="tag">OS</a> <a class="tag tag--primary tag--small t-link" href="/tags/algorithm/" rel="tag">algorithm</a>
+
+            </div>
+        
+        
+            <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2021/05/05/%ED%94%84%EB%A1%9C%EC%84%B8%EC%8A%A4%EC%83%81%ED%83%9C%EC%99%80_%EC%8A%A4%EC%BC%80%EC%A4%84%EB%A7%81/"
+                    data-tooltip="✅ 프로세스 상태 기반 스케줄링"
+                    aria-label="PREVIOUS: ✅ 프로세스 상태 기반 스케줄링"
+                >
+                    
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                    </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2021/05/04/%EC%BB%B4%EA%B3%B5-%EB%94%B0%EB%9D%BC%EC%9E%A1%EA%B8%B0-%EC%9A%B4%EC%98%81%EC%B2%B4%EC%A0%9C-%EA%B5%AC%EC%A1%B0/"
+                    data-tooltip="🔅 운영체제의 역할 (2)"
+                    aria-label="NEXT: 🔅 운영체제의 역할 (2)"
+                >
+                    
+                        <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a
+                class="post-action-btn btn btn--default btn-open-shareoptions"
+                href="#btn-open-shareoptions"
+                aria-label="Share this post"
+            >
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2021/05/04/%EC%8A%A4%EC%BC%80%EC%A4%84%EB%A7%81-%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98/"
+                    title="Share on Facebook"
+                    aria-label="Share on Facebook"
+                >
+                    <i class="fab fa-facebook" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2021/05/04/%EC%8A%A4%EC%BC%80%EC%A4%84%EB%A7%81-%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98/"
+                    title="Share on Twitter"
+                    aria-label="Share on Twitter"
+                >
+                    <i class="fab fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://plus.google.com/share?url=http://yoursite.com/2021/05/04/%EC%8A%A4%EC%BC%80%EC%A4%84%EB%A7%81-%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98/"
+                    title="Share on Google+"
+                    aria-label="Share on Google+"
+                >
+                    <i class="fab fa-google-plus" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+                <li class="post-action">
+                    <a
+                        class="post-action-btn btn btn--default"
+                        href="#disqus_thread"
+                        aria-label="Leave a comment"
+                    >
+                        <i class="fa fa-comment"></i>
+                    </a>
+                </li>
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#table-of-contents" aria-label="Contents">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+        
+        
+            
+                <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a></noscript>
+</div>
+            
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2021 Suyan Kim. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2021/05/05/%ED%94%84%EB%A1%9C%EC%84%B8%EC%8A%A4%EC%83%81%ED%83%9C%EC%99%80_%EC%8A%A4%EC%BC%80%EC%A4%84%EB%A7%81/"
+                    data-tooltip="✅ 프로세스 상태 기반 스케줄링"
+                    aria-label="PREVIOUS: ✅ 프로세스 상태 기반 스케줄링"
+                >
+                    
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                    </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2021/05/04/%EC%BB%B4%EA%B3%B5-%EB%94%B0%EB%9D%BC%EC%9E%A1%EA%B8%B0-%EC%9A%B4%EC%98%81%EC%B2%B4%EC%A0%9C-%EA%B5%AC%EC%A1%B0/"
+                    data-tooltip="🔅 운영체제의 역할 (2)"
+                    aria-label="NEXT: 🔅 운영체제의 역할 (2)"
+                >
+                    
+                        <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a
+                class="post-action-btn btn btn--default btn-open-shareoptions"
+                href="#btn-open-shareoptions"
+                aria-label="Share this post"
+            >
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2021/05/04/%EC%8A%A4%EC%BC%80%EC%A4%84%EB%A7%81-%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98/"
+                    title="Share on Facebook"
+                    aria-label="Share on Facebook"
+                >
+                    <i class="fab fa-facebook" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2021/05/04/%EC%8A%A4%EC%BC%80%EC%A4%84%EB%A7%81-%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98/"
+                    title="Share on Twitter"
+                    aria-label="Share on Twitter"
+                >
+                    <i class="fab fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://plus.google.com/share?url=http://yoursite.com/2021/05/04/%EC%8A%A4%EC%BC%80%EC%A4%84%EB%A7%81-%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98/"
+                    title="Share on Google+"
+                    aria-label="Share on Google+"
+                >
+                    <i class="fab fa-google-plus" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+                <li class="post-action">
+                    <a
+                        class="post-action-btn btn btn--default"
+                        href="#disqus_thread"
+                        aria-label="Leave a comment"
+                    >
+                        <i class="fa fa-comment"></i>
+                    </a>
+                </li>
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#table-of-contents" aria-label="Contents">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                
+    <div id="share-options-bar" class="share-options-bar" data-behavior="4">
+        <i id="btn-close-shareoptions" class="fa fa-times"></i>
+        <ul class="share-options">
+            
+                
+                
+                <li class="share-option">
+                    <a
+                        class="share-option-btn"
+                        target="new"
+                        href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2021/05/04/%EC%8A%A4%EC%BC%80%EC%A4%84%EB%A7%81-%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98/"
+                        aria-label="Share on Facebook"
+                    >
+                        <i class="fab fa-facebook" aria-hidden="true"></i><span>Share on Facebook</span>
+                    </a>
+                </li>
+            
+                
+                
+                <li class="share-option">
+                    <a
+                        class="share-option-btn"
+                        target="new"
+                        href="https://twitter.com/intent/tweet?text=http://yoursite.com/2021/05/04/%EC%8A%A4%EC%BC%80%EC%A4%84%EB%A7%81-%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98/"
+                        aria-label="Share on Twitter"
+                    >
+                        <i class="fab fa-twitter" aria-hidden="true"></i><span>Share on Twitter</span>
+                    </a>
+                </li>
+            
+                
+                
+                <li class="share-option">
+                    <a
+                        class="share-option-btn"
+                        target="new"
+                        href="https://plus.google.com/share?url=http://yoursite.com/2021/05/04/%EC%8A%A4%EC%BC%80%EC%A4%84%EB%A7%81-%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98/"
+                        aria-label="Share on Google+"
+                    >
+                        <i class="fab fa-google-plus" aria-hidden="true"></i><span>Share on Google+</span>
+                    </a>
+                </li>
+            
+        </ul>
+    </div>
+
+
+            
+        </div>
+        
+
+
+    
+
+<div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-times"></i>
+        </div>
+        
+            <img id="about-card-picture" src="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=110" alt="Author&#39;s picture"/>
+        
+            <h4 id="about-card-name">Suyan Kim</h4>
+        <!--  -->
+            <!-- <div id="about-card-bio"><p>author.bio</p>
+</div> -->
+            <div id="about-card-bio">안녕하세요, 서버 백엔드 개발자 동글씨입니다.</div>
+        <!--  -->
+        <!--  -->
+            <div id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <!-- <p>Backend Developer</p>
+ -->
+                Backend Developer
+            </div>
+        <!--  -->
+        
+            <div id="about-card-location">
+                <i class="fa fa-map-marker-alt"></i>
+                <br/>
+                Korea
+            </div>
+        
+    </div>
+</div>
+
+        
+        
+<div id="cover" style="background-image:url('/assets/images/null');"></div>
+        <!--SCRIPTS-->
+
+<script src="/assets/js/jquery.js"></script>
+
+
+<script src="/assets/js/jquery.fancybox.js"></script>
+
+
+<script src="/assets/js/thumbs.js"></script>
+
+
+<script src="/assets/js/tranquilpeak.js"></script>
+
+<!--SCRIPTS END-->
+
+
+    
+        <script>
+          var disqus_config = function() {
+            this.page.url = 'http://yoursite.com/2021/05/04/%EC%8A%A4%EC%BC%80%EC%A4%84%EB%A7%81-%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98/';
+              
+            this.page.identifier = '2021/05/04/스케줄링-알고리즘/';
+              
+          };
+          (function() {
+            var d = document, s = d.createElement('script');
+            var disqus_shortname = 'ksso730-github-io';
+            s.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+          })();
+        </script>
+    
+
+
+
+
+    </body>
+</html>

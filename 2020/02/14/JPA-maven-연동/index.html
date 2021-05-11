@@ -13,7 +13,7 @@
     
         <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
     
-    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","ksso7300@gmail.com"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\n\n\nJPA - maven 연동설정pom.xml 1) jpa 하이버네이트    추후에 스프링과 연동시 다운받은 스프링 버전과 같이 선택해주는것이 좋다. 2) H2 데이터베이스    설치한 버전과 같은 dependency 를 넣어줘야함.\npersistance.xml (rezsources/META-INF/persistance.xml)javax.~     속성: 라이브러리를 바꿔도 사용 가능.hibernate.~ 속성: 하이버네이트 라이브러리에서만 사용 가능.\n123456789101112131415161718192021&lt;?xml version=\"1.0\" encoding=\"UTF-8\"?&gt;&lt;persistence version=\"2.2\"             xmlns=\"http://xmlns.jcp.org/xml/ns/persistence\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"             xsi:schemaLocation=\"http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_2.xsd\"&gt;    &lt;persistence-unit name=\"hello\"&gt;        &lt;properties&gt;            &lt;!-- 필수 속성 --&gt;            &lt;property name=\"javax.persistence.jdbc.driver\" value=\"org.h2.Driver\"/&gt;            &lt;property name=\"javax.persistence.jdbc.user\" value=\"sa\"/&gt;            &lt;property name=\"javax.persistence.jdbc.password\" value=\"\"/&gt;            &lt;property name=\"javax.persistence.jdbc.url\" value=\"jdbc:h2:tcp://localhost/~/test\"/&gt;            &lt;property name=\"hibernate.dialect\" value=\"org.hibernate.dialect.H2Dialect\"/&gt;            &lt;!-- 옵션 --&gt;            &lt;property name=\"hibernate.show_sql\" value=\"true\"/&gt;            &lt;property name=\"hibernate.format_sql\" value=\"true\"/&gt;            &lt;property name=\"hibernate.use_sql_comments\" value=\"true\"/&gt;            &lt;!--&lt;property name=\"hibernate.hbm2ddl.auto\" value=\"create\" /&gt;--&gt;        &lt;/properties&gt;    &lt;/persistence-unit&gt;&lt;/persistence&gt;\n\n\n\n\n\nHello JPA 실습Could not load requested class : org.h2.Driverh2 는 우선 설치해준다.\n\n\n\n분명히  pom.xml 에 H2 데이터베이스를 넣고, persistence.xml 에도 Database Driver 를 설정해주었는데도JpaMain 코드를 실행하여 데이터베이스 연결을 테스트 했을 때 다음과 같은 connection 오류가 발생했다.\nCould not load requested class : org.h2.Driver\n12345public class JpaMain &#123;    public static void main(String[] args)&#123;        EntityManagerFactory emf  = Persistence.createEntityManagerFactory(\"hello\");    &#125;&#125;\n알고 보니 pom.xml 의 scope 값에\n&lt;scope&gt;[database_name]&lt;/scope&gt;\n이 부분의 database_name 이 잘못 들어가 있던것.\nstatck overflow 검색 결과..\nOn maven docs, it says that &lt;scope&gt;test&lt;/scope&gt; dependency is not required for normal use of the application, and is only available for the test compilation and execution phases\n​메이븐 docs 에느 scope 종속성은 일반적인 어플리케이션에서는 사용되지 않으며,test 컴파일 및 실행단계에서만  사용된다.\n​뭐 그렇다고 한다. 이런 기본적인 상식을 모르고 있었다니… &#128580;아무튼 scopse 종속성을 제거후 실행하니 연결에 성공했다.\n\n\n\n\n\n\n\nINCERT, SELECT, UPDATE (JPQL)\n\nINCERT\n\n123456789101112131415161718192021public class JpaMain &#123;    public static void main(String[] args)&#123;        EntityManagerFactory emf  = Persistence.createEntityManagerFactory(\"hello\");        // 객체를 대신 저장해줌        EntityManager em = emf.createEntityManager();        EntityTransaction tx = em.getTransaction();        tx.begin();        try&#123;            Member member = new Member();            member.setId(1L);            member.setName(\"HelloA\");            em.persist(member);            tx.commit();        &#125;catch (Exception e)&#123;            em.close();        &#125;finally &#123;            emf.close();        &#125;    &#125;&#125;\n\n실행결과\n\n\n\n\n\n\n\n\nUPDATE12345678910111213141516171819202122public class JpaMain &#123;    public static void main(String[] args)&#123;        EntityManagerFactory emf  = Persistence.createEntityManagerFactory(\"hello\");        // 객체를 대신 저장해줌        EntityManager em = emf.createEntityManager();        EntityTransaction tx = em.getTransaction();        tx.begin();        try&#123;            Member findMember = em.find(Member.class, 1L);            System.out.println(\"findMember.id = \"+ findMember.getId());            System.out.println(\"findMember.id = \"+ findMember.getName());            findMember.setName(\"HelloJPA\");            tx.commit();        &#125;catch (Exception e)&#123;            em.close();        &#125;finally &#123;            emf.close();        &#125;    &#125;&#125;\n\n실행결과\n\nJPQL - SELECT12345678910111213141516171819202122232425262728public class JpaMain &#123;    public static void main(String[] args)&#123;        EntityManagerFactory emf  = Persistence.createEntityManagerFactory(\"hello\");        // 객체를 대신 저장해줌        EntityManager em = emf.createEntityManager();        EntityTransaction tx = em.getTransaction();        tx.begin();        try&#123;            //jpql 사용 - database 의 방언에 맞춰짐            List&lt;Member&gt; result = em.createQuery(\"select m from Member as m\", Member.class)                    .setFirstResult(1)                    .setMaxResults(4)                    .getResultList();            for(Member member: result)&#123;                System.out.println(\"member.name = \"+member.getName());            &#125;            tx.commit();        &#125;catch (Exception e)&#123;            em.close();        &#125;finally &#123;            emf.close();        &#125;    &#125;&#125;\n실행결과\n1member.name &#x3D; HelloJPA\n\n\n\n\n\n\n\n\n\nEntityManagerFactory 는 하나만 생성, 애플리케이션 전체공유.EntityManager  는  thread 간 공유가 안됨.\n\nJPQL ? 객체지향 SQL\n\n단순한 조회는 EntityManager.find()\nID 가 4이상 조회하고 싶다면?​\nSQL 을 추상화한 JPQL 이라는 객체지향 쿼리언어 제공.\nJPQL 은 엔티티 객체를 대상으로 쿼리\nSQL 은 데이터베이스 테이블을 대상으로 쿼리\n","dateCreated":"2020-02-14T01:19:04+09:00","dateModified":"2020-04-28T10:36:01+09:00","datePublished":"2020-02-14T01:19:04+09:00","description":"JPA 처음 시작하기. 연동과정을 알아보고 H2 를 이용한 기본 CRUD 를 연습해봅니다.​","headline":"JPA - maven 연동","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2020/02/14/JPA-maven-%EC%97%B0%EB%8F%99/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","ksso7300@gmail.com"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2020/02/14/JPA-maven-%EC%97%B0%EB%8F%99/","keywords":"JPA, maven"}</script>
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\n\n\nJPA - maven 연동설정pom.xml 1) jpa 하이버네이트    추후에 스프링과 연동시 다운받은 스프링 버전과 같이 선택해주는것이 좋다. 2) H2 데이터베이스    설치한 버전과 같은 dependency 를 넣어줘야함.\npersistance.xml (rezsources/META-INF/persistance.xml)javax.~     속성: 라이브러리를 바꿔도 사용 가능.hibernate.~ 속성: 하이버네이트 라이브러리에서만 사용 가능.\n123456789101112131415161718192021&lt;?xml version=\"1.0\" encoding=\"UTF-8\"?&gt;&lt;persistence version=\"2.2\"             xmlns=\"http://xmlns.jcp.org/xml/ns/persistence\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"             xsi:schemaLocation=\"http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_2.xsd\"&gt;    &lt;persistence-unit name=\"hello\"&gt;        &lt;properties&gt;            &lt;!-- 필수 속성 --&gt;            &lt;property name=\"javax.persistence.jdbc.driver\" value=\"org.h2.Driver\"/&gt;            &lt;property name=\"javax.persistence.jdbc.user\" value=\"sa\"/&gt;            &lt;property name=\"javax.persistence.jdbc.password\" value=\"\"/&gt;            &lt;property name=\"javax.persistence.jdbc.url\" value=\"jdbc:h2:tcp://localhost/~/test\"/&gt;            &lt;property name=\"hibernate.dialect\" value=\"org.hibernate.dialect.H2Dialect\"/&gt;            &lt;!-- 옵션 --&gt;            &lt;property name=\"hibernate.show_sql\" value=\"true\"/&gt;            &lt;property name=\"hibernate.format_sql\" value=\"true\"/&gt;            &lt;property name=\"hibernate.use_sql_comments\" value=\"true\"/&gt;            &lt;!--&lt;property name=\"hibernate.hbm2ddl.auto\" value=\"create\" /&gt;--&gt;        &lt;/properties&gt;    &lt;/persistence-unit&gt;&lt;/persistence&gt;\n\n\n\n\n\nHello JPA 실습Could not load requested class : org.h2.Driverh2 는 우선 설치해준다.\n\n\n\n분명히  pom.xml 에 H2 데이터베이스를 넣고, persistence.xml 에도 Database Driver 를 설정해주었는데도JpaMain 코드를 실행하여 데이터베이스 연결을 테스트 했을 때 다음과 같은 connection 오류가 발생했다.\nCould not load requested class : org.h2.Driver\n12345public class JpaMain &#123;    public static void main(String[] args)&#123;        EntityManagerFactory emf  = Persistence.createEntityManagerFactory(\"hello\");    &#125;&#125;\n알고 보니 pom.xml 의 scope 값에\n&lt;scope&gt;[database_name]&lt;/scope&gt;\n이 부분의 database_name 이 잘못 들어가 있던것.\nstatck overflow 검색 결과..\nOn maven docs, it says that &lt;scope&gt;test&lt;/scope&gt; dependency is not required for normal use of the application, and is only available for the test compilation and execution phases\n​메이븐 docs 에느 scope 종속성은 일반적인 어플리케이션에서는 사용되지 않으며,test 컴파일 및 실행단계에서만  사용된다.\n​뭐 그렇다고 한다. 이런 기본적인 상식을 모르고 있었다니… &#128580;아무튼 scopse 종속성을 제거후 실행하니 연결에 성공했다.\n\n\n\n\n\n\n\nINCERT, SELECT, UPDATE (JPQL)\n\nINCERT\n\n123456789101112131415161718192021public class JpaMain &#123;    public static void main(String[] args)&#123;        EntityManagerFactory emf  = Persistence.createEntityManagerFactory(\"hello\");        // 객체를 대신 저장해줌        EntityManager em = emf.createEntityManager();        EntityTransaction tx = em.getTransaction();        tx.begin();        try&#123;            Member member = new Member();            member.setId(1L);            member.setName(\"HelloA\");            em.persist(member);            tx.commit();        &#125;catch (Exception e)&#123;            em.close();        &#125;finally &#123;            emf.close();        &#125;    &#125;&#125;\n\n실행결과\n\n\n\n\n\n\n\n\nUPDATE12345678910111213141516171819202122public class JpaMain &#123;    public static void main(String[] args)&#123;        EntityManagerFactory emf  = Persistence.createEntityManagerFactory(\"hello\");        // 객체를 대신 저장해줌        EntityManager em = emf.createEntityManager();        EntityTransaction tx = em.getTransaction();        tx.begin();        try&#123;            Member findMember = em.find(Member.class, 1L);            System.out.println(\"findMember.id = \"+ findMember.getId());            System.out.println(\"findMember.id = \"+ findMember.getName());            findMember.setName(\"HelloJPA\");            tx.commit();        &#125;catch (Exception e)&#123;            em.close();        &#125;finally &#123;            emf.close();        &#125;    &#125;&#125;\n\n실행결과\n\nJPQL - SELECT12345678910111213141516171819202122232425262728public class JpaMain &#123;    public static void main(String[] args)&#123;        EntityManagerFactory emf  = Persistence.createEntityManagerFactory(\"hello\");        // 객체를 대신 저장해줌        EntityManager em = emf.createEntityManager();        EntityTransaction tx = em.getTransaction();        tx.begin();        try&#123;            //jpql 사용 - database 의 방언에 맞춰짐            List&lt;Member&gt; result = em.createQuery(\"select m from Member as m\", Member.class)                    .setFirstResult(1)                    .setMaxResults(4)                    .getResultList();            for(Member member: result)&#123;                System.out.println(\"member.name = \"+member.getName());            &#125;            tx.commit();        &#125;catch (Exception e)&#123;            em.close();        &#125;finally &#123;            emf.close();        &#125;    &#125;&#125;\n실행결과\n1member.name &#x3D; HelloJPA\n\n\n\n\n\n\n\n\n\nEntityManagerFactory 는 하나만 생성, 애플리케이션 전체공유.EntityManager  는  thread 간 공유가 안됨.\n\nJPQL ? 객체지향 SQL\n\n단순한 조회는 EntityManager.find()\nID 가 4이상 조회하고 싶다면?​\nSQL 을 추상화한 JPQL 이라는 객체지향 쿼리언어 제공.\nJPQL 은 엔티티 객체를 대상으로 쿼리\nSQL 은 데이터베이스 테이블을 대상으로 쿼리\n","dateCreated":"2020-02-14T01:19:04+09:00","dateModified":"2020-04-28T10:36:01+09:00","datePublished":"2020-02-14T01:19:04+09:00","description":"JPA 처음 시작하기. 연동과정을 알아보고 H2 를 이용한 기본 CRUD 를 연습해봅니다.​","headline":"JPA - maven 연동","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2020/02/14/JPA-maven-%EC%97%B0%EB%8F%99/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2020/02/14/JPA-maven-%EC%97%B0%EB%8F%99/","keywords":"JPA, maven"}</script>
     <meta name="description" content="JPA 처음 시작하기. 연동과정을 알아보고 H2 를 이용한 기본 CRUD 를 연습해봅니다.​">
 <meta property="og:type" content="blog">
 <meta property="og:title" content="JPA - maven 연동">
@@ -128,7 +128,7 @@
                     href="/#about"
                     aria-label="Read more about the author"
                 >
-                    <img class="sidebar-profile-picture" src="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=110" alt="Author&#39;s picture"/>
+                    <img class="sidebar-profile-picture" src="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=800" alt="Author&#39;s picture"/>
                 </a>
                 <h4 class="sidebar-profile-name">Suyan Kim</h4>
                 
@@ -144,12 +144,12 @@
                     
                         <a  class="sidebar-button-link "
                              
-                                title="Home"href="/index.html"
+                                title="home"href="/index.html"
                                 
                                 >
                     
                     <i class="sidebar-button-icon fa fa-home" aria-hidden="true"></i>
-                    <span class="sidebar-button-desc">Home</span>
+                    <span class="sidebar-button-desc">home</span>
                         </a>
                     <!-- add -->
                     
@@ -159,15 +159,34 @@
                     
                         <a  class="sidebar-button-link "
                              
-                                title="Categories"href="/all-categories"
+                                title="archives"href="/all-archives"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-archive" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">archives</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="categories"href="/all-categories"
                                 
                                 >
                     
                     <i class="sidebar-button-icon fa fa-bookmark" aria-hidden="true"></i>
-                    <span class="sidebar-button-desc">Categories</span>
+                    <span class="sidebar-button-desc">categories</span>
                         </a>
                     <!-- add -->
                     
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (7)</a></li>
+                            
                         
                             
                                 <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Config/">☁️ Config (2)</a></li>
@@ -186,11 +205,15 @@
                             
                         
                             
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Java/">☁️ Java (0)</a></li>
+                            
+                        
+                            
                                 <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Linux/">☁️ Linux (1)</a></li>
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-OS/">☁️ OS (2)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-OS/">☁️ OS (10)</a></li>
                             
                         
                             
@@ -206,11 +229,11 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Web/">☁️ Web (1)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-TIL/">☁️ TIL (2)</a></li>
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-coding-test/">☁️ coding test (6)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Web/">☁️ Web (1)</a></li>
                             
                         
                     
@@ -220,12 +243,12 @@
                     
                         <a  class="sidebar-button-link "
                              
-                                title="Tags"href="/all-tags"
+                                title="tags"href="/all-tags"
                                 
                                 >
                     
                     <i class="sidebar-button-icon fa fa-tags" aria-hidden="true"></i>
-                    <span class="sidebar-button-desc">Tags</span>
+                    <span class="sidebar-button-desc">tags</span>
                         </a>
                     <!-- add -->
                     
@@ -235,27 +258,12 @@
                     
                         <a  class="sidebar-button-link "
                              
-                                title="Archives"href="/all-archives"
-                                
-                                >
-                    
-                    <i class="sidebar-button-icon fa fa-archive" aria-hidden="true"></i>
-                    <span class="sidebar-button-desc">Archives</span>
-                        </a>
-                    <!-- add -->
-                    
-                </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a  class="sidebar-button-link "
-                             
-                                title="About"href="#about"
+                                title="about"href="#about"
                                 
                                 >
                     
                     <i class="sidebar-button-icon fa fa-question" aria-hidden="true"></i>
-                    <span class="sidebar-button-desc">About</span>
+                    <span class="sidebar-button-desc">about</span>
                         </a>
                     <!-- add -->
                     
@@ -267,10 +275,10 @@
             
                 <li class="sidebar-button">
                     
-                        <a  class="sidebar-button-link " href="https://github.com/ksso730" target="_blank" rel="noopener" title="my github">
+                        <a  class="sidebar-button-link " href="https://github.com/ksso730" target="_blank" rel="noopener" title="github">
                     
                     <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
-                    <span class="sidebar-button-desc">my github</span>
+                    <span class="sidebar-button-desc">github</span>
                         </a>
                     <!-- add -->
                     
@@ -278,12 +286,10 @@
             
                 <li class="sidebar-button">
                     
-                        <a  class="sidebar-button-link "
-                             href="/ksso7300@gmail.com"
-                                >
+                        <a  class="sidebar-button-link " href="https://www.instagram.com/syankkim/" target="_blank" rel="noopener" title="life">
                     
-                    <i class="sidebar-button-icon fa fa-envelope" aria-hidden="true"></i>
-                    <span class="sidebar-button-desc">contact me</span>
+                    <i class="sidebar-button-icon fab fa-instagram" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">life</span>
                         </a>
                     <!-- add -->
                     
@@ -544,7 +550,7 @@
 
                 <footer id="footer" class="main-content-wrap">
     <span class="copyrights">
-        Copyrights &copy; 2020 Suyan Kim. All Rights Reserved.
+        Copyrights &copy; 2021 Suyan Kim. All Rights Reserved.
     </span>
 </footer>
 

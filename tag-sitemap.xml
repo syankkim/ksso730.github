@@ -3,6 +3,83 @@
 
 
     <url>
+        <loc>http://yoursite.com/tags/OS/</loc>
+        <lastmod>2021-05-11T01:52:08.026Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://yoursite.com/tags/algorithm/</loc>
+        <lastmod>2021-05-11T01:52:08.020Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://yoursite.com/tags/scheduler/</loc>
+        <lastmod>2021-05-11T01:52:08.019Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://yoursite.com/tags/servlet/</loc>
+        <lastmod>2021-05-11T01:52:08.015Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://yoursite.com/tags/java/</loc>
+        <lastmod>2021-05-11T01:52:08.015Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://yoursite.com/tags/scheduling/</loc>
+        <lastmod>2021-05-06T03:11:05.029Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://yoursite.com/tags/mvc/</loc>
+        <lastmod>2021-05-04T01:50:35.601Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://yoursite.com/tags/bigO/</loc>
+        <lastmod>2021-04-30T04:58:08.793Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://yoursite.com/tags/jpa/</loc>
+        <lastmod>2021-04-28T06:21:58.250Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://yoursite.com/tags/python/</loc>
+        <lastmod>2021-04-28T06:21:58.248Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://yoursite.com/tags/codingtest/</loc>
+        <lastmod>2021-04-28T06:21:58.246Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
         <loc>http://yoursite.com/tags/bash/</loc>
         <lastmod>2020-10-29T03:21:17.154Z</lastmod>
         <changefreq>weekly</changefreq>
@@ -66,27 +143,6 @@
     </url>
 
     <url>
-        <loc>http://yoursite.com/tags/python/</loc>
-        <lastmod>2020-06-16T02:59:34.278Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://yoursite.com/tags/codingtest/</loc>
-        <lastmod>2020-06-16T02:59:34.278Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://yoursite.com/tags/java/</loc>
-        <lastmod>2020-06-15T01:27:34.691Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
         <loc>http://yoursite.com/tags/react-router/</loc>
         <lastmod>2020-06-01T06:30:42.521Z</lastmod>
         <changefreq>weekly</changefreq>
@@ -116,13 +172,6 @@
 
     <url>
         <loc>http://yoursite.com/tags/querydsl/</loc>
-        <lastmod>2020-05-28T05:39:32.740Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://yoursite.com/tags/jpa/</loc>
         <lastmod>2020-05-28T05:39:32.740Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>

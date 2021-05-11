@@ -13,7 +13,7 @@
     
         <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
     
-    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","ksso7300@gmail.com"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\n\n\nISSUE[1] DB Connection Pool ERROR현상\nDB Connection pool error timeout waiting for idle object\n\n1234 DatabaseException - nested exception is org.apache.ibatis.exceptions.PersistenceException:### Error updating database.  Cause: org.springframework.jdbc.CannotGetJdbcConnectionException: Could not get JDBC Connection; nested exception is java.sql.SQLException: Cannot get a connection, pool error Timeout waiting for idle object\n\n당시 DataBase config#max-active #min-idle #max-idle\n\n\n풀의 초기 커넥션 갯수 : 10\nIdle상태에 풀이 소유한 최소 커넥션 갯수 : 10\nIdle상태에 풀이 소유한 최대 커넥션 갯수 : 30\n최대 커넥션 갯수 : 50\n커넥션이 존재하지 않을 때, 커넥션을 얻기까지 대기하는 최대 대기시간 : 5000\n\n\n원인 : @Transaction특정 API 에서 @Trnasaction 이 걸려있었던 상태.이 transaction이 commit 되지 않은 상태에서 이 API 의 요청이 급증하면서 connection 이 부족하게 되고, DB Dead Lock 에 빠지게 되었다.\n게다가 해당 API 내에서 또다른 API나 외부호출 기능 수행단계는 7단계를 거쳐야 했다. 그러니 요청이 많이 오거나 중간단계에서 실패하면 부하가 걸릴 수 밖에 없었던 것이다.\n해결결론적으로는 @Transactional 어노테이션이 제거하기로 하였다.\n\n\n\n\nJDBC DBCP\n일반적으로 DB 에서 Connection 을 얻어오는 과정\n\nDB 서버접속을 위한 JDBC 드라이버를 로드한다.\nDB 접속정보와 DriverManager.getConnection() 을 통해 DB Connection 을 얻는다.\nConnection 객체로부터 쿼리 수행을 위한 PreparedStatement 객체를 받는다.\nexecuteQuery 를 수행후 ResultSet 객체로 결과를 처리한다.\n완료 후, 사용된 리소스들을 close() 하여 반환한다.\n\n\n웹 애플리케이션은 HTTP 요청에 의해 Thread 를 생성하게 되고 대부분의 비지니스 로직은 DB 서버로부터 데이터를 얻게 된다.웹 어플리케이션을 지탱하는 WAS 에서 DB 서버에 접근을 시작하고 데이터를 가져오기까지 어느 단계에서 가장 많은 비용이 소비될까.\n\n위와 같은 모든 요청에의해 DB접속을 위한 Driver를 로드하고 Connection 객체를 생성하여 연결한다면 물리적으로 DB 서버에 지속적으로 접근해야 한다.\nDBCP (HikariCP)\n이러한 문제를 해결하기 위해 나온 것이 DBCP 이다. DB Connection 객체를 생성하고 연결하는데 드는 비용과 시간을 줄이고 네트워크 연결에 대한 부담을 줄여준다.SpringBoot 2.x 출범 이후 HikariCP 를 기본JDBC Connection Pool 로 사용 가능하게 되었다고 한다. 다른 Connection Pool 에 비해 성능이 압도적이라고 한다.HikariCP Dead lock에서 벗어나기 - 우아한형제들 기술블로그 를 바탕으로 작성되었습니다.\n\ngetConnection1. hikariPool.getConnection()Thread 는 HikariCP 로부터 connection 을 요청한다.\n2. hikariPool.concurrentBag.borrow()2-a) 현재 Thread 가 이전에 사용했던 connection 리스트 중에 현재 사용가능한(idle) connection이 있는가?connection:2-b2-b) hikari pool 전체 connection 중 현재 사용가능한(idle) connection이 있는가?connection:2-c2-c) concurrentBag.handOffQueue (다른 Thread 가 쓰고 반납) 에 사용가능한(idle) connection이 있는가?connection:2-d2-d) connectionTimeout 이 지났는지 확인한다. (HikariCP default Connection Timeout 은 30초)\nconnection.close()transaction 이 정상적으로 commit 혹은 오류로 인한 rollback 이 되면 connection.close() 가 호출되어 connection 을 Pool 에 반납한다.\n\nThread : connection.close() \nHiraki2-a) poolEntry.setState(SATE_NOT_IN_USE) idle Connetion 으로 변환.2-b) concurrentBag.handOffQueue.off(poolEntry)\n\n마치며위에서 해결한 connection pool error 의 원인은 transaction 에 의한 오류였다. 다음 포스팅에서는 이상적인 #max-active #min-idle #max-idle 을 설정하기 위해서는 무엇을 고려해봐야 하는지 끄적여보려 한다.","dateCreated":"2020-04-27T10:43:05+09:00","dateModified":"2020-05-28T14:39:32+09:00","datePublished":"2020-04-27T10:43:05+09:00","description":"DB Connection Pool Error 의 원인을 찾아보며DB Connection Pool 이 무엇인지, DBCP 의 개념, Hikari Pool 의 작동방식을 공부.","headline":"개발일지🌟 DB Connection Pool Error (DBCP)","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2020/04/27/DB-Connection-Pool/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","ksso7300@gmail.com"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2020/04/27/DB-Connection-Pool/","keywords":"DBCP, DataBase"}</script>
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\n\n\nISSUE[1] DB Connection Pool ERROR현상\nDB Connection pool error timeout waiting for idle object\n\n1234 DatabaseException - nested exception is org.apache.ibatis.exceptions.PersistenceException:### Error updating database.  Cause: org.springframework.jdbc.CannotGetJdbcConnectionException: Could not get JDBC Connection; nested exception is java.sql.SQLException: Cannot get a connection, pool error Timeout waiting for idle object\n\n당시 DataBase config#max-active #min-idle #max-idle\n\n\n풀의 초기 커넥션 갯수 : 10\nIdle상태에 풀이 소유한 최소 커넥션 갯수 : 10\nIdle상태에 풀이 소유한 최대 커넥션 갯수 : 30\n최대 커넥션 갯수 : 50\n커넥션이 존재하지 않을 때, 커넥션을 얻기까지 대기하는 최대 대기시간 : 5000\n\n\n원인 : @Transaction특정 API 에서 @Trnasaction 이 걸려있었던 상태.이 transaction이 commit 되지 않은 상태에서 이 API 의 요청이 급증하면서 connection 이 부족하게 되고, DB Dead Lock 에 빠지게 되었다.\n게다가 해당 API 내에서 또다른 API나 외부호출 기능 수행단계는 7단계를 거쳐야 했다. 그러니 요청이 많이 오거나 중간단계에서 실패하면 부하가 걸릴 수 밖에 없었던 것이다.\n해결결론적으로는 @Transactional 어노테이션이 제거하기로 하였다.\n\n\n\n\nJDBC DBCP\n일반적으로 DB 에서 Connection 을 얻어오는 과정\n\nDB 서버접속을 위한 JDBC 드라이버를 로드한다.\nDB 접속정보와 DriverManager.getConnection() 을 통해 DB Connection 을 얻는다.\nConnection 객체로부터 쿼리 수행을 위한 PreparedStatement 객체를 받는다.\nexecuteQuery 를 수행후 ResultSet 객체로 결과를 처리한다.\n완료 후, 사용된 리소스들을 close() 하여 반환한다.\n\n\n웹 애플리케이션은 HTTP 요청에 의해 Thread 를 생성하게 되고 대부분의 비지니스 로직은 DB 서버로부터 데이터를 얻게 된다.웹 어플리케이션을 지탱하는 WAS 에서 DB 서버에 접근을 시작하고 데이터를 가져오기까지 어느 단계에서 가장 많은 비용이 소비될까.\n\n위와 같은 모든 요청에의해 DB접속을 위한 Driver를 로드하고 Connection 객체를 생성하여 연결한다면 물리적으로 DB 서버에 지속적으로 접근해야 한다.\nDBCP (HikariCP)\n이러한 문제를 해결하기 위해 나온 것이 DBCP 이다. DB Connection 객체를 생성하고 연결하는데 드는 비용과 시간을 줄이고 네트워크 연결에 대한 부담을 줄여준다.SpringBoot 2.x 출범 이후 HikariCP 를 기본JDBC Connection Pool 로 사용 가능하게 되었다고 한다. 다른 Connection Pool 에 비해 성능이 압도적이라고 한다.HikariCP Dead lock에서 벗어나기 - 우아한형제들 기술블로그 를 바탕으로 작성되었습니다.\n\ngetConnection1. hikariPool.getConnection()Thread 는 HikariCP 로부터 connection 을 요청한다.\n2. hikariPool.concurrentBag.borrow()2-a) 현재 Thread 가 이전에 사용했던 connection 리스트 중에 현재 사용가능한(idle) connection이 있는가?connection:2-b2-b) hikari pool 전체 connection 중 현재 사용가능한(idle) connection이 있는가?connection:2-c2-c) concurrentBag.handOffQueue (다른 Thread 가 쓰고 반납) 에 사용가능한(idle) connection이 있는가?connection:2-d2-d) connectionTimeout 이 지났는지 확인한다. (HikariCP default Connection Timeout 은 30초)\nconnection.close()transaction 이 정상적으로 commit 혹은 오류로 인한 rollback 이 되면 connection.close() 가 호출되어 connection 을 Pool 에 반납한다.\n\nThread : connection.close() \nHiraki2-a) poolEntry.setState(SATE_NOT_IN_USE) idle Connetion 으로 변환.2-b) concurrentBag.handOffQueue.off(poolEntry)\n\n마치며위에서 해결한 connection pool error 의 원인은 transaction 에 의한 오류였다. 다음 포스팅에서는 이상적인 #max-active #min-idle #max-idle 을 설정하기 위해서는 무엇을 고려해봐야 하는지 끄적여보려 한다.","dateCreated":"2020-04-27T10:43:05+09:00","dateModified":"2020-05-28T14:39:32+09:00","datePublished":"2020-04-27T10:43:05+09:00","description":"DB Connection Pool Error 의 원인을 찾아보며DB Connection Pool 이 무엇인지, DBCP 의 개념, Hikari Pool 의 작동방식을 공부.","headline":"개발일지🌟 DB Connection Pool Error (DBCP)","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2020/04/27/DB-Connection-Pool/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2020/04/27/DB-Connection-Pool/","keywords":"DBCP, DataBase"}</script>
     <meta name="description" content="DB Connection Pool Error 의 원인을 찾아보며DB Connection Pool 이 무엇인지, DBCP 의 개념, Hikari Pool 의 작동방식을 공부.">
 <meta property="og:type" content="blog">
 <meta property="og:title" content="개발일지🌟 DB Connection Pool Error (DBCP)">
@@ -122,7 +122,7 @@
                     href="/#about"
                     aria-label="Read more about the author"
                 >
-                    <img class="sidebar-profile-picture" src="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=110" alt="Author&#39;s picture"/>
+                    <img class="sidebar-profile-picture" src="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=800" alt="Author&#39;s picture"/>
                 </a>
                 <h4 class="sidebar-profile-name">Suyan Kim</h4>
                 
@@ -138,12 +138,12 @@
                     
                         <a  class="sidebar-button-link "
                              
-                                title="Home"href="/index.html"
+                                title="home"href="/index.html"
                                 
                                 >
                     
                     <i class="sidebar-button-icon fa fa-home" aria-hidden="true"></i>
-                    <span class="sidebar-button-desc">Home</span>
+                    <span class="sidebar-button-desc">home</span>
                         </a>
                     <!-- add -->
                     
@@ -153,15 +153,34 @@
                     
                         <a  class="sidebar-button-link "
                              
-                                title="Categories"href="/all-categories"
+                                title="archives"href="/all-archives"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-archive" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">archives</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="categories"href="/all-categories"
                                 
                                 >
                     
                     <i class="sidebar-button-icon fa fa-bookmark" aria-hidden="true"></i>
-                    <span class="sidebar-button-desc">Categories</span>
+                    <span class="sidebar-button-desc">categories</span>
                         </a>
                     <!-- add -->
                     
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (7)</a></li>
+                            
                         
                             
                                 <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Config/">☁️ Config (2)</a></li>
@@ -180,11 +199,15 @@
                             
                         
                             
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Java/">☁️ Java (0)</a></li>
+                            
+                        
+                            
                                 <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Linux/">☁️ Linux (1)</a></li>
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-OS/">☁️ OS (2)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-OS/">☁️ OS (10)</a></li>
                             
                         
                             
@@ -200,11 +223,11 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Web/">☁️ Web (1)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-TIL/">☁️ TIL (2)</a></li>
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-coding-test/">☁️ coding test (6)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Web/">☁️ Web (1)</a></li>
                             
                         
                     
@@ -214,12 +237,12 @@
                     
                         <a  class="sidebar-button-link "
                              
-                                title="Tags"href="/all-tags"
+                                title="tags"href="/all-tags"
                                 
                                 >
                     
                     <i class="sidebar-button-icon fa fa-tags" aria-hidden="true"></i>
-                    <span class="sidebar-button-desc">Tags</span>
+                    <span class="sidebar-button-desc">tags</span>
                         </a>
                     <!-- add -->
                     
@@ -229,27 +252,12 @@
                     
                         <a  class="sidebar-button-link "
                              
-                                title="Archives"href="/all-archives"
-                                
-                                >
-                    
-                    <i class="sidebar-button-icon fa fa-archive" aria-hidden="true"></i>
-                    <span class="sidebar-button-desc">Archives</span>
-                        </a>
-                    <!-- add -->
-                    
-                </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a  class="sidebar-button-link "
-                             
-                                title="About"href="#about"
+                                title="about"href="#about"
                                 
                                 >
                     
                     <i class="sidebar-button-icon fa fa-question" aria-hidden="true"></i>
-                    <span class="sidebar-button-desc">About</span>
+                    <span class="sidebar-button-desc">about</span>
                         </a>
                     <!-- add -->
                     
@@ -261,10 +269,10 @@
             
                 <li class="sidebar-button">
                     
-                        <a  class="sidebar-button-link " href="https://github.com/ksso730" target="_blank" rel="noopener" title="my github">
+                        <a  class="sidebar-button-link " href="https://github.com/ksso730" target="_blank" rel="noopener" title="github">
                     
                     <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
-                    <span class="sidebar-button-desc">my github</span>
+                    <span class="sidebar-button-desc">github</span>
                         </a>
                     <!-- add -->
                     
@@ -272,12 +280,10 @@
             
                 <li class="sidebar-button">
                     
-                        <a  class="sidebar-button-link "
-                             href="/ksso7300@gmail.com"
-                                >
+                        <a  class="sidebar-button-link " href="https://www.instagram.com/syankkim/" target="_blank" rel="noopener" title="life">
                     
-                    <i class="sidebar-button-icon fa fa-envelope" aria-hidden="true"></i>
-                    <span class="sidebar-button-desc">contact me</span>
+                    <i class="sidebar-button-icon fab fa-instagram" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">life</span>
                         </a>
                     <!-- add -->
                     
@@ -514,7 +520,7 @@
 
                 <footer id="footer" class="main-content-wrap">
     <span class="copyrights">
-        Copyrights &copy; 2020 Suyan Kim. All Rights Reserved.
+        Copyrights &copy; 2021 Suyan Kim. All Rights Reserved.
     </span>
 </footer>
 

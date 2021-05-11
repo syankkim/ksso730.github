@@ -13,7 +13,7 @@
     
         <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
     
-    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","ksso7300@gmail.com"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\n\n\n스프링 시큐리티 Spring Security\n인증(Authentication)과 인가(Authorization) (권한부여)를 가진 프레임워크이다.\n\n\n2.0 버전에서 부터는 client 인증정보만 필요로 하게 되었다.\n\nGoogle Cloud Platform 에서 인증용 API 신청하기\n구글클라우드 플랫폼 에 접속하여 프로젝트를 생성한다. 여기서 발급된 인증정보 clientId, clientSecret 을 통해 스프링 시큐리티를 사용한 로그인 기능을 구현할 수 있다.\n\n생성된 프로젝트에서 OAuth 동의화면을 구성한다.\n웹 어플리케이션 유형의 사용자 인증정보를 만든다.\n아래와 같이 웹 어플리케이션의 클라이언트ID가 생성되었다.\n로그인 구현을 위한 설정build.gradle\n12345implementation 'org.springframework.cloud:spring-cloud-starter-security:2.1.2.RELEASE'implementation 'org.springframework.cloud:spring-cloud-starter-oauth2:2.1.2.RELEASE'compile('org.springframework.security:spring-security-oauth2-client')compile('org.springframework.security:spring-security-oauth2-jose')\n\n application-oauth.properties /src/main/resources/static/application-oauth.properties 파일을 추가한다.\n123spring.security.oauth2.client.registration.google.client-id=&#123;클라이언트 ID&#125;spring.security.oauth2.client.registration.google.client-secret=&#123;secret 코드&#125;spring.security.oauth2.client.registration.google.scope=profile,email\n\n.gitIgnore해당 설정파일을 gitIgnore 에 넣어준다.\n1application-oauth.properties\n\napplication.ymlinclude: oauth 를 추가한다.\n1234spring:  profiles:     active: local    include: oauth\n\n소셜 인증 구현하기ClientResources 클래스프로퍼티 설정을 편리하게 이용 할 수 있다.\n123456789101112131415public class ClientResources &#123;\t\t@NestedConfigurationProperty\tprivate AuthorizationCodeResourceDetails client = new AuthorizationCodeResourceDetails();\t@NestedConfigurationProperty\tprivate ResourceServerProperties resource = new ResourceServerProperties();\t\tpublic AuthorizationCodeResourceDetails geClient() &#123;\t\treturn client;\t&#125;\tpublic ResourceServerProperties getResource() &#123;\t\treturn resource;\t&#125;&#125;\n\n** 혹시나 AuthorizationCodeResourceDetails 이 추가되지 않으면 oauth2-autoconfigure 디펜던시가 필요하다.   build.gradle 에 아래와 같이 추가해준다.\n1compile 'org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure:2.1.7.RELEASE'\n\nSecurityConfig 클래스 작성12345678910@EnableWebSecurity@EnableOAuth2Clientpublic class SecurityConfig extends WebSecurityConfigAdapter()&#123;  @Bean  @ConfigurationProperties(\"google\")  public ClientResources google()&#123;    return new ClientResources();  &#125;&#125;\n\n12345678// 인증 요청에 따른 리다이렉션을 위한 빈 등록@Beanpublic FilterRegistrationBean oauth2ClientFilterRegistration(OAuth2ClientContextFilter filter) &#123;\tFilterRegistrationBean registration = new FilterRegistrationBean();\tregistration.setFilter(filter);\tregistration.setOrder(-100); //Spring Security 필터보다 우선순위를 낮게 둔다.\treturn registration;&#125;\n\n\n123456789101112131415161718192021private Filter ssoFilter() &#123;\tCompositeFilter filter = new CompositeFilter();\tList&lt;Filter&gt; filters = new ArrayList&lt;Filter&gt;();\t\tfilters.add(ssoFilter(google(), \"/login/google\"));\tfilter.setFilters(filters);\treturn filter;&#125;private Filter ssoFilter(ClientResources client, String path) &#123;\t// OAuth2ClientAuthenticationProcessingFilter\t// -&gt; OAuth2 인증 서버에서 OAuth2 액세스 토큰을 획득.\t// -&gt; 인증 객체를 SecurityContext 에 로드하는 데 사용할 수 있는 OAuth2 클라이언트 필터\tOAuth2ClientAuthenticationProcessingFilter filter = new OAuth2ClientAuthenticationProcessingFilter(path);\tOAuth2RestTemplate restTemplate = new OAuth2RestTemplate(client.getClient(), oauth2ClientContext);\tfilter.setRestTemplate(restTemplate);\tUserInfoTokenServices tokenServices = \t\t\tnew UserInfoTokenServices(client.getResource().getUserInfoUri(), client.getClient().getClientId());\tfilter.setTokenServices(tokenServices);\treturn filter;&#125;","dateCreated":"2020-03-26T22:17:40+09:00","dateModified":"2020-04-28T10:36:01+09:00","datePublished":"2020-03-26T22:17:40+09:00","description":"🍃 SpringBoot, SpringSecurity, OAuth2 를 이용해 Google 로그인을 구현해 봅니다.","headline":"스프링 시큐리티 OAuth 사용한 로그인 기능구현","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2020/03/26/%EC%8A%A4%ED%94%84%EB%A7%81-%EC%8B%9C%ED%81%90%EB%A6%AC%ED%8B%B0%20%EB%A1%9C%EA%B7%B8%EC%9D%B8%EA%B5%AC%ED%98%84/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","ksso7300@gmail.com"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2020/03/26/%EC%8A%A4%ED%94%84%EB%A7%81-%EC%8B%9C%ED%81%90%EB%A6%AC%ED%8B%B0%20%EB%A1%9C%EA%B7%B8%EC%9D%B8%EA%B5%AC%ED%98%84/","keywords":"spring, OAuth2"}</script>
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\n\n\n스프링 시큐리티 Spring Security\n인증(Authentication)과 인가(Authorization) (권한부여)를 가진 프레임워크이다.\n\n\n2.0 버전에서 부터는 client 인증정보만 필요로 하게 되었다.\n\nGoogle Cloud Platform 에서 인증용 API 신청하기\n구글클라우드 플랫폼 에 접속하여 프로젝트를 생성한다. 여기서 발급된 인증정보 clientId, clientSecret 을 통해 스프링 시큐리티를 사용한 로그인 기능을 구현할 수 있다.\n\n생성된 프로젝트에서 OAuth 동의화면을 구성한다.\n웹 어플리케이션 유형의 사용자 인증정보를 만든다.\n아래와 같이 웹 어플리케이션의 클라이언트ID가 생성되었다.\n로그인 구현을 위한 설정build.gradle\n12345implementation 'org.springframework.cloud:spring-cloud-starter-security:2.1.2.RELEASE'implementation 'org.springframework.cloud:spring-cloud-starter-oauth2:2.1.2.RELEASE'compile('org.springframework.security:spring-security-oauth2-client')compile('org.springframework.security:spring-security-oauth2-jose')\n\n application-oauth.properties /src/main/resources/static/application-oauth.properties 파일을 추가한다.\n123spring.security.oauth2.client.registration.google.client-id=&#123;클라이언트 ID&#125;spring.security.oauth2.client.registration.google.client-secret=&#123;secret 코드&#125;spring.security.oauth2.client.registration.google.scope=profile,email\n\n.gitIgnore해당 설정파일을 gitIgnore 에 넣어준다.\n1application-oauth.properties\n\napplication.ymlinclude: oauth 를 추가한다.\n1234spring:  profiles:     active: local    include: oauth\n\n소셜 인증 구현하기ClientResources 클래스프로퍼티 설정을 편리하게 이용 할 수 있다.\n123456789101112131415public class ClientResources &#123;\t\t@NestedConfigurationProperty\tprivate AuthorizationCodeResourceDetails client = new AuthorizationCodeResourceDetails();\t@NestedConfigurationProperty\tprivate ResourceServerProperties resource = new ResourceServerProperties();\t\tpublic AuthorizationCodeResourceDetails geClient() &#123;\t\treturn client;\t&#125;\tpublic ResourceServerProperties getResource() &#123;\t\treturn resource;\t&#125;&#125;\n\n** 혹시나 AuthorizationCodeResourceDetails 이 추가되지 않으면 oauth2-autoconfigure 디펜던시가 필요하다.   build.gradle 에 아래와 같이 추가해준다.\n1compile 'org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure:2.1.7.RELEASE'\n\nSecurityConfig 클래스 작성12345678910@EnableWebSecurity@EnableOAuth2Clientpublic class SecurityConfig extends WebSecurityConfigAdapter()&#123;  @Bean  @ConfigurationProperties(\"google\")  public ClientResources google()&#123;    return new ClientResources();  &#125;&#125;\n\n12345678// 인증 요청에 따른 리다이렉션을 위한 빈 등록@Beanpublic FilterRegistrationBean oauth2ClientFilterRegistration(OAuth2ClientContextFilter filter) &#123;\tFilterRegistrationBean registration = new FilterRegistrationBean();\tregistration.setFilter(filter);\tregistration.setOrder(-100); //Spring Security 필터보다 우선순위를 낮게 둔다.\treturn registration;&#125;\n\n\n123456789101112131415161718192021private Filter ssoFilter() &#123;\tCompositeFilter filter = new CompositeFilter();\tList&lt;Filter&gt; filters = new ArrayList&lt;Filter&gt;();\t\tfilters.add(ssoFilter(google(), \"/login/google\"));\tfilter.setFilters(filters);\treturn filter;&#125;private Filter ssoFilter(ClientResources client, String path) &#123;\t// OAuth2ClientAuthenticationProcessingFilter\t// -&gt; OAuth2 인증 서버에서 OAuth2 액세스 토큰을 획득.\t// -&gt; 인증 객체를 SecurityContext 에 로드하는 데 사용할 수 있는 OAuth2 클라이언트 필터\tOAuth2ClientAuthenticationProcessingFilter filter = new OAuth2ClientAuthenticationProcessingFilter(path);\tOAuth2RestTemplate restTemplate = new OAuth2RestTemplate(client.getClient(), oauth2ClientContext);\tfilter.setRestTemplate(restTemplate);\tUserInfoTokenServices tokenServices = \t\t\tnew UserInfoTokenServices(client.getResource().getUserInfoUri(), client.getClient().getClientId());\tfilter.setTokenServices(tokenServices);\treturn filter;&#125;","dateCreated":"2020-03-26T22:17:40+09:00","dateModified":"2020-04-28T10:36:01+09:00","datePublished":"2020-03-26T22:17:40+09:00","description":"🍃 SpringBoot, SpringSecurity, OAuth2 를 이용해 Google 로그인을 구현해 봅니다.","headline":"스프링 시큐리티 OAuth 사용한 로그인 기능구현","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2020/03/26/%EC%8A%A4%ED%94%84%EB%A7%81-%EC%8B%9C%ED%81%90%EB%A6%AC%ED%8B%B0%20%EB%A1%9C%EA%B7%B8%EC%9D%B8%EA%B5%AC%ED%98%84/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2020/03/26/%EC%8A%A4%ED%94%84%EB%A7%81-%EC%8B%9C%ED%81%90%EB%A6%AC%ED%8B%B0%20%EB%A1%9C%EA%B7%B8%EC%9D%B8%EA%B5%AC%ED%98%84/","keywords":"spring, OAuth2"}</script>
     <meta name="description" content="🍃 SpringBoot, SpringSecurity, OAuth2 를 이용해 Google 로그인을 구현해 봅니다.">
 <meta property="og:type" content="blog">
 <meta property="og:title" content="스프링 시큐리티 OAuth 사용한 로그인 기능구현">
@@ -124,7 +124,7 @@
                     href="/#about"
                     aria-label="Read more about the author"
                 >
-                    <img class="sidebar-profile-picture" src="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=110" alt="Author&#39;s picture"/>
+                    <img class="sidebar-profile-picture" src="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=800" alt="Author&#39;s picture"/>
                 </a>
                 <h4 class="sidebar-profile-name">Suyan Kim</h4>
                 
@@ -140,12 +140,12 @@
                     
                         <a  class="sidebar-button-link "
                              
-                                title="Home"href="/index.html"
+                                title="home"href="/index.html"
                                 
                                 >
                     
                     <i class="sidebar-button-icon fa fa-home" aria-hidden="true"></i>
-                    <span class="sidebar-button-desc">Home</span>
+                    <span class="sidebar-button-desc">home</span>
                         </a>
                     <!-- add -->
                     
@@ -155,15 +155,34 @@
                     
                         <a  class="sidebar-button-link "
                              
-                                title="Categories"href="/all-categories"
+                                title="archives"href="/all-archives"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-archive" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">archives</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="categories"href="/all-categories"
                                 
                                 >
                     
                     <i class="sidebar-button-icon fa fa-bookmark" aria-hidden="true"></i>
-                    <span class="sidebar-button-desc">Categories</span>
+                    <span class="sidebar-button-desc">categories</span>
                         </a>
                     <!-- add -->
                     
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (7)</a></li>
+                            
                         
                             
                                 <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Config/">☁️ Config (2)</a></li>
@@ -182,11 +201,15 @@
                             
                         
                             
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Java/">☁️ Java (0)</a></li>
+                            
+                        
+                            
                                 <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Linux/">☁️ Linux (1)</a></li>
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-OS/">☁️ OS (2)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-OS/">☁️ OS (10)</a></li>
                             
                         
                             
@@ -202,11 +225,11 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Web/">☁️ Web (1)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-TIL/">☁️ TIL (2)</a></li>
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-coding-test/">☁️ coding test (6)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Web/">☁️ Web (1)</a></li>
                             
                         
                     
@@ -216,12 +239,12 @@
                     
                         <a  class="sidebar-button-link "
                              
-                                title="Tags"href="/all-tags"
+                                title="tags"href="/all-tags"
                                 
                                 >
                     
                     <i class="sidebar-button-icon fa fa-tags" aria-hidden="true"></i>
-                    <span class="sidebar-button-desc">Tags</span>
+                    <span class="sidebar-button-desc">tags</span>
                         </a>
                     <!-- add -->
                     
@@ -231,27 +254,12 @@
                     
                         <a  class="sidebar-button-link "
                              
-                                title="Archives"href="/all-archives"
-                                
-                                >
-                    
-                    <i class="sidebar-button-icon fa fa-archive" aria-hidden="true"></i>
-                    <span class="sidebar-button-desc">Archives</span>
-                        </a>
-                    <!-- add -->
-                    
-                </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a  class="sidebar-button-link "
-                             
-                                title="About"href="#about"
+                                title="about"href="#about"
                                 
                                 >
                     
                     <i class="sidebar-button-icon fa fa-question" aria-hidden="true"></i>
-                    <span class="sidebar-button-desc">About</span>
+                    <span class="sidebar-button-desc">about</span>
                         </a>
                     <!-- add -->
                     
@@ -263,10 +271,10 @@
             
                 <li class="sidebar-button">
                     
-                        <a  class="sidebar-button-link " href="https://github.com/ksso730" target="_blank" rel="noopener" title="my github">
+                        <a  class="sidebar-button-link " href="https://github.com/ksso730" target="_blank" rel="noopener" title="github">
                     
                     <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
-                    <span class="sidebar-button-desc">my github</span>
+                    <span class="sidebar-button-desc">github</span>
                         </a>
                     <!-- add -->
                     
@@ -274,12 +282,10 @@
             
                 <li class="sidebar-button">
                     
-                        <a  class="sidebar-button-link "
-                             href="/ksso7300@gmail.com"
-                                >
+                        <a  class="sidebar-button-link " href="https://www.instagram.com/syankkim/" target="_blank" rel="noopener" title="life">
                     
-                    <i class="sidebar-button-icon fa fa-envelope" aria-hidden="true"></i>
-                    <span class="sidebar-button-desc">contact me</span>
+                    <i class="sidebar-button-icon fab fa-instagram" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">life</span>
                         </a>
                     <!-- add -->
                     
@@ -506,7 +512,7 @@
 
                 <footer id="footer" class="main-content-wrap">
     <span class="copyrights">
-        Copyrights &copy; 2020 Suyan Kim. All Rights Reserved.
+        Copyrights &copy; 2021 Suyan Kim. All Rights Reserved.
     </span>
 </footer>
 

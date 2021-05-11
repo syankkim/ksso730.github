@@ -13,7 +13,7 @@
     
         <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
     
-    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","ksso7300@gmail.com"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\nzip 내장 함수, 이진연산zip() 은 길이가 같은 자료형을 묶어준다.예를 들면, 다음과 같다.\n12zip([3,4,5], [1,2,3]) =&gt; (3,1),(4,2),(5,3)zip('ABC', [1,2,3])   =&gt; (A,1), (B,2), (C,3)\n\n(1)두 배열을 받아, n 을 받아 (2)binary 연산후 (3)자릿수만큼 빈곳은 “#”을 채운다.12345678910111213def ziplist(n):    arr1 =[3,4,5]    arr2 = [1,2,3]    n = 5    for num1, num2 in zip(arr1, arr2):        print(num1, num2)        tmp = bin(num1|num2)[2:] # 여기서 파이썬의만의 '문자열 슬라이싱' 아래에서 개념확인        print('이진연산 후 '+tmp)        tmp = tmp.rjust(n, '#')        print('결과 '+tmp)    return tmp\n출력결과\n123456789(3, 1)이진연산 후 11결과 ###11(4, 2)이진연산 후 110결과 ##110(5, 3)이진연산 후 111결과 ##111\n\n\npython 문자열 슬라이싱12345&gt;&gt;&gt; a = \"Pithon\"&gt;&gt;&gt; a[:1]'P'&gt;&gt;&gt; a[2:]'thon'\n\nrJust 함수 : N자릿수로 리턴(빈곳은”#” 으로 채우기)123456789def rjst(n):    list= ['1','2','3']    tostring = \"\".join(list)    if n &gt; len(tostring):        tostring = tostring.rjust(n, '#')    print(\"tostring : \" + tostring)    # tostring : #######123 rjst(10)\n\n(번외) 숫자를 한 자리수로 잘라 각각 리스트에 담기123456def numToList(number):    n = 234    list = [ int(i) for i in str(n)]    print(list)    return list    # list= [2, 3, 4]","dateCreated":"2020-04-22T16:10:28+09:00","dateModified":"2020-04-28T10:36:01+09:00","datePublished":"2020-04-22T16:10:28+09:00","description":"1) 알고리즘 문제 예제를 통해 zip 내장 함수, 이진연산, rJust함수 알아보기2) (번외) 숫자를 한 자리수로 잘라 각각 리스트에 담기","headline":"Python 내장함수","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2020/04/22/Python%20%EB%82%B4%EC%9E%A5%ED%95%A8%EC%88%98/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","ksso7300@gmail.com"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2020/04/22/Python%20%EB%82%B4%EC%9E%A5%ED%95%A8%EC%88%98/","keywords":"python, python 이진연산, rJust"}</script>
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\nzip 내장 함수, 이진연산zip() 은 길이가 같은 자료형을 묶어준다.예를 들면, 다음과 같다.\n12zip([3,4,5], [1,2,3]) =&gt; (3,1),(4,2),(5,3)zip('ABC', [1,2,3])   =&gt; (A,1), (B,2), (C,3)\n\n(1)두 배열을 받아, n 을 받아 (2)binary 연산후 (3)자릿수만큼 빈곳은 “#”을 채운다.12345678910111213def ziplist(n):    arr1 =[3,4,5]    arr2 = [1,2,3]    n = 5    for num1, num2 in zip(arr1, arr2):        print(num1, num2)        tmp = bin(num1|num2)[2:] # 여기서 파이썬의만의 '문자열 슬라이싱' 아래에서 개념확인        print('이진연산 후 '+tmp)        tmp = tmp.rjust(n, '#')        print('결과 '+tmp)    return tmp\n출력결과\n123456789(3, 1)이진연산 후 11결과 ###11(4, 2)이진연산 후 110결과 ##110(5, 3)이진연산 후 111결과 ##111\n\n\npython 문자열 슬라이싱12345&gt;&gt;&gt; a = \"Pithon\"&gt;&gt;&gt; a[:1]'P'&gt;&gt;&gt; a[2:]'thon'\n\nrJust 함수 : N자릿수로 리턴(빈곳은”#” 으로 채우기)123456789def rjst(n):    list= ['1','2','3']    tostring = \"\".join(list)    if n &gt; len(tostring):        tostring = tostring.rjust(n, '#')    print(\"tostring : \" + tostring)    # tostring : #######123 rjst(10)\n\n(번외) 숫자를 한 자리수로 잘라 각각 리스트에 담기123456def numToList(number):    n = 234    list = [ int(i) for i in str(n)]    print(list)    return list    # list= [2, 3, 4]","dateCreated":"2020-04-22T16:10:28+09:00","dateModified":"2020-04-28T10:36:01+09:00","datePublished":"2020-04-22T16:10:28+09:00","description":"1) 알고리즘 문제 예제를 통해 zip 내장 함수, 이진연산, rJust함수 알아보기2) (번외) 숫자를 한 자리수로 잘라 각각 리스트에 담기","headline":"Python 내장함수","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2020/04/22/Python%20%EB%82%B4%EC%9E%A5%ED%95%A8%EC%88%98/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2020/04/22/Python%20%EB%82%B4%EC%9E%A5%ED%95%A8%EC%88%98/","keywords":"python, python 이진연산, rJust"}</script>
     <meta name="description" content="1) 알고리즘 문제 예제를 통해 zip 내장 함수, 이진연산, rJust함수 알아보기2) (번외) 숫자를 한 자리수로 잘라 각각 리스트에 담기">
 <meta property="og:type" content="blog">
 <meta property="og:title" content="Python 내장함수">
@@ -121,7 +121,7 @@
                     href="/#about"
                     aria-label="Read more about the author"
                 >
-                    <img class="sidebar-profile-picture" src="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=110" alt="Author&#39;s picture"/>
+                    <img class="sidebar-profile-picture" src="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=800" alt="Author&#39;s picture"/>
                 </a>
                 <h4 class="sidebar-profile-name">Suyan Kim</h4>
                 
@@ -137,12 +137,12 @@
                     
                         <a  class="sidebar-button-link "
                              
-                                title="Home"href="/index.html"
+                                title="home"href="/index.html"
                                 
                                 >
                     
                     <i class="sidebar-button-icon fa fa-home" aria-hidden="true"></i>
-                    <span class="sidebar-button-desc">Home</span>
+                    <span class="sidebar-button-desc">home</span>
                         </a>
                     <!-- add -->
                     
@@ -152,15 +152,34 @@
                     
                         <a  class="sidebar-button-link "
                              
-                                title="Categories"href="/all-categories"
+                                title="archives"href="/all-archives"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-archive" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">archives</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="categories"href="/all-categories"
                                 
                                 >
                     
                     <i class="sidebar-button-icon fa fa-bookmark" aria-hidden="true"></i>
-                    <span class="sidebar-button-desc">Categories</span>
+                    <span class="sidebar-button-desc">categories</span>
                         </a>
                     <!-- add -->
                     
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (7)</a></li>
+                            
                         
                             
                                 <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Config/">☁️ Config (2)</a></li>
@@ -179,11 +198,15 @@
                             
                         
                             
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Java/">☁️ Java (0)</a></li>
+                            
+                        
+                            
                                 <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Linux/">☁️ Linux (1)</a></li>
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-OS/">☁️ OS (2)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-OS/">☁️ OS (10)</a></li>
                             
                         
                             
@@ -199,11 +222,11 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Web/">☁️ Web (1)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-TIL/">☁️ TIL (2)</a></li>
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-coding-test/">☁️ coding test (6)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Web/">☁️ Web (1)</a></li>
                             
                         
                     
@@ -213,12 +236,12 @@
                     
                         <a  class="sidebar-button-link "
                              
-                                title="Tags"href="/all-tags"
+                                title="tags"href="/all-tags"
                                 
                                 >
                     
                     <i class="sidebar-button-icon fa fa-tags" aria-hidden="true"></i>
-                    <span class="sidebar-button-desc">Tags</span>
+                    <span class="sidebar-button-desc">tags</span>
                         </a>
                     <!-- add -->
                     
@@ -228,27 +251,12 @@
                     
                         <a  class="sidebar-button-link "
                              
-                                title="Archives"href="/all-archives"
-                                
-                                >
-                    
-                    <i class="sidebar-button-icon fa fa-archive" aria-hidden="true"></i>
-                    <span class="sidebar-button-desc">Archives</span>
-                        </a>
-                    <!-- add -->
-                    
-                </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a  class="sidebar-button-link "
-                             
-                                title="About"href="#about"
+                                title="about"href="#about"
                                 
                                 >
                     
                     <i class="sidebar-button-icon fa fa-question" aria-hidden="true"></i>
-                    <span class="sidebar-button-desc">About</span>
+                    <span class="sidebar-button-desc">about</span>
                         </a>
                     <!-- add -->
                     
@@ -260,10 +268,10 @@
             
                 <li class="sidebar-button">
                     
-                        <a  class="sidebar-button-link " href="https://github.com/ksso730" target="_blank" rel="noopener" title="my github">
+                        <a  class="sidebar-button-link " href="https://github.com/ksso730" target="_blank" rel="noopener" title="github">
                     
                     <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
-                    <span class="sidebar-button-desc">my github</span>
+                    <span class="sidebar-button-desc">github</span>
                         </a>
                     <!-- add -->
                     
@@ -271,12 +279,10 @@
             
                 <li class="sidebar-button">
                     
-                        <a  class="sidebar-button-link "
-                             href="/ksso7300@gmail.com"
-                                >
+                        <a  class="sidebar-button-link " href="https://www.instagram.com/syankkim/" target="_blank" rel="noopener" title="life">
                     
-                    <i class="sidebar-button-icon fa fa-envelope" aria-hidden="true"></i>
-                    <span class="sidebar-button-desc">contact me</span>
+                    <i class="sidebar-button-icon fab fa-instagram" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">life</span>
                         </a>
                     <!-- add -->
                     
@@ -478,7 +484,7 @@
 
                 <footer id="footer" class="main-content-wrap">
     <span class="copyrights">
-        Copyrights &copy; 2020 Suyan Kim. All Rights Reserved.
+        Copyrights &copy; 2021 Suyan Kim. All Rights Reserved.
     </span>
 </footer>
 

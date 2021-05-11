@@ -45,7 +45,7 @@
   src: local("Merriweather Bold Italic"), local("Merriweather-BoldItalic"), url(../fonts/merriweather-bold-italic.ttf) format("truetype"); }
 
 html {
-  font-family: "NanumSquareRound", "Helvetica Neue", sans-serif;
+  font-family: Avenir, "Noto Sans KR", SpoqaHanSans, "Apple SD Gothic Neo", "Malgun Gothic", "맑은 고딕", "Nanum Gothic", Dotum, "돋움", Helvetica, sans-serif;
   font-size: 10px;
   -ms-text-size-adjust: 100%;
   -webkit-text-size-adjust: 100%;
@@ -59,7 +59,7 @@ body {
   margin: 0;
   padding: 0;
   background: white;
-  font-family: "NanumSquareRound", "Helvetica Neue", sans-serif;
+  font-family: Avenir, "Noto Sans KR", SpoqaHanSans, "Apple SD Gothic Neo", "Malgun Gothic", "맑은 고딕", "Nanum Gothic", Dotum, "돋움", Helvetica, sans-serif;
   font-size: 1.6rem;
   line-height: 1.9em;
   letter-spacing: 0.01em;
@@ -75,7 +75,7 @@ h4,
 h5,
 h6 {
   letter-spacing: -0.04em;
-  font-family: "NanumSquareRound", "Helvetica Neue", sans-serif;
+  font-family: Avenir, "Noto Sans KR", SpoqaHanSans, "Apple SD Gothic Neo", "Malgun Gothic", "맑은 고딕", "Nanum Gothic", Dotum, "돋움", Helvetica, sans-serif;
   font-weight: 700;
   line-height: 1.45em;
   color: #4a4a4a; }
@@ -83,12 +83,12 @@ h6 {
 h1,
 h2,
 h3 {
-  margin: 1em 0 1em 0; }
+  margin: 2.5em 0 1em 0; }
 
 h4,
 h5,
 h6 {
-  margin: 1em 0 0.5em 0; }
+  margin: 1.5em 0 0.5em 0; }
 
 h1 {
   font-size: 2.8rem; }
@@ -118,11 +118,11 @@ dl {
 
 a, a:hover, a:active, a:visited {
   cursor: pointer;
-  color: #06cba6;
+  color: #ff61aa;
   text-decoration: none; }
 
 a:hover {
-  color: #06cba6;
+  color: #ff61aa;
   text-decoration: underline; }
 
 table {
@@ -157,7 +157,7 @@ pre > code {
   width: 100%;
   box-sizing: border-box;
   padding: 15px;
-  font-family: NanumSquareRound, Helvetica Neue, sans-serif;
+  font-family: Avenir, Noto Sans KR, SpoqaHanSans, Apple SD Gothic Neo, Malgun Gothic, 맑은 고딕, Nanum Gothic, Dotum, 돋움, Helvetica, sans-serif;
   border: none;
   margin: 0;
   cursor: text;
@@ -166,30 +166,31 @@ pre > code {
   font-size: 1.4rem; }
 
 code {
-  font-size: 1.3rem;
+  font-size: 1.45rem;
   display: inline-block;
   font-family: "Source Code Pro", "NanumSquareRound", Consolas;
   font-weight: 400;
-  line-height: 2rem;
-  padding: 0 6px;
-  color: darkcyan;
-  border: 2px solid darkcyan;
-  border-radius: 5px; }
+  line-height: 2.1rem;
+  padding: 0 7px;
+  color: #ff33b7;
+  background: #fffcd3;
+  border-radius: 1px;
+  margin: 0 0.1em; }
 
 acronym,
 abbr {
   border-bottom: 1px dotted #5d686f; }
 
 blockquote {
-  color: #00477a;
-  border-left: 2px dashed #008b8b;
-  border-bottom: 2px double #008b8b;
-  padding: 0 15px;
+  color: #000000;
+  border-left: 2px solid #ff33b7;
   font-style: initial;
   margin: 1.5em 0 0;
-  background-color: #f3f3f3db;
-  padding: 1% 2% 1% 2%;
-  margin-bottom: 20px; }
+  background-color: #fff4fedb;
+  padding: 3% 3% 3% 3%;
+  margin-bottom: 50px;
+  line-height: 1.9;
+  font-size: 0.9em; }
   blockquote cite:before {
     content: ' — ';
     padding: 0 0.3em; }
@@ -653,14 +654,14 @@ blockquote {
       transform: translate3d(75px, 0, 0); } }
 
 #sidebar {
-  font-family: "NanumSquareRound", "Helvetica Neue", sans-serif;
+  font-family: Avenir, "Noto Sans KR", SpoqaHanSans, "Apple SD Gothic Neo", "Malgun Gothic", "맑은 고딕", "Nanum Gothic", Dotum, "돋움", Helvetica, sans-serif;
   height: 100%;
   position: fixed;
   top: 0;
   background: rgba(255, 255, 255, 0.9);
   overflow: auto;
   z-index: 20;
-  font-weight: 900;
+  font-weight: 700;
   transition: transform .25s ease-in-out;
   -webkit-transition: -webkit-transform .25s ease-in-out;
   -webkit-font-smoothing: antialiased;
@@ -668,33 +669,33 @@ blockquote {
   #sidebar .sidebar-container {
     overflow: auto; }
   #sidebar .sidebar-profile {
-    color: #0c6c6c;
+    color: #4f6674;
     text-align: center;
     padding-top: 18px;
-    margin-bottom: 15px; }
+    margin-bottom: 3%; }
     #sidebar .sidebar-profile .sidebar-profile-picture {
       display: block;
       margin: 0 auto;
-      width: 40%;
-      height: 40%; }
+      width: 60%;
+      height: 60%; }
     #sidebar .sidebar-profile .sidebar-profile-name {
       font-size: 1.1em;
       color: black; }
   #sidebar ul.sidebar-buttons {
     padding: 0;
-    margin: 0 0 20px 0; }
+    margin: 40px 0 20px 0; }
     #sidebar ul.sidebar-buttons li.sidebar-button {
       display: block;
       width: 100%;
       height: 50px;
       line-height: 50px; }
       #sidebar ul.sidebar-buttons li.sidebar-button .sidebar-button-link {
-        color: #0c6c6c;
+        color: #4f6674;
         display: block;
         height: 100%; }
         #sidebar ul.sidebar-buttons li.sidebar-button .sidebar-button-link:hover, #sidebar ul.sidebar-buttons li.sidebar-button .sidebar-button-link:active {
           text-decoration: none;
-          color: black;
+          color: #07090a;
           border-color: rgba(255, 27, 27, 0.662745); }
     #sidebar ul.sidebar-buttons:first-child {
       margin-top: 5px; }
@@ -706,11 +707,11 @@ blockquote {
     #sidebar[data-behavior="1"] .sidebar-profile, #sidebar[data-behavior="2"] .sidebar-profile, #sidebar[data-behavior="4"] .sidebar-profile, #sidebar[data-behavior="5"] .sidebar-profile {
       height: 130px;
       padding-top: 40px;
-      padding-bottom: 7.5px; }
+      padding-bottom: 30.5px; }
       #sidebar[data-behavior="1"] .sidebar-profile .sidebar-profile-picture, #sidebar[data-behavior="2"] .sidebar-profile .sidebar-profile-picture, #sidebar[data-behavior="4"] .sidebar-profile .sidebar-profile-picture, #sidebar[data-behavior="5"] .sidebar-profile .sidebar-profile-picture {
-        width: 90px;
-        height: 90px;
-        border-radius: 90px;
+        width: 150px;
+        height: 150px;
+        border-radius: 150px;
         margin-bottom: 5px; }
       #sidebar[data-behavior="1"] .sidebar-profile .sidebar-profile-name, #sidebar[data-behavior="2"] .sidebar-profile .sidebar-profile-name, #sidebar[data-behavior="4"] .sidebar-profile .sidebar-profile-name, #sidebar[data-behavior="5"] .sidebar-profile .sidebar-profile-name {
         font-size: 1.6rem; }
@@ -781,11 +782,11 @@ blockquote {
     #sidebar[data-behavior="1"] .sidebar-profile, #sidebar[data-behavior="2"] .sidebar-profile, #sidebar[data-behavior="3"] .sidebar-profile {
       height: 130px;
       padding-top: 40px;
-      padding-bottom: 7.5px; }
+      padding-bottom: 30.5px; }
       #sidebar[data-behavior="1"] .sidebar-profile .sidebar-profile-picture, #sidebar[data-behavior="2"] .sidebar-profile .sidebar-profile-picture, #sidebar[data-behavior="3"] .sidebar-profile .sidebar-profile-picture {
-        width: 90px;
-        height: 90px;
-        border-radius: 90px;
+        width: 150px;
+        height: 150px;
+        border-radius: 150px;
         margin-bottom: 5px; }
       #sidebar[data-behavior="1"] .sidebar-profile .sidebar-profile-name, #sidebar[data-behavior="2"] .sidebar-profile .sidebar-profile-name, #sidebar[data-behavior="3"] .sidebar-profile .sidebar-profile-name {
         font-size: 1.6rem; }
@@ -824,11 +825,11 @@ blockquote {
     #sidebar[data-behavior="4"] .sidebar-profile, #sidebar[data-behavior="5"] .sidebar-profile {
       height: 130px;
       padding-top: 40px;
-      padding-bottom: 7.5px; }
+      padding-bottom: 30.5px; }
       #sidebar[data-behavior="4"] .sidebar-profile .sidebar-profile-picture, #sidebar[data-behavior="5"] .sidebar-profile .sidebar-profile-picture {
-        width: 90px;
-        height: 90px;
-        border-radius: 90px;
+        width: 150px;
+        height: 150px;
+        border-radius: 150px;
         margin-bottom: 5px; }
       #sidebar[data-behavior="4"] .sidebar-profile .sidebar-profile-name, #sidebar[data-behavior="5"] .sidebar-profile .sidebar-profile-name {
         font-size: 1.6rem; }
@@ -899,11 +900,11 @@ blockquote {
     #sidebar[data-behavior="1"] .sidebar-profile, #sidebar[data-behavior="2"] .sidebar-profile {
       height: 130px;
       padding-top: 40px;
-      padding-bottom: 7.5px; }
+      padding-bottom: 30.5px; }
       #sidebar[data-behavior="1"] .sidebar-profile .sidebar-profile-picture, #sidebar[data-behavior="2"] .sidebar-profile .sidebar-profile-picture {
-        width: 90px;
-        height: 90px;
-        border-radius: 90px;
+        width: 150px;
+        height: 150px;
+        border-radius: 150px;
         margin-bottom: 5px; }
       #sidebar[data-behavior="1"] .sidebar-profile .sidebar-profile-name, #sidebar[data-behavior="2"] .sidebar-profile .sidebar-profile-name {
         font-size: 1.6rem; }
@@ -972,11 +973,11 @@ blockquote {
     #sidebar[data-behavior="4"] .sidebar-profile, #sidebar[data-behavior="5"] .sidebar-profile {
       height: 130px;
       padding-top: 40px;
-      padding-bottom: 7.5px; }
+      padding-bottom: 30.5px; }
       #sidebar[data-behavior="4"] .sidebar-profile .sidebar-profile-picture, #sidebar[data-behavior="5"] .sidebar-profile .sidebar-profile-picture {
-        width: 90px;
-        height: 90px;
-        border-radius: 90px;
+        width: 150px;
+        height: 150px;
+        border-radius: 150px;
         margin-bottom: 5px; }
       #sidebar[data-behavior="4"] .sidebar-profile .sidebar-profile-name, #sidebar[data-behavior="5"] .sidebar-profile .sidebar-profile-name {
         font-size: 1.6rem; }
@@ -1056,8 +1057,7 @@ blockquote {
       padding: 0 50px;
       margin-top: 30px; }
     #sidebar[data-behavior="1"] .sidebar-profile {
-      padding-top: 0;
-      padding-bottom: 7.5px; }
+      padding-top: 0; }
       #sidebar[data-behavior="1"] .sidebar-profile .sidebar-profile-picture {
         width: 40%;
         height: 40%;
@@ -1068,7 +1068,7 @@ blockquote {
       #sidebar[data-behavior="1"] .sidebar-profile .sidebar-profile-location {
         font-weight: 400;
         font-size: 1.8rem;
-        color: #0c6c6c; }
+        color: #4f6674; }
       #sidebar[data-behavior="1"] .sidebar-profile .sidebar-profile-job,
       #sidebar[data-behavior="1"] .sidebar-profile .sidebar-profile-location {
         margin-top: 0;
@@ -1120,11 +1120,11 @@ blockquote {
     #sidebar[data-behavior="2"] .sidebar-profile {
       height: 130px;
       padding-top: 40px;
-      padding-bottom: 7.5px; }
+      padding-bottom: 30.5px; }
       #sidebar[data-behavior="2"] .sidebar-profile .sidebar-profile-picture {
-        width: 90px;
-        height: 90px;
-        border-radius: 90px;
+        width: 150px;
+        height: 150px;
+        border-radius: 150px;
         margin-bottom: 5px; }
       #sidebar[data-behavior="2"] .sidebar-profile .sidebar-profile-name {
         font-size: 1.6rem; }
@@ -1202,8 +1202,7 @@ blockquote {
       padding: 0 50px;
       margin-top: 30px; }
     #sidebar[data-behavior="4"] .sidebar-profile {
-      padding-top: 0;
-      padding-bottom: 7.5px; }
+      padding-top: 0; }
       #sidebar[data-behavior="4"] .sidebar-profile .sidebar-profile-picture {
         width: 40%;
         height: 40%;
@@ -1214,7 +1213,7 @@ blockquote {
       #sidebar[data-behavior="4"] .sidebar-profile .sidebar-profile-location {
         font-weight: 400;
         font-size: 1.8rem;
-        color: #0c6c6c; }
+        color: #4f6674; }
       #sidebar[data-behavior="4"] .sidebar-profile .sidebar-profile-job,
       #sidebar[data-behavior="4"] .sidebar-profile .sidebar-profile-location {
         margin-top: 0;
@@ -1267,11 +1266,11 @@ blockquote {
     #sidebar[data-behavior="5"] .sidebar-profile {
       height: 130px;
       padding-top: 40px;
-      padding-bottom: 7.5px; }
+      padding-bottom: 30.5px; }
       #sidebar[data-behavior="5"] .sidebar-profile .sidebar-profile-picture {
-        width: 90px;
-        height: 90px;
-        border-radius: 90px;
+        width: 150px;
+        height: 150px;
+        border-radius: 150px;
         margin-bottom: 5px; }
       #sidebar[data-behavior="5"] .sidebar-profile .sidebar-profile-name {
         font-size: 1.6rem; }
@@ -1483,7 +1482,7 @@ blockquote {
 
 .caption {
   display: block;
-  font-family: "NanumSquareRound", "Helvetica Neue", sans-serif;
+  font-family: Avenir, "Noto Sans KR", SpoqaHanSans, "Apple SD Gothic Neo", "Malgun Gothic", "맑은 고딕", "Nanum Gothic", Dotum, "돋움", Helvetica, sans-serif;
   font-size: 1.3rem;
   color: #81929d;
   text-align: center;
@@ -1511,7 +1510,7 @@ figure.highlight,
   .codeblock .code,
   .codeblock .tag {
     background-color: inherit;
-    font-family: NanumSquareRound, Helvetica Neue, sans-serif;
+    font-family: Avenir, Noto Sans KR, SpoqaHanSans, Apple SD Gothic Neo, Malgun Gothic, 맑은 고딕, Nanum Gothic, Dotum, 돋움, Helvetica, sans-serif;
     border: none;
     padding: 0;
     margin: 0;
@@ -1570,7 +1569,7 @@ figure.highlight,
 
 .gist .line,
 .gist .line-number {
-  font-family: "NanumSquareRound", "Helvetica Neue", sans-serif;
+  font-family: Avenir, "Noto Sans KR", SpoqaHanSans, "Apple SD Gothic Neo", "Malgun Gothic", "맑은 고딕", "Nanum Gothic", Dotum, "돋움", Helvetica, sans-serif;
   font-size: 1em;
   margin: 0 0 5px 0; }
 
@@ -1735,7 +1734,7 @@ figure.highlight,
     position: absolute;
     bottom: 0;
     width: calc(100% - (1.5em) * 2);
-    font-family: "NanumSquareRound", "Helvetica Neue", sans-serif;
+    font-family: Avenir, "Noto Sans KR", SpoqaHanSans, "Apple SD Gothic Neo", "Malgun Gothic", "맑은 고딕", "Nanum Gothic", Dotum, "돋움", Helvetica, sans-serif;
     font-style: italic;
     background: rgba(0, 0, 0, 0.75);
     font-size: 1.3rem;
@@ -1785,9 +1784,8 @@ a.fancybox {
 
 .main-content-wrap {
   display: block;
-  max-width: 960px;
+  max-width: 55%;
   margin: 0 auto;
-  padding-right: 20px;
   padding-left: 20px; }
 
 @media only screen and (min-width: 1024px) {
@@ -1945,7 +1943,7 @@ a.fancybox {
       text-decoration: none; }
   .post .post-meta {
     line-height: 1.5em;
-    font-family: "NanumSquareRound", "Helvetica Neue", sans-serif;
+    font-family: Avenir, "Noto Sans KR", SpoqaHanSans, "Apple SD Gothic Neo", "Malgun Gothic", "맑은 고딕", "Nanum Gothic", Dotum, "돋움", Helvetica, sans-serif;
     font-size: 1.3rem;
     font-weight: 400;
     color: #9eabb3; }
@@ -1954,7 +1952,7 @@ a.fancybox {
   .post .post-content {
     text-rendering: optimizelegibility;
     letter-spacing: -0.3px;
-    font-family: "NanumSquareRound", "Helvetica Neue", sans-serif;
+    font-family: Avenir, "Noto Sans KR", SpoqaHanSans, "Apple SD Gothic Neo", "Malgun Gothic", "맑은 고딕", "Nanum Gothic", Dotum, "돋움", Helvetica, sans-serif;
     color: #5d686f;
     margin-top: 20px;
     font-weight: 400;
@@ -2085,7 +2083,7 @@ a.fancybox {
         text-decoration: none; }
     .post-header-cover .post-header .post-meta {
       max-width: 750px;
-      font-family: "NanumSquareRound", "Helvetica Neue", sans-serif;
+      font-family: Avenir, "Noto Sans KR", SpoqaHanSans, "Apple SD Gothic Neo", "Malgun Gothic", "맑은 고딕", "Nanum Gothic", Dotum, "돋움", Helvetica, sans-serif;
       font-size: 1.6rem;
       color: white !important;
       font-weight: 400;
@@ -2209,12 +2207,11 @@ a.fancybox {
 
 .postShorten {
   position: relative;
-  width: 90%;
+  width: 110%;
   display: inline-block;
   vertical-align: middle;
   padding: 30px;
-  border-radius: 10px;
-  border: 0.7rem outset #31aaaa;
+  border-bottom: 0.2rem double #4f6674;
   margin-top: 50px; }
   .postShorten .postShorten-thumbnailimg {
     overflow: hidden; }
@@ -2236,14 +2233,14 @@ a.fancybox {
   .postShorten .postShorten-meta,
   .postShorten .postShorten-readingtime,
   .postShorten .postShorten-excerpt_link {
-    font-family: "NanumSquareRound", "Helvetica Neue", sans-serif;
+    font-family: Avenir, "Noto Sans KR", SpoqaHanSans, "Apple SD Gothic Neo", "Malgun Gothic", "맑은 고딕", "Nanum Gothic", Dotum, "돋움", Helvetica, sans-serif;
     font-size: 1.3rem;
-    font-weight: 600; }
+    font-weight: 400; }
   .postShorten .postShorten-excerpt,
   .postShorten .postShorten-content {
     text-rendering: optimizelegibility;
     letter-spacing: -0.3px;
-    font-family: "NanumSquareRound", "Helvetica Neue", sans-serif;
+    font-family: Avenir, "Noto Sans KR", SpoqaHanSans, "Apple SD Gothic Neo", "Malgun Gothic", "맑은 고딕", "Nanum Gothic", Dotum, "돋움", Helvetica, sans-serif;
     color: #5d686f;
     font-weight: 400;
     overflow: hidden;
@@ -2421,7 +2418,7 @@ a.side-tag,
   font-weight: 700; }
   a.side-tag:hover,
   .side-tag:hover {
-    color: #06cba6;
+    color: #ff61aa;
     text-decoration: underline; }
 
 a.tag--default,
@@ -2541,7 +2538,7 @@ a.tag--small,
   color: #9eabb3 !important; }
 
 .text-color-link {
-  color: #06cba6 !important; }
+  color: #ff61aa !important; }
 
 .font-merryweather {
   font-family: "Merriweather", serif; }
@@ -2685,10 +2682,10 @@ a.tag--small,
     margin-top: 0; }
 
 .toc-text {
-  color: lightslategray; }
+  color: #164b78; }
 
 #table-of-contents {
-  color: cadetblue; }
+  color: #164b78; }
 
 .popular-posts {
   list-style: none;

@@ -13,7 +13,7 @@
     
         <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
     
-    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","ksso7300@gmail.com"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\n\n객체과 테이블 매핑@Table\n엔티티와 매핑할 테이블 지정\n\n1234@Entity@Table(name = \"MEM_TAB\")public class Member &#123;    ...&#125;\n아래와 같이 터미널에 MEM_TAB 에서 조회한것을 볼 수 있다.\n12345678Hibernate:     select        member0_.id as id1_0_0_,        member0_.name as name2_0_0_     from        MEM_TAB member0_     where        member0_.id=?\n\n\n데이터베이스 스키마 자동 생성\nDDL 을 애플리케이션 실행 시점에 자동생성테이블 중심 -&gt; 객체 중심데이터베이스 방언을 활요해서 적절한 DDL 생성생성된 DDL 은 개발 장비에서만 사용.\n\n아래의 JPA 옵션을 적용하여 실행할 경우.\n옵션\n1&lt;property name=\"hibernate.hbm2ddl.auto\" value=\"create\" /&gt;\n\n\n\n옵션\n기능\n\n\n\ncreate\n기존 테이블에서 삭제후 생성 (CREATE+DROP)\n\n\ncreate-drop\ncreate 와 같으나 종료시점에 테이블 DROP\n\n\nupdate\n변경분만 반영(운영 DB에서는 사용금지)\n\n\nvalidate\n엔티티와 테이블이 정상 매핑되었는지 확인\n\n\nnone\n사용하지 않음\n\n\ncreateMember.java\n12345678910111213141516171819202122232425262728293031@Entity@Tablepublic class Member &#123;    @Id    private Long id;    @Column(name =\"username\", length=10)    private String name;    private int age;    public Long getId() &#123;        return id;    &#125;    public String getName() &#123;        return name;    &#125;    public Member(Long id, String name) &#123;        this.id = id;        this.name = name;    &#125;    public void setId(Long id) &#123;        this.id = id;    &#125;    public void setName(String name) &#123;        this.name = name;    &#125;&#125;\n\n터미널\n1234567891011121314151617181920212223242526# 테이블 삭제Hibernate:         drop table MEM_TAB if exists# 테이블 생성 (객체중심)Hibernate:         create table Member (       id bigint not null,        age integer not null,        name varchar(255),        primary key (id)    )   # 테이블 조회Hibernate:     select        member0_.id as id1_0_0_,        member0_.age as age2_0_0_,        member0_.name as name3_0_0_     from        Member member0_     where        member0_.id=?\n\nupdate터미널\n12345678910111213Hibernate:         alter table Member        add column username varchar(10)Hibernate:     select        member0_.id as id1_0_0_,        member0_.age as age2_0_0_,        member0_.username as username3_0_0_     from        Member member0_     where        member0_.id=?\n\n\n스키마 자동생성 주의점\n운영 장비에서는 절대 사용금지개발 초기단계는 create, update테스트 서버는 update, validate스테이징과 운영서버는 validate, none\n","dateCreated":"2020-02-16T17:12:54+09:00","dateModified":"2020-04-28T10:36:01+09:00","datePublished":"2020-02-16T17:12:54+09:00","description":"객체와 테이블, 필드와 컬럼, 기본키, 연관관계 매핑에 대해 알아봅니다.","headline":"JPA 엔티티 매핑","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2020/02/16/JPA-%EC%97%94%ED%8B%B0%ED%8B%B0-%EB%A7%A4%ED%95%91/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","ksso7300@gmail.com"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2020/02/16/JPA-%EC%97%94%ED%8B%B0%ED%8B%B0-%EB%A7%A4%ED%95%91/","keywords":"JPA, entity"}</script>
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\n\n객체과 테이블 매핑@Table\n엔티티와 매핑할 테이블 지정\n\n1234@Entity@Table(name = \"MEM_TAB\")public class Member &#123;    ...&#125;\n아래와 같이 터미널에 MEM_TAB 에서 조회한것을 볼 수 있다.\n12345678Hibernate:     select        member0_.id as id1_0_0_,        member0_.name as name2_0_0_     from        MEM_TAB member0_     where        member0_.id=?\n\n\n데이터베이스 스키마 자동 생성\nDDL 을 애플리케이션 실행 시점에 자동생성테이블 중심 -&gt; 객체 중심데이터베이스 방언을 활요해서 적절한 DDL 생성생성된 DDL 은 개발 장비에서만 사용.\n\n아래의 JPA 옵션을 적용하여 실행할 경우.\n옵션\n1&lt;property name=\"hibernate.hbm2ddl.auto\" value=\"create\" /&gt;\n\n\n\n옵션\n기능\n\n\n\ncreate\n기존 테이블에서 삭제후 생성 (CREATE+DROP)\n\n\ncreate-drop\ncreate 와 같으나 종료시점에 테이블 DROP\n\n\nupdate\n변경분만 반영(운영 DB에서는 사용금지)\n\n\nvalidate\n엔티티와 테이블이 정상 매핑되었는지 확인\n\n\nnone\n사용하지 않음\n\n\ncreateMember.java\n12345678910111213141516171819202122232425262728293031@Entity@Tablepublic class Member &#123;    @Id    private Long id;    @Column(name =\"username\", length=10)    private String name;    private int age;    public Long getId() &#123;        return id;    &#125;    public String getName() &#123;        return name;    &#125;    public Member(Long id, String name) &#123;        this.id = id;        this.name = name;    &#125;    public void setId(Long id) &#123;        this.id = id;    &#125;    public void setName(String name) &#123;        this.name = name;    &#125;&#125;\n\n터미널\n1234567891011121314151617181920212223242526# 테이블 삭제Hibernate:         drop table MEM_TAB if exists# 테이블 생성 (객체중심)Hibernate:         create table Member (       id bigint not null,        age integer not null,        name varchar(255),        primary key (id)    )   # 테이블 조회Hibernate:     select        member0_.id as id1_0_0_,        member0_.age as age2_0_0_,        member0_.name as name3_0_0_     from        Member member0_     where        member0_.id=?\n\nupdate터미널\n12345678910111213Hibernate:         alter table Member        add column username varchar(10)Hibernate:     select        member0_.id as id1_0_0_,        member0_.age as age2_0_0_,        member0_.username as username3_0_0_     from        Member member0_     where        member0_.id=?\n\n\n스키마 자동생성 주의점\n운영 장비에서는 절대 사용금지개발 초기단계는 create, update테스트 서버는 update, validate스테이징과 운영서버는 validate, none\n","dateCreated":"2020-02-16T17:12:54+09:00","dateModified":"2020-04-28T10:36:01+09:00","datePublished":"2020-02-16T17:12:54+09:00","description":"객체와 테이블, 필드와 컬럼, 기본키, 연관관계 매핑에 대해 알아봅니다.","headline":"JPA 엔티티 매핑","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2020/02/16/JPA-%EC%97%94%ED%8B%B0%ED%8B%B0-%EB%A7%A4%ED%95%91/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2020/02/16/JPA-%EC%97%94%ED%8B%B0%ED%8B%B0-%EB%A7%A4%ED%95%91/","keywords":"JPA, entity"}</script>
     <meta name="description" content="객체와 테이블, 필드와 컬럼, 기본키, 연관관계 매핑에 대해 알아봅니다.">
 <meta property="og:type" content="blog">
 <meta property="og:title" content="JPA 엔티티 매핑">
@@ -120,7 +120,7 @@
                     href="/#about"
                     aria-label="Read more about the author"
                 >
-                    <img class="sidebar-profile-picture" src="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=110" alt="Author&#39;s picture"/>
+                    <img class="sidebar-profile-picture" src="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=800" alt="Author&#39;s picture"/>
                 </a>
                 <h4 class="sidebar-profile-name">Suyan Kim</h4>
                 
@@ -136,12 +136,12 @@
                     
                         <a  class="sidebar-button-link "
                              
-                                title="Home"href="/index.html"
+                                title="home"href="/index.html"
                                 
                                 >
                     
                     <i class="sidebar-button-icon fa fa-home" aria-hidden="true"></i>
-                    <span class="sidebar-button-desc">Home</span>
+                    <span class="sidebar-button-desc">home</span>
                         </a>
                     <!-- add -->
                     
@@ -151,15 +151,34 @@
                     
                         <a  class="sidebar-button-link "
                              
-                                title="Categories"href="/all-categories"
+                                title="archives"href="/all-archives"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-archive" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">archives</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="categories"href="/all-categories"
                                 
                                 >
                     
                     <i class="sidebar-button-icon fa fa-bookmark" aria-hidden="true"></i>
-                    <span class="sidebar-button-desc">Categories</span>
+                    <span class="sidebar-button-desc">categories</span>
                         </a>
                     <!-- add -->
                     
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (7)</a></li>
+                            
                         
                             
                                 <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Config/">☁️ Config (2)</a></li>
@@ -178,11 +197,15 @@
                             
                         
                             
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Java/">☁️ Java (0)</a></li>
+                            
+                        
+                            
                                 <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Linux/">☁️ Linux (1)</a></li>
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-OS/">☁️ OS (2)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-OS/">☁️ OS (10)</a></li>
                             
                         
                             
@@ -198,11 +221,11 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Web/">☁️ Web (1)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-TIL/">☁️ TIL (2)</a></li>
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-coding-test/">☁️ coding test (6)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Web/">☁️ Web (1)</a></li>
                             
                         
                     
@@ -212,12 +235,12 @@
                     
                         <a  class="sidebar-button-link "
                              
-                                title="Tags"href="/all-tags"
+                                title="tags"href="/all-tags"
                                 
                                 >
                     
                     <i class="sidebar-button-icon fa fa-tags" aria-hidden="true"></i>
-                    <span class="sidebar-button-desc">Tags</span>
+                    <span class="sidebar-button-desc">tags</span>
                         </a>
                     <!-- add -->
                     
@@ -227,27 +250,12 @@
                     
                         <a  class="sidebar-button-link "
                              
-                                title="Archives"href="/all-archives"
-                                
-                                >
-                    
-                    <i class="sidebar-button-icon fa fa-archive" aria-hidden="true"></i>
-                    <span class="sidebar-button-desc">Archives</span>
-                        </a>
-                    <!-- add -->
-                    
-                </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a  class="sidebar-button-link "
-                             
-                                title="About"href="#about"
+                                title="about"href="#about"
                                 
                                 >
                     
                     <i class="sidebar-button-icon fa fa-question" aria-hidden="true"></i>
-                    <span class="sidebar-button-desc">About</span>
+                    <span class="sidebar-button-desc">about</span>
                         </a>
                     <!-- add -->
                     
@@ -259,10 +267,10 @@
             
                 <li class="sidebar-button">
                     
-                        <a  class="sidebar-button-link " href="https://github.com/ksso730" target="_blank" rel="noopener" title="my github">
+                        <a  class="sidebar-button-link " href="https://github.com/ksso730" target="_blank" rel="noopener" title="github">
                     
                     <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
-                    <span class="sidebar-button-desc">my github</span>
+                    <span class="sidebar-button-desc">github</span>
                         </a>
                     <!-- add -->
                     
@@ -270,12 +278,10 @@
             
                 <li class="sidebar-button">
                     
-                        <a  class="sidebar-button-link "
-                             href="/ksso7300@gmail.com"
-                                >
+                        <a  class="sidebar-button-link " href="https://www.instagram.com/syankkim/" target="_blank" rel="noopener" title="life">
                     
-                    <i class="sidebar-button-icon fa fa-envelope" aria-hidden="true"></i>
-                    <span class="sidebar-button-desc">contact me</span>
+                    <i class="sidebar-button-icon fab fa-instagram" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">life</span>
                         </a>
                     <!-- add -->
                     
@@ -520,7 +526,7 @@
 
                 <footer id="footer" class="main-content-wrap">
     <span class="copyrights">
-        Copyrights &copy; 2020 Suyan Kim. All Rights Reserved.
+        Copyrights &copy; 2021 Suyan Kim. All Rights Reserved.
     </span>
 </footer>
 

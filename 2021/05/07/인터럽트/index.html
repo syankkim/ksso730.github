@@ -1,0 +1,870 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="동글씨">
+    <title>⏸ 인터럽트 - 동글씨</title>
+    <meta name="author" content="Suyan Kim">
+    
+    
+    
+        <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
+    
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\n인터럽트란?\nCPU 에서 프로그램 실행중에 입출력 이벤트나 프로그래밍 오류 등, 예기지 못한 상황이 발생했을 경우 CPU 에게 실행중인 작업을 중단시키고 그 상황을 먼저 처리하도록 하는 기술이다.\n\n내부/외부 인터럽트\n내부 인터럽트 : 프로그램 내부에서 발생. (=소프트웨어 인터럽트)\n프로그램 내부에서 잘못된 데이터 사용이나, 명령어 실행오류\n권한을 위배한 엑세스 (사용자 모드에서 운영체제의 명령이나 공간에 접근)\nDivide by zero\nOverflow/Underflow\n\n\n외부 인터럽트 : 프로그램 외부에서 발생. (=하드웨어 인터럽트)\n기기문제나 전원이상\n입출력 인터럽트\n타이머 인터럽트\n\n\n\n타이머 인터럽트\n선점형 스케줄러에 필요\n하드웨어로부터 일정시간마다 타이머 인터럽트를 CPU 에게 알려주면, context switching 을 수행한다.\ncontext switching : 수행중인 프로세스를 중단하고 다른 프로세스를 수행하는 것.\n\n\n타이머 인터럽트를 발생시키는 칩이 컴퓨터에 별도로 존재한다.\n\n입출력 인터럽트\n프린터, 키보드, 마우스, 저장매체(SSD) 등\n\n인터럽트 예시 (divide by zero)\nzero.c123456789include &lt;studio.h&gt;int main()&#123;  printf(\"hello\");  int data;  int divider =0;  data = 1 /divider; // 0 으로 나눌 수 없음.  return 0;&#125;\ncmd123./zerohelloFloating pont exception (core dumped)\nFloating pont exception (core dumped) : 운영체제가 발생시킨 인터럽트\n\n인터럽트 처리\nCPU 가 프로그램을 실행하고 있을때, 소프트웨어 혹은 하드웨어 인터럽트가 발생한다.\n운영체제는 실행중이던 프로세스를 중단하고 인터럽트 처리 함수를 먼저 실행한다.\n인터럽트 처리가 끝나면 운영체제에게 알린다.\n중단되었던 프로세스가 재실행된다.\n\nIDT (Interrupt Descriptor Table)\nIDT 는 인터럽트 번호마다 각 시스템콜함수 주소가 있는 테이블이다.\n리눅스는 인터럽트 처리를 위해 IDT 를 사용한다.\n\n\n\n\n시스템콜 인터럽트\n시스템콜 실행을 위해서는 강제로 코드에 인터럽트 명령을 넣어, CPU 가 수행할 수 있도록 해야한다.\n시스템콜 인터럽트는 아래와 같이 어셈블리어 3줄로 표현된다.\n\n[Assembly Code]\n123mov eax, 1mov ebx, 0int 0x80\n\neax (Exended Accumaltor Register) : Arithmetic Logic Operation 수행 및 함수의 반환값이 저장.\nsystemcall number 저장됨.\n\n\nebx (Extended Base Register) : 메모리 주소를 저장하기 위함.\nsystemcall argument 주소가 저장됨.\n\n\nint 0X80 : 시스템콜의 Interurrpt Number,  는 OP code.\n\n시스템콜 인터럽트 처리\n시스템콜 인터럽트 호출 (int 0X80)\nUser Mode =&gt; Kernel Mode 전환\nIDT 참조, 0X80 에 매핑된 system_call() 주소로 이동.\n\n\ninterrupt\nexcution Code\n\n\n\n0X0\ndevice_error()\n\n\n…\n…\n\n\n0X80\nsystem_cala()\n\n\n\n\n\n\n\nsystemCall 테이블 참조\n\n\n%eax\nname\nsource\n%ebx\n\n\n\n1\nsys_exit\nkernel/exit.c\nint\n\n\n2\nsys_fork\narch/i386/kernel/process.c\nstruct_pt_regs\n\n\n3\nsys_read\nfs/read_write.c\nunsigned int\n\n\n4\nsys_write\nfs/read_write.c\nunsigned int\n\n\n5\nsys_open\nfs/open.c\nconst char*\n\n\n6\nsys_close\nfs/close.c\nunsigned int\n\n\n\n\n\n\n\nKernel Mode =&gt; User Mode 전환\n프로세스 재진행\n\n\nIDT vs IVT ?\n\n프로세서에서 인터럽트가 걸렸을 때, 그 인터럽트를 처리할 수 있는 서비스 루틴들의 주소-인터럽트 핸들러 주소가 저장되어 있는 IVT (interrupt vector) 인터럽트 벡터 테이블을 보고 결정한다.\nIVT는 real mode에서, IDT는 protected mode에서 사용된다.\nreal mode 부팅 직후 작동되는 모드로 물리 메모리를 그대로 사용합니다.\nprotected mode는 가상 메모리를 지원하는 모드입니다.\n\n\n최근 OS는 모두 protected mode를 기반으로 실행되어 IDT를 사용합니다.\nIDT interrupt descriptor table 는 IVT interrupt vector table 을 구현하기 위해 X86 아키텍처에서 사용되는 데이터 구조체이다.\n\n","dateCreated":"2021-05-07T01:21:24+09:00","dateModified":"2021-05-11T10:52:08+09:00","datePublished":"2021-05-07T01:21:24+09:00","description":"인터럽트는 무엇이고 어떻게 처리될까?#interrupt #IDT","headline":"⏸ 인터럽트","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2021/05/07/%EC%9D%B8%ED%84%B0%EB%9F%BD%ED%8A%B8/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2021/05/07/%EC%9D%B8%ED%84%B0%EB%9F%BD%ED%8A%B8/"}</script>
+    <meta name="description" content="인터럽트는 무엇이고 어떻게 처리될까?#interrupt #IDT">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="⏸ 인터럽트">
+<meta property="og:url" content="http://yoursite.com/2021/05/07/%EC%9D%B8%ED%84%B0%EB%9F%BD%ED%8A%B8/index.html">
+<meta property="og:site_name" content="동글씨">
+<meta property="og:description" content="인터럽트는 무엇이고 어떻게 처리될까?#interrupt #IDT">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://user-images.githubusercontent.com/28856435/117398693-d2d36c80-af39-11eb-921a-73415d97aacd.jpg">
+<meta property="article:published_time" content="2021-05-06T16:21:24.000Z">
+<meta property="article:modified_time" content="2021-05-11T01:52:08.022Z">
+<meta property="article:author" content="Suyan Kim">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://user-images.githubusercontent.com/28856435/117398693-d2d36c80-af39-11eb-921a-73415d97aacd.jpg">
+    
+    
+        
+    
+    
+        <meta property="og:image" content="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=640"/>
+    
+    
+    
+    
+    <!--STYLES-->
+    
+<link rel="stylesheet" href="/assets/css/all.css">
+
+    
+<link rel="stylesheet" href="/assets/css/jquery.fancybox.css">
+
+    
+<link rel="stylesheet" href="/assets/css/thumbs.css">
+
+    
+<link rel="stylesheet" href="/assets/css/tranquilpeak.css">
+
+    <!--STYLES END-->
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-158530470-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-158530470-1');
+    </script>
+
+
+    
+
+    
+        
+    
+</head>
+
+    <body>
+        <div id="blog">
+            <!-- Define author's picture -->
+
+
+    
+        
+    
+
+<header id="header" data-behavior="4">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <div class="header-title">
+        <a
+            class="header-title-link"
+            href="/index.html"
+            aria-label=""
+        >
+            동글씨
+        </a>
+    </div>
+    
+        
+            <a
+                class="header-right-picture "
+                href="#about"
+                aria-label="Open the link: /#about"
+            >
+        
+        
+            <img class="header-picture" src="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=90" alt="Author&#39;s picture"/>
+        
+        </a>
+    
+</header>
+
+            <!-- function -->
+
+
+<!-- Define author's picture -->
+
+
+    
+
+<nav id="sidebar" data-behavior="4">
+    <div class="sidebar-container">
+        
+            <div class="sidebar-profile">
+                <a
+                    href="/#about"
+                    aria-label="Read more about the author"
+                >
+                    <img class="sidebar-profile-picture" src="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=800" alt="Author&#39;s picture"/>
+                </a>
+                <h4 class="sidebar-profile-name">Suyan Kim</h4>
+                
+                    <h5 class="sidebar-profile-bio"><p>▲ Who Am I</p>
+</h5>
+                
+            </div>
+        
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="home"href="/index.html"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-home" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">home</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="archives"href="/all-archives"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-archive" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">archives</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="categories"href="/all-categories"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-bookmark" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">categories</span>
+                        </a>
+                    <!-- add -->
+                    
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (7)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Config/">☁️ Config (2)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-DataBase/">☁️ DataBase (1)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Git/">☁️ Git (3)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-JPA/">☁️ JPA (10)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Java/">☁️ Java (0)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Linux/">☁️ Linux (1)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-OS/">☁️ OS (10)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Python/">☁️ Python (2)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-React/">☁️ React (3)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Spring/">☁️ Spring (1)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-TIL/">☁️ TIL (2)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Web/">☁️ Web (1)</a></li>
+                            
+                        
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="tags"href="/all-tags"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-tags" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">tags</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="about"href="#about"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-question" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">about</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="https://github.com/ksso730" target="_blank" rel="noopener" title="github">
+                    
+                    <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">github</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="https://www.instagram.com/syankkim/" target="_blank" rel="noopener" title="life">
+                    
+                    <i class="sidebar-button-icon fab fa-instagram" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">life</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+        </ul>
+        
+    </div>
+</nav>
+
+            
+            <div id="main" data-behavior="4"
+                 class="
+                        hasCoverMetaIn
+                        ">
+                
+<article class="post">
+    
+    
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title">
+            ⏸ 인터럽트
+        </h1>
+    
+    
+        <div class="post-meta">
+    <time datetime="2021-05-07T01:21:24+09:00">
+	
+		    May 07, 2021
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/%E2%98%81%EF%B8%8F-OS/">☁️ OS</a>
+
+
+    
+</div>
+
+    
+</div>
+
+    
+    <div class="post-content markdown">
+        <div class="main-content-wrap">
+            <!-- excerpt -->
+<h1 id="table-of-contents">Contents</h1><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#인터럽트란"><span class="toc-text">인터럽트란?</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#내부-외부-인터럽트"><span class="toc-text">내부&#x2F;외부 인터럽트</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#타이머-인터럽트"><span class="toc-text">타이머 인터럽트</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#입출력-인터럽트"><span class="toc-text">입출력 인터럽트</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#인터럽트-예시-divide-by-zero"><span class="toc-text">인터럽트 예시 (divide by zero)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#인터럽트-처리"><span class="toc-text">인터럽트 처리</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#IDT-Interrupt-Descriptor-Table"><span class="toc-text">IDT (Interrupt Descriptor Table)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#시스템콜-인터럽트"><span class="toc-text">시스템콜 인터럽트</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#시스템콜-인터럽트-처리"><span class="toc-text">시스템콜 인터럽트 처리</span></a></li></ol>
+
+<hr>
+<h2 id="인터럽트란"><a href="#인터럽트란" class="headerlink" title="인터럽트란?"></a>인터럽트란?</h2><ul>
+<li>CPU 에서 프로그램 실행중에 입출력 이벤트나 프로그래밍 오류 등, 예기지 못한 상황이 발생했을 경우 CPU 에게 실행중인 작업을 중단시키고 그 상황을 먼저 처리하도록 하는 기술이다.</li>
+</ul>
+<h2 id="내부-외부-인터럽트"><a href="#내부-외부-인터럽트" class="headerlink" title="내부/외부 인터럽트"></a>내부/외부 인터럽트</h2><ul>
+<li>내부 인터럽트 : 프로그램 내부에서 발생. (=소프트웨어 인터럽트)<ul>
+<li>프로그램 내부에서 잘못된 데이터 사용이나, 명령어 실행오류</li>
+<li>권한을 위배한 엑세스 (사용자 모드에서 운영체제의 명령이나 공간에 접근)</li>
+<li>Divide by zero</li>
+<li>Overflow/Underflow</li>
+</ul>
+</li>
+<li>외부 인터럽트 : 프로그램 외부에서 발생. (=하드웨어 인터럽트)<ul>
+<li>기기문제나 전원이상</li>
+<li>입출력 인터럽트</li>
+<li>타이머 인터럽트</li>
+</ul>
+</li>
+</ul>
+<h3 id="타이머-인터럽트"><a href="#타이머-인터럽트" class="headerlink" title="타이머 인터럽트"></a>타이머 인터럽트</h3><ul>
+<li>선점형 스케줄러에 필요</li>
+<li>하드웨어로부터 일정시간마다 타이머 인터럽트를 CPU 에게 알려주면, <code>context switching</code> 을 수행한다.<ul>
+<li>context switching : 수행중인 프로세스를 중단하고 다른 프로세스를 수행하는 것.</li>
+</ul>
+</li>
+<li>타이머 인터럽트를 발생시키는 칩이 컴퓨터에 별도로 존재한다.</li>
+</ul>
+<h3 id="입출력-인터럽트"><a href="#입출력-인터럽트" class="headerlink" title="입출력 인터럽트"></a>입출력 인터럽트</h3><ul>
+<li>프린터, 키보드, 마우스, 저장매체(SSD) 등</li>
+</ul>
+<h2 id="인터럽트-예시-divide-by-zero"><a href="#인터럽트-예시-divide-by-zero" class="headerlink" title="인터럽트 예시 (divide by zero)"></a>인터럽트 예시 (divide by zero)</h2><ul>
+<li>zero.c<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">include &lt;studio.h&gt;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"hello"</span>);</span><br><span class="line">  <span class="keyword">int</span> data;</span><br><span class="line">  <span class="keyword">int</span> divider =<span class="number">0</span>;</span><br><span class="line">  data = <span class="number">1</span> /divider; <span class="comment">// 0 으로 나눌 수 없음.</span></span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>cmd<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">./zero</span><br><span class="line">hello</span><br><span class="line">Floating pont exception (core dumped)</span><br></pre></td></tr></table></figure></li>
+<li><code>Floating pont exception (core dumped)</code> : 운영체제가 발생시킨 인터럽트</li>
+</ul>
+<h2 id="인터럽트-처리"><a href="#인터럽트-처리" class="headerlink" title="인터럽트 처리"></a>인터럽트 처리</h2><ol>
+<li>CPU 가 프로그램을 실행하고 있을때, 소프트웨어 혹은 하드웨어 인터럽트가 발생한다.</li>
+<li>운영체제는 실행중이던 프로세스를 중단하고 인터럽트 처리 함수를 먼저 실행한다.</li>
+<li>인터럽트 처리가 끝나면 운영체제에게 알린다.</li>
+<li>중단되었던 프로세스가 재실행된다.</li>
+</ol>
+<h2 id="IDT-Interrupt-Descriptor-Table"><a href="#IDT-Interrupt-Descriptor-Table" class="headerlink" title="IDT (Interrupt Descriptor Table)"></a>IDT (Interrupt Descriptor Table)</h2><ul>
+<li>IDT 는 인터럽트 번호마다 각 시스템콜함수 주소가 있는 테이블이다.</li>
+<li>리눅스는 인터럽트 처리를 위해 IDT 를 사용한다.</li>
+</ul>
+<br>
+
+<p><img src="https://user-images.githubusercontent.com/28856435/117398693-d2d36c80-af39-11eb-921a-73415d97aacd.jpg" alt="idt"></p>
+<h2 id="시스템콜-인터럽트"><a href="#시스템콜-인터럽트" class="headerlink" title="시스템콜 인터럽트"></a>시스템콜 인터럽트</h2><ul>
+<li>시스템콜 실행을 위해서는 강제로 코드에 인터럽트 명령을 넣어, CPU 가 수행할 수 있도록 해야한다.</li>
+<li>시스템콜 인터럽트는 아래와 같이 어셈블리어 3줄로 표현된다.</li>
+</ul>
+<p>[Assembly Code]</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mov eax, <span class="number">1</span></span><br><span class="line">mov ebx, <span class="number">0</span></span><br><span class="line"><span class="keyword">int</span> <span class="number">0x80</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>eax (Exended Accumaltor Register) : Arithmetic Logic Operation 수행 및 함수의 반환값이 저장.<ul>
+<li>systemcall number 저장됨.</li>
+</ul>
+</li>
+<li>ebx (Extended Base Register) : 메모리 주소를 저장하기 위함.<ul>
+<li>systemcall argument 주소가 저장됨.</li>
+</ul>
+</li>
+<li>int 0X80 : 시스템콜의 Interurrpt Number, <int> 는 OP code.</li>
+</ul>
+<h2 id="시스템콜-인터럽트-처리"><a href="#시스템콜-인터럽트-처리" class="headerlink" title="시스템콜 인터럽트 처리"></a>시스템콜 인터럽트 처리</h2><ol>
+<li>시스템콜 인터럽트 호출 (int 0X80)</li>
+<li><code>User Mode =&gt; Kernel Mode 전환</code></li>
+<li>IDT 참조, 0X80 에 매핑된 system_call() 주소로 이동.<table>
+<thead>
+<tr>
+<th>interrupt</th>
+<th>excution Code</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0X0</td>
+<td>device_error()</td>
+</tr>
+<tr>
+<td>…</td>
+<td>…</td>
+</tr>
+<tr>
+<td>0X80</td>
+<td>system_cala()</td>
+</tr>
+</tbody></table>
+</li>
+</ol>
+<br>
+
+<ol start="4">
+<li>systemCall 테이블 참조<table>
+<thead>
+<tr>
+<th>%eax</th>
+<th>name</th>
+<th>source</th>
+<th>%ebx</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>sys_exit</td>
+<td>kernel/exit.c</td>
+<td>int</td>
+</tr>
+<tr>
+<td>2</td>
+<td>sys_fork</td>
+<td>arch/i386/kernel/process.c</td>
+<td>struct_pt_regs</td>
+</tr>
+<tr>
+<td>3</td>
+<td>sys_read</td>
+<td>fs/read_write.c</td>
+<td>unsigned int</td>
+</tr>
+<tr>
+<td>4</td>
+<td>sys_write</td>
+<td>fs/read_write.c</td>
+<td>unsigned int</td>
+</tr>
+<tr>
+<td>5</td>
+<td>sys_open</td>
+<td>fs/open.c</td>
+<td>const char*</td>
+</tr>
+<tr>
+<td>6</td>
+<td>sys_close</td>
+<td>fs/close.c</td>
+<td>unsigned int</td>
+</tr>
+</tbody></table>
+</li>
+</ol>
+<br>
+
+<ol start="5">
+<li><code>Kernel Mode =&gt; User Mode 전환</code></li>
+<li>프로세스 재진행</li>
+</ol>
+<blockquote>
+<p><strong>IDT vs IVT ?</strong></p>
+<ol>
+<li>프로세서에서 인터럽트가 걸렸을 때, 그 인터럽트를 처리할 수 있는 서비스 루틴들의 주소-인터럽트 핸들러 주소가 저장되어 있는 <code>IVT (interrupt vector)</code> 인터럽트 벡터 테이블을 보고 결정한다.</li>
+<li>IVT는 <code>real mode</code>에서, IDT는 <code>protected mode</code>에서 사용된다.<ul>
+<li>real mode 부팅 직후 작동되는 모드로 <code>물리 메모리</code>를 그대로 사용합니다.</li>
+<li>protected mode는 <code>가상 메모리</code>를 지원하는 모드입니다.</li>
+</ul>
+</li>
+<li>최근 OS는 모두 protected mode를 기반으로 실행되어 IDT를 사용합니다.</li>
+<li>IDT <code>interrupt descriptor table</code> 는 IVT <code>interrupt vector table</code> 을 구현하기 위해 X86 아키텍처에서 사용되는 데이터 구조체이다.</li>
+</ol>
+</blockquote>
+            
+
+
+        </div>
+    </div>
+    <div id="post-footer" class="post-footer main-content-wrap">
+        
+        
+            <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2021/05/10/%ED%94%84%EB%A1%9C%EC%84%B8%EC%8A%A4-%EA%B5%AC%EC%A1%B0/"
+                    data-tooltip="프로세스 구조와 컨텍스트 스위칭"
+                    aria-label="PREVIOUS: 프로세스 구조와 컨텍스트 스위칭"
+                >
+                    
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                    </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2021/05/06/%EC%84%A0%EC%A0%90%ED%98%95vs%EB%B9%84%EC%84%A0%EC%A0%90%ED%98%95/"
+                    data-tooltip="🙋‍♀️ 선점형 vs 비선점형"
+                    aria-label="NEXT: 🙋‍♀️ 선점형 vs 비선점형"
+                >
+                    
+                        <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a
+                class="post-action-btn btn btn--default btn-open-shareoptions"
+                href="#btn-open-shareoptions"
+                aria-label="Share this post"
+            >
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2021/05/07/%EC%9D%B8%ED%84%B0%EB%9F%BD%ED%8A%B8/"
+                    title="Share on Facebook"
+                    aria-label="Share on Facebook"
+                >
+                    <i class="fab fa-facebook" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2021/05/07/%EC%9D%B8%ED%84%B0%EB%9F%BD%ED%8A%B8/"
+                    title="Share on Twitter"
+                    aria-label="Share on Twitter"
+                >
+                    <i class="fab fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://plus.google.com/share?url=http://yoursite.com/2021/05/07/%EC%9D%B8%ED%84%B0%EB%9F%BD%ED%8A%B8/"
+                    title="Share on Google+"
+                    aria-label="Share on Google+"
+                >
+                    <i class="fab fa-google-plus" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+                <li class="post-action">
+                    <a
+                        class="post-action-btn btn btn--default"
+                        href="#disqus_thread"
+                        aria-label="Leave a comment"
+                    >
+                        <i class="fa fa-comment"></i>
+                    </a>
+                </li>
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#table-of-contents" aria-label="Contents">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+        
+        
+            
+                <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a></noscript>
+</div>
+            
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2021 Suyan Kim. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2021/05/10/%ED%94%84%EB%A1%9C%EC%84%B8%EC%8A%A4-%EA%B5%AC%EC%A1%B0/"
+                    data-tooltip="프로세스 구조와 컨텍스트 스위칭"
+                    aria-label="PREVIOUS: 프로세스 구조와 컨텍스트 스위칭"
+                >
+                    
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                    </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2021/05/06/%EC%84%A0%EC%A0%90%ED%98%95vs%EB%B9%84%EC%84%A0%EC%A0%90%ED%98%95/"
+                    data-tooltip="🙋‍♀️ 선점형 vs 비선점형"
+                    aria-label="NEXT: 🙋‍♀️ 선점형 vs 비선점형"
+                >
+                    
+                        <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a
+                class="post-action-btn btn btn--default btn-open-shareoptions"
+                href="#btn-open-shareoptions"
+                aria-label="Share this post"
+            >
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2021/05/07/%EC%9D%B8%ED%84%B0%EB%9F%BD%ED%8A%B8/"
+                    title="Share on Facebook"
+                    aria-label="Share on Facebook"
+                >
+                    <i class="fab fa-facebook" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2021/05/07/%EC%9D%B8%ED%84%B0%EB%9F%BD%ED%8A%B8/"
+                    title="Share on Twitter"
+                    aria-label="Share on Twitter"
+                >
+                    <i class="fab fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://plus.google.com/share?url=http://yoursite.com/2021/05/07/%EC%9D%B8%ED%84%B0%EB%9F%BD%ED%8A%B8/"
+                    title="Share on Google+"
+                    aria-label="Share on Google+"
+                >
+                    <i class="fab fa-google-plus" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+                <li class="post-action">
+                    <a
+                        class="post-action-btn btn btn--default"
+                        href="#disqus_thread"
+                        aria-label="Leave a comment"
+                    >
+                        <i class="fa fa-comment"></i>
+                    </a>
+                </li>
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#table-of-contents" aria-label="Contents">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                
+    <div id="share-options-bar" class="share-options-bar" data-behavior="4">
+        <i id="btn-close-shareoptions" class="fa fa-times"></i>
+        <ul class="share-options">
+            
+                
+                
+                <li class="share-option">
+                    <a
+                        class="share-option-btn"
+                        target="new"
+                        href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2021/05/07/%EC%9D%B8%ED%84%B0%EB%9F%BD%ED%8A%B8/"
+                        aria-label="Share on Facebook"
+                    >
+                        <i class="fab fa-facebook" aria-hidden="true"></i><span>Share on Facebook</span>
+                    </a>
+                </li>
+            
+                
+                
+                <li class="share-option">
+                    <a
+                        class="share-option-btn"
+                        target="new"
+                        href="https://twitter.com/intent/tweet?text=http://yoursite.com/2021/05/07/%EC%9D%B8%ED%84%B0%EB%9F%BD%ED%8A%B8/"
+                        aria-label="Share on Twitter"
+                    >
+                        <i class="fab fa-twitter" aria-hidden="true"></i><span>Share on Twitter</span>
+                    </a>
+                </li>
+            
+                
+                
+                <li class="share-option">
+                    <a
+                        class="share-option-btn"
+                        target="new"
+                        href="https://plus.google.com/share?url=http://yoursite.com/2021/05/07/%EC%9D%B8%ED%84%B0%EB%9F%BD%ED%8A%B8/"
+                        aria-label="Share on Google+"
+                    >
+                        <i class="fab fa-google-plus" aria-hidden="true"></i><span>Share on Google+</span>
+                    </a>
+                </li>
+            
+        </ul>
+    </div>
+
+
+            
+        </div>
+        
+
+
+    
+
+<div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-times"></i>
+        </div>
+        
+            <img id="about-card-picture" src="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=110" alt="Author&#39;s picture"/>
+        
+            <h4 id="about-card-name">Suyan Kim</h4>
+        <!--  -->
+            <!-- <div id="about-card-bio"><p>author.bio</p>
+</div> -->
+            <div id="about-card-bio">안녕하세요, 서버 백엔드 개발자 동글씨입니다.</div>
+        <!--  -->
+        <!--  -->
+            <div id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <!-- <p>Backend Developer</p>
+ -->
+                Backend Developer
+            </div>
+        <!--  -->
+        
+            <div id="about-card-location">
+                <i class="fa fa-map-marker-alt"></i>
+                <br/>
+                Korea
+            </div>
+        
+    </div>
+</div>
+
+        
+        
+<div id="cover" style="background-image:url('/assets/images/null');"></div>
+        <!--SCRIPTS-->
+
+<script src="/assets/js/jquery.js"></script>
+
+
+<script src="/assets/js/jquery.fancybox.js"></script>
+
+
+<script src="/assets/js/thumbs.js"></script>
+
+
+<script src="/assets/js/tranquilpeak.js"></script>
+
+<!--SCRIPTS END-->
+
+
+    
+        <script>
+          var disqus_config = function() {
+            this.page.url = 'http://yoursite.com/2021/05/07/%EC%9D%B8%ED%84%B0%EB%9F%BD%ED%8A%B8/';
+              
+            this.page.identifier = '2021/05/07/인터럽트/';
+              
+          };
+          (function() {
+            var d = document, s = d.createElement('script');
+            var disqus_shortname = 'ksso730-github-io';
+            s.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+          })();
+        </script>
+    
+
+
+
+
+    </body>
+</html>
