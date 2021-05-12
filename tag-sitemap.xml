@@ -3,15 +3,57 @@
 
 
     <url>
+        <loc>http://yoursite.com/tags/mvc/</loc>
+        <lastmod>2021-05-12T08:46:09.707Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://yoursite.com/tags/java/</loc>
+        <lastmod>2021-05-12T08:46:09.707Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
         <loc>http://yoursite.com/tags/OS/</loc>
-        <lastmod>2021-05-11T01:52:08.026Z</lastmod>
+        <lastmod>2021-05-12T08:45:31.488Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
         <loc>http://yoursite.com/tags/algorithm/</loc>
-        <lastmod>2021-05-11T01:52:08.020Z</lastmod>
+        <lastmod>2021-05-12T08:45:31.488Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://yoursite.com/tags/scheduling/</loc>
+        <lastmod>2021-05-12T08:43:45.345Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://yoursite.com/tags/bigO/</loc>
+        <lastmod>2021-05-12T08:42:55.259Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://yoursite.com/tags/semaphore/</loc>
+        <lastmod>2021-05-12T08:41:03.331Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://yoursite.com/tags/thread/</loc>
+        <lastmod>2021-05-12T08:41:03.331Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
@@ -26,34 +68,6 @@
     <url>
         <loc>http://yoursite.com/tags/servlet/</loc>
         <lastmod>2021-05-11T01:52:08.015Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://yoursite.com/tags/java/</loc>
-        <lastmod>2021-05-11T01:52:08.015Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://yoursite.com/tags/scheduling/</loc>
-        <lastmod>2021-05-06T03:11:05.029Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://yoursite.com/tags/mvc/</loc>
-        <lastmod>2021-05-04T01:50:35.601Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://yoursite.com/tags/bigO/</loc>
-        <lastmod>2021-04-30T04:58:08.793Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>

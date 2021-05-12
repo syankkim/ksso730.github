@@ -8,8 +8,22 @@
     </url>
 
     <url>
+        <loc>http://yoursite.com/categories/%25E2%2598%2581%25EF%25B8%258F-TIL/</loc>
+        <lastmod>2021-05-12T08:46:09.707Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
         <loc>http://yoursite.com/categories/%25E2%2598%2581%25EF%25B8%258F-OS/</loc>
-        <lastmod>2021-05-11T01:52:08.027Z</lastmod>
+        <lastmod>2021-05-12T08:45:31.488Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://yoursite.com/categories/%25E2%2598%2581%25EF%25B8%258F-Algorithm/</loc>
+        <lastmod>2021-05-12T08:42:55.259Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
@@ -17,20 +31,6 @@
     <url>
         <loc>http://yoursite.com/categories/%25E2%2598%2581%25EF%25B8%258F-Java/</loc>
         <lastmod>2021-05-11T01:52:08.015Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://yoursite.com/categories/%25E2%2598%2581%25EF%25B8%258F-TIL/</loc>
-        <lastmod>2021-05-04T01:50:35.601Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://yoursite.com/categories/%25E2%2598%2581%25EF%25B8%258F-Algorithm/</loc>
-        <lastmod>2021-04-30T04:58:08.793Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
