@@ -329,7 +329,7 @@
     <div class="post-content markdown">
         <div class="main-content-wrap">
             <!-- excerpt -->
-<h1 id="table-of-contents">Contents</h1><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Return-n-정수를-받아서-각자리수의-합"><span class="toc-text">Return  n 정수를 받아서 각자리수의 합</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Return-x부터-시작해-x씩-증가하는-숫자를-n개-지니는-리스트"><span class="toc-text">Return x부터 시작해 x씩 증가하는 숫자를 n개 지니는 리스트</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#각-문자열의-인덱스-n번째-글자기준-정렬"><span class="toc-text">각 문자열의 인덱스 n번째 글자기준 정렬</span></a></li></ol>
+<h1 id="table-of-contents">Contents</h1><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Return-n-%EC%A0%95%EC%88%98%EB%A5%BC-%EB%B0%9B%EC%95%84%EC%84%9C-%EA%B0%81%EC%9E%90%EB%A6%AC%EC%88%98%EC%9D%98-%ED%95%A9"><span class="toc-text">Return  n 정수를 받아서 각자리수의 합</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Return-x%EB%B6%80%ED%84%B0-%EC%8B%9C%EC%9E%91%ED%95%B4-x%EC%94%A9-%EC%A6%9D%EA%B0%80%ED%95%98%EB%8A%94-%EC%88%AB%EC%9E%90%EB%A5%BC-n%EA%B0%9C-%EC%A7%80%EB%8B%88%EB%8A%94-%EB%A6%AC%EC%8A%A4%ED%8A%B8"><span class="toc-text">Return x부터 시작해 x씩 증가하는 숫자를 n개 지니는 리스트</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%EA%B0%81-%EB%AC%B8%EC%9E%90%EC%97%B4%EC%9D%98-%EC%9D%B8%EB%8D%B1%EC%8A%A4-n%EB%B2%88%EC%A7%B8-%EA%B8%80%EC%9E%90%EA%B8%B0%EC%A4%80-%EC%A0%95%EB%A0%AC"><span class="toc-text">각 문자열의 인덱스 n번째 글자기준 정렬</span></a></li></ol>
 
 <h2 id="Return-n-정수를-받아서-각자리수의-합"><a href="#Return-n-정수를-받아서-각자리수의-합" class="headerlink" title="Return  n 정수를 받아서 각자리수의 합"></a>Return  n 정수를 받아서 각자리수의 합</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#========================================================</span></span><br><span class="line"><span class="comment">## 코딩 테스트</span></span><br><span class="line"><span class="comment">#========================================================</span></span><br><span class="line"><span class="comment"># 문제 설명</span></span><br><span class="line"><span class="comment"># n 정수를 받아서 각자리수의 합을 구함 </span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">substring</span><span class="params">(n)</span>:</span></span><br><span class="line">    sum = <span class="number">0</span></span><br><span class="line">    num = str(n)</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">0</span>,len(num)):</span><br><span class="line">        print(<span class="string">"i = "</span>+str(i))</span><br><span class="line"></span><br><span class="line">        cut= num[i:i+<span class="number">1</span>]</span><br><span class="line">        print(<span class="string">"num &#123;0&#125;=&gt; cut &#123;1&#125;"</span>.format(num, cut))</span><br><span class="line">        sum += cut</span><br><span class="line">        print(sum)</span><br><span class="line">    <span class="keyword">return</span> sum</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">solution</span><span class="params">(n)</span>:</span></span><br><span class="line">    answer = substring(n)</span><br><span class="line">    <span class="keyword">return</span> answer</span><br><span class="line"></span><br><span class="line">print(<span class="string">"result : "</span> + str(solution(<span class="number">123</span>)))</span><br></pre></td></tr></table></figure>
 
@@ -346,7 +346,7 @@
             <div class="post-footer-tags">
                 <span class="text-color-light text-small">TAGGED IN</span><br/>
                 
-    <a class="tag tag--primary tag--small t-link" href="/tags/python/" rel="tag">python</a>
+    <a class="tag tag--primary tag--small t-none-link" href="/tags/python/" rel="tag">python</a>
 
             </div>
         
@@ -462,7 +462,7 @@
         
             
                 <div id="disqus_thread">
-    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a></noscript>
+    <noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
 </div>
             
         

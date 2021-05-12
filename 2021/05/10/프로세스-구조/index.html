@@ -13,7 +13,7 @@
     
         <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
     
-    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\n💬 해당 강의는 fastcampus 에서 ‘컴공 전공자 따라잡기 온라인 완주반’ 강의를 들으며 스스로의 학습을 위해 작성한 포스팅입니다. 문제가 된다면 연락 부탁드립니다.\n\n\n프로세스란 ?\n프로세스란 운영체제 입장에서 하나의 작업 단위이며, 컴퓨터에서 연속적으로 실행되고 있는 컴퓨터 프로그램을 말한다.\n\n프로세스와 프로그램\n프로그램: 일반적으로 하드 디스크 등의 보조기억장치에 저장된 실행 코드프로세스: 프로그램을 구동하여 프로그램 자체와 프로그램의 상태가 메모리 상에서 실행되는 작업 단위를 지칭.즉, 실행 중인 프로그램을 뜻한다. 예를 들어, 하나의 프로그램을 여러 번 구동하면 여러 개의 프로세스가 메모리 상에서 실행되는 것이다.\n\n프로세스 구조\nSTACK : 프로그램이 자동으로 사용하는 메모리 영역이다. 함수 내의 지역변수, 인자값, 반환값의 주소가 임시로 저장된다. 데이터가 쌓이거나 반환하기 위해 할당하는 스택의 위치를 SP(Stack Pointer) 라는 레지스터에 주소값을 저장한다. 하나의 데이터가 stack 에 쌓이면 다음 주소값이 SP 에서 갱신된다.\nHEAP : 프로그래머의 필요에 의해 동적으로 메모리를 할당하고자 할 때 사용되는 영역이다. C 에서의 malloc() 함수 사용, Java 에서의 참조타입 혹은 생성자를 선언할 경우, 메모리 공간이나 크기를 할당할 수 있다.메모리 주소 값에 의해서만 참조되고 사용되는 영역이다\nDATA\nBSS영역, Data영역을 구분하는 이유?초기화 된 데이터는 초기값을 저장해야 하므로 Data 영역에 저장되어 ROM 에 저장된다. 하지만 초기화 되지 않은 데이터 까지 ROM 에 저장되면 큰 size의 공간이 필요하므로 구분하여, 초기화 되지 않은 데이터는 RAM 에 저장한다.\nBSS : 초기화 되지 않은, 선언만 된 글로벌/전역 변수\nDATA : 초기화된 글로벌/전역 변수\n\n\nCODE(TEXT) : 프로그램 코드 (컴파일된 기계어, Read Only)\n\n프로그램 코드 예시 (feat.Heap)123456789101112int global_data1;int global_data2=1;int main ()&#123;  int* data; // int 타입의 포인터  data = (int*) malloc(sizeof(int)  * 4); // malloc 은 메모리를 할당해주는 동적함수. *data = 1; printf(\"%d\\n\", *data);&#125;\n\n위 프로그램의 구조\n\n\n영역\n데이터\n\n\n\nstack\nint* data\n\n\nheap  data = (int*) malloc(sizeof(int)  * 4)\n\n\n\ndata\n\n\n\nBSS\nint global_data1;\n\n\nDATA\nint global_data2=1;\n\n\ntext(code)\n위의 컴파일 코드\n\n\n\n\n스택 오버플로우 &amp;&amp; 힙 오버플로우\nstack과 heap영역은 사실 같은 공간을 공유한다. heap이 메모리의 낮은 주소부터 할당되면 stack은 높은 주소부터 할당되는 식이다. 그래서 각 영역이 상대 공간을 침범하는 일이 발생할 수 있는데 이를 각각 stack overflow, heap overflow 라고 한다.\n하나의 함수에서 너무 큰 지역변수를 선언하거나, 종료조건이 없는 재귀함수가 무한히 호출 될 경우, 버퍼를 초과하게 되어 스택 오버플로우가 발생한다. 이 때, return 값을 덮어쓰게 된다면 해킹의 위험에 노출된다.\n\n컨텍스트 스위칭, PCB\n컨텍스트 스위칭이란 ? \nContext Switching = 문맥교환\nCPU 가 어떤 하나의 프로세스를 실행하고 있는 중, 인터럽트 요청 혹은 스케줄러에 의해 다른 우선순위의 프로세스로 교체되어 실행되는 것을 말한다.기존 프로세스의 상태, 레지스터값(Context) 을 저장하고, 다음 실행될 프로세스의 레지스터값으로 교체하면 CPU 는 해당값을 읽어 수행한다.\n\n\n\nPCB (Process Control/Context Block)\n프로세스가 생성시 만들어지며, 프로세스마다 존재한다.운영체제가 프로세스를 제어하기 위해 실행중인 상태를 캡쳐/구조화 하여 저장되는 구조체이다.주기억장치에 정보가 유지된다.\n\n\nPCB 정보\nProcess ID\nRegister 값 : PC(Program Counter), SP(Stackk Pointer) 등\nScheduling Info (Process State)\nMemory Info (메모리사이즈 limit)\n\n\n\n컨텍스트 스위칭 과정 \n\n\n실행중지할 프로세스를 해당 프로세스의 PCB 에 업데이트 후 메인메모리에 저장한다.\n메인 메모리에서 다음 실행할 프로세스의 PCB 정보를 CPU 레지스터에 넣고 실행한다.\ndispatch : Ready 상태의 프로세스를 Running 상태로 바꾸는 것.\n\n\n\n컴파일러 등장에 따른 컨텍스트 스위칭 속도\n초기 : 어셈블리어로 작성되어 서로다른 CPU 아키텍처가 등장할 때마다 매번 똑같은 프로그램 작성\n어셈블리어로는 프로그램 작성속도가 떨어짐.\n\n\n컴파일러 등장 : CPU 아키텍처에 따라서 컴파일러 프로그램만 만들면 되게 되었다.\n어셈블리 언어로 작성된 코드보다 속도가 떨어질 수도 있음.\n리눅스의 경우, 각 CPU마다 다른 컨텍스트 스위칭 코드가 존재한다.\n\n\n","dateCreated":"2021-05-10T17:21:24+09:00","dateModified":"2021-05-12T17:42:28+09:00","datePublished":"2021-05-10T17:21:24+09:00","description":"프로세스 구조에 대해 자세히, 컨텍스트 스위칭은 어떻게 일어날까?#context_switching #PC #SP #PCB","headline":"🔀 프로세스 구조와 컨텍스트 스위칭","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2021/05/10/%ED%94%84%EB%A1%9C%EC%84%B8%EC%8A%A4-%EA%B5%AC%EC%A1%B0/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2021/05/10/%ED%94%84%EB%A1%9C%EC%84%B8%EC%8A%A4-%EA%B5%AC%EC%A1%B0/"}</script>
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\n💬 해당 강의는 fastcampus 에서 ‘컴공 전공자 따라잡기 온라인 완주반’ 강의를 들으며 스스로의 학습을 위해 작성한 포스팅입니다. 문제가 된다면 연락 부탁드립니다.\n\n\n프로세스란 ?\n프로세스란 운영체제 입장에서 하나의 작업 단위이며, 컴퓨터에서 연속적으로 실행되고 있는 컴퓨터 프로그램을 말한다.\n\n프로세스와 프로그램\n프로그램: 일반적으로 하드 디스크 등의 보조기억장치에 저장된 실행 코드프로세스: 프로그램을 구동하여 프로그램 자체와 프로그램의 상태가 메모리 상에서 실행되는 작업 단위를 지칭.즉, 실행 중인 프로그램을 뜻한다. 예를 들어, 하나의 프로그램을 여러 번 구동하면 여러 개의 프로세스가 메모리 상에서 실행되는 것이다.\n\n프로세스 구조\nSTACK : 프로그램이 자동으로 사용하는 메모리 영역이다. 함수 내의 지역변수, 인자값, 반환값의 주소가 임시로 저장된다. 데이터가 쌓이거나 반환하기 위해 할당하는 스택의 위치를 SP(Stack Pointer) 라는 레지스터에 주소값을 저장한다. 하나의 데이터가 stack 에 쌓이면 다음 주소값이 SP 에서 갱신된다.\nHEAP : 프로그래머의 필요에 의해 동적으로 메모리를 할당하고자 할 때 사용되는 영역이다. C 에서의 malloc() 함수 사용, Java 에서의 참조타입 혹은 생성자를 선언할 경우, 메모리 공간이나 크기를 할당할 수 있다.메모리 주소 값에 의해서만 참조되고 사용되는 영역이다\nDATA\nBSS영역, Data영역을 구분하는 이유?초기화 된 데이터는 초기값을 저장해야 하므로 Data 영역에 저장되어 ROM 에 저장된다. 하지만 초기화 되지 않은 데이터 까지 ROM 에 저장되면 큰 size의 공간이 필요하므로 구분하여, 초기화 되지 않은 데이터는 RAM 에 저장한다.\nBSS : 초기화 되지 않은, 선언만 된 글로벌/전역 변수\nDATA : 초기화된 글로벌/전역 변수\nCODE(TEXT) : 프로그램 코드 (컴파일된 기계어, Read Only)\n\n프로그램 코드 예시 (feat.Heap)123456789101112int global_data1;int global_data2=1;int main ()&#123;  int* data; // int 타입의 포인터  data = (int*) malloc(sizeof(int)  * 4); // malloc 은 메모리를 할당해주는 동적함수. *data = 1; printf(&quot;%d\\n&quot;, *data);&#125;\n\n위 프로그램의 구조\n\n\n영역\n데이터\n\n\n\nstack\nint* data\n\n\nheap  data = (int*) malloc(sizeof(int)  * 4)\n\n\n\ndata\n\n\n\nBSS\nint global_data1;\n\n\nDATA\nint global_data2=1;\n\n\ntext(code)\n위의 컴파일 코드\n\n\n\n\n스택 오버플로우 &amp;&amp; 힙 오버플로우\nstack과 heap영역은 사실 같은 공간을 공유한다. heap이 메모리의 낮은 주소부터 할당되면 stack은 높은 주소부터 할당되는 식이다. 그래서 각 영역이 상대 공간을 침범하는 일이 발생할 수 있는데 이를 각각 stack overflow, heap overflow 라고 한다.\n하나의 함수에서 너무 큰 지역변수를 선언하거나, 종료조건이 없는 재귀함수가 무한히 호출 될 경우, 버퍼를 초과하게 되어 스택 오버플로우가 발생한다. 이 때, return 값을 덮어쓰게 된다면 해킹의 위험에 노출된다.\n\n컨텍스트 스위칭, PCB\n컨텍스트 스위칭이란 ? \n\n\nContext Switching = 문맥교환\nCPU 가 어떤 하나의 프로세스를 실행하고 있는 중, 인터럽트 요청 혹은 스케줄러에 의해 다른 우선순위의 프로세스로 교체되어 실행되는 것을 말한다.기존 프로세스의 상태, 레지스터값(Context) 을 저장하고, 다음 실행될 프로세스의 레지스터값으로 교체하면 CPU 는 해당값을 읽어 수행한다.\n\nPCB (Process Control/Context Block)\n프로세스가 생성시 만들어지며, 프로세스마다 존재한다.운영체제가 프로세스를 제어하기 위해 실행중인 상태를 캡쳐/구조화 하여 저장되는 구조체이다.주기억장치에 정보가 유지된다.\n\n\nPCB 정보\n\n\nProcess ID\nRegister 값 : PC(Program Counter), SP(Stackk Pointer) 등\nScheduling Info (Process State)\nMemory Info (메모리사이즈 limit)\n\n컨텍스트 스위칭 과정 \n\n\n실행중지할 프로세스를 해당 프로세스의 PCB 에 업데이트 후 메인메모리에 저장한다.\n메인 메모리에서 다음 실행할 프로세스의 PCB 정보를 CPU 레지스터에 넣고 실행한다.\n\n\ndispatch : Ready 상태의 프로세스를 Running 상태로 바꾸는 것.\n\n컴파일러 등장에 따른 컨텍스트 스위칭 속도\n초기 : 어셈블리어로 작성되어 서로다른 CPU 아키텍처가 등장할 때마다 매번 똑같은 프로그램 작성\n어셈블리어로는 프로그램 작성속도가 떨어짐.\n컴파일러 등장 : CPU 아키텍처에 따라서 컴파일러 프로그램만 만들면 되게 되었다.\n어셈블리 언어로 작성된 코드보다 속도가 떨어질 수도 있음.\n리눅스의 경우, 각 CPU마다 다른 컨텍스트 스위칭 코드가 존재한다.\n","dateCreated":"2021-05-10T17:21:24+09:00","dateModified":"2021-05-12T17:42:28+09:00","datePublished":"2021-05-10T17:21:24+09:00","description":"프로세스 구조에 대해 자세히, 컨텍스트 스위칭은 어떻게 일어날까?#context_switching #PC #SP #PCB","headline":"🔀 프로세스 구조와 컨텍스트 스위칭","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2021/05/10/%ED%94%84%EB%A1%9C%EC%84%B8%EC%8A%A4-%EA%B5%AC%EC%A1%B0/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2021/05/10/%ED%94%84%EB%A1%9C%EC%84%B8%EC%8A%A4-%EA%B5%AC%EC%A1%B0/"}</script>
     <meta name="description" content="프로세스 구조에 대해 자세히, 컨텍스트 스위칭은 어떻게 일어날까?#context_switching #PC #SP #PCB">
 <meta property="og:type" content="blog">
 <meta property="og:title" content="🔀 프로세스 구조와 컨텍스트 스위칭">
@@ -330,7 +330,7 @@
     <div class="post-content markdown">
         <div class="main-content-wrap">
             <!-- excerpt -->
-<h1 id="table-of-contents">Contents</h1><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#프로세스란"><span class="toc-text">프로세스란 ?</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#프로세스와-프로그램"><span class="toc-text">프로세스와 프로그램</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#프로세스-구조"><span class="toc-text">프로세스 구조</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#프로그램-코드-예시-feat-Heap"><span class="toc-text">프로그램 코드 예시 (feat.Heap)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#스택-오버플로우-amp-amp-힙-오버플로우"><span class="toc-text">스택 오버플로우 &amp;&amp; 힙 오버플로우</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#컨텍스트-스위칭-PCB"><span class="toc-text">컨텍스트 스위칭, PCB</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#PCB-Process-Control-Context-Block"><span class="toc-text">PCB (Process Control&#x2F;Context Block)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#컨텍스트-스위칭-과정"><span class="toc-text">컨텍스트 스위칭 과정</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#컴파일러-등장에-따른-컨텍스트-스위칭-속도"><span class="toc-text">컴파일러 등장에 따른 컨텍스트 스위칭 속도</span></a></li></ol></li></ol></li></ol>
+<h1 id="table-of-contents">Contents</h1><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%ED%94%84%EB%A1%9C%EC%84%B8%EC%8A%A4%EB%9E%80"><span class="toc-text">프로세스란 ?</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%ED%94%84%EB%A1%9C%EC%84%B8%EC%8A%A4%EC%99%80-%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%A8"><span class="toc-text">프로세스와 프로그램</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%ED%94%84%EB%A1%9C%EC%84%B8%EC%8A%A4-%EA%B5%AC%EC%A1%B0"><span class="toc-text">프로세스 구조</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%A8-%EC%BD%94%EB%93%9C-%EC%98%88%EC%8B%9C-feat-Heap"><span class="toc-text">프로그램 코드 예시 (feat.Heap)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%EC%8A%A4%ED%83%9D-%EC%98%A4%EB%B2%84%ED%94%8C%EB%A1%9C%EC%9A%B0-amp-amp-%ED%9E%99-%EC%98%A4%EB%B2%84%ED%94%8C%EB%A1%9C%EC%9A%B0"><span class="toc-text">스택 오버플로우 &amp;&amp; 힙 오버플로우</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%EC%BB%A8%ED%85%8D%EC%8A%A4%ED%8A%B8-%EC%8A%A4%EC%9C%84%EC%B9%AD-PCB"><span class="toc-text">컨텍스트 스위칭, PCB</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#PCB-Process-Control-Context-Block"><span class="toc-text">PCB (Process Control&#x2F;Context Block)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%EC%BB%A8%ED%85%8D%EC%8A%A4%ED%8A%B8-%EC%8A%A4%EC%9C%84%EC%B9%AD-%EA%B3%BC%EC%A0%95"><span class="toc-text">컨텍스트 스위칭 과정</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%EC%BB%B4%ED%8C%8C%EC%9D%BC%EB%9F%AC-%EB%93%B1%EC%9E%A5%EC%97%90-%EB%94%B0%EB%A5%B8-%EC%BB%A8%ED%85%8D%EC%8A%A4%ED%8A%B8-%EC%8A%A4%EC%9C%84%EC%B9%AD-%EC%86%8D%EB%8F%84"><span class="toc-text">컴파일러 등장에 따른 컨텍스트 스위칭 속도</span></a></li></ol></li></ol></li></ol>
 
 <hr>
 <p><em>💬 해당 강의는 fastcampus 에서 ‘컴공 전공자 따라잡기 온라인 완주반’ 강의를 들으며 스스로의 학습을 위해 작성한 포스팅입니다. 문제가 된다면 연락 부탁드립니다.</em></p>
@@ -345,15 +345,13 @@
 <h2 id="프로세스-구조"><a href="#프로세스-구조" class="headerlink" title="프로세스 구조"></a>프로세스 구조</h2><ul>
 <li>STACK : 프로그램이 자동으로 사용하는 메모리 영역이다. 함수 내의 지역변수, 인자값, 반환값의 주소가 임시로 저장된다. 데이터가 쌓이거나 반환하기 위해 할당하는 스택의 위치를 <code>SP(Stack Pointer)</code> 라는 레지스터에 주소값을 저장한다. 하나의 데이터가 stack 에 쌓이면 다음 주소값이 SP 에서 갱신된다.</li>
 <li>HEAP : 프로그래머의 필요에 의해 동적으로 메모리를 할당하고자 할 때 사용되는 영역이다. C 에서의 <code>malloc()</code> 함수 사용, Java 에서의 참조타입 혹은 생성자를 선언할 경우, 메모리 공간이나 크기를 할당할 수 있다.<br>메모리 주소 값에 의해서만 참조되고 사용되는 영역이다</li>
-<li>DATA<ul>
+<li>DATA</li>
 <li>BSS영역, Data영역을 구분하는 이유?<br>초기화 된 데이터는 초기값을 저장해야 하므로 Data 영역에 저장되어 <code>ROM</code> 에 저장된다. 하지만 초기화 되지 않은 데이터 까지 <code>ROM</code> 에 저장되면 큰 size의 공간이 필요하므로 구분하여, 초기화 되지 않은 데이터는 <code>RAM</code> 에 저장한다.</li>
 <li>BSS : 초기화 되지 않은, 선언만 된 글로벌/전역 변수</li>
 <li>DATA : 초기화된 글로벌/전역 변수</li>
-</ul>
-</li>
 <li>CODE(TEXT) : 프로그램 코드 (컴파일된 기계어, Read Only)</li>
 </ul>
-<h2 id="프로그램-코드-예시-feat-Heap"><a href="#프로그램-코드-예시-feat-Heap" class="headerlink" title="프로그램 코드 예시 (feat.Heap)"></a>프로그램 코드 예시 (feat.Heap)</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> global_data1;</span><br><span class="line"><span class="keyword">int</span> global_data2=<span class="number">1</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span> <span class="params">()</span></span>&#123;</span><br><span class="line">  <span class="keyword">int</span>* data; <span class="comment">// int 타입의 포인터</span></span><br><span class="line"></span><br><span class="line">  data = (<span class="keyword">int</span>*) <span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(<span class="keyword">int</span>)  * <span class="number">4</span>); <span class="comment">// malloc 은 메모리를 할당해주는 동적함수.</span></span><br><span class="line"></span><br><span class="line"> *data = <span class="number">1</span>;</span><br><span class="line"> <span class="built_in">printf</span>(<span class="string">"%d\n"</span>, *data);</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="프로그램-코드-예시-feat-Heap"><a href="#프로그램-코드-예시-feat-Heap" class="headerlink" title="프로그램 코드 예시 (feat.Heap)"></a>프로그램 코드 예시 (feat.Heap)</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> global_data1;</span><br><span class="line"><span class="keyword">int</span> global_data2=<span class="number">1</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span> <span class="params">()</span></span>&#123;</span><br><span class="line">  <span class="keyword">int</span>* data; <span class="comment">// int 타입의 포인터</span></span><br><span class="line"></span><br><span class="line">  data = (<span class="keyword">int</span>*) <span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(<span class="keyword">int</span>)  * <span class="number">4</span>); <span class="comment">// malloc 은 메모리를 할당해주는 동적함수.</span></span><br><span class="line"></span><br><span class="line"> *data = <span class="number">1</span>;</span><br><span class="line"> <span class="built_in">printf</span>(<span class="string">&quot;%d\n&quot;</span>, *data);</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <ul>
 <li>위 프로그램의 구조<table>
 <thead>
@@ -394,43 +392,39 @@
 <li>하나의 함수에서 너무 큰 지역변수를 선언하거나, 종료조건이 없는 재귀함수가 무한히 호출 될 경우, 버퍼를 초과하게 되어 <code>스택 오버플로우</code>가 발생한다. 이 때, return 값을 덮어쓰게 된다면 해킹의 위험에 노출된다.</li>
 </ul>
 <h2 id="컨텍스트-스위칭-PCB"><a href="#컨텍스트-스위칭-PCB" class="headerlink" title="컨텍스트 스위칭, PCB"></a>컨텍스트 스위칭, PCB</h2><ul>
-<li>컨텍스트 스위칭이란 ? <ul>
+<li>컨텍스트 스위칭이란 ? </li>
+</ul>
+<ul>
 <li>Context Switching = 문맥교환</li>
 <li>CPU 가 어떤 하나의 프로세스를 실행하고 있는 중, 인터럽트 요청 혹은 스케줄러에 의해 다른 우선순위의 프로세스로 교체되어 실행되는 것을 말한다.<br>기존 프로세스의 상태, 레지스터값(Context) 을 저장하고, 다음 실행될 프로세스의 레지스터값으로 교체하면 CPU 는 해당값을 읽어 수행한다.</li>
-</ul>
-</li>
 </ul>
 <h3 id="PCB-Process-Control-Context-Block"><a href="#PCB-Process-Control-Context-Block" class="headerlink" title="PCB (Process Control/Context Block)"></a>PCB (Process Control/Context Block)</h3><blockquote>
 <p>프로세스가 생성시 만들어지며, 프로세스마다 존재한다.<br>운영체제가 프로세스를 제어하기 위해 실행중인 상태를 캡쳐/구조화 하여 저장되는 구조체이다.<br>주기억장치에 정보가 유지된다.</p>
 </blockquote>
 <ul>
-<li>PCB 정보<ul>
+<li>PCB 정보</li>
+</ul>
+<ul>
 <li>Process ID</li>
 <li>Register 값 : PC(Program Counter), SP(Stackk Pointer) 등</li>
 <li>Scheduling Info (Process State)</li>
 <li>Memory Info (메모리사이즈 limit)</li>
 </ul>
-</li>
-</ul>
 <h3 id="컨텍스트-스위칭-과정"><a href="#컨텍스트-스위칭-과정" class="headerlink" title="컨텍스트 스위칭 과정"></a>컨텍스트 스위칭 과정</h3> <img width="326" alt="context_switching" src="https://user-images.githubusercontent.com/28856435/117633911-6f577200-b1b9-11eb-852e-56afe22a999f.png">
 
 <ol>
 <li>실행중지할 프로세스를 해당 프로세스의 PCB 에 업데이트 후 메인메모리에 저장한다.</li>
-<li>메인 메모리에서 다음 실행할 프로세스의 PCB 정보를 CPU 레지스터에 넣고 실행한다.<ul>
+<li>메인 메모리에서 다음 실행할 프로세스의 PCB 정보를 CPU 레지스터에 넣고 실행한다.</li>
+</ol>
+<ul>
 <li><code>dispatch</code> : Ready 상태의 프로세스를 Running 상태로 바꾸는 것.</li>
 </ul>
-</li>
-</ol>
 <h3 id="컴파일러-등장에-따른-컨텍스트-스위칭-속도"><a href="#컴파일러-등장에-따른-컨텍스트-스위칭-속도" class="headerlink" title="컴파일러 등장에 따른 컨텍스트 스위칭 속도"></a>컴파일러 등장에 따른 컨텍스트 스위칭 속도</h3><ul>
-<li>초기 : 어셈블리어로 작성되어 서로다른 CPU 아키텍처가 등장할 때마다 매번 똑같은 프로그램 작성<ul>
+<li>초기 : 어셈블리어로 작성되어 서로다른 CPU 아키텍처가 등장할 때마다 매번 똑같은 프로그램 작성</li>
 <li>어셈블리어로는 프로그램 작성속도가 떨어짐.</li>
-</ul>
-</li>
-<li>컴파일러 등장 : CPU 아키텍처에 따라서 컴파일러 프로그램만 만들면 되게 되었다.<ul>
+<li>컴파일러 등장 : CPU 아키텍처에 따라서 컴파일러 프로그램만 만들면 되게 되었다.</li>
 <li>어셈블리 언어로 작성된 코드보다 속도가 떨어질 수도 있음.</li>
 <li>리눅스의 경우, 각 CPU마다 다른 컨텍스트 스위칭 코드가 존재한다.</li>
-</ul>
-</li>
 </ul>
             
 
@@ -551,7 +545,7 @@
         
             
                 <div id="disqus_thread">
-    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a></noscript>
+    <noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
 </div>
             
         

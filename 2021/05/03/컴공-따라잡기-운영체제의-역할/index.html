@@ -13,7 +13,7 @@
     
         <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
     
-    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\n\n💬 해당 강의는 fastcampus 에서 ‘컴공 전공자 따라잡기 온라인 완주반’ 강의를 들으며 스스로의 학습을 위해 작성한 포스팅입니다. 문제가 된다면 연락 부탁드립니다.\n\n\n운영체제 역할1) 시스템 자원 관리자 (System Resource)\nOperating System , OS.\nCPU(중앙처리장치), Memory(DRAM,RAM)\nI/O Devices(입출력장치)\nMonitor, Mouse, Keyboard, Network\n저장매체 : SSD, HDD (하드디스크)\n\n\n\n\n컴퓨터 하드웨어는 스스로 할 수 있는것이 없다.\n\n\nCPU : 스스로 용량을 얼마나 사용할지 결정못함.\nMemory : 각 프로그램이 어느 주소에 저장되어야 하는지, 확보할 메모리공간을 자체적으로 결정 못함.\n저장매체(HDD, SSD) : how, where? 저장할지 모름,\n키보드/마우스 : 스스로 표시불가.\n\n\n즉, OS 없이는 컴퓨터는 동작하지 않는다.How did we ever run Computer without OS?\n\n2) 사용자와 컴퓨터간의 커뮤니케이션 지원3) 컴퓨터 하드웨어와 응용프로그램의 제어\n\n대표적인 운영체제\nWindows OS, Mac OS, UNIX\nUNIX OS\nUNIX 계열 OS\nUNIX 와 사용법이나, OS와 구조가 유사 (가장 대표적으로 LINUX)\nLINUX OS\n\n\n\n\n도서관으로 비유운영체제 -도서관응용프로그램 - 시민컴퓨터 하드웨어 - 책운영체제의 역할\n\n시민은 도서관에 원하는 책(자원) 요청\n도서관은 적절한 책(자원)을 찾아서 제공\n기한이 다 되면, 도서관이 책(자원)을 회수.\n\n\n\n\n응용 프로그램, 운영체제, 컴퓨터 하드웨어의 관계\n운영체제는 응용프로그램이 요청하는 메모리를 허가 및 분배.\n운영체제는 응용프로그램이 요청하는 CPU 시간을 제공\n운영체제는 응용 프로그래밈이 요청하는 IO Devices 사용을 허가\n\n\nUser&lt;-&gt;Application&lt;-&gt;OS&lt;-&gt;Hardware\n\n운영체제는 사용자 인터페이스 제공\n쉘 (Shell)\n사용자가 운영체제 기능, 서비스 조작 가능하게 인터페이스 제공. 쉘도 하나의 응용프로그램.\n터미널환경(CUI)과 GUI 환경 제공\n\n\n\n운영체제는 응용 프로그램을 위해서도 인터페이스를 제공한다\nAPI (Application Programming Interface)\n함수로 제공\neg. open()\n\n\n보통은 라이브러리 형태로 제공\nC library\n\n\n\n시스템 콜 (System Call)\n운영체제 기능을 호출하는 함수\n운영체제가 운영체제의 각 기능을 사용할 수 있도록 시스템 콜이라는 명령, 함수 제공\n상위 API 내부에는 시스템콜을 호출하는 형태로 만들어지는 경우가 대부분.eg. POSIX API(유닉스/리눅스), 윈도우API\n\n\n운영체제는 사용자든, 응용프로그램이든 외부에서 요청하면 시스템콜을 제공한다. 운영체제 입장에서의 기능을 정의해놓은 것이 시스템콜(System Call)이기 때문에 프로그래머 입장에서 좀더 쉽게 사용할 수 있도록 Library or API 를 제공한다. 이것을 기반으로 해서 Application 이나 shell 을 만드는것이고 이를 사용자가 사용할 수 있는 것이다.응용 프로그램은 라이브러리를 사용하고, 라이브러리는 시스템 자원이 필요할 경우, 내부적으로 시스템 콜을 호출할 수 있다.\n\n\n\n\n\n운영체제를 만든다면?\n운영체제를 개발한다. (kernal)\n시스템 콜을 개발\nC API (Library) 개발\nShell 프로그램 개발\n\n운영체제 &amp; 시스템콜 &amp; API\nAPI : 각 언어별 운영체제 기능 호출 인터페이스 함수. (각 언어별 인터페이스)\nSystemCall : 운영체제 기능을 호출하는 함수\n\n\n\n마무리\n운영체제는 컴퓨터 하드웨어와 응용프로그램을 관리한다.\n사용자 인터페이스 제공을 위해 쉘 프로그램을 제공한다.\n응용프로그램은 운영체제 기능을 요청하기 위해 운영체제의 시스템콜을 사용한다.\n보통 시스템콜을 직접 사용하기보다는 해당 시스템콜을 사용해서 만든 각 언어별 라이브러리(API)를 사용한다.\n\n\n","dateCreated":"2021-05-03T23:14:00+09:00","dateModified":"2021-05-12T17:44:18+09:00","datePublished":"2021-05-03T23:14:00+09:00","description":"컴공 따라잡기 with fastCampus운영체제의 역할부터 사용자가 어떻게 요청할 수 있는것인지 간단한 구조까지.#OS #system_resource #system_call","headline":"🔅 운영체제의 역할 (1)","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2021/05/03/%EC%BB%B4%EA%B3%B5-%EB%94%B0%EB%9D%BC%EC%9E%A1%EA%B8%B0-%EC%9A%B4%EC%98%81%EC%B2%B4%EC%A0%9C%EC%9D%98-%EC%97%AD%ED%95%A0/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2021/05/03/%EC%BB%B4%EA%B3%B5-%EB%94%B0%EB%9D%BC%EC%9E%A1%EA%B8%B0-%EC%9A%B4%EC%98%81%EC%B2%B4%EC%A0%9C%EC%9D%98-%EC%97%AD%ED%95%A0/","keywords":"OS"}</script>
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\n\n💬 해당 강의는 fastcampus 에서 ‘컴공 전공자 따라잡기 온라인 완주반’ 강의를 들으며 스스로의 학습을 위해 작성한 포스팅입니다. 문제가 된다면 연락 부탁드립니다.\n\n\n운영체제 역할1) 시스템 자원 관리자 (System Resource)\nOperating System , OS.\n\n\nCPU(중앙처리장치), Memory(DRAM,RAM)\nI/O Devices(입출력장치)\nMonitor, Mouse, Keyboard, Network\n저장매체 : SSD, HDD (하드디스크)\n\n\n컴퓨터 하드웨어는 스스로 할 수 있는것이 없다.\n\n\nCPU : 스스로 용량을 얼마나 사용할지 결정못함.\nMemory : 각 프로그램이 어느 주소에 저장되어야 하는지, 확보할 메모리공간을 자체적으로 결정 못함.\n저장매체(HDD, SSD) : how, where? 저장할지 모름,\n키보드/마우스 : 스스로 표시불가.\n\n\n즉, OS 없이는 컴퓨터는 동작하지 않는다.How did we ever run Computer without OS?\n\n2) 사용자와 컴퓨터간의 커뮤니케이션 지원3) 컴퓨터 하드웨어와 응용프로그램의 제어\n\n대표적인 운영체제\nWindows OS, Mac OS, UNIX\nUNIX OS\nUNIX 계열 OS\nUNIX 와 사용법이나, OS와 구조가 유사 (가장 대표적으로 LINUX)\nLINUX OS\n\n\n도서관으로 비유운영체제 -도서관응용프로그램 - 시민컴퓨터 하드웨어 - 책운영체제의 역할\n\n시민은 도서관에 원하는 책(자원) 요청\n도서관은 적절한 책(자원)을 찾아서 제공\n기한이 다 되면, 도서관이 책(자원)을 회수.\n\n\n\n\n응용 프로그램, 운영체제, 컴퓨터 하드웨어의 관계\n운영체제는 응용프로그램이 요청하는 메모리를 허가 및 분배.\n운영체제는 응용프로그램이 요청하는 CPU 시간을 제공\n운영체제는 응용 프로그래밈이 요청하는 IO Devices 사용을 허가\n\n\nUser&lt;-&gt;Application&lt;-&gt;OS&lt;-&gt;Hardware\n\n운영체제는 사용자 인터페이스 제공\n쉘 (Shell)\n사용자가 운영체제 기능, 서비스 조작 가능하게 인터페이스 제공. 쉘도 하나의 응용프로그램.\n터미널환경(CUI)과 GUI 환경 제공\n\n운영체제는 응용 프로그램을 위해서도 인터페이스를 제공한다\nAPI (Application Programming Interface)\n함수로 제공\neg. open()\n보통은 라이브러리 형태로 제공\nC library\n\n시스템 콜 (System Call)\n운영체제 기능을 호출하는 함수\n운영체제가 운영체제의 각 기능을 사용할 수 있도록 시스템 콜이라는 명령, 함수 제공\n상위 API 내부에는 시스템콜을 호출하는 형태로 만들어지는 경우가 대부분.eg. POSIX API(유닉스/리눅스), 윈도우API\n\n\n운영체제는 사용자든, 응용프로그램이든 외부에서 요청하면 시스템콜을 제공한다. 운영체제 입장에서의 기능을 정의해놓은 것이 시스템콜(System Call)이기 때문에 프로그래머 입장에서 좀더 쉽게 사용할 수 있도록 Library or API 를 제공한다. 이것을 기반으로 해서 Application 이나 shell 을 만드는것이고 이를 사용자가 사용할 수 있는 것이다.응용 프로그램은 라이브러리를 사용하고, 라이브러리는 시스템 자원이 필요할 경우, 내부적으로 시스템 콜을 호출할 수 있다.\n\n\n\n\n\n운영체제를 만든다면?\n운영체제를 개발한다. (kernal)\n시스템 콜을 개발\nC API (Library) 개발\nShell 프로그램 개발\n\n운영체제 &amp; 시스템콜 &amp; API\nAPI : 각 언어별 운영체제 기능 호출 인터페이스 함수. (각 언어별 인터페이스)\nSystemCall : 운영체제 기능을 호출하는 함수\n\n\n\n마무리\n운영체제는 컴퓨터 하드웨어와 응용프로그램을 관리한다.\n사용자 인터페이스 제공을 위해 쉘 프로그램을 제공한다.\n응용프로그램은 운영체제 기능을 요청하기 위해 운영체제의 시스템콜을 사용한다.\n보통 시스템콜을 직접 사용하기보다는 해당 시스템콜을 사용해서 만든 각 언어별 라이브러리(API)를 사용한다.\n\n\n","dateCreated":"2021-05-03T23:14:00+09:00","dateModified":"2021-05-12T17:44:18+09:00","datePublished":"2021-05-03T23:14:00+09:00","description":"컴공 따라잡기 with fastCampus운영체제의 역할부터 사용자가 어떻게 요청할 수 있는것인지 간단한 구조까지.#OS #system_resource #system_call","headline":"🔅 운영체제의 역할 (1)","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2021/05/03/%EC%BB%B4%EA%B3%B5-%EB%94%B0%EB%9D%BC%EC%9E%A1%EA%B8%B0-%EC%9A%B4%EC%98%81%EC%B2%B4%EC%A0%9C%EC%9D%98-%EC%97%AD%ED%95%A0/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2021/05/03/%EC%BB%B4%EA%B3%B5-%EB%94%B0%EB%9D%BC%EC%9E%A1%EA%B8%B0-%EC%9A%B4%EC%98%81%EC%B2%B4%EC%A0%9C%EC%9D%98-%EC%97%AD%ED%95%A0/","keywords":"OS"}</script>
     <meta name="description" content="컴공 따라잡기 with fastCampus운영체제의 역할부터 사용자가 어떻게 요청할 수 있는것인지 간단한 구조까지.#OS #system_resource #system_call">
 <meta property="og:type" content="blog">
 <meta property="og:title" content="🔅 운영체제의 역할 (1)">
@@ -329,7 +329,7 @@
     <div class="post-content markdown">
         <div class="main-content-wrap">
             <!-- excerpt -->
-<h1 id="table-of-contents">Contents</h1><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#운영체제-역할"><span class="toc-text">운영체제 역할</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-시스템-자원-관리자-System-Resource"><span class="toc-text">1) 시스템 자원 관리자 (System Resource)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-사용자와-컴퓨터간의-커뮤니케이션-지원"><span class="toc-text">2) 사용자와 컴퓨터간의 커뮤니케이션 지원</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-컴퓨터-하드웨어와-응용프로그램의-제어"><span class="toc-text">3) 컴퓨터 하드웨어와 응용프로그램의 제어</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#대표적인-운영체제"><span class="toc-text">대표적인 운영체제</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#도서관으로-비유"><span class="toc-text">도서관으로 비유</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#응용-프로그램-운영체제-컴퓨터-하드웨어의-관계"><span class="toc-text">응용 프로그램, 운영체제, 컴퓨터 하드웨어의 관계</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#운영체제는-사용자-인터페이스-제공"><span class="toc-text">운영체제는 사용자 인터페이스 제공</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#운영체제는-응용-프로그램을-위해서도-인터페이스를-제공한다"><span class="toc-text">운영체제는 응용 프로그램을 위해서도 인터페이스를 제공한다</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#시스템-콜-System-Call"><span class="toc-text">시스템 콜 (System Call)</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#운영체제를-만든다면"><span class="toc-text">운영체제를 만든다면?</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#운영체제-amp-시스템콜-amp-API"><span class="toc-text">운영체제 &amp; 시스템콜 &amp; API</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#마무리"><span class="toc-text">마무리</span></a></li></ol>
+<h1 id="table-of-contents">Contents</h1><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%EC%9A%B4%EC%98%81%EC%B2%B4%EC%A0%9C-%EC%97%AD%ED%95%A0"><span class="toc-text">운영체제 역할</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%EC%8B%9C%EC%8A%A4%ED%85%9C-%EC%9E%90%EC%9B%90-%EA%B4%80%EB%A6%AC%EC%9E%90-System-Resource"><span class="toc-text">1) 시스템 자원 관리자 (System Resource)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%EC%82%AC%EC%9A%A9%EC%9E%90%EC%99%80-%EC%BB%B4%ED%93%A8%ED%84%B0%EA%B0%84%EC%9D%98-%EC%BB%A4%EB%AE%A4%EB%8B%88%EC%BC%80%EC%9D%B4%EC%85%98-%EC%A7%80%EC%9B%90"><span class="toc-text">2) 사용자와 컴퓨터간의 커뮤니케이션 지원</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%EC%BB%B4%ED%93%A8%ED%84%B0-%ED%95%98%EB%93%9C%EC%9B%A8%EC%96%B4%EC%99%80-%EC%9D%91%EC%9A%A9%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%A8%EC%9D%98-%EC%A0%9C%EC%96%B4"><span class="toc-text">3) 컴퓨터 하드웨어와 응용프로그램의 제어</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%EB%8C%80%ED%91%9C%EC%A0%81%EC%9D%B8-%EC%9A%B4%EC%98%81%EC%B2%B4%EC%A0%9C"><span class="toc-text">대표적인 운영체제</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%EB%8F%84%EC%84%9C%EA%B4%80%EC%9C%BC%EB%A1%9C-%EB%B9%84%EC%9C%A0"><span class="toc-text">도서관으로 비유</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%EC%9D%91%EC%9A%A9-%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%A8-%EC%9A%B4%EC%98%81%EC%B2%B4%EC%A0%9C-%EC%BB%B4%ED%93%A8%ED%84%B0-%ED%95%98%EB%93%9C%EC%9B%A8%EC%96%B4%EC%9D%98-%EA%B4%80%EA%B3%84"><span class="toc-text">응용 프로그램, 운영체제, 컴퓨터 하드웨어의 관계</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%EC%9A%B4%EC%98%81%EC%B2%B4%EC%A0%9C%EB%8A%94-%EC%82%AC%EC%9A%A9%EC%9E%90-%EC%9D%B8%ED%84%B0%ED%8E%98%EC%9D%B4%EC%8A%A4-%EC%A0%9C%EA%B3%B5"><span class="toc-text">운영체제는 사용자 인터페이스 제공</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%EC%9A%B4%EC%98%81%EC%B2%B4%EC%A0%9C%EB%8A%94-%EC%9D%91%EC%9A%A9-%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%A8%EC%9D%84-%EC%9C%84%ED%95%B4%EC%84%9C%EB%8F%84-%EC%9D%B8%ED%84%B0%ED%8E%98%EC%9D%B4%EC%8A%A4%EB%A5%BC-%EC%A0%9C%EA%B3%B5%ED%95%9C%EB%8B%A4"><span class="toc-text">운영체제는 응용 프로그램을 위해서도 인터페이스를 제공한다</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%EC%8B%9C%EC%8A%A4%ED%85%9C-%EC%BD%9C-System-Call"><span class="toc-text">시스템 콜 (System Call)</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%EC%9A%B4%EC%98%81%EC%B2%B4%EC%A0%9C%EB%A5%BC-%EB%A7%8C%EB%93%A0%EB%8B%A4%EB%A9%B4"><span class="toc-text">운영체제를 만든다면?</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%EC%9A%B4%EC%98%81%EC%B2%B4%EC%A0%9C-amp-%EC%8B%9C%EC%8A%A4%ED%85%9C%EC%BD%9C-amp-API"><span class="toc-text">운영체제 &amp; 시스템콜 &amp; API</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%EB%A7%88%EB%AC%B4%EB%A6%AC"><span class="toc-text">마무리</span></a></li></ol>
 
 
 <hr>
@@ -337,13 +337,13 @@
 <br>
 
 <h2 id="운영체제-역할"><a href="#운영체제-역할" class="headerlink" title="운영체제 역할"></a>운영체제 역할</h2><h3 id="1-시스템-자원-관리자-System-Resource"><a href="#1-시스템-자원-관리자-System-Resource" class="headerlink" title="1) 시스템 자원 관리자 (System Resource)"></a>1) 시스템 자원 관리자 (System Resource)</h3><ul>
-<li>Operating System , OS.<ul>
+<li>Operating System , OS.</li>
+</ul>
+<ul>
 <li>CPU(중앙처리장치), Memory(DRAM,RAM)</li>
 <li>I/O Devices(입출력장치)</li>
 <li>Monitor, Mouse, Keyboard, Network</li>
 <li>저장매체 : SSD, HDD (하드디스크)</li>
-</ul>
-</li>
 </ul>
 <blockquote>
 <p>컴퓨터 하드웨어는 스스로 할 수 있는것이 없다.</p>
@@ -361,12 +361,10 @@
 
 <h2 id="대표적인-운영체제"><a href="#대표적인-운영체제" class="headerlink" title="대표적인 운영체제"></a>대표적인 운영체제</h2><ul>
 <li>Windows OS, Mac OS, UNIX</li>
-<li>UNIX OS<ul>
+<li>UNIX OS</li>
 <li>UNIX 계열 OS</li>
 <li>UNIX 와 사용법이나, OS와 구조가 유사 (가장 대표적으로 LINUX)</li>
 <li>LINUX OS</li>
-</ul>
-</li>
 </ul>
 <hr>
 <h2 id="도서관으로-비유"><a href="#도서관으로-비유" class="headerlink" title="도서관으로 비유"></a>도서관으로 비유</h2><p>운영체제 -도서관<br>응용프로그램 - 시민<br>컴퓨터 하드웨어 - 책<br>운영체제의 역할</p>
@@ -387,22 +385,16 @@
 <p>User&lt;-&gt;Application&lt;-&gt;OS&lt;-&gt;Hardware</p>
 </blockquote>
 <h2 id="운영체제는-사용자-인터페이스-제공"><a href="#운영체제는-사용자-인터페이스-제공" class="headerlink" title="운영체제는 사용자 인터페이스 제공"></a>운영체제는 사용자 인터페이스 제공</h2><ul>
-<li>쉘 (Shell)<ul>
+<li>쉘 (Shell)</li>
 <li>사용자가 운영체제 기능, 서비스 조작 가능하게 인터페이스 제공. 쉘도 하나의 응용프로그램.</li>
 <li>터미널환경(CUI)과 GUI 환경 제공</li>
 </ul>
-</li>
-</ul>
 <h2 id="운영체제는-응용-프로그램을-위해서도-인터페이스를-제공한다"><a href="#운영체제는-응용-프로그램을-위해서도-인터페이스를-제공한다" class="headerlink" title="운영체제는 응용 프로그램을 위해서도 인터페이스를 제공한다"></a>운영체제는 응용 프로그램을 위해서도 인터페이스를 제공한다</h2><ul>
-<li>API (Application Programming Interface)<ul>
+<li>API (Application Programming Interface)</li>
 <li>함수로 제공</li>
 <li>eg. open()</li>
-</ul>
-</li>
-<li>보통은 라이브러리 형태로 제공<ul>
+<li>보통은 라이브러리 형태로 제공</li>
 <li>C library</li>
-</ul>
-</li>
 </ul>
 <h3 id="시스템-콜-System-Call"><a href="#시스템-콜-System-Call" class="headerlink" title="시스템 콜 (System Call)"></a>시스템 콜 (System Call)</h3><ul>
 <li>운영체제 기능을 호출하는 함수</li>
@@ -446,7 +438,7 @@
             <div class="post-footer-tags">
                 <span class="text-color-light text-small">TAGGED IN</span><br/>
                 
-    <a class="tag tag--primary tag--small t-link" href="/tags/OS/" rel="tag">OS</a>
+    <a class="tag tag--primary tag--small t-none-link" href="/tags/OS/" rel="tag">OS</a>
 
             </div>
         
@@ -562,7 +554,7 @@
         
             
                 <div id="disqus_thread">
-    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a></noscript>
+    <noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
 </div>
             
         
