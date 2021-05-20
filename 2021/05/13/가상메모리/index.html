@@ -1,0 +1,850 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="동글씨">
+    <title>☁️ 가상메모리와 페이징 시스템 - 동글씨</title>
+    <meta name="author" content="Suyan Kim">
+    
+    
+    
+        <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
+    
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\n💬 해당 강의는 fastcampus 에서 ‘컴공 전공자 따라잡기 온라인 완주반’ 강의를 들으며 스스로의 학습을 위해 작성한 포스팅입니다. 문제가 된다면 연락 부탁드립니다.\n가상 메모리 (Virtual Memory System)\n각 프로세스마다 충분한 메모리를 할당하기에는 메모리 크기에 한계가 있다.\neg. 리눅스는 프로세스 하나당 4GB 이다.\n즉, 가상 메모리는 실제 메모리보다 많아보이게 하는 기술이다.\n프로세스간 공간이 분리되어 프로세스 이슈가 전체 시스템에 영향을 주지 않는다.\n\n가상 메모리의 사용\n프로세스는 가상주소를 사용하고, 그 주소에 매핑되는 실제 주소는 데이터 read/write 시에만 가져온다. \nvirtual address(가상주소) : 프로세스가 참조하는 주소\nphysical address (물리주소) : 실제 메모리 주소\nMMU (Memory Management Unit)\n가상주소의 메모리 접근이 필요할 때, 그 주소값을 물리주소로 반환해주는 하드웨어 장치이다.\n\nMMU (Memory Management Unit)\nCPU 는 가상메모리를 다루고, 해당 주소 접근시 MMU 하드웨어 장치를 통해 물리메모리에 접근한다.\n하드웨어 장치를 사용하면 주소 변환이 빠르기 때문에 별도 장치를 둔다.\n\n페이징 시스템 (Paging System)\n페이징이란 ?\n크기가 동일한 페이지로 가상주소 공간과 그에 상응하는 물리주소 공간을 관리한다.\npage(page frame) : 고정된 크기의 block(4KB)\n\n\n페이징 번호를 기반으로 가상주소-물리주소 매핑 정보를 저장하고 사용한다.\n리눅스에서는 보통 4KB 만큼 페이징.\n프로세스 (4GB) 의 PCB에 Page Table 구조체를 가리키는 주소가 들어있다.\n\n페이징 시스템 구조\n페이징 시스템\n가상주소 = 가상메모리 페이지 + 변위\n페이지 크기 4KB 라면, 가상주소의 0~11bit 변위를 나타내고, 12bit 이상이 페이지 번호가 될 수 있다.\n\n페이지 테이블 (page table)\n프로세스 생성시 페이지 테이블 정보가 생성된다.\n관련 페이지 테이블 base address 는 별도 CR3 레지스터에 저장한다.\n물리주소에 있는 페이지 번호와 해당 페이지 번호의 첫 물리주소를 매핑한 표.\n해당 페이지 테이블에서 해당 page 에 매핑된 첫 물리주소를 알아내고 변위를 더한값이 실제 물리주소이다.\n\nMMU (Memory Management Unit) : 물리주소를 얻는 방법  MMU(하드웨어 장치) - 물리메모리를 확인하기 위해 Memory 에 갔다와야 한다.\n\nCPU 는 virtual address를 MMU 에 요청한다.\nMMU 는 virtual address로 해당 프로세스의 PCB의 페이지 테이블에 접근하여 CR3 레지스터로부터 base address를 얻는다.\nMMU 는 base address로, Memory의 물리주소에 접근한다.\n\n다중단계 페이징 시스템\n프로세스마다 페이지를 나누어서 메모리에 할당하면 많은 공간이 낭비된다. 필요한 부분만 페이지를 나눠서 할당하여 공간의 활용도를 높이고자 하는것에 착안했다.\n모든 부분을 페이지도 나눌 필요없이 단계적으로 나누어서 필요한 부분만 페이지 테이블에 두고 이것을 페이지 디렉토리에 저장한다.\n32bit 시스템에서 4KB를 위한 페이징 시스템\n하위 12bit : 오프셋(변위)\n상위 20bit : 페이징 번호 (220=1048576 개의 페이징 번호)\n페이지 번호를 나타내는 bit를 구분하여 단계를 나눈다.\n10bit : Page Directory\n10bit : Page Table\n20bit : OFFSET &gt; Pysical Frame\nCR3 -&gt; Page Directory(시작주소) -&gt; Page Table(시작주소) -&gt; Pysical Frame(물리 메모리에서 프레임주소)\n\nTLB (Translation Lookaside Buffer)\n페이지 정보를 캐슁한다. (Pysical Address 전달/캐슁)\n\n공유 메모리 (Shared Memory)\n프로세스간 동일한 물리주소를 가리킬 수 있다.\n공간절약, 메모리 할당 절약.\nP1(Parent) - [fork] -&gt; P2(Child)\n\n요구 페이징 (Demand Paging)\n프로세스의 모든 데이터를 메모리에 적재하지 않고, 실행 중 필요한 시점에서만 메모리로 적재한다.\n더 이상 필요치 않은 페이지 프레임은 저장매체에 저장한다.(페이지 교체 알고리즘)\n요구페이징 &lt;-&gt; 선행페이징(anticipatory paging): 미리 프로세스 관련 데이터를 모두 메모리에 올려놓고 실행.\n\n페이지 폴트 (Page Fault)\n어떤 페이지 정보가 실제 물리메모리에 없을때 페이지폴트 인터럽트가 발생한다.\n\n전체 페이징 시스템 프로세스(feat. TLB, Page fault)\n\n\n\n\n(a) [CPU -&gt; MMU] CPU는 MMU 에 가상주소를 요청한다.(b) [MMU -&gt; TLB] 먼저 TLB 칩에 변환된 물리주소가 있는지 확인한다. 있다면 바로 그 정보로 (e)단계로, 없다면 (c) 단계로 진행한다.(c) [MMU -&gt; Memory] CR3 레지스터로부터 해당 페이지의 테이블에 물리주소가 있는지(valid) 확인한다. -&gt; invalid일 경우(d) 단계를 수행, valid일 경우 (e)단계로 진행한다.\n\n(d-1) [MMU -&gt; OS] Page Fault Interrupt OS(운영체제) 에서 page fault interrupt handling이 수행되고\n(d-2) [OS -&gt; 저장매체] 저장매체에서 해당 프로세스의 페이지 정보를 찾아온다.\n(d-3) [저장매체 -&gt; Memory] 해당 물리주소를 메모리에 올린다.\n(d-4) [Memory] 페이징 정보를 업데이트 한다.\n\n(e) [Memory -&gt; MMU] 페이지 테이블에서 해당 물리주소를 가져온다.(f) [MMU -&gt; Memory] 실제 물리주소 위치에 접근한다.(g) [Memory -&gt; CPU] 해당 데이터를 전달한다.\n\n페이지 교체 알고리즘페이지 교체 정책 (Page replacement policy)\n운영체제가 특정 페이지를 물리 메모리에 올리려 하는데, 물리메모리에 공간이 없다면.\n기존 페이지 중 하나를 저장매체로 내린다.\n새로운 페이지를 해당 물리공간에 올린다.\n\n\n페이지 교체 알고리즘(Page Replacement Algorithm) : 어떤 페이지를 물리메모리에서 저장매체로 보낼것인가 ?\n\nFIFO\n가장 먼저 들어온 페이지를 내리자.\n\nOPT(OPTimal Replacement Algorithm)\n최적 페이지 교체 알고리즘\n앞으로 오랫동안 사용하지 않을 페이지를 내리자.\n어떤 페이지가 오랫동안 사용하지 않을지 예측이 힘들다. - 일반 OS에서는 구현이 불가.\n\nLRU (Least Recently Used)\n가장 오래전에 사용된 페이지를 교체한다.\nOPT 알고리즘이 현실적으로 불가하므로, 과거 기록을 기반으로 한다.\n메모리 지역성 에 따르면 근처의 메모리 영역을 많이 사용한다.\n\nLFU (Least Frequently Used)\n가장 적게 사용된 페이지를 교체한다.\n\nNUR (Not Used Recently)\n최근에 사용하지 않은 페이지부터 교체한다. (LRU와 비슷)\n참조비트와 수정비르를 사용해 그 순서대로 페이지를 교체한다.\n\nThreshing (스레싱)\n반복적으로 페이지 폴트가 발생하면, 과도하게 페이지 교체작업이 일어나 결국엔 아무 일도 수행하지 못하는 상황.\n\n\n세그멘테이션 기법\n가상메모리를 서로 크기가 다른 논리적 단위인 segment로 분할한다.\n세그먼트의 가상주소도 페이징과 동일하게 (세그먼트번호 + 블록 내 변위) 로 찾는다.\n\n내부단편화 &amp; 외부단편화\n내부단편화는 페이징 기법에서 나타나는 현상이다.\n페이지 블록만큼 데이터가 채워지지 않았을 경우.\n이식성을 중요시하는 리눅스는 페이징 기법으로 구현되어 있다.\n외부단편화는 세그멘트 기법에서 나타나는 현상이다.\n물리 메모리가 원하는 연속된 크기의 메모리를 제공해주지 못하는 경우.\n","dateCreated":"2021-05-13T17:34:43+09:00","dateModified":"2021-05-20T10:06:40+09:00","datePublished":"2021-05-13T17:34:43+09:00","description":"가상메모리와 페이징 기법과 세그먼트 기법.#paging_system #virtual_memory #segment #MMU #TLB","headline":"☁️ 가상메모리와 페이징 시스템","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2021/05/13/%EA%B0%80%EC%83%81%EB%A9%94%EB%AA%A8%EB%A6%AC/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2021/05/13/%EA%B0%80%EC%83%81%EB%A9%94%EB%AA%A8%EB%A6%AC/","keywords":"paging_system, virtual_memory"}</script>
+    <meta name="description" content="가상메모리와 페이징 기법과 세그먼트 기법.#paging_system #virtual_memory #segment #MMU #TLB">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="☁️ 가상메모리와 페이징 시스템">
+<meta property="og:url" content="http://yoursite.com/2021/05/13/%EA%B0%80%EC%83%81%EB%A9%94%EB%AA%A8%EB%A6%AC/index.html">
+<meta property="og:site_name" content="동글씨">
+<meta property="og:description" content="가상메모리와 페이징 기법과 세그먼트 기법.#paging_system #virtual_memory #segment #MMU #TLB">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://user-images.githubusercontent.com/28856435/118363663-62c78500-b5d0-11eb-902d-6ec65340e35c.PNG">
+<meta property="article:published_time" content="2021-05-13T08:34:43.000Z">
+<meta property="article:modified_time" content="2021-05-20T01:06:40.833Z">
+<meta property="article:author" content="Suyan Kim">
+<meta property="article:tag" content="paging_system">
+<meta property="article:tag" content="virtual_memory">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://user-images.githubusercontent.com/28856435/118363663-62c78500-b5d0-11eb-902d-6ec65340e35c.PNG">
+    
+    
+        
+    
+    
+        <meta property="og:image" content="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=640"/>
+    
+    
+    
+    
+    <!--STYLES-->
+    
+<link rel="stylesheet" href="/assets/css/all.css">
+
+    
+<link rel="stylesheet" href="/assets/css/jquery.fancybox.css">
+
+    
+<link rel="stylesheet" href="/assets/css/thumbs.css">
+
+    
+<link rel="stylesheet" href="/assets/css/tranquilpeak.css">
+
+    <!--STYLES END-->
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-158530470-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-158530470-1');
+    </script>
+
+
+    
+
+    
+        
+    
+</head>
+
+    <body>
+        <div id="blog">
+            <!-- Define author's picture -->
+
+
+    
+        
+    
+
+<header id="header" data-behavior="4">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <div class="header-title">
+        <a
+            class="header-title-link"
+            href="/index.html"
+            aria-label=""
+        >
+            동글씨
+        </a>
+    </div>
+    
+        
+            <a
+                class="header-right-picture "
+                href="#about"
+                aria-label="Open the link: /#about"
+            >
+        
+        
+            <img class="header-picture" src="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=90" alt="Author&#39;s picture"/>
+        
+        </a>
+    
+</header>
+
+            <!-- function -->
+
+
+<!-- Define author's picture -->
+
+
+    
+
+<nav id="sidebar" data-behavior="4">
+    <div class="sidebar-container">
+        
+            <div class="sidebar-profile">
+                <a
+                    href="/#about"
+                    aria-label="Read more about the author"
+                >
+                    <img class="sidebar-profile-picture" src="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=800" alt="Author&#39;s picture"/>
+                </a>
+                <h4 class="sidebar-profile-name">Suyan Kim</h4>
+                
+                    <h5 class="sidebar-profile-bio"><p>▲ Who Am I</p>
+</h5>
+                
+            </div>
+        
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="home"href="/index.html"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-home" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">home</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="archives"href="/all-archives"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-archive" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">archives</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="categories"href="/all-categories"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-bookmark" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">categories</span>
+                        </a>
+                    <!-- add -->
+                    
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (7)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Config/">☁️ Config (2)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-DataBase/">☁️ DataBase (1)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Git/">☁️ Git (3)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-JPA/">☁️ JPA (10)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Java/">☁️ Java (0)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Linux/">☁️ Linux (2)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-OS/">☁️ OS (14)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Python/">☁️ Python (2)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-React/">☁️ React (3)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Spring/">☁️ Spring (1)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-TIL/">☁️ TIL (2)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Web/">☁️ Web (1)</a></li>
+                            
+                        
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="tags"href="/all-tags"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-tags" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">tags</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="about"href="#about"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-question" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">about</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="https://github.com/ksso730" target="_blank" rel="noopener" title="github">
+                    
+                    <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">github</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="https://www.instagram.com/syankkim/" target="_blank" rel="noopener" title="life">
+                    
+                    <i class="sidebar-button-icon fab fa-instagram" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">life</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+        </ul>
+        
+    </div>
+</nav>
+
+            
+            <div id="main" data-behavior="4"
+                 class="
+                        hasCoverMetaIn
+                        ">
+                
+<article class="post">
+    
+    
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title">
+            ☁️ 가상메모리와 페이징 시스템
+        </h1>
+    
+    
+        <div class="post-meta">
+    <time datetime="2021-05-13T17:34:43+09:00">
+	
+		    May 13, 2021
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/%E2%98%81%EF%B8%8F-OS/">☁️ OS</a>
+
+
+    
+</div>
+
+    
+</div>
+
+    
+    <div class="post-content markdown">
+        <div class="main-content-wrap">
+            <!-- excerpt -->
+<h1 id="table-of-contents">Contents</h1><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%EA%B0%80%EC%83%81-%EB%A9%94%EB%AA%A8%EB%A6%AC-Virtual-Memory-System"><span class="toc-text">가상 메모리 (Virtual Memory System)</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%EA%B0%80%EC%83%81-%EB%A9%94%EB%AA%A8%EB%A6%AC%EC%9D%98-%EC%82%AC%EC%9A%A9"><span class="toc-text">가상 메모리의 사용</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#MMU-Memory-Management-Unit"><span class="toc-text">MMU (Memory Management Unit)</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%ED%8E%98%EC%9D%B4%EC%A7%95-%EC%8B%9C%EC%8A%A4%ED%85%9C-Paging-System"><span class="toc-text">페이징 시스템 (Paging System)</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%ED%8E%98%EC%9D%B4%EC%A7%95-%EC%8B%9C%EC%8A%A4%ED%85%9C-%EA%B5%AC%EC%A1%B0"><span class="toc-text">페이징 시스템 구조</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%ED%8E%98%EC%9D%B4%EC%A7%80-%ED%85%8C%EC%9D%B4%EB%B8%94-page-table"><span class="toc-text">페이지 테이블 (page table)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#MMU-Memory-Management-Unit-%EB%AC%BC%EB%A6%AC%EC%A3%BC%EC%86%8C%EB%A5%BC-%EC%96%BB%EB%8A%94-%EB%B0%A9%EB%B2%95"><span class="toc-text">MMU (Memory Management Unit) : 물리주소를 얻는 방법</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%EB%8B%A4%EC%A4%91%EB%8B%A8%EA%B3%84-%ED%8E%98%EC%9D%B4%EC%A7%95-%EC%8B%9C%EC%8A%A4%ED%85%9C"><span class="toc-text">다중단계 페이징 시스템</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#TLB-Translation-Lookaside-Buffer"><span class="toc-text">TLB (Translation Lookaside Buffer)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%EA%B3%B5%EC%9C%A0-%EB%A9%94%EB%AA%A8%EB%A6%AC-Shared-Memory"><span class="toc-text">공유 메모리 (Shared Memory)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%EC%9A%94%EA%B5%AC-%ED%8E%98%EC%9D%B4%EC%A7%95-Demand-Paging"><span class="toc-text">요구 페이징 (Demand Paging)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%ED%8E%98%EC%9D%B4%EC%A7%80-%ED%8F%B4%ED%8A%B8-Page-Fault"><span class="toc-text">페이지 폴트 (Page Fault)</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%EC%A0%84%EC%B2%B4-%ED%8E%98%EC%9D%B4%EC%A7%95-%EC%8B%9C%EC%8A%A4%ED%85%9C-%ED%94%84%EB%A1%9C%EC%84%B8%EC%8A%A4-feat-TLB-Page-fault"><span class="toc-text">전체 페이징 시스템 프로세스(feat. TLB, Page fault)</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%ED%8E%98%EC%9D%B4%EC%A7%80-%EA%B5%90%EC%B2%B4-%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98"><span class="toc-text">페이지 교체 알고리즘</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%ED%8E%98%EC%9D%B4%EC%A7%80-%EA%B5%90%EC%B2%B4-%EC%A0%95%EC%B1%85-Page-replacement-policy"><span class="toc-text">페이지 교체 정책 (Page replacement policy)</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#FIFO"><span class="toc-text">FIFO</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#OPT-OPTimal-Replacement-Algorithm"><span class="toc-text">OPT(OPTimal Replacement Algorithm)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#LRU-Least-Recently-Used"><span class="toc-text">LRU (Least Recently Used)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#LFU-Least-Frequently-Used"><span class="toc-text">LFU (Least Frequently Used)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#NUR-Not-Used-Recently"><span class="toc-text">NUR (Not Used Recently)</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Threshing-%EC%8A%A4%EB%A0%88%EC%8B%B1"><span class="toc-text">Threshing (스레싱)</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%EC%84%B8%EA%B7%B8%EB%A9%98%ED%85%8C%EC%9D%B4%EC%85%98-%EA%B8%B0%EB%B2%95"><span class="toc-text">세그멘테이션 기법</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%EB%82%B4%EB%B6%80%EB%8B%A8%ED%8E%B8%ED%99%94-amp-%EC%99%B8%EB%B6%80%EB%8B%A8%ED%8E%B8%ED%99%94"><span class="toc-text">내부단편화 &amp; 외부단편화</span></a></li></ol></li></ol>
+
+<hr>
+<p><em>💬 해당 강의는 fastcampus 에서 ‘컴공 전공자 따라잡기 온라인 완주반’ 강의를 들으며 스스로의 학습을 위해 작성한 포스팅입니다. 문제가 된다면 연락 부탁드립니다.</em></p>
+<h1 id="가상-메모리-Virtual-Memory-System"><a href="#가상-메모리-Virtual-Memory-System" class="headerlink" title="가상 메모리 (Virtual Memory System)"></a>가상 메모리 (Virtual Memory System)</h1><ul>
+<li>각 프로세스마다 충분한 메모리를 할당하기에는 메모리 크기에 한계가 있다.</li>
+<li>eg. 리눅스는 프로세스 하나당 4GB 이다.</li>
+<li>즉, <code>가상 메모리</code>는 실제 메모리보다 많아보이게 하는 기술이다.</li>
+<li>프로세스간 공간이 분리되어 프로세스 이슈가 전체 시스템에 영향을 주지 않는다.</li>
+</ul>
+<h2 id="가상-메모리의-사용"><a href="#가상-메모리의-사용" class="headerlink" title="가상 메모리의 사용"></a>가상 메모리의 사용</h2><ul>
+<li>프로세스는 가상주소를 사용하고, 그 주소에 매핑되는 실제 주소는 데이터 read/write 시에만 가져온다. </li>
+<li><code>virtual address</code>(가상주소) : 프로세스가 참조하는 주소</li>
+<li><code>physical address</code> (물리주소) : 실제 메모리 주소</li>
+<li><code>MMU</code> (Memory Management Unit)</li>
+<li>가상주소의 메모리 접근이 필요할 때, 그 주소값을 물리주소로 반환해주는 하드웨어 장치이다.</li>
+</ul>
+<h2 id="MMU-Memory-Management-Unit"><a href="#MMU-Memory-Management-Unit" class="headerlink" title="MMU (Memory Management Unit)"></a>MMU (Memory Management Unit)</h2><ul>
+<li>CPU 는 가상메모리를 다루고, 해당 주소 접근시 <code>MMU 하드웨어 장치를 통해 물리메모리에 접근</code>한다.</li>
+<li>하드웨어 장치를 사용하면 주소 변환이 빠르기 때문에 별도 장치를 둔다.</li>
+</ul>
+<h1 id="페이징-시스템-Paging-System"><a href="#페이징-시스템-Paging-System" class="headerlink" title="페이징 시스템 (Paging System)"></a>페이징 시스템 (Paging System)</h1><ul>
+<li>페이징이란 ?</li>
+<li>크기가 동일한 페이지로 가상주소 공간과 그에 상응하는 물리주소 공간을 관리한다.<ul>
+<li>page(page frame) : 고정된 크기의 block(4KB)</li>
+</ul>
+</li>
+<li>페이징 번호를 기반으로 <code>가상주소-물리주소 매핑 정보를 저장</code>하고 사용한다.</li>
+<li>리눅스에서는 보통 4KB 만큼 페이징.</li>
+<li>프로세스 (4GB) 의 <code>PCB</code>에 <code>Page Table 구조체</code>를 가리키는 주소가 들어있다.</li>
+</ul>
+<h2 id="페이징-시스템-구조"><a href="#페이징-시스템-구조" class="headerlink" title="페이징 시스템 구조"></a>페이징 시스템 구조</h2><ul>
+<li>페이징 시스템</li>
+<li>가상주소 = 가상메모리 페이지 + 변위</li>
+<li>페이지 크기 4KB 라면, 가상주소의 <code>0~11bit</code> 변위를 나타내고, <code>12bit 이상</code>이 페이지 번호가 될 수 있다.</li>
+</ul>
+<h2 id="페이지-테이블-page-table"><a href="#페이지-테이블-page-table" class="headerlink" title="페이지 테이블 (page table)"></a>페이지 테이블 (page table)</h2><ul>
+<li>프로세스 생성시 페이지 테이블 정보가 생성된다.</li>
+<li>관련 페이지 테이블 base address 는 별도 <code>CR3 레지스터</code>에 저장한다.</li>
+<li>물리주소에 있는 페이지 번호와 해당 페이지 번호의 첫 물리주소를 매핑한 표.</li>
+<li>해당 페이지 테이블에서 해당 page 에 매핑된 첫 물리주소를 알아내고 변위를 더한값이 실제 물리주소이다.</li>
+</ul>
+<h2 id="MMU-Memory-Management-Unit-물리주소를-얻는-방법"><a href="#MMU-Memory-Management-Unit-물리주소를-얻는-방법" class="headerlink" title="MMU (Memory Management Unit) : 물리주소를 얻는 방법"></a>MMU (Memory Management Unit) : 물리주소를 얻는 방법</h2><p>  MMU(하드웨어 장치) - 물리메모리를 확인하기 위해 Memory 에 갔다와야 한다.</p>
+<ul>
+<li><code>CPU</code> 는 <code>virtual address</code>를 <code>MMU</code> 에 요청한다.</li>
+<li><code>MMU</code> 는 <code>virtual address</code>로 해당 프로세스의 <code>PCB</code>의 페이지 테이블에 접근하여 <code>CR3 레지스터</code>로부터 <code>base address</code>를 얻는다.</li>
+<li><code>MMU</code> 는 <code>base address</code>로, Memory의 물리주소에 접근한다.</li>
+</ul>
+<h2 id="다중단계-페이징-시스템"><a href="#다중단계-페이징-시스템" class="headerlink" title="다중단계 페이징 시스템"></a>다중단계 페이징 시스템</h2><ul>
+<li>프로세스마다 페이지를 나누어서 메모리에 할당하면 많은 공간이 낭비된다. 필요한 부분만 페이지를 나눠서 할당하여 공간의 활용도를 높이고자 하는것에 착안했다.</li>
+<li>모든 부분을 페이지도 나눌 필요없이 단계적으로 나누어서 필요한 부분만 <code>페이지 테이블</code>에 두고 이것을 <code>페이지 디렉토리</code>에 저장한다.</li>
+<li>32bit 시스템에서 4KB를 위한 페이징 시스템</li>
+<li><code>하위 12bit</code> : 오프셋(변위)</li>
+<li><code>상위 20bit</code> : 페이징 번호 (2<sup>20</sup>=1048576 개의 페이징 번호)</li>
+<li>페이지 번호를 나타내는 bit를 구분하여 단계를 나눈다.</li>
+<li>10bit : Page Directory</li>
+<li>10bit : Page Table</li>
+<li>20bit : OFFSET &gt; Pysical Frame</li>
+<li>CR3 -&gt; Page Directory(시작주소) -&gt; Page Table(시작주소) -&gt; Pysical Frame(물리 메모리에서 프레임주소)</li>
+</ul>
+<h2 id="TLB-Translation-Lookaside-Buffer"><a href="#TLB-Translation-Lookaside-Buffer" class="headerlink" title="TLB (Translation Lookaside Buffer)"></a>TLB (Translation Lookaside Buffer)</h2><ul>
+<li>페이지 정보를 캐슁한다. (Pysical Address 전달/캐슁)</li>
+</ul>
+<h2 id="공유-메모리-Shared-Memory"><a href="#공유-메모리-Shared-Memory" class="headerlink" title="공유 메모리 (Shared Memory)"></a>공유 메모리 (Shared Memory)</h2><ul>
+<li>프로세스간 동일한 물리주소를 가리킬 수 있다.</li>
+<li>공간절약, 메모리 할당 절약.</li>
+<li>P1(Parent) - [fork] -&gt; P2(Child)</li>
+</ul>
+<h2 id="요구-페이징-Demand-Paging"><a href="#요구-페이징-Demand-Paging" class="headerlink" title="요구 페이징 (Demand Paging)"></a>요구 페이징 (Demand Paging)</h2><ul>
+<li>프로세스의 모든 데이터를 메모리에 적재하지 않고, 실행 중 필요한 시점에서만 메모리로 적재한다.</li>
+<li>더 이상 필요치 않은 페이지 프레임은 저장매체에 저장한다.(페이지 교체 알고리즘)</li>
+<li>요구페이징 &lt;-&gt; 선행페이징(anticipatory paging): 미리 프로세스 관련 데이터를 모두 메모리에 올려놓고 실행.</li>
+</ul>
+<h2 id="페이지-폴트-Page-Fault"><a href="#페이지-폴트-Page-Fault" class="headerlink" title="페이지 폴트 (Page Fault)"></a>페이지 폴트 (Page Fault)</h2><ul>
+<li>어떤 페이지 정보가 실제 물리메모리에 없을때 <code>페이지폴트 인터럽트</code>가 발생한다.</li>
+</ul>
+<h1 id="전체-페이징-시스템-프로세스-feat-TLB-Page-fault"><a href="#전체-페이징-시스템-프로세스-feat-TLB-Page-fault" class="headerlink" title="전체 페이징 시스템 프로세스(feat. TLB, Page fault)"></a>전체 페이징 시스템 프로세스(feat. TLB, Page fault)</h1><br>
+
+<img width="1009" alt="페이징_시스템" src="https://user-images.githubusercontent.com/28856435/118363663-62c78500-b5d0-11eb-902d-6ec65340e35c.PNG">
+
+
+<p>(a) <strong>[CPU -&gt; MMU]</strong> CPU는 <code>MMU</code> 에 가상주소를 요청한다.<br>(b) <strong>[MMU -&gt; TLB]</strong> 먼저 <code>TLB 칩</code>에 변환된 물리주소가 있는지 확인한다. 있다면 바로 그 정보로 (e)단계로, 없다면 (c) 단계로 진행한다.<br>(c) <strong>[MMU -&gt; Memory]</strong> <code>CR3 레지스터</code>로부터 해당 페이지의 테이블에 물리주소가 있는지(valid) 확인한다. -&gt; invalid일 경우(d) 단계를 수행, valid일 경우 (e)단계로 진행한다.</p>
+<ul>
+<li>(d-1) <strong>[MMU -&gt; OS]</strong> <code>Page Fault Interrupt</code> OS(운영체제) 에서 <code>page fault interrupt handling</code>이 수행되고</li>
+<li>(d-2) <strong>[OS -&gt; 저장매체]</strong> <code>저장매체</code>에서 해당 프로세스의 페이지 정보를 찾아온다.</li>
+<li>(d-3) <strong>[저장매체 -&gt; Memory]</strong> 해당 물리주소를 <code>메모리</code>에 올린다.</li>
+<li>(d-4) <strong>[Memory]</strong> 페이징 정보를 업데이트 한다.</li>
+</ul>
+<p>(e) <strong>[Memory -&gt; MMU]</strong> 페이지 테이블에서 해당 물리주소를 가져온다.<br>(f) <strong>[MMU -&gt; Memory]</strong> 실제 물리주소 위치에 접근한다.<br>(g) <strong>[Memory -&gt; CPU]</strong> 해당 데이터를 전달한다.</p>
+<hr>
+<h1 id="페이지-교체-알고리즘"><a href="#페이지-교체-알고리즘" class="headerlink" title="페이지 교체 알고리즘"></a>페이지 교체 알고리즘</h1><h2 id="페이지-교체-정책-Page-replacement-policy"><a href="#페이지-교체-정책-Page-replacement-policy" class="headerlink" title="페이지 교체 정책 (Page replacement policy)"></a>페이지 교체 정책 (Page replacement policy)</h2><ul>
+<li>운영체제가 특정 페이지를 물리 메모리에 올리려 하는데, 물리메모리에 공간이 없다면.</li>
+<li>기존 페이지 중 하나를 저장매체로 내린다.</li>
+<li>새로운 페이지를 해당 물리공간에 올린다.</li>
+</ul>
+<blockquote>
+<p>페이지 교체 알고리즘(Page Replacement Algorithm) : 어떤 페이지를 물리메모리에서 저장매체로 보낼것인가 ?</p>
+</blockquote>
+<h3 id="FIFO"><a href="#FIFO" class="headerlink" title="FIFO"></a>FIFO</h3><ul>
+<li>가장 먼저 들어온 페이지를 내리자.</li>
+</ul>
+<h3 id="OPT-OPTimal-Replacement-Algorithm"><a href="#OPT-OPTimal-Replacement-Algorithm" class="headerlink" title="OPT(OPTimal Replacement Algorithm)"></a>OPT(OPTimal Replacement Algorithm)</h3><ul>
+<li>최적 페이지 교체 알고리즘</li>
+<li>앞으로 오랫동안 사용하지 않을 페이지를 내리자.</li>
+<li>어떤 페이지가 오랫동안 사용하지 않을지 예측이 힘들다. - 일반 OS에서는 구현이 불가.</li>
+</ul>
+<h3 id="LRU-Least-Recently-Used"><a href="#LRU-Least-Recently-Used" class="headerlink" title="LRU (Least Recently Used)"></a>LRU (Least Recently Used)</h3><ul>
+<li>가장 오래전에 사용된 페이지를 교체한다.</li>
+<li>OPT 알고리즘이 현실적으로 불가하므로, 과거 기록을 기반으로 한다.</li>
+<li><code>메모리 지역성</code> 에 따르면 근처의 메모리 영역을 많이 사용한다.</li>
+</ul>
+<h3 id="LFU-Least-Frequently-Used"><a href="#LFU-Least-Frequently-Used" class="headerlink" title="LFU (Least Frequently Used)"></a>LFU (Least Frequently Used)</h3><ul>
+<li>가장 적게 사용된 페이지를 교체한다.</li>
+</ul>
+<h3 id="NUR-Not-Used-Recently"><a href="#NUR-Not-Used-Recently" class="headerlink" title="NUR (Not Used Recently)"></a>NUR (Not Used Recently)</h3><ul>
+<li>최근에 사용하지 않은 페이지부터 교체한다. (LRU와 비슷)</li>
+<li>참조비트와 수정비르를 사용해 그 순서대로 페이지를 교체한다.</li>
+</ul>
+<h2 id="Threshing-스레싱"><a href="#Threshing-스레싱" class="headerlink" title="Threshing (스레싱)"></a>Threshing (스레싱)</h2><ul>
+<li>반복적으로 페이지 폴트가 발생하면, 과도하게 페이지 교체작업이 일어나 결국엔 아무 일도 수행하지 못하는 상황.</li>
+</ul>
+<hr>
+<h1 id="세그멘테이션-기법"><a href="#세그멘테이션-기법" class="headerlink" title="세그멘테이션 기법"></a>세그멘테이션 기법</h1><ul>
+<li>가상메모리를 서로 <code>크기가 다른</code> 논리적 단위인 <code>segment</code>로 분할한다.</li>
+<li>세그먼트의 가상주소도 페이징과 동일하게 (세그먼트번호 + 블록 내 변위) 로 찾는다.</li>
+</ul>
+<h2 id="내부단편화-amp-외부단편화"><a href="#내부단편화-amp-외부단편화" class="headerlink" title="내부단편화 &amp; 외부단편화"></a>내부단편화 &amp; 외부단편화</h2><ul>
+<li>내부단편화는 페이징 기법에서 나타나는 현상이다.</li>
+<li>페이지 블록만큼 데이터가 채워지지 않았을 경우.</li>
+<li>이식성을 중요시하는 리눅스는 페이징 기법으로 구현되어 있다.</li>
+<li>외부단편화는 세그멘트 기법에서 나타나는 현상이다.</li>
+<li>물리 메모리가 원하는 연속된 크기의 메모리를 제공해주지 못하는 경우.</li>
+</ul>
+            
+
+
+        </div>
+    </div>
+    <div id="post-footer" class="post-footer main-content-wrap">
+        
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">TAGGED IN</span><br/>
+                
+    <a class="tag tag--primary tag--small t-none-link" href="/tags/paging-system/" rel="tag">paging_system</a> <a class="tag tag--primary tag--small t-none-link" href="/tags/virtual-memory/" rel="tag">virtual_memory</a>
+
+            </div>
+        
+        
+            <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2021/05/15/%ED%8C%8C%EC%9D%BC%EC%8B%9C%EC%8A%A4%ED%85%9C/"
+                    data-tooltip="🗄 파일 시스템"
+                    aria-label="PREVIOUS: 🗄 파일 시스템"
+                >
+                    
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                    </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2021/05/11/%EC%93%B0%EB%A0%88%EB%93%9C/"
+                    data-tooltip="📑 Thread, Synchronization, Semaphore"
+                    aria-label="NEXT: 📑 Thread, Synchronization, Semaphore"
+                >
+                    
+                        <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a
+                class="post-action-btn btn btn--default btn-open-shareoptions"
+                href="#btn-open-shareoptions"
+                aria-label="Share this post"
+            >
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2021/05/13/%EA%B0%80%EC%83%81%EB%A9%94%EB%AA%A8%EB%A6%AC/"
+                    title="Share on Facebook"
+                    aria-label="Share on Facebook"
+                >
+                    <i class="fab fa-facebook" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2021/05/13/%EA%B0%80%EC%83%81%EB%A9%94%EB%AA%A8%EB%A6%AC/"
+                    title="Share on Twitter"
+                    aria-label="Share on Twitter"
+                >
+                    <i class="fab fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://plus.google.com/share?url=http://yoursite.com/2021/05/13/%EA%B0%80%EC%83%81%EB%A9%94%EB%AA%A8%EB%A6%AC/"
+                    title="Share on Google+"
+                    aria-label="Share on Google+"
+                >
+                    <i class="fab fa-google-plus" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+                <li class="post-action">
+                    <a
+                        class="post-action-btn btn btn--default"
+                        href="#disqus_thread"
+                        aria-label="Leave a comment"
+                    >
+                        <i class="fa fa-comment"></i>
+                    </a>
+                </li>
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#table-of-contents" aria-label="Contents">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+        
+        
+            
+                <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+            
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2021 Suyan Kim. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2021/05/15/%ED%8C%8C%EC%9D%BC%EC%8B%9C%EC%8A%A4%ED%85%9C/"
+                    data-tooltip="🗄 파일 시스템"
+                    aria-label="PREVIOUS: 🗄 파일 시스템"
+                >
+                    
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                    </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2021/05/11/%EC%93%B0%EB%A0%88%EB%93%9C/"
+                    data-tooltip="📑 Thread, Synchronization, Semaphore"
+                    aria-label="NEXT: 📑 Thread, Synchronization, Semaphore"
+                >
+                    
+                        <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a
+                class="post-action-btn btn btn--default btn-open-shareoptions"
+                href="#btn-open-shareoptions"
+                aria-label="Share this post"
+            >
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2021/05/13/%EA%B0%80%EC%83%81%EB%A9%94%EB%AA%A8%EB%A6%AC/"
+                    title="Share on Facebook"
+                    aria-label="Share on Facebook"
+                >
+                    <i class="fab fa-facebook" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2021/05/13/%EA%B0%80%EC%83%81%EB%A9%94%EB%AA%A8%EB%A6%AC/"
+                    title="Share on Twitter"
+                    aria-label="Share on Twitter"
+                >
+                    <i class="fab fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://plus.google.com/share?url=http://yoursite.com/2021/05/13/%EA%B0%80%EC%83%81%EB%A9%94%EB%AA%A8%EB%A6%AC/"
+                    title="Share on Google+"
+                    aria-label="Share on Google+"
+                >
+                    <i class="fab fa-google-plus" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+                <li class="post-action">
+                    <a
+                        class="post-action-btn btn btn--default"
+                        href="#disqus_thread"
+                        aria-label="Leave a comment"
+                    >
+                        <i class="fa fa-comment"></i>
+                    </a>
+                </li>
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#table-of-contents" aria-label="Contents">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                
+    <div id="share-options-bar" class="share-options-bar" data-behavior="4">
+        <i id="btn-close-shareoptions" class="fa fa-times"></i>
+        <ul class="share-options">
+            
+                
+                
+                <li class="share-option">
+                    <a
+                        class="share-option-btn"
+                        target="new"
+                        href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2021/05/13/%EA%B0%80%EC%83%81%EB%A9%94%EB%AA%A8%EB%A6%AC/"
+                        aria-label="Share on Facebook"
+                    >
+                        <i class="fab fa-facebook" aria-hidden="true"></i><span>Share on Facebook</span>
+                    </a>
+                </li>
+            
+                
+                
+                <li class="share-option">
+                    <a
+                        class="share-option-btn"
+                        target="new"
+                        href="https://twitter.com/intent/tweet?text=http://yoursite.com/2021/05/13/%EA%B0%80%EC%83%81%EB%A9%94%EB%AA%A8%EB%A6%AC/"
+                        aria-label="Share on Twitter"
+                    >
+                        <i class="fab fa-twitter" aria-hidden="true"></i><span>Share on Twitter</span>
+                    </a>
+                </li>
+            
+                
+                
+                <li class="share-option">
+                    <a
+                        class="share-option-btn"
+                        target="new"
+                        href="https://plus.google.com/share?url=http://yoursite.com/2021/05/13/%EA%B0%80%EC%83%81%EB%A9%94%EB%AA%A8%EB%A6%AC/"
+                        aria-label="Share on Google+"
+                    >
+                        <i class="fab fa-google-plus" aria-hidden="true"></i><span>Share on Google+</span>
+                    </a>
+                </li>
+            
+        </ul>
+    </div>
+
+
+            
+        </div>
+        
+
+
+    
+
+<div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-times"></i>
+        </div>
+        
+            <img id="about-card-picture" src="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=110" alt="Author&#39;s picture"/>
+        
+            <h4 id="about-card-name">Suyan Kim</h4>
+        <!--  -->
+            <!-- <div id="about-card-bio"><p>author.bio</p>
+</div> -->
+            <div id="about-card-bio">안녕하세요, 서버 백엔드 개발자 동글씨입니다.</div>
+        <!--  -->
+        <!--  -->
+            <div id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <!-- <p>Backend Developer</p>
+ -->
+                Backend Developer
+            </div>
+        <!--  -->
+        
+            <div id="about-card-location">
+                <i class="fa fa-map-marker-alt"></i>
+                <br/>
+                Korea
+            </div>
+        
+    </div>
+</div>
+
+        
+        
+<div id="cover" style="background-image:url('/assets/images/null');"></div>
+        <!--SCRIPTS-->
+
+<script src="/assets/js/jquery.js"></script>
+
+
+<script src="/assets/js/jquery.fancybox.js"></script>
+
+
+<script src="/assets/js/thumbs.js"></script>
+
+
+<script src="/assets/js/tranquilpeak.js"></script>
+
+<!--SCRIPTS END-->
+
+
+    
+        <script>
+          var disqus_config = function() {
+            this.page.url = 'http://yoursite.com/2021/05/13/%EA%B0%80%EC%83%81%EB%A9%94%EB%AA%A8%EB%A6%AC/';
+              
+            this.page.identifier = '2021/05/13/가상메모리/';
+              
+          };
+          (function() {
+            var d = document, s = d.createElement('script');
+            var disqus_shortname = 'ksso730-github-io';
+            s.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+          })();
+        </script>
+    
+
+
+
+
+    </body>
+</html>

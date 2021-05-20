@@ -1,0 +1,803 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="동글씨">
+    <title>🗄 파일 시스템 - 동글씨</title>
+    <meta name="author" content="Suyan Kim">
+    
+    
+    
+        <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
+    
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\n💬 해당 강의는 fastcampus 에서 ‘컴공 전공자 따라잡기 온라인 완주반’ 강의를 들으며 스스로의 학습을 위해 작성한 포스팅입니다. 문제가 된다면 연락 부탁드립니다.\n\n\n파일 시스템이란 ?\n운영체제가 저장매체에 파일을 쓰기 위한 자료구조 또는 알고리즘을 의미한다.\n\n파일 시스템이 만들어진 이유?\n블록: 블록 단위로(보통 4KB), 블록마다 고유 번호를 부여해서 관리한다.\n0과 1의 데이터를 비트로 저장하기에는 오버헤드 발생하기 때문.\n파일: 사용자는 파일 단위로 관리하며, 각 파일에는 블록 단위로 관리된다.\n사용자가 블록 단위로 고유번호를 관리하기 어렵기 때문.\n\n파일 시스템 저장 방법\n가능한 연속적 공간에 파일을 저장하는것이 좋으나, 파일 사이즈가 가변적이라면 외부 단편화가 일어날 수 있다.\n따라서,  불연속 공간에 파일을 저장하는 기능이 필요하다.\n블록체인: 각 블록을 링크드 리스트로 연결한다. 어떤 주소를 찾으려면 처음부터 주소를 따라가야 하는 단점이 있다.\n인덱스 블록: 각 블록에 대한 위치정보를 기억해서, 한번에 그 블록을 찾을 수 있다.\n\n파일시스템과 시스템콜\n동일한 시스템콜을 사용해서 다양한 파일 시스템 지원 가능하도록 구현되어 있다.\n파일을 실제로 어떻게 저장하는지는 다를 수 있다.\n리눅스의 경우 ext4, NTFS, FAT32 파일시스템을 지원한다.\n\ninode 방식 파일 시스템\n파일시스템의 기본 구조\n수퍼블록: 파일시스템 정보\n아이노드 블록: 파일 상세정보 (PCB)\n데이터 블록: 실제 데이터 (1KB~4KB)\n\n\n\n\n\n\n수퍼블록\n파일시스템 정보 및 파티션 정보를 포함한다.\n리눅스 명령어 df 를 했을 때 출력되는 정보들.\n\ninode와 파일\n파일 inode 고유값과 자료구조에 의해 주요 정보를 관리한다.\n\n파이이름 : inode =&gt; 파일이름은 inode 와 매칭된다.\n\n파일 시스템에서는 inode 기반으로 파일에 엑세스 한다.\n\ninode 기반의 메타 데이터 : 파일권한, 소유자 정보, 파일 사이즈, 생성시간 등\n\n파일생성 &gt; inode 번호 &gt; inode 블록 &lt;- 파일 쿼리\n\n아래 명령을 실행할 경우,\n\ninode 번호 &gt; inode 블록 접근 &gt; 해당 데이터를 읽어옴.\n\n\n1&gt; cat data.txt\n\n\n\n\n\n디렉토리 엔트리\n디렉토리를 표현하는 데 쓰이는 자료구조이다.\n일반적으로 파일이름, 파일 속성 등 여러가지 정보가 저장되는데, 유닉스 계열에서는 파일이름과 inode번호만 저장된다.\n리눅스 파일탐색: /home/ubuntu/ink.txt\n각 디렉토리 엔트리를 탐색 : 각 엔트리는 해당 디렉토리 파일/디렉토리 정보를 가지고 있다.\n즉 / - home - ubuntu - link.txt 순으로 파일을 찾아 해당 inode 를 얻는다. \n\n가상 파일 시스템\nNetwork 등 다양한 기기도 동일한 파일시스템 인터페이스를 통해 관리가능\neg. read/write 시스템콜 사용, 각 기기별 read_spec/write_spec 코드 구현 (운영체제 내부)\n\n\n모든 것은 파일이라는 철학\n\n모든 인터렉션 파일을 읽고, 쓰는것처럼 이루어져 있다.\n마우스, 키보드와 같은 모든 디바이스 관련 기술 또한 파일과 같이 다루어짐.즉, 모든 자원에 대한 추상화 인터페이스로 파일 인터페이스를 활용한다.\n\n\n특수파일 -디바이스\n블록 디바이스(Block Device): HDD, CD/DVD 같이 블록 또는 섹터 단위 등 정해진 단위로 데이터를 전송한다. I/O 송수신 속도가 높다.\n캐릭터 디바이스 (Character Device): 키보드, 마우스 등 byte 단위 데이터를 전송한다. I/O 송수신 속도가 낮다.\n","dateCreated":"2021-05-15T20:44:27+09:00","dateModified":"2021-05-20T10:06:40+09:00","datePublished":"2021-05-15T20:44:27+09:00","description":"inode 와 가상 파일 시스템#inode #file_system","headline":"🗄 파일 시스템","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2021/05/15/%ED%8C%8C%EC%9D%BC%EC%8B%9C%EC%8A%A4%ED%85%9C/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2021/05/15/%ED%8C%8C%EC%9D%BC%EC%8B%9C%EC%8A%A4%ED%85%9C/","keywords":"file_system, inode"}</script>
+    <meta name="description" content="inode 와 가상 파일 시스템#inode #file_system">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="🗄 파일 시스템">
+<meta property="og:url" content="http://yoursite.com/2021/05/15/%ED%8C%8C%EC%9D%BC%EC%8B%9C%EC%8A%A4%ED%85%9C/index.html">
+<meta property="og:site_name" content="동글씨">
+<meta property="og:description" content="inode 와 가상 파일 시스템#inode #file_system">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://user-images.githubusercontent.com/28856435/118361659-6b678d80-b5c7-11eb-87d4-839182efbba0.PNG">
+<meta property="og:image" content="https://user-images.githubusercontent.com/28856435/118361800-e92b9900-b5c7-11eb-8da3-0791cdf1dfc7.PNG">
+<meta property="article:published_time" content="2021-05-15T11:44:27.000Z">
+<meta property="article:modified_time" content="2021-05-20T01:06:40.838Z">
+<meta property="article:author" content="Suyan Kim">
+<meta property="article:tag" content="file_system">
+<meta property="article:tag" content="inode">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://user-images.githubusercontent.com/28856435/118361659-6b678d80-b5c7-11eb-87d4-839182efbba0.PNG">
+    
+    
+        
+    
+    
+        <meta property="og:image" content="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=640"/>
+    
+    
+    
+    
+    <!--STYLES-->
+    
+<link rel="stylesheet" href="/assets/css/all.css">
+
+    
+<link rel="stylesheet" href="/assets/css/jquery.fancybox.css">
+
+    
+<link rel="stylesheet" href="/assets/css/thumbs.css">
+
+    
+<link rel="stylesheet" href="/assets/css/tranquilpeak.css">
+
+    <!--STYLES END-->
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-158530470-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-158530470-1');
+    </script>
+
+
+    
+
+    
+        
+    
+</head>
+
+    <body>
+        <div id="blog">
+            <!-- Define author's picture -->
+
+
+    
+        
+    
+
+<header id="header" data-behavior="4">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <div class="header-title">
+        <a
+            class="header-title-link"
+            href="/index.html"
+            aria-label=""
+        >
+            동글씨
+        </a>
+    </div>
+    
+        
+            <a
+                class="header-right-picture "
+                href="#about"
+                aria-label="Open the link: /#about"
+            >
+        
+        
+            <img class="header-picture" src="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=90" alt="Author&#39;s picture"/>
+        
+        </a>
+    
+</header>
+
+            <!-- function -->
+
+
+<!-- Define author's picture -->
+
+
+    
+
+<nav id="sidebar" data-behavior="4">
+    <div class="sidebar-container">
+        
+            <div class="sidebar-profile">
+                <a
+                    href="/#about"
+                    aria-label="Read more about the author"
+                >
+                    <img class="sidebar-profile-picture" src="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=800" alt="Author&#39;s picture"/>
+                </a>
+                <h4 class="sidebar-profile-name">Suyan Kim</h4>
+                
+                    <h5 class="sidebar-profile-bio"><p>▲ Who Am I</p>
+</h5>
+                
+            </div>
+        
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="home"href="/index.html"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-home" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">home</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="archives"href="/all-archives"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-archive" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">archives</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="categories"href="/all-categories"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-bookmark" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">categories</span>
+                        </a>
+                    <!-- add -->
+                    
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (7)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Config/">☁️ Config (2)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-DataBase/">☁️ DataBase (1)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Git/">☁️ Git (3)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-JPA/">☁️ JPA (10)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Java/">☁️ Java (0)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Linux/">☁️ Linux (2)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-OS/">☁️ OS (14)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Python/">☁️ Python (2)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-React/">☁️ React (3)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Spring/">☁️ Spring (1)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-TIL/">☁️ TIL (2)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Web/">☁️ Web (1)</a></li>
+                            
+                        
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="tags"href="/all-tags"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-tags" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">tags</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="about"href="#about"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-question" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">about</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="https://github.com/ksso730" target="_blank" rel="noopener" title="github">
+                    
+                    <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">github</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="https://www.instagram.com/syankkim/" target="_blank" rel="noopener" title="life">
+                    
+                    <i class="sidebar-button-icon fab fa-instagram" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">life</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+        </ul>
+        
+    </div>
+</nav>
+
+            
+            <div id="main" data-behavior="4"
+                 class="
+                        hasCoverMetaIn
+                        ">
+                
+<article class="post">
+    
+    
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title">
+            🗄 파일 시스템
+        </h1>
+    
+    
+        <div class="post-meta">
+    <time datetime="2021-05-15T20:44:27+09:00">
+	
+		    May 15, 2021
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/%E2%98%81%EF%B8%8F-OS/">☁️ OS</a>
+
+
+    
+</div>
+
+    
+</div>
+
+    
+    <div class="post-content markdown">
+        <div class="main-content-wrap">
+            <!-- excerpt -->
+<h1 id="table-of-contents">Contents</h1><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%ED%8C%8C%EC%9D%BC-%EC%8B%9C%EC%8A%A4%ED%85%9C%EC%9D%B4%EB%9E%80"><span class="toc-text">파일 시스템이란 ?</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%ED%8C%8C%EC%9D%BC-%EC%8B%9C%EC%8A%A4%ED%85%9C%EC%9D%B4-%EB%A7%8C%EB%93%A4%EC%96%B4%EC%A7%84-%EC%9D%B4%EC%9C%A0"><span class="toc-text">파일 시스템이 만들어진 이유?</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%ED%8C%8C%EC%9D%BC-%EC%8B%9C%EC%8A%A4%ED%85%9C-%EC%A0%80%EC%9E%A5-%EB%B0%A9%EB%B2%95"><span class="toc-text">파일 시스템 저장 방법</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%ED%8C%8C%EC%9D%BC%EC%8B%9C%EC%8A%A4%ED%85%9C%EA%B3%BC-%EC%8B%9C%EC%8A%A4%ED%85%9C%EC%BD%9C"><span class="toc-text">파일시스템과 시스템콜</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#inode-%EB%B0%A9%EC%8B%9D-%ED%8C%8C%EC%9D%BC-%EC%8B%9C%EC%8A%A4%ED%85%9C"><span class="toc-text">inode 방식 파일 시스템</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%EC%88%98%ED%8D%BC%EB%B8%94%EB%A1%9D"><span class="toc-text">수퍼블록</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#inode%EC%99%80-%ED%8C%8C%EC%9D%BC"><span class="toc-text">inode와 파일</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%EB%94%94%EB%A0%89%ED%86%A0%EB%A6%AC-%EC%97%94%ED%8A%B8%EB%A6%AC"><span class="toc-text">디렉토리 엔트리</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%EA%B0%80%EC%83%81-%ED%8C%8C%EC%9D%BC-%EC%8B%9C%EC%8A%A4%ED%85%9C"><span class="toc-text">가상 파일 시스템</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%ED%8A%B9%EC%88%98%ED%8C%8C%EC%9D%BC-%EB%94%94%EB%B0%94%EC%9D%B4%EC%8A%A4"><span class="toc-text">특수파일 -디바이스</span></a></li></ol></li></ol>
+
+<hr>
+<p><em>💬 해당 강의는 fastcampus 에서 ‘컴공 전공자 따라잡기 온라인 완주반’ 강의를 들으며 스스로의 학습을 위해 작성한 포스팅입니다. 문제가 된다면 연락 부탁드립니다.</em></p>
+<br>
+
+<h1 id="파일-시스템이란"><a href="#파일-시스템이란" class="headerlink" title="파일 시스템이란 ?"></a>파일 시스템이란 ?</h1><blockquote>
+<p>운영체제가 저장매체에 파일을 쓰기 위한 자료구조 또는 알고리즘을 의미한다.</p>
+</blockquote>
+<h2 id="파일-시스템이-만들어진-이유"><a href="#파일-시스템이-만들어진-이유" class="headerlink" title="파일 시스템이 만들어진 이유?"></a>파일 시스템이 만들어진 이유?</h2><ul>
+<li>블록: <code>블록</code> 단위로(보통 4KB), 블록마다 고유 번호를 부여해서 관리한다.</li>
+<li>0과 1의 데이터를 비트로 저장하기에는 오버헤드 발생하기 때문.</li>
+<li>파일: 사용자는 <code>파일</code> 단위로 관리하며, 각 파일에는 블록 단위로 관리된다.</li>
+<li>사용자가 블록 단위로 고유번호를 관리하기 어렵기 때문.</li>
+</ul>
+<h2 id="파일-시스템-저장-방법"><a href="#파일-시스템-저장-방법" class="headerlink" title="파일 시스템 저장 방법"></a>파일 시스템 저장 방법</h2><ul>
+<li>가능한 연속적 공간에 파일을 저장하는것이 좋으나, 파일 사이즈가 가변적이라면 외부 단편화가 일어날 수 있다.</li>
+<li>따라서,  불연속 공간에 파일을 저장하는 기능이 필요하다.</li>
+<li><code>블록체인</code>: 각 블록을 링크드 리스트로 연결한다. 어떤 주소를 찾으려면 처음부터 주소를 따라가야 하는 단점이 있다.</li>
+<li><code>인덱스 블록</code>: 각 블록에 대한 위치정보를 기억해서, 한번에 그 블록을 찾을 수 있다.</li>
+</ul>
+<h2 id="파일시스템과-시스템콜"><a href="#파일시스템과-시스템콜" class="headerlink" title="파일시스템과 시스템콜"></a>파일시스템과 시스템콜</h2><ul>
+<li>동일한 시스템콜을 사용해서 다양한 파일 시스템 지원 가능하도록 구현되어 있다.</li>
+<li>파일을 실제로 어떻게 저장하는지는 다를 수 있다.</li>
+<li>리눅스의 경우 ext4, NTFS, FAT32 파일시스템을 지원한다.</li>
+</ul>
+<h1 id="inode-방식-파일-시스템"><a href="#inode-방식-파일-시스템" class="headerlink" title="inode 방식 파일 시스템"></a>inode 방식 파일 시스템</h1><ul>
+<li>파일시스템의 기본 구조</li>
+<li>수퍼블록: 파일시스템 정보</li>
+<li>아이노드 블록: 파일 상세정보 (PCB)</li>
+<li>데이터 블록: 실제 데이터 (1KB~4KB)</li>
+</ul>
+<br>
+<img width="316" alt="파일시스템구조" src="https://user-images.githubusercontent.com/28856435/118361659-6b678d80-b5c7-11eb-87d4-839182efbba0.PNG">
+
+<br>
+
+<h2 id="수퍼블록"><a href="#수퍼블록" class="headerlink" title="수퍼블록"></a>수퍼블록</h2><ul>
+<li>파일시스템 정보 및 파티션 정보를 포함한다.</li>
+<li>리눅스 명령어 <code>df</code> 를 했을 때 출력되는 정보들.</li>
+</ul>
+<h2 id="inode와-파일"><a href="#inode와-파일" class="headerlink" title="inode와 파일"></a>inode와 파일</h2><ul>
+<li><p>파일 <code>inode 고유값</code>과 <code>자료구조</code>에 의해 주요 정보를 관리한다.</p>
+</li>
+<li><p>파이이름 : inode =&gt; 파일이름은 inode 와 매칭된다.</p>
+</li>
+<li><p>파일 시스템에서는 inode 기반으로 파일에 엑세스 한다.</p>
+</li>
+<li><p><code>inode 기반의 메타 데이터</code> : 파일권한, 소유자 정보, 파일 사이즈, 생성시간 등</p>
+</li>
+<li><p>파일생성 &gt; inode 번호 &gt; inode 블록 &lt;- 파일 쿼리</p>
+</li>
+<li><p>아래 명령을 실행할 경우,</p>
+</li>
+<li><p>inode 번호 &gt; inode 블록 접근 &gt; 해당 데이터를 읽어옴.</p>
+</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;</span><span class="bash"> cat data.txt</span></span><br></pre></td></tr></table></figure>
+
+<br>
+<img width="773" alt="inode구조" src="https://user-images.githubusercontent.com/28856435/118361800-e92b9900-b5c7-11eb-8da3-0791cdf1dfc7.PNG">
+<br>
+
+<h1 id="디렉토리-엔트리"><a href="#디렉토리-엔트리" class="headerlink" title="디렉토리 엔트리"></a>디렉토리 엔트리</h1><ul>
+<li>디렉토리를 표현하는 데 쓰이는 자료구조이다.</li>
+<li>일반적으로 파일이름, 파일 속성 등 여러가지 정보가 저장되는데, 유닉스 계열에서는 <code>파일이름</code>과 <code>inode번호</code>만 저장된다.</li>
+<li>리눅스 파일탐색: /home/ubuntu/ink.txt</li>
+<li>각 디렉토리 엔트리를 탐색 : 각 엔트리는 해당 디렉토리 파일/디렉토리 정보를 가지고 있다.</li>
+<li>즉 <code>/</code> - <code>home</code> - <code>ubuntu</code> - <code>link.txt</code> 순으로 파일을 찾아 해당 <code>inode</code> 를 얻는다. </li>
+</ul>
+<h2 id="가상-파일-시스템"><a href="#가상-파일-시스템" class="headerlink" title="가상 파일 시스템"></a>가상 파일 시스템</h2><ul>
+<li>Network 등 다양한 기기도 동일한 파일시스템 인터페이스를 통해 관리가능</li>
+<li>eg. read/write 시스템콜 사용, 각 기기별 read_spec/write_spec 코드 구현 (운영체제 내부)</li>
+</ul>
+<blockquote>
+<p>모든 것은 파일이라는 철학</p>
+<ul>
+<li>모든 인터렉션 파일을 읽고, 쓰는것처럼 이루어져 있다.</li>
+<li>마우스, 키보드와 같은 모든 디바이스 관련 기술 또한 파일과 같이 다루어짐.<br><strong>즉, 모든 자원에 대한 추상화 인터페이스로 파일 인터페이스를 활용한다.</strong></li>
+</ul>
+</blockquote>
+<h2 id="특수파일-디바이스"><a href="#특수파일-디바이스" class="headerlink" title="특수파일 -디바이스"></a>특수파일 -디바이스</h2><ul>
+<li>블록 디바이스(Block Device): HDD, CD/DVD 같이 블록 또는 섹터 단위 등 정해진 단위로 데이터를 전송한다. I/O 송수신 속도가 높다.</li>
+<li>캐릭터 디바이스 (Character Device): 키보드, 마우스 등 byte 단위 데이터를 전송한다. I/O 송수신 속도가 낮다.</li>
+</ul>
+            
+
+
+        </div>
+    </div>
+    <div id="post-footer" class="post-footer main-content-wrap">
+        
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">TAGGED IN</span><br/>
+                
+    <a class="tag tag--primary tag--small t-none-link" href="/tags/file-system/" rel="tag">file_system</a> <a class="tag tag--primary tag--small t-none-link" href="/tags/inode/" rel="tag">inode</a>
+
+            </div>
+        
+        
+            <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2021/05/15/%EB%B6%80%ED%8C%85%EC%9D%98-%EC%9D%B4%ED%95%B4/"
+                    data-tooltip="💻 부팅의 이해"
+                    aria-label="PREVIOUS: 💻 부팅의 이해"
+                >
+                    
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                    </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2021/05/13/%EA%B0%80%EC%83%81%EB%A9%94%EB%AA%A8%EB%A6%AC/"
+                    data-tooltip="☁️ 가상메모리와 페이징 시스템"
+                    aria-label="NEXT: ☁️ 가상메모리와 페이징 시스템"
+                >
+                    
+                        <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a
+                class="post-action-btn btn btn--default btn-open-shareoptions"
+                href="#btn-open-shareoptions"
+                aria-label="Share this post"
+            >
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2021/05/15/%ED%8C%8C%EC%9D%BC%EC%8B%9C%EC%8A%A4%ED%85%9C/"
+                    title="Share on Facebook"
+                    aria-label="Share on Facebook"
+                >
+                    <i class="fab fa-facebook" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2021/05/15/%ED%8C%8C%EC%9D%BC%EC%8B%9C%EC%8A%A4%ED%85%9C/"
+                    title="Share on Twitter"
+                    aria-label="Share on Twitter"
+                >
+                    <i class="fab fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://plus.google.com/share?url=http://yoursite.com/2021/05/15/%ED%8C%8C%EC%9D%BC%EC%8B%9C%EC%8A%A4%ED%85%9C/"
+                    title="Share on Google+"
+                    aria-label="Share on Google+"
+                >
+                    <i class="fab fa-google-plus" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+                <li class="post-action">
+                    <a
+                        class="post-action-btn btn btn--default"
+                        href="#disqus_thread"
+                        aria-label="Leave a comment"
+                    >
+                        <i class="fa fa-comment"></i>
+                    </a>
+                </li>
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#table-of-contents" aria-label="Contents">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+        
+        
+            
+                <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+            
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2021 Suyan Kim. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2021/05/15/%EB%B6%80%ED%8C%85%EC%9D%98-%EC%9D%B4%ED%95%B4/"
+                    data-tooltip="💻 부팅의 이해"
+                    aria-label="PREVIOUS: 💻 부팅의 이해"
+                >
+                    
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                    </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2021/05/13/%EA%B0%80%EC%83%81%EB%A9%94%EB%AA%A8%EB%A6%AC/"
+                    data-tooltip="☁️ 가상메모리와 페이징 시스템"
+                    aria-label="NEXT: ☁️ 가상메모리와 페이징 시스템"
+                >
+                    
+                        <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a
+                class="post-action-btn btn btn--default btn-open-shareoptions"
+                href="#btn-open-shareoptions"
+                aria-label="Share this post"
+            >
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2021/05/15/%ED%8C%8C%EC%9D%BC%EC%8B%9C%EC%8A%A4%ED%85%9C/"
+                    title="Share on Facebook"
+                    aria-label="Share on Facebook"
+                >
+                    <i class="fab fa-facebook" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2021/05/15/%ED%8C%8C%EC%9D%BC%EC%8B%9C%EC%8A%A4%ED%85%9C/"
+                    title="Share on Twitter"
+                    aria-label="Share on Twitter"
+                >
+                    <i class="fab fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://plus.google.com/share?url=http://yoursite.com/2021/05/15/%ED%8C%8C%EC%9D%BC%EC%8B%9C%EC%8A%A4%ED%85%9C/"
+                    title="Share on Google+"
+                    aria-label="Share on Google+"
+                >
+                    <i class="fab fa-google-plus" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+                <li class="post-action">
+                    <a
+                        class="post-action-btn btn btn--default"
+                        href="#disqus_thread"
+                        aria-label="Leave a comment"
+                    >
+                        <i class="fa fa-comment"></i>
+                    </a>
+                </li>
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#table-of-contents" aria-label="Contents">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                
+    <div id="share-options-bar" class="share-options-bar" data-behavior="4">
+        <i id="btn-close-shareoptions" class="fa fa-times"></i>
+        <ul class="share-options">
+            
+                
+                
+                <li class="share-option">
+                    <a
+                        class="share-option-btn"
+                        target="new"
+                        href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2021/05/15/%ED%8C%8C%EC%9D%BC%EC%8B%9C%EC%8A%A4%ED%85%9C/"
+                        aria-label="Share on Facebook"
+                    >
+                        <i class="fab fa-facebook" aria-hidden="true"></i><span>Share on Facebook</span>
+                    </a>
+                </li>
+            
+                
+                
+                <li class="share-option">
+                    <a
+                        class="share-option-btn"
+                        target="new"
+                        href="https://twitter.com/intent/tweet?text=http://yoursite.com/2021/05/15/%ED%8C%8C%EC%9D%BC%EC%8B%9C%EC%8A%A4%ED%85%9C/"
+                        aria-label="Share on Twitter"
+                    >
+                        <i class="fab fa-twitter" aria-hidden="true"></i><span>Share on Twitter</span>
+                    </a>
+                </li>
+            
+                
+                
+                <li class="share-option">
+                    <a
+                        class="share-option-btn"
+                        target="new"
+                        href="https://plus.google.com/share?url=http://yoursite.com/2021/05/15/%ED%8C%8C%EC%9D%BC%EC%8B%9C%EC%8A%A4%ED%85%9C/"
+                        aria-label="Share on Google+"
+                    >
+                        <i class="fab fa-google-plus" aria-hidden="true"></i><span>Share on Google+</span>
+                    </a>
+                </li>
+            
+        </ul>
+    </div>
+
+
+            
+        </div>
+        
+
+
+    
+
+<div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-times"></i>
+        </div>
+        
+            <img id="about-card-picture" src="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=110" alt="Author&#39;s picture"/>
+        
+            <h4 id="about-card-name">Suyan Kim</h4>
+        <!--  -->
+            <!-- <div id="about-card-bio"><p>author.bio</p>
+</div> -->
+            <div id="about-card-bio">안녕하세요, 서버 백엔드 개발자 동글씨입니다.</div>
+        <!--  -->
+        <!--  -->
+            <div id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <!-- <p>Backend Developer</p>
+ -->
+                Backend Developer
+            </div>
+        <!--  -->
+        
+            <div id="about-card-location">
+                <i class="fa fa-map-marker-alt"></i>
+                <br/>
+                Korea
+            </div>
+        
+    </div>
+</div>
+
+        
+        
+<div id="cover" style="background-image:url('/assets/images/null');"></div>
+        <!--SCRIPTS-->
+
+<script src="/assets/js/jquery.js"></script>
+
+
+<script src="/assets/js/jquery.fancybox.js"></script>
+
+
+<script src="/assets/js/thumbs.js"></script>
+
+
+<script src="/assets/js/tranquilpeak.js"></script>
+
+<!--SCRIPTS END-->
+
+
+    
+        <script>
+          var disqus_config = function() {
+            this.page.url = 'http://yoursite.com/2021/05/15/%ED%8C%8C%EC%9D%BC%EC%8B%9C%EC%8A%A4%ED%85%9C/';
+              
+            this.page.identifier = '2021/05/15/파일시스템/';
+              
+          };
+          (function() {
+            var d = document, s = d.createElement('script');
+            var disqus_shortname = 'ksso730-github-io';
+            s.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+          })();
+        </script>
+    
+
+
+
+
+    </body>
+</html>

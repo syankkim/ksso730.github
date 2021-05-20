@@ -2682,10 +2682,35 @@ a.tag--small,
     margin-top: 0; }
 
 .toc-text {
-  color: #164b78; }
+  color: #164b78;
+  font-size: 0.7em; }
 
 #table-of-contents {
   color: #164b78; }
+
+.toc-item {
+  line-height: 1.2em; }
+
+.toc {
+  padding: 0.6em 1.7em;
+  background-color: #efefef;
+  border-top: 2px solid #ff33b7;
+  border-radius: 0.5em;
+  overflow: auto; }
+
+@media only screen and (min-width: 1024px) {
+  .toc {
+    width: 16%;
+    position: fixed;
+    right: 0.5%;
+    top: 10%; }
+  #table-of-contents {
+    display: none; } }
+
+@media only screen and (max-width: 1023px) {
+  .toc {
+    display: block;
+    height: 180px; } }
 
 .popular-posts {
   list-style: none;

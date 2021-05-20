@@ -1,0 +1,762 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="동글씨">
+    <title>리눅스 리다이렉션/파이프, 프로세스 - 동글씨</title>
+    <meta name="author" content="Suyan Kim">
+    
+    
+    
+        <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
+    
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\n표준 입출력 (Standard Stream )\ncommand로 실행되는 프로세스는 세가지 스트림을 가지고 있다.\n표준 입력 스트림 : stdin\n표준 출력 스트림 : stdout\n오류 출력 스트림 : stderr\n\n리다이렉션 (redirection)\n표준 스트림 흐름을 바꿔줄 수 있다.\n‘&gt;’ , ‘&lt;’ 를 사용한다.\n주로 명령어 표준 출력을 화면이 아닌 파일에 쓸때\n\n\n아래와 같이 ll로 출력되는 메시지들이 file.txt 로 만들어진다.\n1234ubuntu@ip-172-31-42-223:~$ ll &gt; file.txtubuntu@ip-172-31-42-223:~$ lsfile.txtubuntu@ip-172-31-42-223:~$ vi file.txt\n혹은  head 명령어를 사용해, 방금 생성된 file.txt 의 앞에서부터 10줄만 file2.txt 로 새로 만들수 있다.\n\n\n1ubuntu@ip-172-31-42-223:~$ head &lt; file.txt &gt; file2.txt\n\n파이프 (pipe)\n두 프로세스 사이에서 한 프로세스의 출력 스트림을 또 다른 프로세스의 입력 스트림으로 사용할 때 사용함.\n\n\ngrep 명령어로 가장 많이 사용된다.123ubuntu@ip-172-31-42-223:~$ ls | grep filefile.txtfile2.txt\ngrep 명령어 옵션\n\n\ngrep java file.txt : file.txt 내에서 java 라는 문구가 포함된 행을 모두 출력\ngrep -n java file.txt : file.txt 내에서 java 라는 문구가 포함된 행을 라인까지 출력\ngrep -r java directory : directory 내의 모든 파일 중 java 라는 문구가 포함된 행 출력\ngrep -i java file.txt : file.txt 내에서 java 라는 문구가 포함된 행을 대소문자 구분없이 출력\ngrep -E python|java|ruby file.txt : file.txt 내에서 java,python,ruby 라는 문구가 포함된 행을 출력\n\n프로세스 vs 바이너리\n코드 이미지 또는 바이너리: 실행파일\n싫행중인 프로그램: 프로세스\n가상 메모리 및 물리 메모리 정보\n시스템 리소스 관련 정보\n스케줄링 단위\n\n다양한 프로세스 실행환경\n리눅스는 다양한 프로세스가 실행된다.\n유닉스 철학 : 여러 프로그램이 서로 유기적으로 각자의 일을 수행하면서 \n\n\n\nforeground process &amp; background process\n쉘에서 해당 프로세스를 실행한 후, 해당 프로세스 수행 종료까지 다른 입력을 하지 못하는 프로세스\n","dateCreated":"2021-05-19T21:34:46+09:00","dateModified":"2021-05-20T14:16:48+09:00","datePublished":"2021-05-19T21:34:46+09:00","description":"리눅스에서 리다이렉션과 파이프를 명령어와 함께 사용해본다.background 와 foreground 프로세스에 대한 이해.#redirection #pipe #grep #linux_process","headline":"리눅스 리다이렉션/파이프, 프로세스","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2021/05/19/%EB%A6%AC%EB%88%85%EC%8A%A4-%EB%A6%AC%EB%8B%A4%EB%A0%89%EC%85%98-%ED%8C%8C%EC%9D%B4%ED%94%84/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2021/05/19/%EB%A6%AC%EB%88%85%EC%8A%A4-%EB%A6%AC%EB%8B%A4%EB%A0%89%EC%85%98-%ED%8C%8C%EC%9D%B4%ED%94%84/","keywords":"linux, pipe, redirection"}</script>
+    <meta name="description" content="리눅스에서 리다이렉션과 파이프를 명령어와 함께 사용해본다.background 와 foreground 프로세스에 대한 이해.#redirection #pipe #grep #linux_process">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="리눅스 리다이렉션&#x2F;파이프, 프로세스">
+<meta property="og:url" content="http://yoursite.com/2021/05/19/%EB%A6%AC%EB%88%85%EC%8A%A4-%EB%A6%AC%EB%8B%A4%EB%A0%89%EC%85%98-%ED%8C%8C%EC%9D%B4%ED%94%84/index.html">
+<meta property="og:site_name" content="동글씨">
+<meta property="og:description" content="리눅스에서 리다이렉션과 파이프를 명령어와 함께 사용해본다.background 와 foreground 프로세스에 대한 이해.#redirection #pipe #grep #linux_process">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2021-05-19T12:34:46.000Z">
+<meta property="article:modified_time" content="2021-05-20T05:16:48.516Z">
+<meta property="article:author" content="Suyan Kim">
+<meta property="article:tag" content="linux">
+<meta property="article:tag" content="pipe">
+<meta property="article:tag" content="redirection">
+<meta name="twitter:card" content="summary">
+    
+    
+        
+    
+    
+        <meta property="og:image" content="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=640"/>
+    
+    
+    
+    
+    <!--STYLES-->
+    
+<link rel="stylesheet" href="/assets/css/all.css">
+
+    
+<link rel="stylesheet" href="/assets/css/jquery.fancybox.css">
+
+    
+<link rel="stylesheet" href="/assets/css/thumbs.css">
+
+    
+<link rel="stylesheet" href="/assets/css/tranquilpeak.css">
+
+    <!--STYLES END-->
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-158530470-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-158530470-1');
+    </script>
+
+
+    
+
+    
+        
+    
+</head>
+
+    <body>
+        <div id="blog">
+            <!-- Define author's picture -->
+
+
+    
+        
+    
+
+<header id="header" data-behavior="4">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <div class="header-title">
+        <a
+            class="header-title-link"
+            href="/index.html"
+            aria-label=""
+        >
+            동글씨
+        </a>
+    </div>
+    
+        
+            <a
+                class="header-right-picture "
+                href="#about"
+                aria-label="Open the link: /#about"
+            >
+        
+        
+            <img class="header-picture" src="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=90" alt="Author&#39;s picture"/>
+        
+        </a>
+    
+</header>
+
+            <!-- function -->
+
+
+<!-- Define author's picture -->
+
+
+    
+
+<nav id="sidebar" data-behavior="4">
+    <div class="sidebar-container">
+        
+            <div class="sidebar-profile">
+                <a
+                    href="/#about"
+                    aria-label="Read more about the author"
+                >
+                    <img class="sidebar-profile-picture" src="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=800" alt="Author&#39;s picture"/>
+                </a>
+                <h4 class="sidebar-profile-name">Suyan Kim</h4>
+                
+                    <h5 class="sidebar-profile-bio"><p>▲ Who Am I</p>
+</h5>
+                
+            </div>
+        
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="home"href="/index.html"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-home" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">home</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="archives"href="/all-archives"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-archive" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">archives</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="categories"href="/all-categories"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-bookmark" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">categories</span>
+                        </a>
+                    <!-- add -->
+                    
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (7)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Config/">☁️ Config (2)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-DataBase/">☁️ DataBase (1)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Git/">☁️ Git (3)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-JPA/">☁️ JPA (10)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Java/">☁️ Java (0)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Linux/">☁️ Linux (2)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-OS/">☁️ OS (14)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Python/">☁️ Python (2)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-React/">☁️ React (3)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Spring/">☁️ Spring (1)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-TIL/">☁️ TIL (2)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Web/">☁️ Web (1)</a></li>
+                            
+                        
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="tags"href="/all-tags"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-tags" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">tags</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="about"href="#about"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-question" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">about</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="https://github.com/ksso730" target="_blank" rel="noopener" title="github">
+                    
+                    <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">github</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="https://www.instagram.com/syankkim/" target="_blank" rel="noopener" title="life">
+                    
+                    <i class="sidebar-button-icon fab fa-instagram" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">life</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+        </ul>
+        
+    </div>
+</nav>
+
+            
+            <div id="main" data-behavior="4"
+                 class="
+                        hasCoverMetaIn
+                        ">
+                
+<article class="post">
+    
+    
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title">
+            리눅스 리다이렉션/파이프, 프로세스
+        </h1>
+    
+    
+        <div class="post-meta">
+    <time datetime="2021-05-19T21:34:46+09:00">
+	
+		    May 19, 2021
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/%E2%98%81%EF%B8%8F-Linux/">☁️ Linux</a>
+
+
+    
+</div>
+
+    
+</div>
+
+    
+    <div class="post-content markdown">
+        <div class="main-content-wrap">
+            <!-- excerpt -->
+<h1 id="table-of-contents">Contents</h1><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%ED%91%9C%EC%A4%80-%EC%9E%85%EC%B6%9C%EB%A0%A5-Standard-Stream"><span class="toc-text">표준 입출력 (Standard Stream )</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%EB%A6%AC%EB%8B%A4%EC%9D%B4%EB%A0%89%EC%85%98-redirection"><span class="toc-text">리다이렉션 (redirection)</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%ED%8C%8C%EC%9D%B4%ED%94%84-pipe"><span class="toc-text">파이프 (pipe)</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#grep-%EB%AA%85%EB%A0%B9%EC%96%B4-%EC%98%B5%EC%85%98"><span class="toc-text">grep 명령어 옵션</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%ED%94%84%EB%A1%9C%EC%84%B8%EC%8A%A4-vs-%EB%B0%94%EC%9D%B4%EB%84%88%EB%A6%AC"><span class="toc-text">프로세스 vs 바이너리</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%EB%8B%A4%EC%96%91%ED%95%9C-%ED%94%84%EB%A1%9C%EC%84%B8%EC%8A%A4-%EC%8B%A4%ED%96%89%ED%99%98%EA%B2%BD"><span class="toc-text">다양한 프로세스 실행환경</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#foreground-process-amp-background-process"><span class="toc-text">foreground process &amp; background process</span></a></li></ol></li></ol>
+
+<hr>
+<h1 id="표준-입출력-Standard-Stream"><a href="#표준-입출력-Standard-Stream" class="headerlink" title="표준 입출력 (Standard Stream )"></a>표준 입출력 (Standard Stream )</h1><ul>
+<li>command로 실행되는 프로세스는 세가지 스트림을 가지고 있다.</li>
+<li>표준 입력 스트림 : stdin</li>
+<li>표준 출력 스트림 : stdout</li>
+<li>오류 출력 스트림 : stderr</li>
+</ul>
+<h1 id="리다이렉션-redirection"><a href="#리다이렉션-redirection" class="headerlink" title="리다이렉션 (redirection)"></a>리다이렉션 (redirection)</h1><ul>
+<li>표준 스트림 흐름을 바꿔줄 수 있다.</li>
+<li>‘&gt;’ , ‘&lt;’ 를 사용한다.</li>
+<li>주로 명령어 표준 출력을 화면이 아닌 <code>파일</code>에 쓸때</li>
+</ul>
+<ul>
+<li><p>아래와 같이 <code>ll</code>로 출력되는 메시지들이 file.txt 로 만들어진다.</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ubuntu@ip-172-31-42-223:~$ ll &gt; file.txt</span><br><span class="line">ubuntu@ip-172-31-42-223:~$ ls</span><br><span class="line">file.txt</span><br><span class="line">ubuntu@ip-172-31-42-223:~$ vi file.txt</span><br></pre></td></tr></table></figure></li>
+<li><p>혹은  <code>head</code> 명령어를 사용해, 방금 생성된 file.txt 의 앞에서부터 10줄만 file2.txt 로 새로 만들수 있다.</p>
+</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ubuntu@ip-172-31-42-223:~$ head &lt; file.txt &gt; file2.txt</span><br></pre></td></tr></table></figure>
+
+<h1 id="파이프-pipe"><a href="#파이프-pipe" class="headerlink" title="파이프 (pipe)"></a>파이프 (pipe)</h1><ul>
+<li>두 프로세스 사이에서 한 프로세스의 출력 스트림을 또 다른 프로세스의 입력 스트림으로 사용할 때 사용함.</li>
+</ul>
+<ul>
+<li><code>grep</code> 명령어로 가장 많이 사용된다.<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ubuntu@ip-172-31-42-223:~$ ls | grep file</span><br><span class="line">file.txt</span><br><span class="line">file2.txt</span><br></pre></td></tr></table></figure>
+<h2 id="grep-명령어-옵션"><a href="#grep-명령어-옵션" class="headerlink" title="grep 명령어 옵션"></a>grep 명령어 옵션</h2></li>
+</ul>
+<ul>
+<li><code>grep java file.txt</code> : file.txt 내에서 <code>java</code> 라는 문구가 포함된 행을 모두 출력</li>
+<li><code>grep -n java file.txt</code> : file.txt 내에서 <code>java</code> 라는 문구가 포함된 행을 <code>라인까지</code> 출력</li>
+<li><code>grep -r java directory</code> : directory 내의 모든 파일 중 <code>java</code> 라는 문구가 포함된 행 출력</li>
+<li><code>grep -i java file.txt</code> : file.txt 내에서 <code>java</code> 라는 문구가 포함된 행을 <code>대소문자 구분없이</code> 출력</li>
+<li><code>grep -E python|java|ruby file.txt</code> : file.txt 내에서 <code>java</code>,<code>python</code>,<code>ruby</code> 라는 문구가 포함된 행을 출력</li>
+</ul>
+<h1 id="프로세스-vs-바이너리"><a href="#프로세스-vs-바이너리" class="headerlink" title="프로세스 vs 바이너리"></a>프로세스 vs 바이너리</h1><ul>
+<li>코드 이미지 또는 바이너리: 실행파일</li>
+<li>싫행중인 프로그램: 프로세스</li>
+<li>가상 메모리 및 물리 메모리 정보</li>
+<li>시스템 리소스 관련 정보</li>
+<li>스케줄링 단위</li>
+</ul>
+<h1 id="다양한-프로세스-실행환경"><a href="#다양한-프로세스-실행환경" class="headerlink" title="다양한 프로세스 실행환경"></a>다양한 프로세스 실행환경</h1><ul>
+<li>리눅스는 다양한 프로세스가 실행된다.<blockquote>
+<p>유닉스 철학 : 여러 프로그램이 서로 유기적으로 각자의 일을 수행하면서 </p>
+</blockquote>
+</li>
+</ul>
+<h2 id="foreground-process-amp-background-process"><a href="#foreground-process-amp-background-process" class="headerlink" title="foreground process &amp; background process"></a>foreground process &amp; background process</h2><ul>
+<li>쉘에서 해당 프로세스를 실행한 후, 해당 프로세스 수행 종료까지 다른 입력을 하지 못하는 프로세스</li>
+</ul>
+            
+
+
+        </div>
+    </div>
+    <div id="post-footer" class="post-footer main-content-wrap">
+        
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">TAGGED IN</span><br/>
+                
+    <a class="tag tag--primary tag--small t-none-link" href="/tags/linux/" rel="tag">linux</a> <a class="tag tag--primary tag--small t-none-link" href="/tags/pipe/" rel="tag">pipe</a> <a class="tag tag--primary tag--small t-none-link" href="/tags/redirection/" rel="tag">redirection</a>
+
+            </div>
+        
+        
+            <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a
+                        class="post-action-btn btn btn--disabled"
+                        aria-hidden="true"
+                    >
+                        
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                    </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2021/05/18/%EB%A6%AC%EB%88%85%EC%8A%A4%EC%84%9C%EB%B2%84EC2/"
+                    data-tooltip="리눅스서버EC2, 리눅스 기본"
+                    aria-label="NEXT: 리눅스서버EC2, 리눅스 기본"
+                >
+                    
+                        <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a
+                class="post-action-btn btn btn--default btn-open-shareoptions"
+                href="#btn-open-shareoptions"
+                aria-label="Share this post"
+            >
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2021/05/19/%EB%A6%AC%EB%88%85%EC%8A%A4-%EB%A6%AC%EB%8B%A4%EB%A0%89%EC%85%98-%ED%8C%8C%EC%9D%B4%ED%94%84/"
+                    title="Share on Facebook"
+                    aria-label="Share on Facebook"
+                >
+                    <i class="fab fa-facebook" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2021/05/19/%EB%A6%AC%EB%88%85%EC%8A%A4-%EB%A6%AC%EB%8B%A4%EB%A0%89%EC%85%98-%ED%8C%8C%EC%9D%B4%ED%94%84/"
+                    title="Share on Twitter"
+                    aria-label="Share on Twitter"
+                >
+                    <i class="fab fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://plus.google.com/share?url=http://yoursite.com/2021/05/19/%EB%A6%AC%EB%88%85%EC%8A%A4-%EB%A6%AC%EB%8B%A4%EB%A0%89%EC%85%98-%ED%8C%8C%EC%9D%B4%ED%94%84/"
+                    title="Share on Google+"
+                    aria-label="Share on Google+"
+                >
+                    <i class="fab fa-google-plus" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+                <li class="post-action">
+                    <a
+                        class="post-action-btn btn btn--default"
+                        href="#disqus_thread"
+                        aria-label="Leave a comment"
+                    >
+                        <i class="fa fa-comment"></i>
+                    </a>
+                </li>
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#table-of-contents" aria-label="Contents">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+        
+        
+            
+                <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+            
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2021 Suyan Kim. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a
+                        class="post-action-btn btn btn--disabled"
+                        aria-hidden="true"
+                    >
+                        
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                    </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2021/05/18/%EB%A6%AC%EB%88%85%EC%8A%A4%EC%84%9C%EB%B2%84EC2/"
+                    data-tooltip="리눅스서버EC2, 리눅스 기본"
+                    aria-label="NEXT: 리눅스서버EC2, 리눅스 기본"
+                >
+                    
+                        <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a
+                class="post-action-btn btn btn--default btn-open-shareoptions"
+                href="#btn-open-shareoptions"
+                aria-label="Share this post"
+            >
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2021/05/19/%EB%A6%AC%EB%88%85%EC%8A%A4-%EB%A6%AC%EB%8B%A4%EB%A0%89%EC%85%98-%ED%8C%8C%EC%9D%B4%ED%94%84/"
+                    title="Share on Facebook"
+                    aria-label="Share on Facebook"
+                >
+                    <i class="fab fa-facebook" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2021/05/19/%EB%A6%AC%EB%88%85%EC%8A%A4-%EB%A6%AC%EB%8B%A4%EB%A0%89%EC%85%98-%ED%8C%8C%EC%9D%B4%ED%94%84/"
+                    title="Share on Twitter"
+                    aria-label="Share on Twitter"
+                >
+                    <i class="fab fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://plus.google.com/share?url=http://yoursite.com/2021/05/19/%EB%A6%AC%EB%88%85%EC%8A%A4-%EB%A6%AC%EB%8B%A4%EB%A0%89%EC%85%98-%ED%8C%8C%EC%9D%B4%ED%94%84/"
+                    title="Share on Google+"
+                    aria-label="Share on Google+"
+                >
+                    <i class="fab fa-google-plus" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+                <li class="post-action">
+                    <a
+                        class="post-action-btn btn btn--default"
+                        href="#disqus_thread"
+                        aria-label="Leave a comment"
+                    >
+                        <i class="fa fa-comment"></i>
+                    </a>
+                </li>
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#table-of-contents" aria-label="Contents">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                
+    <div id="share-options-bar" class="share-options-bar" data-behavior="4">
+        <i id="btn-close-shareoptions" class="fa fa-times"></i>
+        <ul class="share-options">
+            
+                
+                
+                <li class="share-option">
+                    <a
+                        class="share-option-btn"
+                        target="new"
+                        href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2021/05/19/%EB%A6%AC%EB%88%85%EC%8A%A4-%EB%A6%AC%EB%8B%A4%EB%A0%89%EC%85%98-%ED%8C%8C%EC%9D%B4%ED%94%84/"
+                        aria-label="Share on Facebook"
+                    >
+                        <i class="fab fa-facebook" aria-hidden="true"></i><span>Share on Facebook</span>
+                    </a>
+                </li>
+            
+                
+                
+                <li class="share-option">
+                    <a
+                        class="share-option-btn"
+                        target="new"
+                        href="https://twitter.com/intent/tweet?text=http://yoursite.com/2021/05/19/%EB%A6%AC%EB%88%85%EC%8A%A4-%EB%A6%AC%EB%8B%A4%EB%A0%89%EC%85%98-%ED%8C%8C%EC%9D%B4%ED%94%84/"
+                        aria-label="Share on Twitter"
+                    >
+                        <i class="fab fa-twitter" aria-hidden="true"></i><span>Share on Twitter</span>
+                    </a>
+                </li>
+            
+                
+                
+                <li class="share-option">
+                    <a
+                        class="share-option-btn"
+                        target="new"
+                        href="https://plus.google.com/share?url=http://yoursite.com/2021/05/19/%EB%A6%AC%EB%88%85%EC%8A%A4-%EB%A6%AC%EB%8B%A4%EB%A0%89%EC%85%98-%ED%8C%8C%EC%9D%B4%ED%94%84/"
+                        aria-label="Share on Google+"
+                    >
+                        <i class="fab fa-google-plus" aria-hidden="true"></i><span>Share on Google+</span>
+                    </a>
+                </li>
+            
+        </ul>
+    </div>
+
+
+            
+        </div>
+        
+
+
+    
+
+<div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-times"></i>
+        </div>
+        
+            <img id="about-card-picture" src="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=110" alt="Author&#39;s picture"/>
+        
+            <h4 id="about-card-name">Suyan Kim</h4>
+        <!--  -->
+            <!-- <div id="about-card-bio"><p>author.bio</p>
+</div> -->
+            <div id="about-card-bio">안녕하세요, 서버 백엔드 개발자 동글씨입니다.</div>
+        <!--  -->
+        <!--  -->
+            <div id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <!-- <p>Backend Developer</p>
+ -->
+                Backend Developer
+            </div>
+        <!--  -->
+        
+            <div id="about-card-location">
+                <i class="fa fa-map-marker-alt"></i>
+                <br/>
+                Korea
+            </div>
+        
+    </div>
+</div>
+
+        
+        
+<div id="cover" style="background-image:url('/assets/images/null');"></div>
+        <!--SCRIPTS-->
+
+<script src="/assets/js/jquery.js"></script>
+
+
+<script src="/assets/js/jquery.fancybox.js"></script>
+
+
+<script src="/assets/js/thumbs.js"></script>
+
+
+<script src="/assets/js/tranquilpeak.js"></script>
+
+<!--SCRIPTS END-->
+
+
+    
+        <script>
+          var disqus_config = function() {
+            this.page.url = 'http://yoursite.com/2021/05/19/%EB%A6%AC%EB%88%85%EC%8A%A4-%EB%A6%AC%EB%8B%A4%EB%A0%89%EC%85%98-%ED%8C%8C%EC%9D%B4%ED%94%84/';
+              
+            this.page.identifier = '2021/05/19/리눅스-리다렉션-파이프/';
+              
+          };
+          (function() {
+            var d = document, s = d.createElement('script');
+            var disqus_shortname = 'ksso730-github-io';
+            s.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+          })();
+        </script>
+    
+
+
+
+
+    </body>
+</html>
