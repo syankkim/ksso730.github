@@ -13,7 +13,7 @@
     
         <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
     
-    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\n\nEntity Manager (엔티티 매니저)\nEntity Manager : Persistence Context = 1 : 1\n\nPersistence Context (영속성 컨텍스트)\n엔티티를 영구 저장하는 환경.엔티티 매니저를 통해서 영속성 컨텍스트에 접근한다. 영속성 컨텍스트는 직접적으로 눈에 보이지 않는다.EntityManager.persist(entity);\n\n영속, 비영속, 준영속, 삭제비영속 상태\n1234// 객체를 생성한 상태(비영속)Member member = new Member();member.setId(\"member\");member.setUsername(\"회원1\");\n\n영속 상태\n12345678910// 객체를 생성한 상태(비영속)Member member = new Member();member.setId(\"member\");member.setUsername(\"회원1\");// EntityManager -&gt; Persistence Context 영속em.persist// 커밋하는 순간 데이터베이스에 수행됨.tx.commit();\n\n준영속, 삭제 상태\n1234em.persist// 준영속em.detach(member);tx.commit();\n\n1234em.persist// 준영속em.detach(member);tx.commit();\n\nem.persist(member) 를 넣으면 무슨일이 일어날까?여기서 영속성 컨텍스트의 이점을 알 수 있다.\n\n영속성 컨텍스트의 이점1234567Member member1 = new Member(150L, \"A\");Member member2 = new Member(160L, \"B\");em.persist(member1);em.persist(member2);tx.commit();\nem.persist(member) -&gt; 1차 캐시에들어간다.\ntx.commit() -&gt; UPDATE 변경이 반영됨.\n1차캐시 테이블\n\n\n\n@id\nEntity\n\n\n\n“member1”\nmember1\n\n\n“member2”\nmember2\n\n\n사실, 1차 캐시는 데이터베이스의 하나의 트랜젝션 안에서만 의미가 있다.\n123Member findMember1 = em.find(Member.class, 1L);// 1L 1차캐시에 영속성을 넣어둠.Member findMember2 = em.find(Member.class, 1L);\n\n아래와 같이 이미 1차 캐시에 존재하기 때문에 select 를 한번만 실행.\n12345678Hibernate:     select        member0_.id as id1_0_0_,        member0_.name as name2_0_0_     from        Member member0_     where        member0_.id=?\n\n\n엔티티 수정 -변경감지 (Dirty Checking)아래와 같이 Member 테이블이 있다고 하자.\n\n\n\nID\nNAME\n\n\n\n150\nA\n\n\n160\nB\n\n\n12345Member findMember1 = em.find(Member.class, 150L);findMember1.setName(\"ZZZZZ\");// em.persist() ~~?? 안해도 된다.tx.commit();\n\n가져온 obj 에 setName 만 해주니 UPDATE 가 되었다. 어떻게 가능한걸까 ?변경 transaction 이 commit 되는 시점에서 JPA 가 1차 캐시 내부의 @id, Entity, 스냅샷을 모두 비교한다.Dirty Checking 의 과정은 아래와 같다.\n\n\n\nDrirty Checking Flow1) flush() -&gt; 영속성 컨텍스트(entityManager):: findMember1.setName(“ZZZZZ”);\n2) 엔티티와 스냅샷 비교\n\n\n\n@id\nEntity\n스냅샷\n\n\n\n“member1”\nmember1\nmember1스냅샷\n\n\n“member2”\nmember2\nmember2스냅샷\n\n\n3) update SQL 생성 -&gt; 쓰기지연 SQL 저장소\n4) flush -&gt; SQL update 적용\n5) commit() -&gt; DB\n엔티티 삭제12Member memberA = em.find(Member.class, \"memberA\");em.remove(memberA);","dateCreated":"2020-02-15T12:19:04+09:00","dateModified":"2020-04-28T10:36:01+09:00","datePublished":"2020-02-15T12:19:04+09:00","description":"JPA 를 이해하는데 가장 중요한 용어.엔티티 매니저와 영속성 컨텍스트를 알아봅니다.","headline":"JPA 영속성 컨텍스트","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2020/02/15/JPA-%EC%98%81%EC%86%8D%EC%84%B1-%EC%BB%A8%ED%85%8D%EC%8A%A4%ED%8A%B8/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2020/02/15/JPA-%EC%98%81%EC%86%8D%EC%84%B1-%EC%BB%A8%ED%85%8D%EC%8A%A4%ED%8A%B8/","keywords":"JPA"}</script>
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\n\nEntity Manager (엔티티 매니저)\nEntity Manager : Persistence Context = 1 : 1\n\nPersistence Context (영속성 컨텍스트)\n엔티티를 영구 저장하는 환경.엔티티 매니저를 통해서 영속성 컨텍스트에 접근한다. 영속성 컨텍스트는 직접적으로 눈에 보이지 않는다.EntityManager.persist(entity);\n\n영속, 비영속, 준영속, 삭제비영속 상태\n1234// 객체를 생성한 상태(비영속)Member member = new Member();member.setId(&quot;member&quot;);member.setUsername(&quot;회원1&quot;);\n\n영속 상태\n12345678910// 객체를 생성한 상태(비영속)Member member = new Member();member.setId(&quot;member&quot;);member.setUsername(&quot;회원1&quot;);// EntityManager -&gt; Persistence Context 영속em.persist// 커밋하는 순간 데이터베이스에 수행됨.tx.commit();\n\n준영속, 삭제 상태\n1234em.persist// 준영속em.detach(member);tx.commit();\n\n1234em.persist// 준영속em.detach(member);tx.commit();\n\nem.persist(member) 를 넣으면 무슨일이 일어날까?여기서 영속성 컨텍스트의 이점을 알 수 있다.\n\n영속성 컨텍스트의 이점1234567Member member1 = new Member(150L, &quot;A&quot;);Member member2 = new Member(160L, &quot;B&quot;);em.persist(member1);em.persist(member2);tx.commit();\nem.persist(member) -&gt; 1차 캐시에들어간다.\ntx.commit() -&gt; UPDATE 변경이 반영됨.\n1차캐시 테이블\n\n\n\n@id\nEntity\n\n\n\n“member1”\nmember1\n\n\n“member2”\nmember2\n\n\n사실, 1차 캐시는 데이터베이스의 하나의 트랜젝션 안에서만 의미가 있다.\n123Member findMember1 = em.find(Member.class, 1L);// 1L 1차캐시에 영속성을 넣어둠.Member findMember2 = em.find(Member.class, 1L);\n\n아래와 같이 이미 1차 캐시에 존재하기 때문에 select 를 한번만 실행.\n12345678Hibernate:     select        member0_.id as id1_0_0_,        member0_.name as name2_0_0_     from        Member member0_     where        member0_.id=?\n\n\n엔티티 수정 -변경감지 (Dirty Checking)아래와 같이 Member 테이블이 있다고 하자.\n\n\n\nID\nNAME\n\n\n\n150\nA\n\n\n160\nB\n\n\n12345Member findMember1 = em.find(Member.class, 150L);findMember1.setName(&quot;ZZZZZ&quot;);// em.persist() ~~?? 안해도 된다.tx.commit();\n\n가져온 obj 에 setName 만 해주니 UPDATE 가 되었다. 어떻게 가능한걸까 ?변경 transaction 이 commit 되는 시점에서 JPA 가 1차 캐시 내부의 @id, Entity, 스냅샷을 모두 비교한다.Dirty Checking 의 과정은 아래와 같다.\n\n\n\nDrirty Checking Flow\nflush() -&gt; 영속성 컨텍스트(entityManager):: findMember1.setName(“ZZZZZ”);\n\n엔티티와 스냅샷 비교\n\n\n\n\n\n@id\nEntity\n스냅샷\n\n\n\n“member1”\nmember1\nmember1스냅샷\n\n\n“member2”\nmember2\nmember2스냅샷\n\n\n\nupdate SQL 생성 -&gt; 쓰기지연 SQL 저장소\n\nflush -&gt; SQL update 적용\n\ncommit() -&gt; DB\n\n\n엔티티 삭제12Member memberA = em.find(Member.class, &quot;memberA&quot;);em.remove(memberA);","dateCreated":"2020-02-15T12:19:04+09:00","dateModified":"2020-04-28T10:36:01+09:00","datePublished":"2020-02-15T12:19:04+09:00","description":"JPA 를 이해하는데 가장 중요한 용어.엔티티 매니저와 영속성 컨텍스트를 알아봅니다.","headline":"JPA 영속성 컨텍스트","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2020/02/15/JPA-%EC%98%81%EC%86%8D%EC%84%B1-%EC%BB%A8%ED%85%8D%EC%8A%A4%ED%8A%B8/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2020/02/15/JPA-%EC%98%81%EC%86%8D%EC%84%B1-%EC%BB%A8%ED%85%8D%EC%8A%A4%ED%8A%B8/","keywords":"JPA"}</script>
     <meta name="description" content="JPA 를 이해하는데 가장 중요한 용어.엔티티 매니저와 영속성 컨텍스트를 알아봅니다.">
 <meta property="og:type" content="blog">
 <meta property="og:title" content="JPA 영속성 컨텍스트">
@@ -176,6 +176,10 @@
                     
                         
                             
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-AWS/">☁️ AWS (0)</a></li>
+                            
+                        
+                            
                                 <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (7)</a></li>
                             
                         
@@ -200,7 +204,7 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Linux/">☁️ Linux (2)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Linux/">☁️ Linux (4)</a></li>
                             
                         
                             
@@ -220,11 +224,7 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-TIL/">☁️ TIL (2)</a></li>
-                            
-                        
-                            
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Web/">☁️ Web (1)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-TIL/">☁️ TIL (3)</a></li>
                             
                         
                     
@@ -340,10 +340,10 @@
 <p>엔티티를 영구 저장하는 환경.<br>엔티티 매니저를 통해서 영속성 컨텍스트에 접근한다. 영속성 컨텍스트는 직접적으로 눈에 보이지 않는다.<br>EntityManager.persist(entity);<br><br/></p>
 </blockquote>
 <h4 id="영속-비영속-준영속-삭제"><a href="#영속-비영속-준영속-삭제" class="headerlink" title="영속, 비영속, 준영속, 삭제"></a>영속, 비영속, 준영속, 삭제</h4><p><strong>비영속 상태</strong></p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 객체를 생성한 상태(비영속)</span></span><br><span class="line">Member member = <span class="keyword">new</span> Member();</span><br><span class="line">member.setId(<span class="string">"member"</span>);</span><br><span class="line">member.setUsername(<span class="string">"회원1"</span>);</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 객체를 생성한 상태(비영속)</span></span><br><span class="line">Member member = <span class="keyword">new</span> Member();</span><br><span class="line">member.setId(<span class="string">&quot;member&quot;</span>);</span><br><span class="line">member.setUsername(<span class="string">&quot;회원1&quot;</span>);</span><br></pre></td></tr></table></figure>
 
 <p><strong>영속 상태</strong></p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 객체를 생성한 상태(비영속)</span></span><br><span class="line">Member member = <span class="keyword">new</span> Member();</span><br><span class="line">member.setId(<span class="string">"member"</span>);</span><br><span class="line">member.setUsername(<span class="string">"회원1"</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// EntityManager -&gt; Persistence Context 영속</span></span><br><span class="line">em.persist</span><br><span class="line"></span><br><span class="line"><span class="comment">// 커밋하는 순간 데이터베이스에 수행됨.</span></span><br><span class="line">tx.commit();</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 객체를 생성한 상태(비영속)</span></span><br><span class="line">Member member = <span class="keyword">new</span> Member();</span><br><span class="line">member.setId(<span class="string">&quot;member&quot;</span>);</span><br><span class="line">member.setUsername(<span class="string">&quot;회원1&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// EntityManager -&gt; Persistence Context 영속</span></span><br><span class="line">em.persist</span><br><span class="line"></span><br><span class="line"><span class="comment">// 커밋하는 순간 데이터베이스에 수행됨.</span></span><br><span class="line">tx.commit();</span><br></pre></td></tr></table></figure>
 
 <p><strong>준영속, 삭제 상태</strong></p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">em.persist</span><br><span class="line"><span class="comment">// 준영속</span></span><br><span class="line">em.detach(member);</span><br><span class="line">tx.commit();</span><br></pre></td></tr></table></figure>
@@ -352,7 +352,7 @@
 <blockquote>
 <p><code>em.persist(member)</code> 를 넣으면 무슨일이 일어날까?<br>여기서 영속성 컨텍스트의 이점을 알 수 있다.<br><br/></p>
 </blockquote>
-<h4 id="영속성-컨텍스트의-이점"><a href="#영속성-컨텍스트의-이점" class="headerlink" title="영속성 컨텍스트의 이점"></a>영속성 컨텍스트의 이점</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Member member1 = <span class="keyword">new</span> Member(<span class="number">150L</span>, <span class="string">"A"</span>);</span><br><span class="line">Member member2 = <span class="keyword">new</span> Member(<span class="number">160L</span>, <span class="string">"B"</span>);</span><br><span class="line"></span><br><span class="line">em.persist(member1);</span><br><span class="line">em.persist(member2);</span><br><span class="line"></span><br><span class="line">tx.commit();</span><br></pre></td></tr></table></figure>
+<h4 id="영속성-컨텍스트의-이점"><a href="#영속성-컨텍스트의-이점" class="headerlink" title="영속성 컨텍스트의 이점"></a>영속성 컨텍스트의 이점</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Member member1 = <span class="keyword">new</span> Member(<span class="number">150L</span>, <span class="string">&quot;A&quot;</span>);</span><br><span class="line">Member member2 = <span class="keyword">new</span> Member(<span class="number">160L</span>, <span class="string">&quot;B&quot;</span>);</span><br><span class="line"></span><br><span class="line">em.persist(member1);</span><br><span class="line">em.persist(member2);</span><br><span class="line"></span><br><span class="line">tx.commit();</span><br></pre></td></tr></table></figure>
 <p><code>em.persist(member)</code> -&gt; 1차 캐시에들어간다.</p>
 <p><code>tx.commit()</code> -&gt; UPDATE 변경이 반영됨.<br><br/></p>
 <p><strong>1차캐시 테이블</strong></p>
@@ -373,7 +373,7 @@
 </tr>
 </tbody></table>
 <p>사실, 1차 캐시는 데이터베이스의 하나의 트랜젝션 안에서만 의미가 있다.</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Member findMember1 = em.find(Member<span class="class">.<span class="keyword">class</span>, 1<span class="title">L</span>)</span>;</span><br><span class="line"><span class="comment">// 1L 1차캐시에 영속성을 넣어둠.</span></span><br><span class="line">Member findMember2 = em.find(Member<span class="class">.<span class="keyword">class</span>, 1<span class="title">L</span>)</span>;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Member findMember1 = em.find(Member.class, <span class="number">1L</span>);</span><br><span class="line"><span class="comment">// 1L 1차캐시에 영속성을 넣어둠.</span></span><br><span class="line">Member findMember2 = em.find(Member.class, <span class="number">1L</span>);</span><br></pre></td></tr></table></figure>
 
 <p>아래와 같이 이미 1차 캐시에 존재하기 때문에 select 를 한번만 실행.</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Hibernate: </span><br><span class="line">    select</span><br><span class="line">        member0_.id as id1_0_0_,</span><br><span class="line">        member0_.name as name2_0_0_ </span><br><span class="line">    from</span><br><span class="line">        Member member0_ </span><br><span class="line">    <span class="built_in">where</span></span><br><span class="line">        member0_.id=?</span><br></pre></td></tr></table></figure>
@@ -396,14 +396,18 @@
 <td>B</td>
 </tr>
 </tbody></table>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Member findMember1 = em.find(Member<span class="class">.<span class="keyword">class</span>, 150<span class="title">L</span>)</span>;</span><br><span class="line">findMember1.setName(<span class="string">"ZZZZZ"</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// em.persist() ~~?? 안해도 된다.</span></span><br><span class="line">tx.commit();</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Member findMember1 = em.find(Member.class, <span class="number">150L</span>);</span><br><span class="line">findMember1.setName(<span class="string">&quot;ZZZZZ&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// em.persist() ~~?? 안해도 된다.</span></span><br><span class="line">tx.commit();</span><br></pre></td></tr></table></figure>
 <blockquote>
 <p>가져온 obj 에 setName 만 해주니 UPDATE 가 되었다. 어떻게 가능한걸까 ?<br>변경 transaction 이 commit 되는 시점에서 JPA 가 1차 캐시 내부의 @id, Entity, 스냅샷을 모두 비교한다.<br>Dirty Checking 의 과정은 아래와 같다.</p>
 </blockquote>
 <br/>
 
-<h4 id="Drirty-Checking-Flow"><a href="#Drirty-Checking-Flow" class="headerlink" title="Drirty Checking Flow"></a>Drirty Checking Flow</h4><p>1) flush() -&gt; 영속성 컨텍스트(entityManager)<br>:: findMember1.setName(“ZZZZZ”);</p>
-<p>2) 엔티티와 스냅샷 비교</p>
+<h4 id="Drirty-Checking-Flow"><a href="#Drirty-Checking-Flow" class="headerlink" title="Drirty Checking Flow"></a>Drirty Checking Flow</h4><ol>
+<li><p>flush() -&gt; 영속성 컨텍스트(entityManager)<br>:: findMember1.setName(“ZZZZZ”);</p>
+</li>
+<li><p>엔티티와 스냅샷 비교</p>
+</li>
+</ol>
 <table>
 <thead>
 <tr>
@@ -423,10 +427,15 @@
 <td>member2스냅샷</td>
 </tr>
 </tbody></table>
-<p>3) update SQL 생성 -&gt; <code>쓰기지연 SQL 저장소</code></p>
-<p>4) flush -&gt; SQL update 적용</p>
-<p>5) commit() -&gt; DB<br><br/></p>
-<h3 id="엔티티-삭제"><a href="#엔티티-삭제" class="headerlink" title="엔티티 삭제"></a>엔티티 삭제</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Member memberA = em.find(Member.class, "memberA");</span><br><span class="line">em.remove(memberA);</span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li><p>update SQL 생성 -&gt; <code>쓰기지연 SQL 저장소</code></p>
+</li>
+<li><p>flush -&gt; SQL update 적용</p>
+</li>
+<li><p>commit() -&gt; DB</p>
+<br/></li>
+</ol>
+<h3 id="엔티티-삭제"><a href="#엔티티-삭제" class="headerlink" title="엔티티 삭제"></a>엔티티 삭제</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Member memberA = em.find(Member.class, <span class="string">&quot;memberA&quot;</span>);</span><br><span class="line">em.remove(memberA);</span><br></pre></td></tr></table></figure>
             
 
 

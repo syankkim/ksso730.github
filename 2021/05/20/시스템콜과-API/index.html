@@ -1,0 +1,887 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="동글씨">
+    <title>📲 시스템콜과 API - 동글씨</title>
+    <meta name="author" content="Suyan Kim">
+    
+    
+    
+        <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
+    
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\n💬 해당 강의는 fastcampus 에서 ‘컴공 전공자 따라잡기 온라인 완주반’ 강의를 들으며 스스로의 학습을 위해 작성한 포스팅입니다. 문제가 된다면 연락 부탁드립니다.\n시스템콜\n주요 시스템콜 명령어\n\n\n\n\n%eax\nKernel Function(System call)\n%ebx\n%ecx\n%edx\n\n\n\n1\nsys_exit(exit)\nint\n-\n-\n\n\n2\nsys_fork(fork)\nstruct pt_regs\n-\n-\n\n\n3\nsys_read(read)\nunsigned int\nchar *\nsize_t\n\n\n4\nsys_write(write)\nunsigned int\nconst char *\nsize_t\n\n\n5\nsys_open(open)\nconst char *\nint\nint\n\n\n6\nsys_close(clsoe)\nunsigned int\n-\n-\n\n\n시스템콜은 어떻게 구현?12345mov eax, 0x04 // 시스템콜 번호mov ebx, 0x03 // 인자값mov ecx, $bufmov edx, 14   // 문자열 사이즈int 0x80      // 소프트웨어 인터럽트 명령\n\n\n\n레지스터\n의미\n\n\n\neax\n산술 및 논리연산을 수행할 때 사용되며 함수의 반환값이 저장된다.\n\n\nebx\n메모리 주소를 저장하기 위한 용도로 사용된다. 인자를 넣어준다.\n\n\necx\n반복 명령어 사용시 반복 카운터로 사용되는 레지스터이다.\n\n\nedx\neax와 같이 쓰이며 부호 확장 명령등에 쓰이고 큰수의 곱셈, 나눗셈 등의 연산이 이루어질 때 사용된다.\n\n\nint 0x80\n소프트웨어 인터럽트 명령이다.\n\n\n\nC 컴파일러\n유닉스 C 컴파일러 c\n리눅스 C 컴파일러 -GNU cc- gcc\n우분투 리눅스에 gcc설치\n\n123sudo apt-get install gccgcc --versiongcc -o test.c test\n\n컴파일 과정 (전처리, 컴파일, 어셈블리, 링크)\n위 코드에서 gcc -o test.c test 를 수행할 때 발생하는 컴파일 과정이다.\n\n\n\n\n컴파일 과정\n서술\n\n\n\n(1) 전처리기\ncpp 라는 전처리기를 사용한다.\n\n\n\n전처리기가 #include 구문을 만나면 해당 헤더 파일을 찾아 그 내용을 순차적으로 삽입한다.\n\n\n\n#define, #ifdef 같은 매크로 구문을 치환하고 처리한다.\n\n\n(2) C컴파일러\nccl 에 의해 전단부에서 소스코드를 어휘, 구문, 의미를 분석하고 중간코드를 생성한다.\n\n\n\n중단부에서 최적화를 거치고 후단부에서 어셈블리 코드를 생성한다.\n\n\n(3) 어셈블러\nas 라는 어셈블러를 사용해 어셈블리 코드를 0과1의 기계어로 변환한다.\n\n\n\n최종적으로 ELF 바이너리 포맷 구조를 갖는 목적코드를 생성한다.\n\n\n(4) 링커\nld라는 링커를 사용한다.\n\n\n\n오브젝트 파일들과 프로그램에서 사용된 표준 C 라이브러리와 사용자 라이브러리를 링크한다.\n\n\n\n이 과정을 통해 실행파일이 만들어진다.\n\n\n\nAPI\n응용 프로그램과 분리된 하위 호환 인터페이스\neg. 시스템콜 래퍼, 입출력 라이브러리 등\nfork() 와 같은 시스템콜 함수 사용을 위해 사용자가 사용할 수 있는 함수들의 모음을 말한다.123process_fork()&#123;    fork()&#125;\n\n\nABI (Application Binary Interface)\n응용 프로그램 바이너리 인터페이스\n함수 실행방식, 레지스터 활용, 시스템콜 실행, 라이브러리 링크 방식 등\nABI가 호환되면 재컴파일 없이 동작한다. (ABI 표준)\n리눅스에서 만든 프로그램을 리눅스에서 실행하지 못하는이유? ABI가 완벽하게 달라서이다.\n컴파일러, 링커(라이브러리 링크), 툴체인(컴파일러를 만드는 프로그램)에서 제공\n\nPOSIX\n유닉스 시스템 프로그래밍 인터페이스 표준\n리차드 스톨만이 POSIX를 표준안 이름으로 제안\nIEEE 에서 표준화 시도\n\nC 언어 표준\n다양한 C 언어 변종이 존재한다.\nANSI 에서 ANSI C 표준을 정립했다.\n","dateCreated":"2021-05-20T23:59:59+09:00","dateModified":"2021-05-25T09:54:42+09:00","datePublished":"2021-05-20T23:59:59+09:00","description":"시스템콜의 수행과정, 컴파일 과정에 대해서도 알아본다.API ? ABI ?#API #ABI #IDT #system_call #gcc","headline":"📲 시스템콜과 API","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2021/05/20/%EC%8B%9C%EC%8A%A4%ED%85%9C%EC%BD%9C%EA%B3%BC-API/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2021/05/20/%EC%8B%9C%EC%8A%A4%ED%85%9C%EC%BD%9C%EA%B3%BC-API/","keywords":"abi, system_call, gcc"}</script>
+    <meta name="description" content="시스템콜의 수행과정, 컴파일 과정에 대해서도 알아본다.API ? ABI ?#API #ABI #IDT #system_call #gcc">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="📲 시스템콜과 API">
+<meta property="og:url" content="http://yoursite.com/2021/05/20/%EC%8B%9C%EC%8A%A4%ED%85%9C%EC%BD%9C%EA%B3%BC-API/index.html">
+<meta property="og:site_name" content="동글씨">
+<meta property="og:description" content="시스템콜의 수행과정, 컴파일 과정에 대해서도 알아본다.API ? ABI ?#API #ABI #IDT #system_call #gcc">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2021-05-20T14:59:59.000Z">
+<meta property="article:modified_time" content="2021-05-25T00:54:42.546Z">
+<meta property="article:author" content="Suyan Kim">
+<meta property="article:tag" content="abi">
+<meta property="article:tag" content="system_call">
+<meta property="article:tag" content="gcc">
+<meta name="twitter:card" content="summary">
+    
+    
+        
+    
+    
+        <meta property="og:image" content="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=640"/>
+    
+    
+    
+    
+    <!--STYLES-->
+    
+<link rel="stylesheet" href="/assets/css/all.css">
+
+    
+<link rel="stylesheet" href="/assets/css/jquery.fancybox.css">
+
+    
+<link rel="stylesheet" href="/assets/css/thumbs.css">
+
+    
+<link rel="stylesheet" href="/assets/css/tranquilpeak.css">
+
+    <!--STYLES END-->
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-158530470-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-158530470-1');
+    </script>
+
+
+    
+
+    
+        
+    
+</head>
+
+    <body>
+        <div id="blog">
+            <!-- Define author's picture -->
+
+
+    
+        
+    
+
+<header id="header" data-behavior="4">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <div class="header-title">
+        <a
+            class="header-title-link"
+            href="/index.html"
+            aria-label=""
+        >
+            동글씨
+        </a>
+    </div>
+    
+        
+            <a
+                class="header-right-picture "
+                href="#about"
+                aria-label="Open the link: /#about"
+            >
+        
+        
+            <img class="header-picture" src="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=90" alt="Author&#39;s picture"/>
+        
+        </a>
+    
+</header>
+
+            <!-- function -->
+
+
+<!-- Define author's picture -->
+
+
+    
+
+<nav id="sidebar" data-behavior="4">
+    <div class="sidebar-container">
+        
+            <div class="sidebar-profile">
+                <a
+                    href="/#about"
+                    aria-label="Read more about the author"
+                >
+                    <img class="sidebar-profile-picture" src="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=800" alt="Author&#39;s picture"/>
+                </a>
+                <h4 class="sidebar-profile-name">Suyan Kim</h4>
+                
+                    <h5 class="sidebar-profile-bio"><p>▲ Who Am I</p>
+</h5>
+                
+            </div>
+        
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="home"href="/index.html"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-home" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">home</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="archives"href="/all-archives"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-archive" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">archives</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="categories"href="/all-categories"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-bookmark" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">categories</span>
+                        </a>
+                    <!-- add -->
+                    
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-AWS/">☁️ AWS (0)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (7)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Config/">☁️ Config (2)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-DataBase/">☁️ DataBase (1)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Git/">☁️ Git (3)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-JPA/">☁️ JPA (10)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Java/">☁️ Java (0)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Linux/">☁️ Linux (4)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-OS/">☁️ OS (14)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Python/">☁️ Python (2)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-React/">☁️ React (3)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Spring/">☁️ Spring (1)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-TIL/">☁️ TIL (3)</a></li>
+                            
+                        
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="tags"href="/all-tags"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-tags" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">tags</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="about"href="#about"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-question" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">about</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="https://github.com/ksso730" target="_blank" rel="noopener" title="github">
+                    
+                    <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">github</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="https://www.instagram.com/syankkim/" target="_blank" rel="noopener" title="life">
+                    
+                    <i class="sidebar-button-icon fab fa-instagram" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">life</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+        </ul>
+        
+    </div>
+</nav>
+
+            
+            <div id="main" data-behavior="4"
+                 class="
+                        hasCoverMetaIn
+                        ">
+                
+<article class="post">
+    
+    
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title">
+            📲 시스템콜과 API
+        </h1>
+    
+    
+        <div class="post-meta">
+    <time datetime="2021-05-20T23:59:59+09:00">
+	
+		    May 20, 2021
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/%E2%98%81%EF%B8%8F-Linux/">☁️ Linux</a>
+
+
+    
+</div>
+
+    
+</div>
+
+    
+    <div class="post-content markdown">
+        <div class="main-content-wrap">
+            <!-- excerpt -->
+<h1 id="table-of-contents">Contents</h1><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%EC%8B%9C%EC%8A%A4%ED%85%9C%EC%BD%9C"><span class="toc-text">시스템콜</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%EC%8B%9C%EC%8A%A4%ED%85%9C%EC%BD%9C%EC%9D%80-%EC%96%B4%EB%96%BB%EA%B2%8C-%EA%B5%AC%ED%98%84"><span class="toc-text">시스템콜은 어떻게 구현?</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#C-%EC%BB%B4%ED%8C%8C%EC%9D%BC%EB%9F%AC"><span class="toc-text">C 컴파일러</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%EC%BB%B4%ED%8C%8C%EC%9D%BC-%EA%B3%BC%EC%A0%95-%EC%A0%84%EC%B2%98%EB%A6%AC-%EC%BB%B4%ED%8C%8C%EC%9D%BC-%EC%96%B4%EC%85%88%EB%B8%94%EB%A6%AC-%EB%A7%81%ED%81%AC"><span class="toc-text">컴파일 과정 (전처리, 컴파일, 어셈블리, 링크)</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#API"><span class="toc-text">API</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#ABI-Application-Binary-Interface"><span class="toc-text">ABI (Application Binary Interface)</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#POSIX"><span class="toc-text">POSIX</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#C-%EC%96%B8%EC%96%B4-%ED%91%9C%EC%A4%80"><span class="toc-text">C 언어 표준</span></a></li></ol></li></ol>
+
+<hr>
+<p><em>💬 해당 강의는 fastcampus 에서 ‘컴공 전공자 따라잡기 온라인 완주반’ 강의를 들으며 스스로의 학습을 위해 작성한 포스팅입니다. 문제가 된다면 연락 부탁드립니다.</em></p>
+<h1 id="시스템콜"><a href="#시스템콜" class="headerlink" title="시스템콜"></a>시스템콜</h1><ul>
+<li>주요 시스템콜 명령어</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>%eax</th>
+<th>Kernel Function(System call)</th>
+<th>%ebx</th>
+<th>%ecx</th>
+<th>%edx</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>sys_exit(exit)</td>
+<td>int</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>2</td>
+<td>sys_fork(fork)</td>
+<td>struct pt_regs</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>3</td>
+<td>sys_read(read)</td>
+<td>unsigned int</td>
+<td>char *</td>
+<td>size_t</td>
+</tr>
+<tr>
+<td>4</td>
+<td>sys_write(write)</td>
+<td>unsigned int</td>
+<td>const char *</td>
+<td>size_t</td>
+</tr>
+<tr>
+<td>5</td>
+<td>sys_open(open)</td>
+<td>const char *</td>
+<td>int</td>
+<td>int</td>
+</tr>
+<tr>
+<td>6</td>
+<td>sys_close(clsoe)</td>
+<td>unsigned int</td>
+<td>-</td>
+<td>-</td>
+</tr>
+</tbody></table>
+<h2 id="시스템콜은-어떻게-구현"><a href="#시스템콜은-어떻게-구현" class="headerlink" title="시스템콜은 어떻게 구현?"></a>시스템콜은 어떻게 구현?</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">mov eax, <span class="number">0x04</span> <span class="comment">// 시스템콜 번호</span></span><br><span class="line">mov ebx, <span class="number">0x03</span> <span class="comment">// 인자값</span></span><br><span class="line">mov ecx, $buf</span><br><span class="line">mov edx, <span class="number">14</span>   <span class="comment">// 문자열 사이즈</span></span><br><span class="line"><span class="keyword">int</span> <span class="number">0x80</span>      <span class="comment">// 소프트웨어 인터럽트 명령</span></span><br></pre></td></tr></table></figure>
+<table>
+<thead>
+<tr>
+<th>레지스터</th>
+<th>의미</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>eax</td>
+<td>산술 및 논리연산을 수행할 때 사용되며 함수의 반환값이 저장된다.</td>
+</tr>
+<tr>
+<td>ebx</td>
+<td>메모리 주소를 저장하기 위한 용도로 사용된다. 인자를 넣어준다.</td>
+</tr>
+<tr>
+<td>ecx</td>
+<td>반복 명령어 사용시 반복 카운터로 사용되는 레지스터이다.</td>
+</tr>
+<tr>
+<td>edx</td>
+<td>eax와 같이 쓰이며 부호 확장 명령등에 쓰이고 큰수의 곱셈, 나눗셈 등의 연산이 이루어질 때 사용된다.</td>
+</tr>
+<tr>
+<td>int 0x80</td>
+<td>소프트웨어 인터럽트 명령이다.</td>
+</tr>
+</tbody></table>
+<hr>
+<h1 id="C-컴파일러"><a href="#C-컴파일러" class="headerlink" title="C 컴파일러"></a>C 컴파일러</h1><ul>
+<li>유닉스 C 컴파일러 <code>c</code></li>
+<li>리눅스 C 컴파일러 -GNU cc- gcc</li>
+<li>우분투 리눅스에 gcc설치</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install gcc</span><br><span class="line">gcc --version</span><br><span class="line">gcc -o test.c test</span><br></pre></td></tr></table></figure>
+
+<h2 id="컴파일-과정-전처리-컴파일-어셈블리-링크"><a href="#컴파일-과정-전처리-컴파일-어셈블리-링크" class="headerlink" title="컴파일 과정 (전처리, 컴파일, 어셈블리, 링크)"></a>컴파일 과정 (전처리, 컴파일, 어셈블리, 링크)</h2><blockquote>
+<p>위 코드에서 <code>gcc -o test.c test</code> 를 수행할 때 발생하는 컴파일 과정이다.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>컴파일 과정</th>
+<th>서술</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>(1) 전처리기</td>
+<td><code>cpp</code> 라는 전처리기를 사용한다.</td>
+</tr>
+<tr>
+<td></td>
+<td>전처리기가 #include 구문을 만나면 해당 <code>헤더 파일</code>을 찾아 그 내용을 순차적으로 삽입한다.</td>
+</tr>
+<tr>
+<td></td>
+<td>#define, #ifdef 같은 <code>매크로</code> 구문을 치환하고 처리한다.</td>
+</tr>
+<tr>
+<td>(2) C컴파일러</td>
+<td><code>ccl</code> 에 의해 <code>전단부</code>에서 소스코드를 어휘, 구문, 의미를 분석하고 중간코드를 생성한다.</td>
+</tr>
+<tr>
+<td></td>
+<td><code>중단부</code>에서 최적화를 거치고 <code>후단부</code>에서 <code>어셈블리 코드</code>를 생성한다.</td>
+</tr>
+<tr>
+<td>(3) 어셈블러</td>
+<td><code>as</code> 라는 어셈블러를 사용해 어셈블리 코드를 0과1의 기계어로 변환한다.</td>
+</tr>
+<tr>
+<td></td>
+<td>최종적으로 ELF 바이너리 포맷 구조를 갖는 <code>목적코드를 생성</code>한다.</td>
+</tr>
+<tr>
+<td>(4) 링커</td>
+<td><code>ld</code>라는 링커를 사용한다.</td>
+</tr>
+<tr>
+<td></td>
+<td>오브젝트 파일들과 프로그램에서 사용된 표준 C 라이브러리와 사용자 라이브러리를 링크한다.</td>
+</tr>
+<tr>
+<td></td>
+<td>이 과정을 통해 <code>실행파일</code>이 만들어진다.</td>
+</tr>
+</tbody></table>
+<hr>
+<h1 id="API"><a href="#API" class="headerlink" title="API"></a>API</h1><ul>
+<li>응용 프로그램과 분리된 <code>하위 호환 인터페이스</code></li>
+<li>eg. 시스템콜 래퍼, 입출력 라이브러리 등</li>
+<li>fork() 와 같은 시스템콜 함수 사용을 위해 사용자가 사용할 수 있는 함수들의 모음을 말한다.<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">process_fork()&#123;</span><br><span class="line">    fork()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<hr>
+<h1 id="ABI-Application-Binary-Interface"><a href="#ABI-Application-Binary-Interface" class="headerlink" title="ABI (Application Binary Interface)"></a>ABI (Application Binary Interface)</h1><ul>
+<li>응용 프로그램 바이너리 인터페이스</li>
+<li>함수 실행방식, 레지스터 활용, 시스템콜 실행, 라이브러리 링크 방식 등</li>
+<li>ABI가 호환되면 재컴파일 없이 동작한다. (ABI 표준)</li>
+<li>리눅스에서 만든 프로그램을 리눅스에서 실행하지 못하는이유? ABI가 완벽하게 달라서이다.</li>
+<li>컴파일러, 링커(라이브러리 링크), 툴체인(컴파일러를 만드는 프로그램)에서 제공</li>
+</ul>
+<h2 id="POSIX"><a href="#POSIX" class="headerlink" title="POSIX"></a>POSIX</h2><ul>
+<li>유닉스 시스템 프로그래밍 인터페이스 표준</li>
+<li>리차드 스톨만이 POSIX를 표준안 이름으로 제안</li>
+<li>IEEE 에서 표준화 시도</li>
+</ul>
+<h2 id="C-언어-표준"><a href="#C-언어-표준" class="headerlink" title="C 언어 표준"></a>C 언어 표준</h2><ul>
+<li>다양한 C 언어 변종이 존재한다.</li>
+<li>ANSI 에서 <code>ANSI C</code> 표준을 정립했다.</li>
+</ul>
+            
+
+
+        </div>
+    </div>
+    <div id="post-footer" class="post-footer main-content-wrap">
+        
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">TAGGED IN</span><br/>
+                
+    <a class="tag tag--primary tag--small t-none-link" href="/tags/abi/" rel="tag">abi</a> <a class="tag tag--primary tag--small t-none-link" href="/tags/gcc/" rel="tag">gcc</a> <a class="tag tag--primary tag--small t-none-link" href="/tags/system-call/" rel="tag">system_call</a>
+
+            </div>
+        
+        
+            <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2021/05/22/Docker-Jira-AWS-%EC%84%A4%EC%B9%98/"
+                    data-tooltip="AWS-Docker,Jira 설치"
+                    aria-label="PREVIOUS: AWS-Docker,Jira 설치"
+                >
+                    
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                    </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2021/05/19/%EB%A6%AC%EB%88%85%EC%8A%A4-%EB%A6%AC%EB%8B%A4%EB%A0%89%EC%85%98-%ED%8C%8C%EC%9D%B4%ED%94%84/"
+                    data-tooltip="🗯 리눅스 리다이렉션/파이프, 프로세스 관련 명령어"
+                    aria-label="NEXT: 🗯 리눅스 리다이렉션/파이프, 프로세스 관련 명령어"
+                >
+                    
+                        <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a
+                class="post-action-btn btn btn--default btn-open-shareoptions"
+                href="#btn-open-shareoptions"
+                aria-label="Share this post"
+            >
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2021/05/20/%EC%8B%9C%EC%8A%A4%ED%85%9C%EC%BD%9C%EA%B3%BC-API/"
+                    title="Share on Facebook"
+                    aria-label="Share on Facebook"
+                >
+                    <i class="fab fa-facebook" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2021/05/20/%EC%8B%9C%EC%8A%A4%ED%85%9C%EC%BD%9C%EA%B3%BC-API/"
+                    title="Share on Twitter"
+                    aria-label="Share on Twitter"
+                >
+                    <i class="fab fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://plus.google.com/share?url=http://yoursite.com/2021/05/20/%EC%8B%9C%EC%8A%A4%ED%85%9C%EC%BD%9C%EA%B3%BC-API/"
+                    title="Share on Google+"
+                    aria-label="Share on Google+"
+                >
+                    <i class="fab fa-google-plus" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+                <li class="post-action">
+                    <a
+                        class="post-action-btn btn btn--default"
+                        href="#disqus_thread"
+                        aria-label="Leave a comment"
+                    >
+                        <i class="fa fa-comment"></i>
+                    </a>
+                </li>
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#table-of-contents" aria-label="Contents">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+        
+        
+            
+                <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+            
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2021 Suyan Kim. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2021/05/22/Docker-Jira-AWS-%EC%84%A4%EC%B9%98/"
+                    data-tooltip="AWS-Docker,Jira 설치"
+                    aria-label="PREVIOUS: AWS-Docker,Jira 설치"
+                >
+                    
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                    </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2021/05/19/%EB%A6%AC%EB%88%85%EC%8A%A4-%EB%A6%AC%EB%8B%A4%EB%A0%89%EC%85%98-%ED%8C%8C%EC%9D%B4%ED%94%84/"
+                    data-tooltip="🗯 리눅스 리다이렉션/파이프, 프로세스 관련 명령어"
+                    aria-label="NEXT: 🗯 리눅스 리다이렉션/파이프, 프로세스 관련 명령어"
+                >
+                    
+                        <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a
+                class="post-action-btn btn btn--default btn-open-shareoptions"
+                href="#btn-open-shareoptions"
+                aria-label="Share this post"
+            >
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2021/05/20/%EC%8B%9C%EC%8A%A4%ED%85%9C%EC%BD%9C%EA%B3%BC-API/"
+                    title="Share on Facebook"
+                    aria-label="Share on Facebook"
+                >
+                    <i class="fab fa-facebook" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2021/05/20/%EC%8B%9C%EC%8A%A4%ED%85%9C%EC%BD%9C%EA%B3%BC-API/"
+                    title="Share on Twitter"
+                    aria-label="Share on Twitter"
+                >
+                    <i class="fab fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://plus.google.com/share?url=http://yoursite.com/2021/05/20/%EC%8B%9C%EC%8A%A4%ED%85%9C%EC%BD%9C%EA%B3%BC-API/"
+                    title="Share on Google+"
+                    aria-label="Share on Google+"
+                >
+                    <i class="fab fa-google-plus" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+                <li class="post-action">
+                    <a
+                        class="post-action-btn btn btn--default"
+                        href="#disqus_thread"
+                        aria-label="Leave a comment"
+                    >
+                        <i class="fa fa-comment"></i>
+                    </a>
+                </li>
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#table-of-contents" aria-label="Contents">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                
+    <div id="share-options-bar" class="share-options-bar" data-behavior="4">
+        <i id="btn-close-shareoptions" class="fa fa-times"></i>
+        <ul class="share-options">
+            
+                
+                
+                <li class="share-option">
+                    <a
+                        class="share-option-btn"
+                        target="new"
+                        href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2021/05/20/%EC%8B%9C%EC%8A%A4%ED%85%9C%EC%BD%9C%EA%B3%BC-API/"
+                        aria-label="Share on Facebook"
+                    >
+                        <i class="fab fa-facebook" aria-hidden="true"></i><span>Share on Facebook</span>
+                    </a>
+                </li>
+            
+                
+                
+                <li class="share-option">
+                    <a
+                        class="share-option-btn"
+                        target="new"
+                        href="https://twitter.com/intent/tweet?text=http://yoursite.com/2021/05/20/%EC%8B%9C%EC%8A%A4%ED%85%9C%EC%BD%9C%EA%B3%BC-API/"
+                        aria-label="Share on Twitter"
+                    >
+                        <i class="fab fa-twitter" aria-hidden="true"></i><span>Share on Twitter</span>
+                    </a>
+                </li>
+            
+                
+                
+                <li class="share-option">
+                    <a
+                        class="share-option-btn"
+                        target="new"
+                        href="https://plus.google.com/share?url=http://yoursite.com/2021/05/20/%EC%8B%9C%EC%8A%A4%ED%85%9C%EC%BD%9C%EA%B3%BC-API/"
+                        aria-label="Share on Google+"
+                    >
+                        <i class="fab fa-google-plus" aria-hidden="true"></i><span>Share on Google+</span>
+                    </a>
+                </li>
+            
+        </ul>
+    </div>
+
+
+            
+        </div>
+        
+
+
+    
+
+<div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-times"></i>
+        </div>
+        
+            <img id="about-card-picture" src="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=110" alt="Author&#39;s picture"/>
+        
+            <h4 id="about-card-name">Suyan Kim</h4>
+        <!--  -->
+            <!-- <div id="about-card-bio"><p>author.bio</p>
+</div> -->
+            <div id="about-card-bio">안녕하세요, 서버 백엔드 개발자 동글씨입니다.</div>
+        <!--  -->
+        <!--  -->
+            <div id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <!-- <p>Backend Developer</p>
+ -->
+                Backend Developer
+            </div>
+        <!--  -->
+        
+            <div id="about-card-location">
+                <i class="fa fa-map-marker-alt"></i>
+                <br/>
+                Korea
+            </div>
+        
+    </div>
+</div>
+
+        
+        
+<div id="cover" style="background-image:url('/assets/images/null');"></div>
+        <!--SCRIPTS-->
+
+<script src="/assets/js/jquery.js"></script>
+
+
+<script src="/assets/js/jquery.fancybox.js"></script>
+
+
+<script src="/assets/js/thumbs.js"></script>
+
+
+<script src="/assets/js/tranquilpeak.js"></script>
+
+<!--SCRIPTS END-->
+
+
+    
+        <script>
+          var disqus_config = function() {
+            this.page.url = 'http://yoursite.com/2021/05/20/%EC%8B%9C%EC%8A%A4%ED%85%9C%EC%BD%9C%EA%B3%BC-API/';
+              
+            this.page.identifier = '2021/05/20/시스템콜과-API/';
+              
+          };
+          (function() {
+            var d = document, s = d.createElement('script');
+            var disqus_shortname = 'ksso730-github-io';
+            s.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+          })();
+        </script>
+    
+
+
+
+
+    </body>
+</html>

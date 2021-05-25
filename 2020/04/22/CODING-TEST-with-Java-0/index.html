@@ -13,13 +13,13 @@
     
         <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
     
-    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\n\n\n[문제] 싱글숫자 구하기\nQ. Given a non-empty array of integers, every element appears twice except for one. Find that single one.\n\n문제.다들 아시겠지만, 해석해보자면 배열 안에 자기 짝이 없는 Single N 을 리턴하는 문제이다.누구나 생각할 수 있는 이중 for 문을 사용해 풀었는데이상하게도 아래 주석된 부분의 if(list.get(i)==list.get(j)) 이 부분에서 비교를 잘 못하는 오류가 발생했다.두 자리 수 까지는 비교연산이 잘 되는데 왠지 세자리 수 부터 안되는 듯 보였다.혹시 하여 세자리 수에서 십의자리를 늘려가며 까지 연산 테스트를 했는데 130부터 비교되지 않는것..\n해결.해결책은 가장 근본적인 데에 있었다.리스트의 Generics 가 Integer 로 되어 있었는데 == 연산자를 써서 비교했던것 ..자세한 설명은 아래에서 더 하겠다.\n123456789101112131415161718192021222324public int singleNumber(int[] nums) &#123;        int single = 0;        List&lt;Integer&gt; list = Arrays.stream(nums).boxed().collect(Collectors.toList());        for(int i=0; i&lt;list.size(); i++)&#123;            boolean isSingle = true;            for(int j=i+1; j&lt;list.size(); j++)&#123;                // if(list.get(i)==list.get(j))&#123;        ----&gt; ERROR                if(list.get(i).equals(list.get(j)))&#123;                    isSingle = false;                    list.remove(list.get(i));                    j--;                    list.remove(list.get(j));                    i--;                    break;                &#125;            &#125;            if(isSingle)&#123;                single = list.get(i);                break;            &#125;        &#125;        return single;    &#125;\n\n\nJAVA 기본형(Primitive type) vs 참조형(Reference type)기본형 (Primitive type)o 연산자를 값 으로 비교할 수 있다. 즉, 산술연산이 가능하다.o 초기값을 필요로 한다.o 종류  void, boolean, byte, short, int, long, float, double, char, boolean, void\n참조형의 종류에는 아래와 같은 타입들이 존재한다.o 연산자가 객체의 주소값 으로 비교된다. 산술연산이 불가하다.o 초기값을 NULL 로 지정할 수 있다.o 종류  Void, Boolean, Byte, Short, Integer, Long, Float, Double, Character","dateCreated":"2020-04-22T16:03:14+09:00","dateModified":"2021-04-28T15:21:58+09:00","datePublished":"2020-04-22T16:03:14+09:00","description":"📜 매일매일 코딩테스트 with 자바\n1) 배열안에는 커플숫자 여러개와 싱글숫자 하나만 존재한다. 싱글숫자 구하기.2) 여기서 다시 깨닫는 기초. JAVA 기본형(Primitive type) vs 참조형(Reference type)","headline":"CODING TEST {\"싱글숫자 구하기\"} with Java","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2020/04/22/CODING-TEST-with-Java-0/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2020/04/22/CODING-TEST-with-Java-0/","keywords":"java, codingtest"}</script>
-    <meta name="description" content="📜 매일매일 코딩테스트 with 자바 1) 배열안에는 커플숫자 여러개와 싱글숫자 하나만 존재한다. 싱글숫자 구하기.2) 여기서 다시 깨닫는 기초. JAVA 기본형(Primitive type) vs 참조형(Reference type)">
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\n\n\n[문제] 싱글숫자 구하기\nQ. Given a non-empty array of integers, every element appears twice except for one. Find that single one.\n\n문제.다들 아시겠지만, 해석해보자면 배열 안에 자기 짝이 없는 Single N 을 리턴하는 문제이다.누구나 생각할 수 있는 이중 for 문을 사용해 풀었는데이상하게도 아래 주석된 부분의 if(list.get(i)==list.get(j)) 이 부분에서 비교를 잘 못하는 오류가 발생했다.두 자리 수 까지는 비교연산이 잘 되는데 왠지 세자리 수 부터 안되는 듯 보였다.혹시 하여 세자리 수에서 십의자리를 늘려가며 까지 연산 테스트를 했는데 130부터 비교되지 않는것..\n해결.해결책은 가장 근본적인 데에 있었다.리스트의 Generics 가 Integer 로 되어 있었는데 == 연산자를 써서 비교했던것 ..자세한 설명은 아래에서 더 하겠다.\n123456789101112131415161718192021222324public int singleNumber(int[] nums) &#123;        int single = 0;        List&lt;Integer&gt; list = Arrays.stream(nums).boxed().collect(Collectors.toList());        for(int i=0; i&lt;list.size(); i++)&#123;            boolean isSingle = true;            for(int j=i+1; j&lt;list.size(); j++)&#123;                // if(list.get(i)==list.get(j))&#123;        ----&gt; ERROR                if(list.get(i).equals(list.get(j)))&#123;                    isSingle = false;                    list.remove(list.get(i));                    j--;                    list.remove(list.get(j));                    i--;                    break;                &#125;            &#125;            if(isSingle)&#123;                single = list.get(i);                break;            &#125;        &#125;        return single;    &#125;\n\n\nJAVA 기본형(Primitive type) vs 참조형(Reference type)기본형 (Primitive type)o 연산자를 값 으로 비교할 수 있다. 즉, 산술연산이 가능하다.o 초기값을 필요로 한다.o 종류  void, boolean, byte, short, int, long, float, double, char, boolean, void\n참조형의 종류에는 아래와 같은 타입들이 존재한다.o 연산자가 객체의 주소값 으로 비교된다. 산술연산이 불가하다.o 초기값을 NULL 로 지정할 수 있다.o 종류  Void, Boolean, Byte, Short, Integer, Long, Float, Double, Character","dateCreated":"2020-04-22T16:03:14+09:00","dateModified":"2021-04-28T15:21:58+09:00","datePublished":"2020-04-22T16:03:14+09:00","description":"📜 매일매일 코딩테스트 with 자바\n\n배열안에는 커플숫자 여러개와 싱글숫자 하나만 존재한다. 싱글숫자 구하기.\n여기서 다시 깨닫는 기초. JAVA 기본형(Primitive type) vs 참조형(Reference type)","headline":"CODING TEST {\"싱글숫자 구하기\"} with Java","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2020/04/22/CODING-TEST-with-Java-0/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2020/04/22/CODING-TEST-with-Java-0/","keywords":"java, codingtest"}</script>
+    <meta name="description" content="📜 매일매일 코딩테스트 with 자바  배열안에는 커플숫자 여러개와 싱글숫자 하나만 존재한다. 싱글숫자 구하기. 여기서 다시 깨닫는 기초. JAVA 기본형(Primitive type) vs 참조형(Reference type)">
 <meta property="og:type" content="blog">
 <meta property="og:title" content="CODING TEST {&quot;싱글숫자 구하기&quot;} with Java">
 <meta property="og:url" content="http://yoursite.com/2020/04/22/CODING-TEST-with-Java-0/index.html">
 <meta property="og:site_name" content="동글씨">
-<meta property="og:description" content="📜 매일매일 코딩테스트 with 자바 1) 배열안에는 커플숫자 여러개와 싱글숫자 하나만 존재한다. 싱글숫자 구하기.2) 여기서 다시 깨닫는 기초. JAVA 기본형(Primitive type) vs 참조형(Reference type)">
+<meta property="og:description" content="📜 매일매일 코딩테스트 with 자바  배열안에는 커플숫자 여러개와 싱글숫자 하나만 존재한다. 싱글숫자 구하기. 여기서 다시 깨닫는 기초. JAVA 기본형(Primitive type) vs 참조형(Reference type)">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2020-04-22T07:03:14.000Z">
 <meta property="article:modified_time" content="2021-04-28T06:21:58.240Z">
@@ -177,6 +177,10 @@
                     
                         
                             
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-AWS/">☁️ AWS (0)</a></li>
+                            
+                        
+                            
                                 <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (7)</a></li>
                             
                         
@@ -201,7 +205,7 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Linux/">☁️ Linux (2)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Linux/">☁️ Linux (4)</a></li>
                             
                         
                             
@@ -221,11 +225,7 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-TIL/">☁️ TIL (2)</a></li>
-                            
-                        
-                            
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Web/">☁️ Web (1)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-TIL/">☁️ TIL (3)</a></li>
                             
                         
                     
@@ -330,8 +330,8 @@
     <div class="post-content markdown">
         <div class="main-content-wrap">
             <!-- excerpt -->
-<h1 id="table-of-contents">Contents</h1><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%EB%AC%B8%EC%A0%9C-%EC%8B%B1%EA%B8%80%EC%88%AB%EC%9E%90-%EA%B5%AC%ED%95%98%EA%B8%B0"><span class="toc-text">[문제] 싱글숫자 구하기</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#JAVA-%EA%B8%B0%EB%B3%B8%ED%98%95-Primitive-type-vs-%EC%B0%B8%EC%A1%B0%ED%98%95-Reference-type"><span class="toc-text">JAVA 기본형(Primitive type) vs 참조형(Reference type)</span></a></li></ol>
-
+<h1 id="table-of-contents">Contents</h1><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%EB%AC%B8%EC%A0%9C-%EC%8B%B1%EA%B8%80%EC%88%AB%EC%9E%90-%EA%B5%AC%ED%95%98%EA%B8%B0"><span class="toc-text">[문제] 싱글숫자 구하기</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#JAVA-%EA%B8%B0%EB%B3%B8%ED%98%95-Primitive-type-vs-%EC%B0%B8%EC%A1%B0%ED%98%95-Reference-type"><span class="toc-text">JAVA 기본형(Primitive type) vs 참조형(Reference type)</span></a></li></ol></li>
+</ol>
 <hr>
 <br/>
 

@@ -13,7 +13,7 @@
     
         <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
     
-    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\n\n생성자 init __init__ : 파이썬의 생성자를 나타낸다.클래스 Person() 를 호출하면 객체가 생성되고 __init__ 메소드에 첫 번째 매개변수로 전달된다.추가 매개변수 또한 가능하다.\nself : 객체 자체의 인스턴스를 의미한다.파이썬은 다른 객체지향 언어와는 달리 (대부분 메소드에 숨겨진 매개변수로 전달) self 와 같이 명시적으로 선언해야 한다.\n\n\n\n클래스 Person 예시12345678910111213141516class Person:    def __init__(self, name, age):        self.n_name= name        self.n_age= age    def getName(self):        print(self.n_name)    def addAge(self, num):        self.n_age += num        print(self.n_age)p = Person('Jenny', 12)p.getName()p.addAge(5)\n\n결과\n\nJenny17\n\n# Line2 : self 가 포함되어 있지만 실제로 name 과 age 두가지 매개변수만 전달한다.# Line9 : self 의 n_age 값에 addAge 에 매개변수로 전달되는 숫자를 더해 출력한다.","dateCreated":"2020-10-08T11:38:09+09:00","dateModified":"2020-10-08T12:49:16+09:00","datePublished":"2020-10-08T11:38:09+09:00","description":"자주쓰는 __init__ 그리고 self 무엇을 의미하는 것일까?생성자 인스턴스","headline":"파이썬의 __init__ 과 self","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2020/10/08/%ED%8C%8C%EC%9D%B4%EC%8D%AC-init-%EA%B3%BC-self/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2020/10/08/%ED%8C%8C%EC%9D%B4%EC%8D%AC-init-%EA%B3%BC-self/"}</script>
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\n\n생성자 init __init__ : 파이썬의 생성자를 나타낸다.클래스 Person() 를 호출하면 객체가 생성되고 __init__ 메소드에 첫 번째 매개변수로 전달된다.추가 매개변수 또한 가능하다.\nself : 객체 자체의 인스턴스를 의미한다.파이썬은 다른 객체지향 언어와는 달리 (대부분 메소드에 숨겨진 매개변수로 전달) self 와 같이 명시적으로 선언해야 한다.\n\n\n\n클래스 Person 예시12345678910111213141516class Person:    def __init__(self, name, age):        self.n_name= name        self.n_age= age    def getName(self):        print(self.n_name)    def addAge(self, num):        self.n_age += num        print(self.n_age)p = Person(&#x27;Jenny&#x27;, 12)p.getName()p.addAge(5)\n\n결과\n\nJenny17\n\n# Line2 : self 가 포함되어 있지만 실제로 name 과 age 두가지 매개변수만 전달한다.# Line9 : self 의 n_age 값에 addAge 에 매개변수로 전달되는 숫자를 더해 출력한다.","dateCreated":"2020-10-08T11:38:09+09:00","dateModified":"2020-10-08T12:49:16+09:00","datePublished":"2020-10-08T11:38:09+09:00","description":"자주쓰는 __init__ 그리고 self 무엇을 의미하는 것일까?생성자 인스턴스","headline":"파이썬의 __init__ 과 self","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2020/10/08/%ED%8C%8C%EC%9D%B4%EC%8D%AC-init-%EA%B3%BC-self/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2020/10/08/%ED%8C%8C%EC%9D%B4%EC%8D%AC-init-%EA%B3%BC-self/"}</script>
     <meta name="description" content="자주쓰는 __init__ 그리고 self 무엇을 의미하는 것일까?생성자 인스턴스">
 <meta property="og:type" content="blog">
 <meta property="og:title" content="파이썬의 __init__ 과 self">
@@ -175,6 +175,10 @@
                     
                         
                             
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-AWS/">☁️ AWS (0)</a></li>
+                            
+                        
+                            
                                 <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (7)</a></li>
                             
                         
@@ -199,7 +203,7 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Linux/">☁️ Linux (2)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Linux/">☁️ Linux (4)</a></li>
                             
                         
                             
@@ -219,11 +223,7 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-TIL/">☁️ TIL (2)</a></li>
-                            
-                        
-                            
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Web/">☁️ Web (1)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-TIL/">☁️ TIL (3)</a></li>
                             
                         
                     
@@ -337,7 +337,7 @@
 <hr>
 <br>
 
-<h2 id="클래스-Person-예시"><a href="#클래스-Person-예시" class="headerlink" title="클래스 Person 예시"></a>클래스 Person 예시</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Person</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, name, age)</span>:</span></span><br><span class="line">        self.n_name= name</span><br><span class="line">        self.n_age= age</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">getName</span><span class="params">(self)</span>:</span></span><br><span class="line">        print(self.n_name)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">addAge</span><span class="params">(self, num)</span>:</span></span><br><span class="line">        self.n_age += num</span><br><span class="line">        print(self.n_age)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">p = Person(<span class="string">'Jenny'</span>, <span class="number">12</span>)</span><br><span class="line">p.getName()</span><br><span class="line">p.addAge(<span class="number">5</span>)</span><br></pre></td></tr></table></figure>
+<h2 id="클래스-Person-예시"><a href="#클래스-Person-예시" class="headerlink" title="클래스 Person 예시"></a>클래스 Person 예시</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Person</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, name, age</span>):</span></span><br><span class="line">        self.n_name= name</span><br><span class="line">        self.n_age= age</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">getName</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="built_in">print</span>(self.n_name)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">addAge</span>(<span class="params">self, num</span>):</span></span><br><span class="line">        self.n_age += num</span><br><span class="line">        <span class="built_in">print</span>(self.n_age)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">p = Person(<span class="string">&#x27;Jenny&#x27;</span>, <span class="number">12</span>)</span><br><span class="line">p.getName()</span><br><span class="line">p.addAge(<span class="number">5</span>)</span><br></pre></td></tr></table></figure>
 
 <p><strong>결과</strong></p>
 <blockquote>

@@ -1,0 +1,744 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="동글씨">
+    <title>AWS-Docker,Jira 설치 - 동글씨</title>
+    <meta name="author" content="Suyan Kim">
+    
+    
+    
+        <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
+    
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\nAWS 인스턴스에서 Docker 설치\njira container 는 메모리를 많이 차지하기 때문에 AWS 인스턴스는 최소 t2.larg 로 선택해야 한다.\n$ sudo yum install docker-io\n\n\n\n\n\n12345678910111213141516$ ssh -i suyeon.pem ec2-user@15.164.50.108The authenticity of host &#x27;15.164.50.108 (15.164.50.108)&#x27; can&#x27;t be established.ECDSA key fingerprint is SHA256:KwsFct4EwSLlShPOuWPC0yr0ewcI4lGT352J9tLKKwQ.Are you sure you want to continue connecting (yes/no/[fingerprint])? yesWarning: Permanently added &#x27;15.164.50.108&#x27; (ECDSA) to the list of known hosts.       __|  __|_  )       _|  (     /   Amazon Linux 2 AMI      ___|\\___|___|https://aws.amazon.com/amazon-linux-2/[ec2-user@ip-172-31-36-132 ~]$ ^C[ec2-user@ip-172-31-36-132 ~]$ docker-bash: docker: command not found[ec2-user@ip-172-31-36-132 ~]$ sudo yum install docker-io\n\ndocker ps -a 리스트 확인\nIs the docker daemon running? : 도커를 실행해준다.\nsudo systemctl start docker\ndial unix /var/run/docker.sock: connect: permission denied : 권한 부여\nsudo setfacl -m user:ec2-user:rw /var/run/docker.sock\n\n123456789[ec2-user@ip-172-31-36-132 ~]$ docker ps -aCannot connect to the Docker daemon at unix:///var/run/docker.sock. Is the docker daemon running?[ec2-user@ip-172-31-36-132 ~]$ sudo systemctl start docker[ec2-user@ip-172-31-36-132 ~]$ docker ps -aGot permission denied while trying to connect to the Docker daemon socket at unix:///var/run/docker.sock: Get &quot;http://%2Fvar%2Frun%2Fdocker.sock/v1.24/containers/json?all=1&quot;: dial unix /var/run/docker.sock: connect: permission denied[ec2-user@ip-172-31-36-132 ~]$ sudo setfacl -m user:ec2-user:rw /var/run/ddbus/               dhclient-eth0.pid   dmeventd-server     docker.piddhclient6-eth0.pid  dmeventd-client     docker/             docker.sock[ec2-user@ip-172-31-36-132 ~]$ sudo setfacl -m user:ec2-user:rw /var/run/docker.sock\n\n\n잘 실행된다.\n\n12[ec2-user@ip-172-31-36-132 ~]$ docker ps -aCONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES\n\n\nJira 협업툴 설치\n기존 지라 도커 컨테이너 삭제\n지라 도커 컨테이너 설치1$ docker pull cptactionhank/atlassian-jira-software:latest\n지라 도커 컨테이너 생성\n\n\n``123456$ docker create --restart=no --name &quot;jira-container&quot;\\ --publish &quot;8080:8080&quot;\\ --volume &quot;hostpath:/var/atlassian/jira&quot;\\ --env &quot;CATALINA_OPTS= -Xms1024m -Xmx1024m -Datlassian.plugins.enable.wait=300&quot;\\ cptactionhank/atlassian-jira-software:latest$ 0c8922efd3800885da4b46af5bc17e6804fc91b102e186dec61efa41e39f117d\n\n\n지라 도커 컨테이너 실행1\n","dateCreated":"2021-05-22T20:46:29+09:00","dateModified":"2021-05-25T09:54:42+09:00","datePublished":"2021-05-22T20:46:29+09:00","description":"AWS 에서 Jira와 Docker를 설치해보자.","headline":"AWS-Docker,Jira 설치","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2021/05/22/Docker-Jira-AWS-%EC%84%A4%EC%B9%98/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2021/05/22/Docker-Jira-AWS-%EC%84%A4%EC%B9%98/"}</script>
+    <meta name="description" content="AWS 에서 Jira와 Docker를 설치해보자.">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="AWS-Docker,Jira 설치">
+<meta property="og:url" content="http://yoursite.com/2021/05/22/Docker-Jira-AWS-%EC%84%A4%EC%B9%98/index.html">
+<meta property="og:site_name" content="동글씨">
+<meta property="og:description" content="AWS 에서 Jira와 Docker를 설치해보자.">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2021-05-22T11:46:29.000Z">
+<meta property="article:modified_time" content="2021-05-25T00:54:42.539Z">
+<meta property="article:author" content="Suyan Kim">
+<meta name="twitter:card" content="summary">
+    
+    
+        
+    
+    
+        <meta property="og:image" content="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=640"/>
+    
+    
+    
+    
+    <!--STYLES-->
+    
+<link rel="stylesheet" href="/assets/css/all.css">
+
+    
+<link rel="stylesheet" href="/assets/css/jquery.fancybox.css">
+
+    
+<link rel="stylesheet" href="/assets/css/thumbs.css">
+
+    
+<link rel="stylesheet" href="/assets/css/tranquilpeak.css">
+
+    <!--STYLES END-->
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-158530470-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-158530470-1');
+    </script>
+
+
+    
+
+    
+        
+    
+</head>
+
+    <body>
+        <div id="blog">
+            <!-- Define author's picture -->
+
+
+    
+        
+    
+
+<header id="header" data-behavior="4">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <div class="header-title">
+        <a
+            class="header-title-link"
+            href="/index.html"
+            aria-label=""
+        >
+            동글씨
+        </a>
+    </div>
+    
+        
+            <a
+                class="header-right-picture "
+                href="#about"
+                aria-label="Open the link: /#about"
+            >
+        
+        
+            <img class="header-picture" src="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=90" alt="Author&#39;s picture"/>
+        
+        </a>
+    
+</header>
+
+            <!-- function -->
+
+
+<!-- Define author's picture -->
+
+
+    
+
+<nav id="sidebar" data-behavior="4">
+    <div class="sidebar-container">
+        
+            <div class="sidebar-profile">
+                <a
+                    href="/#about"
+                    aria-label="Read more about the author"
+                >
+                    <img class="sidebar-profile-picture" src="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=800" alt="Author&#39;s picture"/>
+                </a>
+                <h4 class="sidebar-profile-name">Suyan Kim</h4>
+                
+                    <h5 class="sidebar-profile-bio"><p>▲ Who Am I</p>
+</h5>
+                
+            </div>
+        
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="home"href="/index.html"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-home" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">home</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="archives"href="/all-archives"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-archive" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">archives</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="categories"href="/all-categories"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-bookmark" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">categories</span>
+                        </a>
+                    <!-- add -->
+                    
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-AWS/">☁️ AWS (0)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (7)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Config/">☁️ Config (2)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-DataBase/">☁️ DataBase (1)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Git/">☁️ Git (3)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-JPA/">☁️ JPA (10)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Java/">☁️ Java (0)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Linux/">☁️ Linux (4)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-OS/">☁️ OS (14)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Python/">☁️ Python (2)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-React/">☁️ React (3)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Spring/">☁️ Spring (1)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-TIL/">☁️ TIL (3)</a></li>
+                            
+                        
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="tags"href="/all-tags"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-tags" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">tags</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="about"href="#about"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-question" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">about</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="https://github.com/ksso730" target="_blank" rel="noopener" title="github">
+                    
+                    <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">github</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="https://www.instagram.com/syankkim/" target="_blank" rel="noopener" title="life">
+                    
+                    <i class="sidebar-button-icon fab fa-instagram" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">life</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+        </ul>
+        
+    </div>
+</nav>
+
+            
+            <div id="main" data-behavior="4"
+                 class="
+                        hasCoverMetaIn
+                        ">
+                
+<article class="post">
+    
+    
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title">
+            AWS-Docker,Jira 설치
+        </h1>
+    
+    
+        <div class="post-meta">
+    <time datetime="2021-05-22T20:46:29+09:00">
+	
+		    May 22, 2021
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/%E2%98%81%EF%B8%8F-AWS/">☁️ AWS</a>
+
+
+    
+</div>
+
+    
+</div>
+
+    
+    <div class="post-content markdown">
+        <div class="main-content-wrap">
+            <!-- excerpt -->
+<h1 id="table-of-contents">Contents</h1><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#AWS-%EC%9D%B8%EC%8A%A4%ED%84%B4%EC%8A%A4%EC%97%90%EC%84%9C-Docker-%EC%84%A4%EC%B9%98"><span class="toc-text">AWS 인스턴스에서 Docker 설치</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#docker-ps-a-%EB%A6%AC%EC%8A%A4%ED%8A%B8-%ED%99%95%EC%9D%B8"><span class="toc-text">docker ps -a 리스트 확인</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Jira-%ED%98%91%EC%97%85%ED%88%B4-%EC%84%A4%EC%B9%98"><span class="toc-text">Jira 협업툴 설치</span></a></li></ol>
+
+<hr>
+<h1 id="AWS-인스턴스에서-Docker-설치"><a href="#AWS-인스턴스에서-Docker-설치" class="headerlink" title="AWS 인스턴스에서 Docker 설치"></a>AWS 인스턴스에서 Docker 설치</h1><ul>
+<li>jira container 는 메모리를 많이 차지하기 때문에 AWS 인스턴스는 최소 <code>t2.larg</code> 로 선택해야 한다.<blockquote>
+<p>$ sudo yum install docker-io</p>
+</blockquote>
+</li>
+</ul>
+<!-- [rectangle setX: 10 y: 10 width: 20 height: 20]; -->
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ssh -i suyeon.pem ec2-user@15.164.50.108</span></span><br><span class="line">The authenticity of host &#x27;15.164.50.108 (15.164.50.108)&#x27; can&#x27;t be established.</span><br><span class="line">ECDSA key fingerprint is SHA256:KwsFct4EwSLlShPOuWPC0yr0ewcI4lGT352J9tLKKwQ.</span><br><span class="line">Are you sure you want to continue connecting (yes/no/[fingerprint])? yes</span><br><span class="line">Warning: Permanently added &#x27;15.164.50.108&#x27; (ECDSA) to the list of known hosts.</span><br><span class="line"></span><br><span class="line">       __|  __|_  )</span><br><span class="line">       _|  (     /   Amazon Linux 2 AMI</span><br><span class="line">      ___|\___|___|</span><br><span class="line"></span><br><span class="line">https://aws.amazon.com/amazon-linux-2/</span><br><span class="line">[ec2-user@ip-172-31-36-132 ~]$ ^C</span><br><span class="line">[ec2-user@ip-172-31-36-132 ~]$ docker</span><br><span class="line">-bash: docker: command not found</span><br><span class="line">[ec2-user@ip-172-31-36-132 ~]$ sudo yum install docker-io</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="docker-ps-a-리스트-확인"><a href="#docker-ps-a-리스트-확인" class="headerlink" title="docker ps -a 리스트 확인"></a>docker ps -a 리스트 확인</h2><ul>
+<li>Is the docker daemon running? : 도커를 실행해준다.</li>
+<li><code>sudo systemctl start docker</code></li>
+<li>dial unix /var/run/docker.sock: connect: permission denied : 권한 부여</li>
+<li><code>sudo setfacl -m user:ec2-user:rw /var/run/docker.sock</code></li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[ec2-user@ip-172-31-36-132 ~]$ docker ps -a</span><br><span class="line">Cannot connect to the Docker daemon at unix:///var/run/docker.sock. Is the docker daemon running?</span><br><span class="line">[ec2-user@ip-172-31-36-132 ~]$ sudo systemctl start docker</span><br><span class="line">[ec2-user@ip-172-31-36-132 ~]$ docker ps -a</span><br><span class="line">Got permission denied while trying to connect to the Docker daemon socket at unix:///var/run/docker.sock: Get &quot;http://%2Fvar%2Frun%2Fdocker.sock/v1.24/containers/json?all=1&quot;: dial unix /var/run/docker.sock: connect: permission denied</span><br><span class="line">[ec2-user@ip-172-31-36-132 ~]$ sudo setfacl -m user:ec2-user:rw /var/run/d</span><br><span class="line">dbus/               dhclient-eth0.pid   dmeventd-server     docker.pid</span><br><span class="line">dhclient6-eth0.pid  dmeventd-client     docker/             docker.sock</span><br><span class="line">[ec2-user@ip-172-31-36-132 ~]$ sudo setfacl -m user:ec2-user:rw /var/run/docker.sock</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>잘 실행된다.</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[ec2-user@ip-172-31-36-132 ~]$ docker ps -a</span><br><span class="line">CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h1 id="Jira-협업툴-설치"><a href="#Jira-협업툴-설치" class="headerlink" title="Jira 협업툴 설치"></a>Jira 협업툴 설치</h1><ol>
+<li>기존 지라 도커 컨테이너 삭제</li>
+<li>지라 도커 컨테이너 설치<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> docker pull cptactionhank/atlassian-jira-software:latest</span></span><br></pre></td></tr></table></figure></li>
+<li>지라 도커 컨테이너 생성</li>
+</ol>
+<ul>
+<li>``<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> docker create --restart=no --name <span class="string">&quot;jira-container&quot;</span>\</span></span><br><span class="line"><span class="bash"> --publish <span class="string">&quot;8080:8080&quot;</span>\</span></span><br><span class="line"><span class="bash"> --volume <span class="string">&quot;hostpath:/var/atlassian/jira&quot;</span>\</span></span><br><span class="line"><span class="bash"> --env <span class="string">&quot;CATALINA_OPTS= -Xms1024m -Xmx1024m -Datlassian.plugins.enable.wait=300&quot;</span>\</span></span><br><span class="line"><span class="bash"> cptactionhank/atlassian-jira-software:latest</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> 0c8922efd3800885da4b46af5bc17e6804fc91b102e186dec61efa41e39f117d</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+<ol start="4">
+<li>지라 도커 컨테이너 실행<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"></span><br></pre></td></tr></table></figure></li>
+</ol>
+            
+
+
+        </div>
+    </div>
+    <div id="post-footer" class="post-footer main-content-wrap">
+        
+        
+            <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2021/05/24/%ED%94%84%EB%A1%9C%EC%84%B8%EC%8A%A4ID/"
+                    data-tooltip="프로세스ID"
+                    aria-label="PREVIOUS: 프로세스ID"
+                >
+                    
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                    </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2021/05/20/%EC%8B%9C%EC%8A%A4%ED%85%9C%EC%BD%9C%EA%B3%BC-API/"
+                    data-tooltip="📲 시스템콜과 API"
+                    aria-label="NEXT: 📲 시스템콜과 API"
+                >
+                    
+                        <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a
+                class="post-action-btn btn btn--default btn-open-shareoptions"
+                href="#btn-open-shareoptions"
+                aria-label="Share this post"
+            >
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2021/05/22/Docker-Jira-AWS-%EC%84%A4%EC%B9%98/"
+                    title="Share on Facebook"
+                    aria-label="Share on Facebook"
+                >
+                    <i class="fab fa-facebook" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2021/05/22/Docker-Jira-AWS-%EC%84%A4%EC%B9%98/"
+                    title="Share on Twitter"
+                    aria-label="Share on Twitter"
+                >
+                    <i class="fab fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://plus.google.com/share?url=http://yoursite.com/2021/05/22/Docker-Jira-AWS-%EC%84%A4%EC%B9%98/"
+                    title="Share on Google+"
+                    aria-label="Share on Google+"
+                >
+                    <i class="fab fa-google-plus" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+                <li class="post-action">
+                    <a
+                        class="post-action-btn btn btn--default"
+                        href="#disqus_thread"
+                        aria-label="Leave a comment"
+                    >
+                        <i class="fa fa-comment"></i>
+                    </a>
+                </li>
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#table-of-contents" aria-label="Contents">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+        
+        
+            
+                <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+            
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2021 Suyan Kim. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2021/05/24/%ED%94%84%EB%A1%9C%EC%84%B8%EC%8A%A4ID/"
+                    data-tooltip="프로세스ID"
+                    aria-label="PREVIOUS: 프로세스ID"
+                >
+                    
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                    </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2021/05/20/%EC%8B%9C%EC%8A%A4%ED%85%9C%EC%BD%9C%EA%B3%BC-API/"
+                    data-tooltip="📲 시스템콜과 API"
+                    aria-label="NEXT: 📲 시스템콜과 API"
+                >
+                    
+                        <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a
+                class="post-action-btn btn btn--default btn-open-shareoptions"
+                href="#btn-open-shareoptions"
+                aria-label="Share this post"
+            >
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2021/05/22/Docker-Jira-AWS-%EC%84%A4%EC%B9%98/"
+                    title="Share on Facebook"
+                    aria-label="Share on Facebook"
+                >
+                    <i class="fab fa-facebook" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2021/05/22/Docker-Jira-AWS-%EC%84%A4%EC%B9%98/"
+                    title="Share on Twitter"
+                    aria-label="Share on Twitter"
+                >
+                    <i class="fab fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://plus.google.com/share?url=http://yoursite.com/2021/05/22/Docker-Jira-AWS-%EC%84%A4%EC%B9%98/"
+                    title="Share on Google+"
+                    aria-label="Share on Google+"
+                >
+                    <i class="fab fa-google-plus" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+                <li class="post-action">
+                    <a
+                        class="post-action-btn btn btn--default"
+                        href="#disqus_thread"
+                        aria-label="Leave a comment"
+                    >
+                        <i class="fa fa-comment"></i>
+                    </a>
+                </li>
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#table-of-contents" aria-label="Contents">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                
+    <div id="share-options-bar" class="share-options-bar" data-behavior="4">
+        <i id="btn-close-shareoptions" class="fa fa-times"></i>
+        <ul class="share-options">
+            
+                
+                
+                <li class="share-option">
+                    <a
+                        class="share-option-btn"
+                        target="new"
+                        href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2021/05/22/Docker-Jira-AWS-%EC%84%A4%EC%B9%98/"
+                        aria-label="Share on Facebook"
+                    >
+                        <i class="fab fa-facebook" aria-hidden="true"></i><span>Share on Facebook</span>
+                    </a>
+                </li>
+            
+                
+                
+                <li class="share-option">
+                    <a
+                        class="share-option-btn"
+                        target="new"
+                        href="https://twitter.com/intent/tweet?text=http://yoursite.com/2021/05/22/Docker-Jira-AWS-%EC%84%A4%EC%B9%98/"
+                        aria-label="Share on Twitter"
+                    >
+                        <i class="fab fa-twitter" aria-hidden="true"></i><span>Share on Twitter</span>
+                    </a>
+                </li>
+            
+                
+                
+                <li class="share-option">
+                    <a
+                        class="share-option-btn"
+                        target="new"
+                        href="https://plus.google.com/share?url=http://yoursite.com/2021/05/22/Docker-Jira-AWS-%EC%84%A4%EC%B9%98/"
+                        aria-label="Share on Google+"
+                    >
+                        <i class="fab fa-google-plus" aria-hidden="true"></i><span>Share on Google+</span>
+                    </a>
+                </li>
+            
+        </ul>
+    </div>
+
+
+            
+        </div>
+        
+
+
+    
+
+<div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-times"></i>
+        </div>
+        
+            <img id="about-card-picture" src="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=110" alt="Author&#39;s picture"/>
+        
+            <h4 id="about-card-name">Suyan Kim</h4>
+        <!--  -->
+            <!-- <div id="about-card-bio"><p>author.bio</p>
+</div> -->
+            <div id="about-card-bio">안녕하세요, 서버 백엔드 개발자 동글씨입니다.</div>
+        <!--  -->
+        <!--  -->
+            <div id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <!-- <p>Backend Developer</p>
+ -->
+                Backend Developer
+            </div>
+        <!--  -->
+        
+            <div id="about-card-location">
+                <i class="fa fa-map-marker-alt"></i>
+                <br/>
+                Korea
+            </div>
+        
+    </div>
+</div>
+
+        
+        
+<div id="cover" style="background-image:url('/assets/images/null');"></div>
+        <!--SCRIPTS-->
+
+<script src="/assets/js/jquery.js"></script>
+
+
+<script src="/assets/js/jquery.fancybox.js"></script>
+
+
+<script src="/assets/js/thumbs.js"></script>
+
+
+<script src="/assets/js/tranquilpeak.js"></script>
+
+<!--SCRIPTS END-->
+
+
+    
+        <script>
+          var disqus_config = function() {
+            this.page.url = 'http://yoursite.com/2021/05/22/Docker-Jira-AWS-%EC%84%A4%EC%B9%98/';
+              
+            this.page.identifier = '2021/05/22/Docker-Jira-AWS-설치/';
+              
+          };
+          (function() {
+            var d = document, s = d.createElement('script');
+            var disqus_shortname = 'ksso730-github-io';
+            s.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+          })();
+        </script>
+    
+
+
+
+
+    </body>
+</html>

@@ -3,36 +3,99 @@
 
 
     <url>
-        <loc>http://yoursite.com/tags/linux/</loc>
-        <lastmod>2021-05-20T09:33:49.907Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://yoursite.com/tags/redirection/</loc>
-        <lastmod>2021-05-20T05:16:48.516Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://yoursite.com/tags/pipe/</loc>
-        <lastmod>2021-05-20T05:16:48.516Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
         <loc>http://yoursite.com/tags/inode/</loc>
-        <lastmod>2021-05-20T01:06:40.838Z</lastmod>
+        <lastmod>2021-05-25T00:54:42.549Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
         <loc>http://yoursite.com/tags/file-system/</loc>
-        <lastmod>2021-05-20T01:06:40.838Z</lastmod>
+        <lastmod>2021-05-25T00:54:42.549Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://yoursite.com/tags/gcc/</loc>
+        <lastmod>2021-05-25T00:54:42.546Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://yoursite.com/tags/system-call/</loc>
+        <lastmod>2021-05-25T00:54:42.546Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://yoursite.com/tags/abi/</loc>
+        <lastmod>2021-05-25T00:54:42.546Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://yoursite.com/tags/linux/</loc>
+        <lastmod>2021-05-25T00:54:42.544Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://yoursite.com/tags/redirection/</loc>
+        <lastmod>2021-05-25T00:54:42.542Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://yoursite.com/tags/pipe/</loc>
+        <lastmod>2021-05-25T00:54:42.542Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://yoursite.com/tags/Worker/</loc>
+        <lastmod>2021-05-25T00:54:42.541Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://yoursite.com/tags/PreFork/</loc>
+        <lastmod>2021-05-25T00:54:42.541Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://yoursite.com/tags/MPM/</loc>
+        <lastmod>2021-05-25T00:54:42.541Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://yoursite.com/tags/C10K/</loc>
+        <lastmod>2021-05-25T00:54:42.541Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://yoursite.com/tags/nginx/</loc>
+        <lastmod>2021-05-25T00:54:42.541Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://yoursite.com/tags/apache/</loc>
+        <lastmod>2021-05-25T00:54:42.541Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
@@ -94,14 +157,14 @@
     </url>
 
     <url>
-        <loc>http://yoursite.com/tags/OS/</loc>
+        <loc>http://yoursite.com/tags/algorithm/</loc>
         <lastmod>2021-05-12T08:45:31.488Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>http://yoursite.com/tags/algorithm/</loc>
+        <loc>http://yoursite.com/tags/OS/</loc>
         <lastmod>2021-05-12T08:45:31.488Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
@@ -166,48 +229,6 @@
     <url>
         <loc>http://yoursite.com/tags/vi/</loc>
         <lastmod>2020-10-29T03:21:17.154Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://yoursite.com/tags/Worker/</loc>
-        <lastmod>2020-10-08T02:56:10.741Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://yoursite.com/tags/PreFork/</loc>
-        <lastmod>2020-10-08T02:56:10.741Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://yoursite.com/tags/MPM/</loc>
-        <lastmod>2020-10-08T02:56:10.741Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://yoursite.com/tags/C10K/</loc>
-        <lastmod>2020-10-08T02:56:10.741Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://yoursite.com/tags/nginx/</loc>
-        <lastmod>2020-10-08T02:56:10.741Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://yoursite.com/tags/apache/</loc>
-        <lastmod>2020-10-08T02:56:10.741Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>

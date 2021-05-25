@@ -179,6 +179,10 @@
                     
                         
                             
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-AWS/">☁️ AWS (0)</a></li>
+                            
+                        
+                            
                                 <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (7)</a></li>
                             
                         
@@ -203,7 +207,7 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Linux/">☁️ Linux (2)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Linux/">☁️ Linux (4)</a></li>
                             
                         
                             
@@ -223,11 +227,7 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-TIL/">☁️ TIL (2)</a></li>
-                            
-                        
-                            
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Web/">☁️ Web (1)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-TIL/">☁️ TIL (3)</a></li>
                             
                         
                     
@@ -340,7 +340,7 @@
 <h2 id="ISSUE-1-DB-Connection-Pool-ERROR"><a href="#ISSUE-1-DB-Connection-Pool-ERROR" class="headerlink" title="ISSUE[1] DB Connection Pool ERROR"></a>ISSUE[1] DB Connection Pool ERROR</h2><h3 id="현상"><a href="#현상" class="headerlink" title="현상"></a>현상</h3><blockquote>
 <p><strong>DB Connection pool error timeout waiting for idle object</strong></p>
 </blockquote>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"> DatabaseException - nested exception is org.apache.ibatis.exceptions.PersistenceException:</span><br><span class="line">### Error updating database.  Cause: org.springframework.jdbc.CannotGetJdbcConnectionException: </span><br><span class="line">Could not get JDBC Connection; nested exception is java.sql.SQLException: Cannot get a </span><br><span class="line">connection, pool error Timeout waiting for idle object</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"> DatabaseException - nested exception is org.apache.ibatis.exceptions.PersistenceException:</span><br><span class="line">### Error updating database.  Cause: org.springframework.jdbc.CannotGetJdbcConnectionException: </span><br><span class="line">Could not get JDBC Connection; nested exception is java.sql.SQLException: Cannot get a </span><br><span class="line">connection, pool error Timeout waiting for idle object</span><br></pre></td></tr></table></figure>
 
 <h3 id="당시-DataBase-config"><a href="#당시-DataBase-config" class="headerlink" title="당시 DataBase config"></a>당시 DataBase config</h3><p><code>#max-active</code> <code>#min-idle</code> <code>#max-idle</code></p>
 <blockquote>
@@ -373,7 +373,7 @@
 <p><img src="https://user-images.githubusercontent.com/28856435/80331215-6764b280-8882-11ea-93f6-277ba2a0a99d.png" alt="image"></p>
 <p>위와 같은 모든 요청에의해 DB접속을 위한 Driver를 로드하고 Connection 객체를 생성하여 연결한다면 물리적으로 DB 서버에 지속적으로 접근해야 한다.</p>
 <h2 id="DBCP-HikariCP"><a href="#DBCP-HikariCP" class="headerlink" title="DBCP (HikariCP)"></a>DBCP (HikariCP)</h2><blockquote>
-<p>이러한 문제를 해결하기 위해 나온 것이 <strong>DBCP</strong> 이다. DB Connection 객체를 생성하고 연결하는데 드는 비용과 시간을 줄이고 네트워크 연결에 대한 부담을 줄여준다.<br>SpringBoot 2.x 출범 이후 HikariCP 를 기본JDBC Connection Pool 로 사용 가능하게 되었다고 한다. 다른 Connection Pool 에 비해 성능이 압도적이라고 한다.<br><em><a href="https://woowabros.github.io/experience/2020/02/06/hikaricp-avoid-dead-lock.html" target="_blank" rel="noopener">HikariCP Dead lock에서 벗어나기 - 우아한형제들 기술블로그</a> 를 바탕으로 작성되었습니다.</em></p>
+<p>이러한 문제를 해결하기 위해 나온 것이 <strong>DBCP</strong> 이다. DB Connection 객체를 생성하고 연결하는데 드는 비용과 시간을 줄이고 네트워크 연결에 대한 부담을 줄여준다.<br>SpringBoot 2.x 출범 이후 HikariCP 를 기본JDBC Connection Pool 로 사용 가능하게 되었다고 한다. 다른 Connection Pool 에 비해 성능이 압도적이라고 한다.<br><em><a target="_blank" rel="noopener" href="https://woowabros.github.io/experience/2020/02/06/hikaricp-avoid-dead-lock.html">HikariCP Dead lock에서 벗어나기 - 우아한형제들 기술블로그</a> 를 바탕으로 작성되었습니다.</em></p>
 </blockquote>
 <h3 id="getConnection"><a href="#getConnection" class="headerlink" title="getConnection"></a>getConnection</h3><p><strong>1. hikariPool.<em>getConnection()</em></strong><br>Thread 는 HikariCP 로부터 <code>connection</code> 을 요청한다.</p>
 <p><strong>2. hikariPool.<em>concurrentBag.borrow()</em></strong><br><strong>2-a)</strong> 현재 Thread 가 이전에 사용했던 <code>connection</code> 리스트 중에 현재 사용가능한(idle) connection이 있는가<br><code>?connection:2-b</code><br><strong>2-b)</strong> hikari pool 전체 connection 중 현재 사용가능한(idle) connection이 있는가<br><code>?connection:2-c</code><br><strong>2-c)</strong> <em>concurrentBag.handOffQueue</em> (다른 Thread 가 쓰고 반납) 에 사용가능한(idle) connection이 있는가<br><code>?connection:2-d</code><br><strong>2-d)</strong> connectionTimeout 이 지났는지 확인한다. (HikariCP default Connection Timeout 은 30초)</p>
