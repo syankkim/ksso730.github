@@ -1,0 +1,855 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="동글씨">
+    <title>🖨 컴퓨터구조-입출력과 프로그래밍 - 동글씨</title>
+    <meta name="author" content="Suyan Kim">
+    
+    
+    
+        <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
+    
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\n입출력 구성\n\n컴퓨터는 사용자와 통신하기 위해, 외부장치를 사용한다.\n즉 메모리로 데이터와 명령어를 읽어들일 입력장치와 계산결과를 사용자에게 출력장치를 통해 표시해주어야 한다.\n\n\n입출력 과정\nOUTR, AC, INPR, FGI는 모두 병렬로 연결되어 있다.\n\n\nKeyboard 입력이 들어가면\nTransmitter Interface  를 통해서 \nINPR 에 시프트되어 들어간다.\nflag bit\nFGI(입력용 제어 플립플롭)\n0: Key in 8bit code. 8비트가 채워지면  FGI는 1로 변경된다.\n1: INPR 값은 바꿀 수 없다. 이후 플래그가 1이면 AC로 병렬 전송을 하고 FGI를 클리어 시킨다. 이후 새로운 정보가 INPR에 들어갈 수 있다.\n\n\n\n\n\n\n\n\nAC(Accumulator) : 명령어의 출발지이자 Destination(결과저장) 이다. FGI의 플래그가 1일경우, INPR 로부터 병렬전송을 받는다.\nOUTR\nflag bit\nFGO(출력용 제어 플립플롭)\n0: 출력 장치가 사용중\n1: OUTR 가 AC 값을 reciever를 통해 출력\n\n\n\n\n\n\n\n인터럽트IEN : Interrupt Enable flip-flop\n프로그램 제어전송 대신에 외부장치의 전송작업이 준비되었을 때 컴퓨터에 알리는 방법에 활용되는 플리플롭이다.\n프로그램 실행 도중 플래그를 체크하지 않고, 플래그(=1)가 들어오면 실행중이던 작업을 중단하고 우선순위가 높은 작업부터 처리하게 된다.\nIEN 는 인터럽트를 가능하게 해준다.\n\n인터럽트 수행과정\n인터럽트 시에는 ?\nPC &lt;- 1\nIEN &lt;- 0\nR &lt;- 0\n\n\n\n\n컴퓨터 실행속도 VS 입출력장치 속도\nQESTION. 입출력 장치는 작업 수행시 몇번의 플래그 체크를 수행할까?\n\n컴퓨터의 프로세스 처리속도는 10μs fetch and execute cycle time(하나의 instruction을 처리하는데 10μs가 걸림) 라 하고.\n입출력장치의 처리속도는 10문자/초 가 걸리며, 1문자당 0.1초= 100,000μs 라 한다.(1sec = 1000ms = 1000,000μs 이다.)\n결론 :: 플래그 체크 횟수는 1문자당 입력/출력이 함께 일어난다고 생각하면, 하나의 명령을 처리할 때 100,000μs/10μs = 10,000 번 체크를 하게된다. :: 입력과 출력 각 5000번의 체크가 일어나게 된다.\n\n\n\n프로그램의 종류\n소프트웨어는 시스템 소프트웨어와 응용 프로그램으로 나눠져있다.\n\n시스템 소프트웨어\n\n운영체제\nJob 관리\n스케줄 관리\n네트워크 관리\n입출력 관리\n\n\n언어번역 프로그램\n컴파일러\n어셈블러\n인터프리터\n\n\n유틸리티 프로그램\nDBMS\nVCCINE\n드라이버 관리 프로그램\n\n\n\n\n응용 소프트웨어\n\nApplication/ App\nMobile App\n\n\n\n프로그램 처리과정\n고급언어 프로그램 - 어셈블리 프로그램 - 기계어 프로그램\n\n\n기계어(처리중심)\n\n1100 0001 1010 0000\n\n\n어셈블리 언어(처리중심): 모든 컴퓨터는 각각의 어셈블리 언어를 가지고 있으며 이 규틱은 컴퓨터 제조업체로부터 출판되어진다.\n\n 니모닉(mnemonic) : 기억하기 용이한 형태로 정해진 기호. (ADD, LDA …)\n라벨필드: 기호주소나 빈칸\n명령어 필드: 기계어나 수도명령어 기술\n메모리 참조 명령어\n레지스터 참조/입출력 명령어\nsudo 명령어\n\n\n\n\n고급언어(문제중심)\n12345678910#include&lt;stdio.h&gt;#include&lt;conio.h&gt;void main()&#123;    int a,b,c;    a= 5, b=-2;    c = a+b;    printf(&quot;a+b = %d&quot;, c);&#125;\n\n\n프로그래밍 구현소프트웨어 개발 패러다임⬇️ 구조적 기법⬇️ 객체지향 기법: 객체지향⬇️ 컴포넌트 기법: 외부와 Interface를 통해 동작구현. 시스템의 단순성.⬇️ 분산객체 프레임워크: 이종 분산환경에서 여러종류의 Application을 쉽게 통합\n컴퓨터 네트워크 환경\nWireshark 패킷 분석툴\n\nExplorer가 운영체제의 한 축을 담당하게 된 순간부터 컴퓨터는 이미 통신기계로 분류되고 있다.\n통신기계로서의 hexadecimal 표현\nNOS (New technology Operating Systerm)\n\n  \n\n  \n","dateCreated":"2021-06-05T10:50:54+09:00","dateModified":"2021-06-08T13:48:49+09:00","datePublished":"2021-06-05T10:50:54+09:00","description":"프로그래밍 입출력은 어떻게 수행되는걸까?#FGI #FGO #IEN #Flip-Flop #프로그램_언어_패러다임","headline":"🖨 컴퓨터구조-입출력과 프로그래밍","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2021/06/05/%EC%BB%B4%ED%93%A8%ED%84%B0%EA%B5%AC%EC%A1%B0__%EC%9E%85%EC%B6%9C%EB%A0%A5/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2021/06/05/%EC%BB%B4%ED%93%A8%ED%84%B0%EA%B5%AC%EC%A1%B0__%EC%9E%85%EC%B6%9C%EB%A0%A5/","keywords":"computer_science"}</script>
+    <meta name="description" content="프로그래밍 입출력은 어떻게 수행되는걸까?#FGI #FGO #IEN #Flip-Flop #프로그램_언어_패러다임">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="🖨 컴퓨터구조-입출력과 프로그래밍">
+<meta property="og:url" content="http://yoursite.com/2021/06/05/%EC%BB%B4%ED%93%A8%ED%84%B0%EA%B5%AC%EC%A1%B0__%EC%9E%85%EC%B6%9C%EB%A0%A5/index.html">
+<meta property="og:site_name" content="동글씨">
+<meta property="og:description" content="프로그래밍 입출력은 어떻게 수행되는걸까?#FGI #FGO #IEN #Flip-Flop #프로그램_언어_패러다임">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://user-images.githubusercontent.com/28856435/120877206-31027680-c5f0-11eb-82c1-fa8615579088.jpg">
+<meta property="og:image" content="https://user-images.githubusercontent.com/28856435/120879375-d96b0780-c5fd-11eb-9158-1985d5af3fb1.png">
+<meta property="article:published_time" content="2021-06-05T01:50:54.000Z">
+<meta property="article:modified_time" content="2021-06-08T04:48:49.605Z">
+<meta property="article:author" content="Suyan Kim">
+<meta property="article:tag" content="computer_science">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://user-images.githubusercontent.com/28856435/120877206-31027680-c5f0-11eb-82c1-fa8615579088.jpg">
+    
+    
+        
+    
+    
+        <meta property="og:image" content="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=640"/>
+    
+    
+    
+    
+    <!--STYLES-->
+    
+<link rel="stylesheet" href="/assets/css/all.css">
+
+    
+<link rel="stylesheet" href="/assets/css/jquery.fancybox.css">
+
+    
+<link rel="stylesheet" href="/assets/css/thumbs.css">
+
+    
+<link rel="stylesheet" href="/assets/css/tranquilpeak.css">
+
+    <!--STYLES END-->
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-158530470-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-158530470-1');
+    </script>
+
+
+    
+
+    
+        
+    
+</head>
+
+    <body>
+        <div id="blog">
+            <!-- Define author's picture -->
+
+
+    
+        
+    
+
+<header id="header" data-behavior="4">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <div class="header-title">
+        <a
+            class="header-title-link"
+            href="/index.html"
+            aria-label=""
+        >
+            동글씨
+        </a>
+    </div>
+    
+        
+            <a
+                class="header-right-picture "
+                href="#about"
+                aria-label="Open the link: /#about"
+            >
+        
+        
+            <img class="header-picture" src="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=90" alt="Author&#39;s picture"/>
+        
+        </a>
+    
+</header>
+
+            <!-- function -->
+
+
+<!-- Define author's picture -->
+
+
+    
+
+<nav id="sidebar" data-behavior="4">
+    <div class="sidebar-container">
+        
+            <div class="sidebar-profile">
+                <a
+                    href="/#about"
+                    aria-label="Read more about the author"
+                >
+                    <img class="sidebar-profile-picture" src="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=800" alt="Author&#39;s picture"/>
+                </a>
+                <h4 class="sidebar-profile-name">Suyan Kim</h4>
+                
+                    <h5 class="sidebar-profile-bio"><p>▲ Who Am I</p>
+</h5>
+                
+            </div>
+        
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="home"href="/index.html"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-home" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">home</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="archives"href="/all-archives"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-archive" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">archives</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="categories"href="/all-categories"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-bookmark" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">categories</span>
+                        </a>
+                    <!-- add -->
+                    
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F/">☁️ (1)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-AWS/">☁️ AWS (0)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (7)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Config/">☁️ Config (2)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-DataBase/">☁️ DataBase (1)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Git/">☁️ Git (3)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-JPA/">☁️ JPA (10)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Java/">☁️ Java (0)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Linux/">☁️ Linux (6)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-OS/">☁️ OS (14)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Python/">☁️ Python (2)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-React/">☁️ React (3)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Spring/">☁️ Spring (1)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-TIL/">☁️ TIL (9)</a></li>
+                            
+                        
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="tags"href="/all-tags"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-tags" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">tags</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="about"href="#about"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-question" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">about</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="https://github.com/ksso730" target="_blank" rel="noopener" title="github">
+                    
+                    <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">github</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="https://www.instagram.com/syankkim/" target="_blank" rel="noopener" title="life">
+                    
+                    <i class="sidebar-button-icon fab fa-instagram" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">life</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+        </ul>
+        
+    </div>
+</nav>
+
+            
+            <div id="main" data-behavior="4"
+                 class="
+                        hasCoverMetaIn
+                        ">
+                
+<article class="post">
+    
+    
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title">
+            🖨 컴퓨터구조-입출력과 프로그래밍
+        </h1>
+    
+    
+        <div class="post-meta">
+    <time datetime="2021-06-05T10:50:54+09:00">
+	
+		    Jun 05, 2021
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/%E2%98%81%EF%B8%8F-TIL/">☁️ TIL</a>
+
+
+    
+</div>
+
+    
+</div>
+
+    
+    <div class="post-content markdown">
+        <div class="main-content-wrap">
+            <!-- excerpt -->
+<h1 id="table-of-contents">Contents</h1><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%EC%9E%85%EC%B6%9C%EB%A0%A5-%EA%B5%AC%EC%84%B1"><span class="toc-text">입출력 구성</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%EC%9E%85%EC%B6%9C%EB%A0%A5-%EA%B3%BC%EC%A0%95"><span class="toc-text">입출력 과정</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%EC%9D%B8%ED%84%B0%EB%9F%BD%ED%8A%B8"><span class="toc-text">인터럽트</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#IEN-Interrupt-Enable-flip-flop"><span class="toc-text">IEN : Interrupt Enable flip-flop</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%EC%9D%B8%ED%84%B0%EB%9F%BD%ED%8A%B8-%EC%88%98%ED%96%89%EA%B3%BC%EC%A0%95"><span class="toc-text">인터럽트 수행과정</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%EC%BB%B4%ED%93%A8%ED%84%B0-%EC%8B%A4%ED%96%89%EC%86%8D%EB%8F%84-VS-%EC%9E%85%EC%B6%9C%EB%A0%A5%EC%9E%A5%EC%B9%98-%EC%86%8D%EB%8F%84"><span class="toc-text">컴퓨터 실행속도 VS 입출력장치 속도</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%A8%EC%9D%98-%EC%A2%85%EB%A5%98"><span class="toc-text">프로그램의 종류</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%A8-%EC%B2%98%EB%A6%AC%EA%B3%BC%EC%A0%95"><span class="toc-text">프로그램 처리과정</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D-%EA%B5%AC%ED%98%84"><span class="toc-text">프로그래밍 구현</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%EC%86%8C%ED%94%84%ED%8A%B8%EC%9B%A8%EC%96%B4-%EA%B0%9C%EB%B0%9C-%ED%8C%A8%EB%9F%AC%EB%8B%A4%EC%9E%84"><span class="toc-text">소프트웨어 개발 패러다임</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%EC%BB%B4%ED%93%A8%ED%84%B0-%EB%84%A4%ED%8A%B8%EC%9B%8C%ED%81%AC-%ED%99%98%EA%B2%BD"><span class="toc-text">컴퓨터 네트워크 환경</span></a></li></ol></li></ol>
+
+<hr>
+<h1 id="입출력-구성"><a href="#입출력-구성" class="headerlink" title="입출력 구성"></a>입출력 구성</h1><blockquote>
+<ul>
+<li>컴퓨터는 사용자와 통신하기 위해, 외부장치를 사용한다.</li>
+<li>즉 메모리로 데이터와 명령어를 읽어들일 입력장치와 계산결과를 사용자에게 출력장치를 통해 표시해주어야 한다.</li>
+</ul>
+</blockquote>
+<h2 id="입출력-과정"><a href="#입출력-과정" class="headerlink" title="입출력 과정"></a>입출력 과정</h2><ul>
+<li>OUTR, AC, INPR, FGI는 모두 <code>병렬로 연결</code>되어 있다.</li>
+</ul>
+<ol>
+<li><strong>Keyboard</strong> 입력이 들어가면</li>
+<li><strong>Transmitter Interface</strong>  를 통해서 </li>
+<li><strong>INPR</strong> 에 시프트되어 들어간다.<ul>
+<li>flag bit<ul>
+<li><strong>FGI</strong>(입력용 제어 플립플롭)<ul>
+<li><code>0</code>: Key in 8bit code. 8비트가 채워지면  FGI는 1로 변경된다.</li>
+<li><code>1</code>: INPR 값은 바꿀 수 없다. 이후 플래그가 1이면 AC로 <code>병렬 전송</code>을 하고 FGI를 클리어 시킨다. 이후 새로운 정보가 INPR에 들어갈 수 있다.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<ul>
+<li><strong>AC(Accumulator)</strong> : 명령어의 출발지이자 Destination(결과저장) 이다. FGI의 플래그가 1일경우, INPR 로부터 병렬전송을 받는다.</li>
+<li><strong>OUTR</strong><ul>
+<li>flag bit<ul>
+<li><strong>FGO</strong>(출력용 제어 플립플롭)<ul>
+<li><code>0</code>: 출력 장치가 사용중</li>
+<li><code>1</code>: OUTR 가 AC 값을 reciever를 통해 출력</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="인터럽트"><a href="#인터럽트" class="headerlink" title="인터럽트"></a>인터럽트</h2><h3 id="IEN-Interrupt-Enable-flip-flop"><a href="#IEN-Interrupt-Enable-flip-flop" class="headerlink" title="IEN : Interrupt Enable flip-flop"></a>IEN : <code>Interrupt Enable flip-flop</code></h3><ul>
+<li>프로그램 제어전송 대신에 <code>외부장치의 전송작업이 준비되었을 때 컴퓨터에 알리는</code> 방법에 활용되는 플리플롭이다.</li>
+<li>프로그램 실행 도중 플래그를 체크하지 않고, 플래그(=1)가 들어오면 실행중이던 작업을 중단하고 우선순위가 높은 작업부터 처리하게 된다.</li>
+<li>IEN 는 인터럽트를 가능하게 해준다.</li>
+</ul>
+<h3 id="인터럽트-수행과정"><a href="#인터럽트-수행과정" class="headerlink" title="인터럽트 수행과정"></a>인터럽트 수행과정</h3><ul>
+<li>인터럽트 시에는 ?</li>
+<li>PC &lt;- 1</li>
+<li>IEN &lt;- 0</li>
+<li>R &lt;- 0</li>
+</ul>
+<p><img src="https://user-images.githubusercontent.com/28856435/120877206-31027680-c5f0-11eb-82c1-fa8615579088.jpg" alt="interrupt"></p>
+<br>
+
+<h3 id="컴퓨터-실행속도-VS-입출력장치-속도"><a href="#컴퓨터-실행속도-VS-입출력장치-속도" class="headerlink" title="컴퓨터 실행속도 VS 입출력장치 속도"></a>컴퓨터 실행속도 VS 입출력장치 속도</h3><blockquote>
+<p><strong>QESTION. 입출력 장치는 작업 수행시 몇번의 플래그 체크를 수행할까?</strong></p>
+<ul>
+<li>컴퓨터의 프로세스 처리속도는 <code>10μs fetch and execute cycle time</code>(하나의 instruction을 처리하는데 10μs가 걸림) 라 하고.</li>
+<li>입출력장치의 처리속도는 10문자/초 가 걸리며, 1문자당 0.1초= 100,000μs 라 한다.<br><code>(1sec = 1000ms = 1000,000μs 이다.)</code></li>
+<li><strong>결론</strong><br> :: 플래그 체크 횟수는 1문자당 입력/출력이 함께 일어난다고 생각하면, 하나의 명령을 처리할 때 100,000μs/10μs = 10,000 번 체크를 하게된다.<br> :: 입력과 출력 각 <code>5000번의 체크</code>가 일어나게 된다.</li>
+</ul>
+</blockquote>
+<hr>
+<h1 id="프로그램의-종류"><a href="#프로그램의-종류" class="headerlink" title="프로그램의 종류"></a>프로그램의 종류</h1><ul>
+<li><p>소프트웨어는 <code>시스템 소프트웨어</code>와 <code>응용 프로그램</code>으로 나눠져있다.</p>
+</li>
+<li><p><strong>시스템 소프트웨어</strong></p>
+<ul>
+<li>운영체제<ul>
+<li>Job 관리</li>
+<li>스케줄 관리</li>
+<li>네트워크 관리</li>
+<li>입출력 관리</li>
+</ul>
+</li>
+<li>언어번역 프로그램<ul>
+<li>컴파일러</li>
+<li>어셈블러</li>
+<li>인터프리터</li>
+</ul>
+</li>
+<li>유틸리티 프로그램<ul>
+<li>DBMS</li>
+<li>VCCINE</li>
+<li>드라이버 관리 프로그램</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>응용 소프트웨어</strong></p>
+<ul>
+<li>Application/ App</li>
+<li>Mobile App</li>
+</ul>
+</li>
+</ul>
+<h2 id="프로그램-처리과정"><a href="#프로그램-처리과정" class="headerlink" title="프로그램 처리과정"></a>프로그램 처리과정</h2><blockquote>
+<p>고급언어 프로그램 - 어셈블리 프로그램 - 기계어 프로그램</p>
+</blockquote>
+<ul>
+<li><p><strong>기계어</strong>(처리중심)</p>
+<ul>
+<li>1100 0001 1010 0000</li>
+</ul>
+</li>
+<li><p><strong>어셈블리 언어</strong>(처리중심): 모든 컴퓨터는 각각의 어셈블리 언어를 가지고 있으며 이 규틱은 컴퓨터 제조업체로부터 출판되어진다.</p>
+<ul>
+<li> 니모닉(mnemonic) : 기억하기 용이한 형태로 정해진 기호. (ADD, LDA …)</li>
+<li>라벨필드: 기호주소나 빈칸</li>
+<li>명령어 필드: 기계어나 수도명령어 기술<ul>
+<li>메모리 참조 명령어</li>
+<li>레지스터 참조/입출력 명령어</li>
+<li>sudo 명령어</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>고급언어</strong>(문제중심)</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;conio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> a,b,c;</span><br><span class="line">    a= <span class="number">5</span>, b=<span class="number">-2</span>;</span><br><span class="line">    c = a+b;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;a+b = %d&quot;</span>, c);</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<hr>
+<h1 id="프로그래밍-구현"><a href="#프로그래밍-구현" class="headerlink" title="프로그래밍 구현"></a>프로그래밍 구현</h1><h2 id="소프트웨어-개발-패러다임"><a href="#소프트웨어-개발-패러다임" class="headerlink" title="소프트웨어 개발 패러다임"></a>소프트웨어 개발 패러다임</h2><p>⬇️ 구조적 기법<br>⬇️ 객체지향 기법: 객체지향<br>⬇️ 컴포넌트 기법: 외부와 Interface를 통해 동작구현. 시스템의 단순성.<br>⬇️ 분산객체 프레임워크: 이종 분산환경에서 여러종류의 Application을 쉽게 통합</p>
+<h2 id="컴퓨터-네트워크-환경"><a href="#컴퓨터-네트워크-환경" class="headerlink" title="컴퓨터 네트워크 환경"></a>컴퓨터 네트워크 환경</h2><ul>
+<li><p>Wireshark 패킷 분석툴</p>
+<ul>
+<li>Explorer가 운영체제의 한 축을 담당하게 된 순간부터 컴퓨터는 이미 통신기계로 분류되고 있다.</li>
+<li>통신기계로서의 hexadecimal 표현</li>
+<li>NOS (New technology Operating Systerm)</li>
+</ul>
+  <img width="837" alt="wireshark" src="https://user-images.githubusercontent.com/28856435/120879375-d96b0780-c5fd-11eb-9158-1985d5af3fb1.png">
+
+  <br></li>
+</ul>
+            
+
+
+        </div>
+    </div>
+    <div id="post-footer" class="post-footer main-content-wrap">
+        
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">TAGGED IN</span><br/>
+                
+    <a class="tag tag--primary tag--small t-none-link" href="/tags/computer-science/" rel="tag">computer_science</a>
+
+            </div>
+        
+        
+            <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2021/06/07/%ED%8C%8C%EC%9D%B4%ED%94%84%EB%9D%BC%EC%9D%B8/"
+                    data-tooltip="⛓ 컴퓨터구조-파이프라인"
+                    aria-label="PREVIOUS: ⛓ 컴퓨터구조-파이프라인"
+                >
+                    
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                    </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2021/06/03/CPU%EA%B5%AC%EC%A1%B0-%EB%A0%88%EC%A7%80%EC%8A%A4%ED%84%B0/"
+                    data-tooltip="📱 CPU구조_레지스터"
+                    aria-label="NEXT: 📱 CPU구조_레지스터"
+                >
+                    
+                        <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a
+                class="post-action-btn btn btn--default btn-open-shareoptions"
+                href="#btn-open-shareoptions"
+                aria-label="Share this post"
+            >
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2021/06/05/%EC%BB%B4%ED%93%A8%ED%84%B0%EA%B5%AC%EC%A1%B0__%EC%9E%85%EC%B6%9C%EB%A0%A5/"
+                    title="Share on Facebook"
+                    aria-label="Share on Facebook"
+                >
+                    <i class="fab fa-facebook" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2021/06/05/%EC%BB%B4%ED%93%A8%ED%84%B0%EA%B5%AC%EC%A1%B0__%EC%9E%85%EC%B6%9C%EB%A0%A5/"
+                    title="Share on Twitter"
+                    aria-label="Share on Twitter"
+                >
+                    <i class="fab fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://plus.google.com/share?url=http://yoursite.com/2021/06/05/%EC%BB%B4%ED%93%A8%ED%84%B0%EA%B5%AC%EC%A1%B0__%EC%9E%85%EC%B6%9C%EB%A0%A5/"
+                    title="Share on Google+"
+                    aria-label="Share on Google+"
+                >
+                    <i class="fab fa-google-plus" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+                <li class="post-action">
+                    <a
+                        class="post-action-btn btn btn--default"
+                        href="#disqus_thread"
+                        aria-label="Leave a comment"
+                    >
+                        <i class="fa fa-comment"></i>
+                    </a>
+                </li>
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#table-of-contents" aria-label="Contents">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+        
+        
+            
+                <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+            
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2021 Suyan Kim. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2021/06/07/%ED%8C%8C%EC%9D%B4%ED%94%84%EB%9D%BC%EC%9D%B8/"
+                    data-tooltip="⛓ 컴퓨터구조-파이프라인"
+                    aria-label="PREVIOUS: ⛓ 컴퓨터구조-파이프라인"
+                >
+                    
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                    </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2021/06/03/CPU%EA%B5%AC%EC%A1%B0-%EB%A0%88%EC%A7%80%EC%8A%A4%ED%84%B0/"
+                    data-tooltip="📱 CPU구조_레지스터"
+                    aria-label="NEXT: 📱 CPU구조_레지스터"
+                >
+                    
+                        <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a
+                class="post-action-btn btn btn--default btn-open-shareoptions"
+                href="#btn-open-shareoptions"
+                aria-label="Share this post"
+            >
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2021/06/05/%EC%BB%B4%ED%93%A8%ED%84%B0%EA%B5%AC%EC%A1%B0__%EC%9E%85%EC%B6%9C%EB%A0%A5/"
+                    title="Share on Facebook"
+                    aria-label="Share on Facebook"
+                >
+                    <i class="fab fa-facebook" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2021/06/05/%EC%BB%B4%ED%93%A8%ED%84%B0%EA%B5%AC%EC%A1%B0__%EC%9E%85%EC%B6%9C%EB%A0%A5/"
+                    title="Share on Twitter"
+                    aria-label="Share on Twitter"
+                >
+                    <i class="fab fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://plus.google.com/share?url=http://yoursite.com/2021/06/05/%EC%BB%B4%ED%93%A8%ED%84%B0%EA%B5%AC%EC%A1%B0__%EC%9E%85%EC%B6%9C%EB%A0%A5/"
+                    title="Share on Google+"
+                    aria-label="Share on Google+"
+                >
+                    <i class="fab fa-google-plus" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+                <li class="post-action">
+                    <a
+                        class="post-action-btn btn btn--default"
+                        href="#disqus_thread"
+                        aria-label="Leave a comment"
+                    >
+                        <i class="fa fa-comment"></i>
+                    </a>
+                </li>
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#table-of-contents" aria-label="Contents">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                
+    <div id="share-options-bar" class="share-options-bar" data-behavior="4">
+        <i id="btn-close-shareoptions" class="fa fa-times"></i>
+        <ul class="share-options">
+            
+                
+                
+                <li class="share-option">
+                    <a
+                        class="share-option-btn"
+                        target="new"
+                        href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2021/06/05/%EC%BB%B4%ED%93%A8%ED%84%B0%EA%B5%AC%EC%A1%B0__%EC%9E%85%EC%B6%9C%EB%A0%A5/"
+                        aria-label="Share on Facebook"
+                    >
+                        <i class="fab fa-facebook" aria-hidden="true"></i><span>Share on Facebook</span>
+                    </a>
+                </li>
+            
+                
+                
+                <li class="share-option">
+                    <a
+                        class="share-option-btn"
+                        target="new"
+                        href="https://twitter.com/intent/tweet?text=http://yoursite.com/2021/06/05/%EC%BB%B4%ED%93%A8%ED%84%B0%EA%B5%AC%EC%A1%B0__%EC%9E%85%EC%B6%9C%EB%A0%A5/"
+                        aria-label="Share on Twitter"
+                    >
+                        <i class="fab fa-twitter" aria-hidden="true"></i><span>Share on Twitter</span>
+                    </a>
+                </li>
+            
+                
+                
+                <li class="share-option">
+                    <a
+                        class="share-option-btn"
+                        target="new"
+                        href="https://plus.google.com/share?url=http://yoursite.com/2021/06/05/%EC%BB%B4%ED%93%A8%ED%84%B0%EA%B5%AC%EC%A1%B0__%EC%9E%85%EC%B6%9C%EB%A0%A5/"
+                        aria-label="Share on Google+"
+                    >
+                        <i class="fab fa-google-plus" aria-hidden="true"></i><span>Share on Google+</span>
+                    </a>
+                </li>
+            
+        </ul>
+    </div>
+
+
+            
+        </div>
+        
+
+
+    
+
+<div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-times"></i>
+        </div>
+        
+            <img id="about-card-picture" src="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=110" alt="Author&#39;s picture"/>
+        
+            <h4 id="about-card-name">Suyan Kim</h4>
+        <!--  -->
+            <!-- <div id="about-card-bio"><p>author.bio</p>
+</div> -->
+            <div id="about-card-bio">안녕하세요, 서버 백엔드 개발자 동글씨입니다.</div>
+        <!--  -->
+        <!--  -->
+            <div id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <!-- <p>Backend Developer</p>
+ -->
+                Backend Developer
+            </div>
+        <!--  -->
+        
+            <div id="about-card-location">
+                <i class="fa fa-map-marker-alt"></i>
+                <br/>
+                Korea
+            </div>
+        
+    </div>
+</div>
+
+        
+        
+<div id="cover" style="background-image:url('/assets/images/null');"></div>
+        <!--SCRIPTS-->
+
+<script src="/assets/js/jquery.js"></script>
+
+
+<script src="/assets/js/jquery.fancybox.js"></script>
+
+
+<script src="/assets/js/thumbs.js"></script>
+
+
+<script src="/assets/js/tranquilpeak.js"></script>
+
+<!--SCRIPTS END-->
+
+
+    
+        <script>
+          var disqus_config = function() {
+            this.page.url = 'http://yoursite.com/2021/06/05/%EC%BB%B4%ED%93%A8%ED%84%B0%EA%B5%AC%EC%A1%B0__%EC%9E%85%EC%B6%9C%EB%A0%A5/';
+              
+            this.page.identifier = '2021/06/05/컴퓨터구조__입출력/';
+              
+          };
+          (function() {
+            var d = document, s = d.createElement('script');
+            var disqus_shortname = 'ksso730-github-io';
+            s.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+          })();
+        </script>
+    
+
+
+
+
+    </body>
+</html>

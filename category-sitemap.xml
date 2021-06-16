@@ -8,22 +8,29 @@
     </url>
 
     <url>
-        <loc>http://yoursite.com/categories/%25E2%2598%2581%25EF%25B8%258F-OS/</loc>
-        <lastmod>2021-05-25T00:54:42.549Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://yoursite.com/categories/%25E2%2598%2581%25EF%25B8%258F-Linux/</loc>
-        <lastmod>2021-05-25T00:54:42.549Z</lastmod>
+        <loc>http://yoursite.com/categories/%25E2%2598%2581%25EF%25B8%258F/</loc>
+        <lastmod>2021-06-16T06:18:51.160Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
         <loc>http://yoursite.com/categories/%25E2%2598%2581%25EF%25B8%258F-TIL/</loc>
-        <lastmod>2021-05-25T00:54:42.541Z</lastmod>
+        <lastmod>2021-06-16T06:07:51.864Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://yoursite.com/categories/%25E2%2598%2581%25EF%25B8%258F-Linux/</loc>
+        <lastmod>2021-06-03T09:31:07.432Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://yoursite.com/categories/%25E2%2598%2581%25EF%25B8%258F-OS/</loc>
+        <lastmod>2021-05-25T00:54:42.549Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>

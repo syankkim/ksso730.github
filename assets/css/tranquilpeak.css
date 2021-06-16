@@ -2848,7 +2848,7 @@ pre > code {
   color: white; }
 
 td.code pre {
-  background: aliceblue;
+  font-weight: bold;
   border-radius: 0.5em;
   padding: 0.3em; }
 

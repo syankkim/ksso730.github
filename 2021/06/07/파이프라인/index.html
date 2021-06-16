@@ -1,0 +1,971 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="동글씨">
+    <title>⛓ 컴퓨터구조-파이프라인 - 동글씨</title>
+    <meta name="author" content="Suyan Kim">
+    
+    
+    
+        <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
+    
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\n병렬처리\n컴퓨터 시스템의 계산 속도의 향상을 목적으로 동시 데이터 처리기능을 제공하는 광범위한 개념의 기술.\n\n다중 기능장치를 가진 레지스터\n실행 장치를 동시에 동작되는 8개의 기능장치로 나눔\n\n\n병렬처리 구조 분류방법 by M.J Flynn\nSISD : 단일 명령어, 단일 데이터\nSIMD : 단일 명령어, 다중 데이터\nMISD : 다중 명령어, 단일 데이터\nMIMD : - 다중 명령어, 다중 데이터\n여러 프로그램 동시수행 능력\n대부분의 다중 프로세서와 다중 컴퓨터 시스템\n\n\n\n\n파이프 라인파이프라인 구조 성능\n파이프 라인의 동작은 공간, 시간표에 의해 설명되는데, 이것은 시간에 대한 함수로서 세그먼트의 사용현황 을 나타낸다.\n동일한 복잡도의 부연산들로 이루어지는 연산동작도 구현가능하다.\n매번 다른 집합을 동일한 태스크에 적용해, 반복적인 일에 효과적이다.\n그러나, 각 레지스터 Ri 에 분리되는 작업들의 업무강도가 비슷해야 한다. 업무강도가 가장 높은 작업에 비중을 둘 수 밖에 없어서 유휴시간이 생긴다.\n\n\n파이프라인의 이론적 최대속도 증가율은 세그먼트 수와 같다.\n\n그렇다면, 세그먼트가 많을 수록 효과적일까?\n\n\n클럭 사이클시간\n\n\n\n\n위와 같은 파이프라인의 클럭 사이클시간을 구하는 공식은 아래와 같다.k + (n-1)(= k개의 세그먼트 파이프라인에서 n개의 데스크를 수행)즉 위의 식에 대입하면 4 + (6-1)= 9:: 9개의 클럭사이클을 수행한다.\n\n파이프라인 구현\n하나의 프로세스를 서로 다른 기능을 가진 서브프로세스로 나누어 각 프로세스가 동시에 서로 다른 데이터를 취급하도록 하는 기법\n\n각 세그먼트에서 수행된 연산결과는 다음 세그먼트로 연속적으로 넘어간다.\n\n마지막 세그먼트를 통과하게되면 최종 연산결과를 얻는다.\n하나의 프로세스를 다양한 연산으로 중복시킬 수 있는 근간은 세그먼트마다의 레지스터이다.\n\n\n곱셈과 덧셈이 섞인 다항식 연산Ai X Bi + Ci (i= 1,2,3 …7)\n\nR1 ~ R5 레지스터와 조합논리회로 (Adder, Multiplier) 구성\n\n\n\n\n\n\n\n수도코드\n\n\n수도코드\n설명\n\n\n\nR1 &lt;- Ai, R2 &lt;- Bi\nAi와 Bi의 입력\n\n\nR1 &lt;- R1 X R2, R4 &lt;- Ci\n곱셈과 Ci의 입력\n\n\nR1 &lt;- R3 + R4\n곱셈 결과와 Ci의 덧셈\n\n\n\n\n\n\n\n\n세번의 clock pulse이후부터 R5의 첫번째 결과획득 및 파이프 라인상에서 데이터 이동시작\n\n\n\n\n파이프라인 데이터 처리\n\n예시\n각 세그먼트에서 부연산 수행 소요시간: tp= 20ns\n파이프 라인은 k=4 세그먼트\n태스크의 수: n=100\n\n\n\n\n파이프라인 구조를 활용한 경우 총 소요시간\n\n(k+ n-1)tp = (4+100-1) X 20 = 2060ns\n\n비파이프라인 시스템\n\n각 태스크 완료시간: tn= ktp = 4 X 20 = 80ns\n전체 태스크 완료시간: nktp = 100 X 80 = 8000ns\n\n:: 속도 증가율을 확인할 수 있다.\n\n8000/2060 = 3.88 ~= 4\n\n\n현실적인 파이프라인파이프라인 VS 병렬 다중기능 장치\n파이프라인\n실제 파이프라인 구조는 이론적인 최대속도 구현 불가\n각 세그먼트들이 부연산을 수행하는 시간이 다르기 때문이다.\n\n\n최대 전파시간을 갖는 세그먼트의 지연시간에 맞춰야한다.\n\n\n병렬 다중기능 장치\n그래서, 병렬적인 다중기능장치를 고려 할 수 있다.\n순차적 처리가 아닌, 데이터를 동시입력 받아 태스크를 동시에 처리한다. (SIMD구조)\n\n\n\n파이프라인 구조산술 파이프라인\n산술 연산들을 부연산으로 나누어 파이프라인의 세그먼트에서 수행\n\n불필요한 작업을 줄일 수 있다.\neg. 부동 소수점 연산, 과학계산 등\n\n\n부동 소수점 덧셈/뺄셈을 위한 파이프라인\n\n초기값이 아래와 같은 X, Y 의 ADD 연산을 산술파이프라인을 사용한다면, 표와같이 나타난다.X = 0.2345 X 103Y = 0.1200 X 102\n\n\n\n\n\n\nsegment\nresult\n\n\n\nSegment 1\n값이 큰 지수에 맞춘다:3\n\n\nSegment 2\nX = 0.2345 X 103 Y = 0.0120 X 103\n\n\nSegment 1\nZ = 0.24653\n\n\nSegment 1\n정규화(항상 0으로 표현): Z = 0.024654\n\n\n명령어 파이프라인\n명령어 사이클의 fetch, 디코드, 실행단계를 중첩사켜 명령어 흐름에 동시에 동작\n\n\n취약점 \n\n하지만 현재 파이프라인은 모두 비워져 있어야한다.\n분기명령(Branch) 이후의 명령어는 무시된다.\n세그먼트 수행시간이 서로다르다.\n\n\n효율적인 명령어 파이프라인?\n\n명령어 fetch장치\nFIFO 에 의한 큐로 구성하여 queuing 기법으로, 메모리를 참조 하도록 하여 접근시간을 줄인다.\n\n\n두개 이상의 세그먼트에 의해 주소참조 충돌이 일어날 수 있다.\n우선권을 주는 로직 필요\n\n\n\n\n\n\n파이프라인 CPU파이프라인 분기예측\n명령어 파이프라인이 비정상적인 동작을 하는 요인\n\n1) 자원충돌 \n명령어 메모리와 데이터 메모리를 분리하여 해결\n\n\n2) 데이터 의존성: 아직 준비되지 않은 데이터를 기다림\n하드웨어 인터락\n피연산자가 먼저 앞선 명령어의 목적지와 일치하는지 검사\n피연산자가 준비되지 않았다면 충돌을 충분히 피할만큼의 클럭사이클을 둔다.\n\n\n오퍼랜드 포워딩 : 충돌시 특별한 통로를 통해서 직접 세그먼트에 전달.\n\n\n3) 주소 의존성: 간접모드를 사용하는 명령어는 주소를 참조할 경우 메모리로부터 바로 fetch 되지 못한다.\n4) 분기 곤란: 분기 명령어같이 PC값을 바꾸려는 명령어에 의해 발생\n\n\n분기 명령어 처리\n\n조건,무조건 분기는 파이프라인의 정상적인 프로그램 순서를 바꿔버린다.\n컴퓨터 성능 저하\n\n\n분기 목표 버퍼 (branch target buffer, BTB)\nfetch 세그먼트에 속해있는 associative memory(주소가 아닌 내용에 의해 검색가능한 장치)\n일종의 레지스터로, 이전에 실행된 분기 명령어와 목표 명령어를 저장하여 활용한다. (loop buffer)\n\n\n\n\n\nRISC Processor\n실행 명령어 수는 증가, 작업 처리시간 감소 가능명령어당 실행 클록수와 클록주기를 파이프라인 구조로 감소 가능\n\n\nRISC Processor 구조적 특징\n명령어 1사이클 실행을 위한 온칩 캐쉬\n간단한 명령코드, 주소지정 모드\n신속한 오퍼랜드 참조/문맥 전환을 위한 레지스터 집합\n\n\n\n결론\n파이프라인의 이론적 최대속도 증가율은 세그먼트 수와 같다.\n\n그렇다면 세그먼트가 많을 수록 효과적일까?실제 상황은 그렇지 않다.\n\n\n\n모든 명령어는 동일한 처리 과정으로 처리되어야 한다.\n파이프라인을 구성하는 각 단계의 처리시간이 일정해야한다.\n모든 명령어는 순차적으로 실행되어야 한다.\n각 명령어 사이에는 의존성이 없어야 한다.\n명령어들 처리시 공유자원의 충돌이 없어야 한다.\n","dateCreated":"2021-06-07T10:50:54+09:00","dateModified":"2021-06-16T09:47:39+09:00","datePublished":"2021-06-07T10:50:54+09:00","description":"파이프라인은 무조건 성능이 좋을까?세그먼트 수가 많을 수록 효과적인걸까?#segment #RISC_Processor","headline":"⛓ 컴퓨터구조-파이프라인","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2021/06/07/%ED%8C%8C%EC%9D%B4%ED%94%84%EB%9D%BC%EC%9D%B8/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2021/06/07/%ED%8C%8C%EC%9D%B4%ED%94%84%EB%9D%BC%EC%9D%B8/","keywords":"computer_science"}</script>
+    <meta name="description" content="파이프라인은 무조건 성능이 좋을까?세그먼트 수가 많을 수록 효과적인걸까?#segment #RISC_Processor">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="⛓ 컴퓨터구조-파이프라인">
+<meta property="og:url" content="http://yoursite.com/2021/06/07/%ED%8C%8C%EC%9D%B4%ED%94%84%EB%9D%BC%EC%9D%B8/index.html">
+<meta property="og:site_name" content="동글씨">
+<meta property="og:description" content="파이프라인은 무조건 성능이 좋을까?세그먼트 수가 많을 수록 효과적인걸까?#segment #RISC_Processor">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://user-images.githubusercontent.com/28856435/121041772-0251ef00-c7ee-11eb-90d2-5493c5ee541b.PNG">
+<meta property="og:image" content="https://user-images.githubusercontent.com/28856435/121041793-08e06680-c7ee-11eb-9c19-daec02459cc3.PNG">
+<meta property="og:image" content="https://user-images.githubusercontent.com/28856435/121213896-9fc62500-c8b9-11eb-8eaa-582963e0c47c.PNG">
+<meta property="article:published_time" content="2021-06-07T01:50:54.000Z">
+<meta property="article:modified_time" content="2021-06-16T00:47:39.620Z">
+<meta property="article:author" content="Suyan Kim">
+<meta property="article:tag" content="computer_science">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://user-images.githubusercontent.com/28856435/121041772-0251ef00-c7ee-11eb-90d2-5493c5ee541b.PNG">
+    
+    
+        
+    
+    
+        <meta property="og:image" content="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=640"/>
+    
+    
+    
+    
+    <!--STYLES-->
+    
+<link rel="stylesheet" href="/assets/css/all.css">
+
+    
+<link rel="stylesheet" href="/assets/css/jquery.fancybox.css">
+
+    
+<link rel="stylesheet" href="/assets/css/thumbs.css">
+
+    
+<link rel="stylesheet" href="/assets/css/tranquilpeak.css">
+
+    <!--STYLES END-->
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-158530470-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-158530470-1');
+    </script>
+
+
+    
+
+    
+        
+    
+</head>
+
+    <body>
+        <div id="blog">
+            <!-- Define author's picture -->
+
+
+    
+        
+    
+
+<header id="header" data-behavior="4">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <div class="header-title">
+        <a
+            class="header-title-link"
+            href="/index.html"
+            aria-label=""
+        >
+            동글씨
+        </a>
+    </div>
+    
+        
+            <a
+                class="header-right-picture "
+                href="#about"
+                aria-label="Open the link: /#about"
+            >
+        
+        
+            <img class="header-picture" src="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=90" alt="Author&#39;s picture"/>
+        
+        </a>
+    
+</header>
+
+            <!-- function -->
+
+
+<!-- Define author's picture -->
+
+
+    
+
+<nav id="sidebar" data-behavior="4">
+    <div class="sidebar-container">
+        
+            <div class="sidebar-profile">
+                <a
+                    href="/#about"
+                    aria-label="Read more about the author"
+                >
+                    <img class="sidebar-profile-picture" src="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=800" alt="Author&#39;s picture"/>
+                </a>
+                <h4 class="sidebar-profile-name">Suyan Kim</h4>
+                
+                    <h5 class="sidebar-profile-bio"><p>▲ Who Am I</p>
+</h5>
+                
+            </div>
+        
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="home"href="/index.html"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-home" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">home</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="archives"href="/all-archives"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-archive" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">archives</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="categories"href="/all-categories"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-bookmark" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">categories</span>
+                        </a>
+                    <!-- add -->
+                    
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F/">☁️ (1)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-AWS/">☁️ AWS (0)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (7)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Config/">☁️ Config (2)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-DataBase/">☁️ DataBase (1)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Git/">☁️ Git (3)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-JPA/">☁️ JPA (10)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Java/">☁️ Java (0)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Linux/">☁️ Linux (6)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-OS/">☁️ OS (14)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Python/">☁️ Python (2)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-React/">☁️ React (3)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Spring/">☁️ Spring (1)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-TIL/">☁️ TIL (9)</a></li>
+                            
+                        
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="tags"href="/all-tags"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-tags" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">tags</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="about"href="#about"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-question" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">about</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="https://github.com/ksso730" target="_blank" rel="noopener" title="github">
+                    
+                    <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">github</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="https://www.instagram.com/syankkim/" target="_blank" rel="noopener" title="life">
+                    
+                    <i class="sidebar-button-icon fab fa-instagram" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">life</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+        </ul>
+        
+    </div>
+</nav>
+
+            
+            <div id="main" data-behavior="4"
+                 class="
+                        hasCoverMetaIn
+                        ">
+                
+<article class="post">
+    
+    
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title">
+            ⛓ 컴퓨터구조-파이프라인
+        </h1>
+    
+    
+        <div class="post-meta">
+    <time datetime="2021-06-07T10:50:54+09:00">
+	
+		    Jun 07, 2021
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/%E2%98%81%EF%B8%8F-TIL/">☁️ TIL</a>
+
+
+    
+</div>
+
+    
+</div>
+
+    
+    <div class="post-content markdown">
+        <div class="main-content-wrap">
+            <!-- excerpt -->
+<h1 id="table-of-contents">Contents</h1><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%EB%B3%91%EB%A0%AC%EC%B2%98%EB%A6%AC"><span class="toc-text">병렬처리</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%EB%B3%91%EB%A0%AC%EC%B2%98%EB%A6%AC-%EA%B5%AC%EC%A1%B0-%EB%B6%84%EB%A5%98%EB%B0%A9%EB%B2%95-by-M-J-Flynn"><span class="toc-text">병렬처리 구조 분류방법 by M.J Flynn</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%ED%8C%8C%EC%9D%B4%ED%94%84-%EB%9D%BC%EC%9D%B8"><span class="toc-text">파이프 라인</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%ED%8C%8C%EC%9D%B4%ED%94%84%EB%9D%BC%EC%9D%B8-%EA%B5%AC%EC%A1%B0-%EC%84%B1%EB%8A%A5"><span class="toc-text">파이프라인 구조 성능</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%ED%81%B4%EB%9F%AD-%EC%82%AC%EC%9D%B4%ED%81%B4%EC%8B%9C%EA%B0%84"><span class="toc-text">클럭 사이클시간</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%ED%8C%8C%EC%9D%B4%ED%94%84%EB%9D%BC%EC%9D%B8-%EA%B5%AC%ED%98%84"><span class="toc-text">파이프라인 구현</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%ED%8C%8C%EC%9D%B4%ED%94%84%EB%9D%BC%EC%9D%B8-%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%B2%98%EB%A6%AC"><span class="toc-text">파이프라인 데이터 처리</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%ED%98%84%EC%8B%A4%EC%A0%81%EC%9D%B8-%ED%8C%8C%EC%9D%B4%ED%94%84%EB%9D%BC%EC%9D%B8"><span class="toc-text">현실적인 파이프라인</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%ED%8C%8C%EC%9D%B4%ED%94%84%EB%9D%BC%EC%9D%B8-VS-%EB%B3%91%EB%A0%AC-%EB%8B%A4%EC%A4%91%EA%B8%B0%EB%8A%A5-%EC%9E%A5%EC%B9%98"><span class="toc-text">파이프라인 VS 병렬 다중기능 장치</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%ED%8C%8C%EC%9D%B4%ED%94%84%EB%9D%BC%EC%9D%B8-%EA%B5%AC%EC%A1%B0"><span class="toc-text">파이프라인 구조</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%EC%82%B0%EC%88%A0-%ED%8C%8C%EC%9D%B4%ED%94%84%EB%9D%BC%EC%9D%B8"><span class="toc-text">산술 파이프라인</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%EB%AA%85%EB%A0%B9%EC%96%B4-%ED%8C%8C%EC%9D%B4%ED%94%84%EB%9D%BC%EC%9D%B8"><span class="toc-text">명령어 파이프라인</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%ED%8C%8C%EC%9D%B4%ED%94%84%EB%9D%BC%EC%9D%B8-CPU"><span class="toc-text">파이프라인 CPU</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%ED%8C%8C%EC%9D%B4%ED%94%84%EB%9D%BC%EC%9D%B8-%EB%B6%84%EA%B8%B0%EC%98%88%EC%B8%A1"><span class="toc-text">파이프라인 분기예측</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RISC-Processor"><span class="toc-text">RISC Processor</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%EA%B2%B0%EB%A1%A0"><span class="toc-text">결론</span></a></li></ol>
+
+<hr>
+<h1 id="병렬처리"><a href="#병렬처리" class="headerlink" title="병렬처리"></a>병렬처리</h1><blockquote>
+<p>컴퓨터 시스템의 계산 속도의 향상을 목적으로 동시 데이터 처리기능을 제공하는 광범위한 개념의 기술.</p>
+<ul>
+<li>다중 기능장치를 가진 레지스터</li>
+<li>실행 장치를 동시에 동작되는 8개의 기능장치로 나눔</li>
+</ul>
+</blockquote>
+<h2 id="병렬처리-구조-분류방법-by-M-J-Flynn"><a href="#병렬처리-구조-분류방법-by-M-J-Flynn" class="headerlink" title="병렬처리 구조 분류방법 by M.J Flynn"></a>병렬처리 구조 분류방법 by M.J Flynn</h2><ul>
+<li>SISD : 단일 명령어, 단일 데이터</li>
+<li>SIMD : 단일 명령어, 다중 데이터</li>
+<li>MISD : 다중 명령어, 단일 데이터</li>
+<li>MIMD : - 다중 명령어, 다중 데이터<ul>
+<li>여러 프로그램 동시수행 능력</li>
+<li>대부분의 다중 프로세서와 다중 컴퓨터 시스템</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h1 id="파이프-라인"><a href="#파이프-라인" class="headerlink" title="파이프 라인"></a>파이프 라인</h1><h2 id="파이프라인-구조-성능"><a href="#파이프라인-구조-성능" class="headerlink" title="파이프라인 구조 성능"></a>파이프라인 구조 성능</h2><ul>
+<li>파이프 라인의 동작은 공간, 시간표에 의해 설명되는데, 이것은 시간에 대한 함수로서 <strong>세그먼트의 사용현황</strong> 을 나타낸다.</li>
+<li>동일한 복잡도의 <code>부연산</code>들로 이루어지는 연산동작도 구현가능하다.</li>
+<li>매번 다른 집합을 동일한 태스크에 적용해, <code>반복적인 일에 효과적</code>이다.</li>
+<li><strong>그러나,</strong> 각 레지스터 Ri 에 분리되는 작업들의 업무강도가 비슷해야 한다. 업무강도가 가장 높은 작업에 비중을 둘 수 밖에 없어서 <code>유휴시간</code>이 생긴다.</li>
+</ul>
+<blockquote>
+<p>파이프라인의 <code>이론적 최대속도 증가율</code>은 <code>세그먼트 수와 같다.</code></p>
+<ul>
+<li>그렇다면, 세그먼트가 많을 수록 효과적일까?</li>
+</ul>
+</blockquote>
+<h2 id="클럭-사이클시간"><a href="#클럭-사이클시간" class="headerlink" title="클럭 사이클시간"></a>클럭 사이클시간</h2><img width="630" alt="파이프라인1" src="https://user-images.githubusercontent.com/28856435/121041772-0251ef00-c7ee-11eb-90d2-5493c5ee541b.PNG">
+
+<br>
+
+<blockquote>
+<p>위와 같은 파이프라인의 클럭 사이클시간을 구하는 공식은 아래와 같다.<br>k + (n-1)<br>(= k개의 세그먼트 파이프라인에서 n개의 데스크를 수행)<br>즉 위의 식에 대입하면 4 + (6-1)= 9<br><code>:: 9개의 클럭사이클을 수행한다.</code></p>
+</blockquote>
+<h2 id="파이프라인-구현"><a href="#파이프라인-구현" class="headerlink" title="파이프라인 구현"></a>파이프라인 구현</h2><ul>
+<li><p>하나의 프로세스를 서로 다른 기능을 가진 서브프로세스로 나누어 각 프로세스가 <code>동시에</code> 서로 다른 데이터를 취급하도록 하는 기법</p>
+</li>
+<li><p>각 세그먼트에서 수행된 연산결과는 다음 세그먼트로 연속적으로 넘어간다.</p>
+<ul>
+<li>마지막 세그먼트를 통과하게되면 최종 연산결과를 얻는다.</li>
+<li>하나의 프로세스를 다양한 연산으로 중복시킬 수 있는 근간은 <code>세그먼트</code>마다의 <code>레지스터</code>이다.</li>
+</ul>
+</li>
+<li><p>곱셈과 덧셈이 섞인 다항식 연산<br><strong>Ai X Bi + Ci (i= 1,2,3 …7)</strong></p>
+</li>
+<li><p>R1 ~ R5 레지스터와 조합논리회로 (Adder, Multiplier) 구성</p>
+</li>
+</ul>
+<img width="693" alt="파이프라인2" src="https://user-images.githubusercontent.com/28856435/121041793-08e06680-c7ee-11eb-9c19-daec02459cc3.PNG">
+
+<br>
+
+<ul>
+<li>수도코드<table>
+<thead>
+<tr>
+<th>수도코드</th>
+<th>설명</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>R1 &lt;- Ai, R2 &lt;- Bi</td>
+<td>Ai와 Bi의 입력</td>
+</tr>
+<tr>
+<td>R1 &lt;- R1 X R2, R4 &lt;- Ci</td>
+<td>곱셈과 Ci의 입력</td>
+</tr>
+<tr>
+<td>R1 &lt;- R3 + R4</td>
+<td>곱셈 결과와 Ci의 덧셈</td>
+</tr>
+</tbody></table>
+</li>
+</ul>
+<br>
+<br>
+
+<ul>
+<li><strong>세번의 clock pulse이후부터 R5의 첫번째 결과획득</strong> 및 파이프 <strong>라인상에서 데이터 이동시작</strong></li>
+</ul>
+<img width="533" alt="파이프라인3" src="https://user-images.githubusercontent.com/28856435/121213896-9fc62500-c8b9-11eb-8eaa-582963e0c47c.PNG">
+
+
+<h2 id="파이프라인-데이터-처리"><a href="#파이프라인-데이터-처리" class="headerlink" title="파이프라인 데이터 처리"></a>파이프라인 데이터 처리</h2><blockquote>
+<ul>
+<li>예시<ul>
+<li>각 세그먼트에서 부연산 수행 소요시간: t<sub>p</sub>= <code>20ns</code></li>
+<li>파이프 라인은 <code>k=4</code> 세그먼트</li>
+<li>태스크의 수: <code>n=100</code></li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><strong>파이프라인 구조를 활용한 경우 총 소요시간</strong></p>
+<ul>
+<li>(k+ n-1)t<sub>p</sub> = (4+100-1) X 20 = 2060ns</li>
+</ul>
+<p><strong>비파이프라인 시스템</strong></p>
+<ul>
+<li>각 태스크 완료시간: t<sub>n</sub>= kt<sub>p</sub> = 4 X 20 = 80ns</li>
+<li>전체 태스크 완료시간: nkt<sub>p</sub> = 100 X 80 = 8000ns</li>
+</ul>
+<p><strong>:: 속도 증가율을 확인할 수 있다.</strong></p>
+<ul>
+<li>8000/2060 = 3.88 ~= 4</li>
+</ul>
+<hr>
+<h1 id="현실적인-파이프라인"><a href="#현실적인-파이프라인" class="headerlink" title="현실적인 파이프라인"></a>현실적인 파이프라인</h1><h2 id="파이프라인-VS-병렬-다중기능-장치"><a href="#파이프라인-VS-병렬-다중기능-장치" class="headerlink" title="파이프라인 VS 병렬 다중기능 장치"></a>파이프라인 VS 병렬 다중기능 장치</h2><ul>
+<li><strong>파이프라인</strong><ul>
+<li>실제 파이프라인 구조는 <strong>이론적인 최대속도 구현 불가</strong><ul>
+<li>각 세그먼트들이 <code>부연산을 수행하는 시간</code>이 다르기 때문이다.</li>
+</ul>
+</li>
+<li><code>최대 전파시간</code>을 갖는 세그먼트의 지연시간에 맞춰야한다.</li>
+</ul>
+</li>
+<li><strong>병렬 다중기능 장치</strong><ul>
+<li>그래서, 병렬적인 다중기능장치를 고려 할 수 있다.</li>
+<li>순차적 처리가 아닌, 데이터를 <code>동시입력</code> 받아 태스크를 <code>동시에 처리</code>한다. (SIMD구조)</li>
+</ul>
+</li>
+</ul>
+<h2 id="파이프라인-구조"><a href="#파이프라인-구조" class="headerlink" title="파이프라인 구조"></a>파이프라인 구조</h2><h3 id="산술-파이프라인"><a href="#산술-파이프라인" class="headerlink" title="산술 파이프라인"></a>산술 파이프라인</h3><ul>
+<li><p>산술 연산들을 <code>부연산으로 나누어</code> 파이프라인의 <code>세그먼트</code>에서 수행</p>
+<ul>
+<li>불필요한 작업을 줄일 수 있다.</li>
+<li>eg. 부동 소수점 연산, 과학계산 등</li>
+</ul>
+</li>
+<li><p>부동 소수점 덧셈/뺄셈을 위한 파이프라인</p>
+<ul>
+<li>초기값이 아래와 같은 X, Y 의 ADD 연산을 산술파이프라인을 사용한다면, 표와같이 나타난다.<br>X = 0.2345 X 10<sub>3</sub><br>Y = 0.1200 X 10<sub>2</sub></li>
+</ul>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>segment</th>
+<th>result</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Segment 1</td>
+<td>값이 큰 지수에 맞춘다:3</td>
+</tr>
+<tr>
+<td>Segment 2</td>
+<td><strong>X</strong> = 0.2345 X 10<sub>3</sub> <strong>Y</strong> = 0.0120 X 10<sub>3</sub></td>
+</tr>
+<tr>
+<td>Segment 1</td>
+<td>Z = 0.2465<sub>3</sub></td>
+</tr>
+<tr>
+<td>Segment 1</td>
+<td>정규화(항상 0으로 표현): <strong>Z</strong> = 0.02465<sub>4</sub></td>
+</tr>
+</tbody></table>
+<h3 id="명령어-파이프라인"><a href="#명령어-파이프라인" class="headerlink" title="명령어 파이프라인"></a>명령어 파이프라인</h3><blockquote>
+<p>명령어 사이클의 fetch, 디코드, 실행단계를 <code>중첩</code>사켜 명령어 흐름에 <code>동시에</code> 동작</p>
+</blockquote>
+<ul>
+<li><p><strong>취약점</strong> </p>
+<ul>
+<li>하지만 현재 파이프라인은 <code>모두 비워져</code> 있어야한다.</li>
+<li>분기명령(<code>Branch</code>) 이후의 명령어는 무시된다.</li>
+<li>세그먼트 수행시간이 서로다르다.</li>
+</ul>
+</li>
+<li><p><strong>효율적인 명령어 파이프라인?</strong></p>
+<ul>
+<li>명령어 fetch장치<ul>
+<li><code>FIFO</code> 에 의한 큐로 구성하여 queuing 기법으로, 메모리를 참조 하도록 하여 접근시간을 줄인다.</li>
+</ul>
+</li>
+<li>두개 이상의 세그먼트에 의해 주소참조 충돌이 일어날 수 있다.<ul>
+<li>우선권을 주는 로직 필요</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h1 id="파이프라인-CPU"><a href="#파이프라인-CPU" class="headerlink" title="파이프라인 CPU"></a>파이프라인 CPU</h1><h2 id="파이프라인-분기예측"><a href="#파이프라인-분기예측" class="headerlink" title="파이프라인 분기예측"></a>파이프라인 분기예측</h2><ul>
+<li><p>명령어 파이프라인이 비정상적인 동작을 하는 요인</p>
+<ul>
+<li><strong>1) 자원충돌</strong> <ul>
+<li>명령어 메모리와 데이터 메모리를 <code>분리</code>하여 해결</li>
+</ul>
+</li>
+<li><strong>2) 데이터 의존성</strong>: 아직 준비되지 않은 데이터를 기다림<ul>
+<li><em>하드웨어 인터락</em><ul>
+<li><code>피연산자</code>가 먼저 앞선 명령어의 목적지와 일치하는지 검사</li>
+<li>피연산자가 준비되지 않았다면 충돌을 충분히 피할만큼의 <code>클럭사이클</code>을 둔다.</li>
+</ul>
+</li>
+<li><em>오퍼랜드 포워딩</em> : 충돌시 특별한 <code>통로</code>를 통해서 직접 세그먼트에 전달.</li>
+</ul>
+</li>
+<li><strong>3) 주소 의존성</strong>: 간접모드를 사용하는 명령어는 주소를 참조할 경우 메모리로부터 바로 fetch 되지 못한다.</li>
+<li><strong>4) 분기 곤란</strong>: 분기 명령어같이 PC값을 바꾸려는 명령어에 의해 발생</li>
+</ul>
+</li>
+<li><p>분기 명령어 처리</p>
+<ul>
+<li>조건,무조건 분기는 파이프라인의 정상적인 프로그램 순서를 바꿔버린다.<ul>
+<li>컴퓨터 성능 저하</li>
+</ul>
+</li>
+<li><em>분기 목표 버퍼 (branch target buffer, BTB)</em><ul>
+<li>fetch 세그먼트에 속해있는 associative memory(주소가 아닌 내용에 의해 검색가능한 장치)</li>
+<li>일종의 <code>레지스터</code>로, 이전에 실행된 <code>분기 명령어와 목표 명령어를 저장</code>하여 활용한다. (loop buffer)</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="RISC-Processor"><a href="#RISC-Processor" class="headerlink" title="RISC Processor"></a>RISC Processor</h2><blockquote>
+<p>실행 명령어 수는 증가, 작업 처리시간 감소 가능<br>명령어당 실행 클록수와 클록주기를 파이프라인 구조로 감소 가능</p>
+</blockquote>
+<ul>
+<li><strong>RISC Processor 구조적 특징</strong><ul>
+<li>명령어 1사이클 실행을 위한 <code>온칩 캐쉬</code></li>
+<li>간단한 명령코드, 주소지정 모드</li>
+<li>신속한 오퍼랜드 참조/문맥 전환을 위한 레지스터 집합</li>
+</ul>
+</li>
+</ul>
+<h1 id="결론"><a href="#결론" class="headerlink" title="결론"></a>결론</h1><blockquote>
+<p>파이프라인의 <code>이론적 최대속도 증가율</code>은 <code>세그먼트 수와 같다.</code></p>
+<ul>
+<li>그렇다면 세그먼트가 많을 수록 효과적일까?<br><strong>실제 상황은 그렇지 않다.</strong></li>
+</ul>
+</blockquote>
+<ul>
+<li>모든 명령어는 <code>동일한 처리 과정</code>으로 처리되어야 한다.</li>
+<li>파이프라인을 구성하는 각 단계의 <code>처리시간이 일정</code>해야한다.</li>
+<li>모든 명령어는 <code>순차적</code>으로 실행되어야 한다.</li>
+<li>각 명령어 사이에는 <code>의존성이 없어야 </code>한다.</li>
+<li>명령어들 처리시 공유자원의 <code>충돌이 없어야</code> 한다.</li>
+</ul>
+            
+
+
+        </div>
+    </div>
+    <div id="post-footer" class="post-footer main-content-wrap">
+        
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">TAGGED IN</span><br/>
+                
+    <a class="tag tag--primary tag--small t-none-link" href="/tags/computer-science/" rel="tag">computer_science</a>
+
+            </div>
+        
+        
+            <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2021/06/09/%EC%BB%B4%ED%93%A8%ED%84%B0%EA%B5%AC%EC%A1%B0_%EB%A9%94%EB%AA%A8%EB%A6%AC%EA%B3%84%EC%B8%B5/"
+                    data-tooltip="⛓ 컴퓨터구조-Memory System"
+                    aria-label="PREVIOUS: ⛓ 컴퓨터구조-Memory System"
+                >
+                    
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                    </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2021/06/05/%EC%BB%B4%ED%93%A8%ED%84%B0%EA%B5%AC%EC%A1%B0__%EC%9E%85%EC%B6%9C%EB%A0%A5/"
+                    data-tooltip="🖨 컴퓨터구조-입출력과 프로그래밍"
+                    aria-label="NEXT: 🖨 컴퓨터구조-입출력과 프로그래밍"
+                >
+                    
+                        <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a
+                class="post-action-btn btn btn--default btn-open-shareoptions"
+                href="#btn-open-shareoptions"
+                aria-label="Share this post"
+            >
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2021/06/07/%ED%8C%8C%EC%9D%B4%ED%94%84%EB%9D%BC%EC%9D%B8/"
+                    title="Share on Facebook"
+                    aria-label="Share on Facebook"
+                >
+                    <i class="fab fa-facebook" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2021/06/07/%ED%8C%8C%EC%9D%B4%ED%94%84%EB%9D%BC%EC%9D%B8/"
+                    title="Share on Twitter"
+                    aria-label="Share on Twitter"
+                >
+                    <i class="fab fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://plus.google.com/share?url=http://yoursite.com/2021/06/07/%ED%8C%8C%EC%9D%B4%ED%94%84%EB%9D%BC%EC%9D%B8/"
+                    title="Share on Google+"
+                    aria-label="Share on Google+"
+                >
+                    <i class="fab fa-google-plus" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+                <li class="post-action">
+                    <a
+                        class="post-action-btn btn btn--default"
+                        href="#disqus_thread"
+                        aria-label="Leave a comment"
+                    >
+                        <i class="fa fa-comment"></i>
+                    </a>
+                </li>
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#table-of-contents" aria-label="Contents">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+        
+        
+            
+                <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+            
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2021 Suyan Kim. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2021/06/09/%EC%BB%B4%ED%93%A8%ED%84%B0%EA%B5%AC%EC%A1%B0_%EB%A9%94%EB%AA%A8%EB%A6%AC%EA%B3%84%EC%B8%B5/"
+                    data-tooltip="⛓ 컴퓨터구조-Memory System"
+                    aria-label="PREVIOUS: ⛓ 컴퓨터구조-Memory System"
+                >
+                    
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                    </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2021/06/05/%EC%BB%B4%ED%93%A8%ED%84%B0%EA%B5%AC%EC%A1%B0__%EC%9E%85%EC%B6%9C%EB%A0%A5/"
+                    data-tooltip="🖨 컴퓨터구조-입출력과 프로그래밍"
+                    aria-label="NEXT: 🖨 컴퓨터구조-입출력과 프로그래밍"
+                >
+                    
+                        <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a
+                class="post-action-btn btn btn--default btn-open-shareoptions"
+                href="#btn-open-shareoptions"
+                aria-label="Share this post"
+            >
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2021/06/07/%ED%8C%8C%EC%9D%B4%ED%94%84%EB%9D%BC%EC%9D%B8/"
+                    title="Share on Facebook"
+                    aria-label="Share on Facebook"
+                >
+                    <i class="fab fa-facebook" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2021/06/07/%ED%8C%8C%EC%9D%B4%ED%94%84%EB%9D%BC%EC%9D%B8/"
+                    title="Share on Twitter"
+                    aria-label="Share on Twitter"
+                >
+                    <i class="fab fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://plus.google.com/share?url=http://yoursite.com/2021/06/07/%ED%8C%8C%EC%9D%B4%ED%94%84%EB%9D%BC%EC%9D%B8/"
+                    title="Share on Google+"
+                    aria-label="Share on Google+"
+                >
+                    <i class="fab fa-google-plus" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+                <li class="post-action">
+                    <a
+                        class="post-action-btn btn btn--default"
+                        href="#disqus_thread"
+                        aria-label="Leave a comment"
+                    >
+                        <i class="fa fa-comment"></i>
+                    </a>
+                </li>
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#table-of-contents" aria-label="Contents">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                
+    <div id="share-options-bar" class="share-options-bar" data-behavior="4">
+        <i id="btn-close-shareoptions" class="fa fa-times"></i>
+        <ul class="share-options">
+            
+                
+                
+                <li class="share-option">
+                    <a
+                        class="share-option-btn"
+                        target="new"
+                        href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2021/06/07/%ED%8C%8C%EC%9D%B4%ED%94%84%EB%9D%BC%EC%9D%B8/"
+                        aria-label="Share on Facebook"
+                    >
+                        <i class="fab fa-facebook" aria-hidden="true"></i><span>Share on Facebook</span>
+                    </a>
+                </li>
+            
+                
+                
+                <li class="share-option">
+                    <a
+                        class="share-option-btn"
+                        target="new"
+                        href="https://twitter.com/intent/tweet?text=http://yoursite.com/2021/06/07/%ED%8C%8C%EC%9D%B4%ED%94%84%EB%9D%BC%EC%9D%B8/"
+                        aria-label="Share on Twitter"
+                    >
+                        <i class="fab fa-twitter" aria-hidden="true"></i><span>Share on Twitter</span>
+                    </a>
+                </li>
+            
+                
+                
+                <li class="share-option">
+                    <a
+                        class="share-option-btn"
+                        target="new"
+                        href="https://plus.google.com/share?url=http://yoursite.com/2021/06/07/%ED%8C%8C%EC%9D%B4%ED%94%84%EB%9D%BC%EC%9D%B8/"
+                        aria-label="Share on Google+"
+                    >
+                        <i class="fab fa-google-plus" aria-hidden="true"></i><span>Share on Google+</span>
+                    </a>
+                </li>
+            
+        </ul>
+    </div>
+
+
+            
+        </div>
+        
+
+
+    
+
+<div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-times"></i>
+        </div>
+        
+            <img id="about-card-picture" src="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=110" alt="Author&#39;s picture"/>
+        
+            <h4 id="about-card-name">Suyan Kim</h4>
+        <!--  -->
+            <!-- <div id="about-card-bio"><p>author.bio</p>
+</div> -->
+            <div id="about-card-bio">안녕하세요, 서버 백엔드 개발자 동글씨입니다.</div>
+        <!--  -->
+        <!--  -->
+            <div id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <!-- <p>Backend Developer</p>
+ -->
+                Backend Developer
+            </div>
+        <!--  -->
+        
+            <div id="about-card-location">
+                <i class="fa fa-map-marker-alt"></i>
+                <br/>
+                Korea
+            </div>
+        
+    </div>
+</div>
+
+        
+        
+<div id="cover" style="background-image:url('/assets/images/null');"></div>
+        <!--SCRIPTS-->
+
+<script src="/assets/js/jquery.js"></script>
+
+
+<script src="/assets/js/jquery.fancybox.js"></script>
+
+
+<script src="/assets/js/thumbs.js"></script>
+
+
+<script src="/assets/js/tranquilpeak.js"></script>
+
+<!--SCRIPTS END-->
+
+
+    
+        <script>
+          var disqus_config = function() {
+            this.page.url = 'http://yoursite.com/2021/06/07/%ED%8C%8C%EC%9D%B4%ED%94%84%EB%9D%BC%EC%9D%B8/';
+              
+            this.page.identifier = '2021/06/07/파이프라인/';
+              
+          };
+          (function() {
+            var d = document, s = d.createElement('script');
+            var disqus_shortname = 'ksso730-github-io';
+            s.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+          })();
+        </script>
+    
+
+
+
+
+    </body>
+</html>

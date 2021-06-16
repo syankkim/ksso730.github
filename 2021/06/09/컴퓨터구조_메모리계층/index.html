@@ -1,0 +1,831 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="동글씨">
+    <title>⛓ 컴퓨터구조-Memory System - 동글씨</title>
+    <meta name="author" content="Suyan Kim">
+    
+    
+    
+        <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
+    
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\n메모리 계층기억장치 (MMU, buffer, AMU)\nCPU에 의하여 수행될 프로그램이 저장되는 곳.\n\n\n주기억 장치 (Main memory Unit)\nRAM Random Access Memory (마더보드에 장착)\n비교적 대용량이며 고속, 휘발성\n\n\nROM Read Only Memory\n주기억장치의 일종\n\n\n\n\n캐쉬 메모리 Cache memory, buffer\n수행중인 프로그램의 사용빈도가 높은 임시데이터를 저장한다.\n\n\n보조기억 장치 (Auxiliary memory Unit)\n대용량 자료보관 가능, 저속\nCPU 가 컨트롤 하지 못한다.\n보조기억 내의 필요한 자료는 주기억장치로 Loading ;옮겨진다.\nSRAM: 캐시메모리, CPU와 1:1 정도의 속도\nDRAM: 일반적 주기억장치, 상대적으로 느리다. 7배정도 기다려야 메인메모리가 기다려준다.\nMagnetic Tape, USB, SDcard : 파일 생성/삭제\nMagnetic drum, disk : 백업 저장장치\n\n\n\n\n@ 메모리를 계층별로 나누는 이유?\n\n입출력의 경제성 때문이다.\n\n\nRAM 의 동작⏬ MAR Memory Address Register 로 신호가 들어오면,⏬ 주소 디코더 에 의해서 번지 지정⏬ 정보에 의헤서 읽기/쓰기 수행: CS(Clock Segnal)=0/1, RD(Read)=0/1. WR(Write)=0/1⏬ MBR Memory Buffer Register 에 의해 출력된다.\n보조기억 장치\n섹터, 트랙, 헤드, 실린더접근시간: 메모리내의 기억장소에 도달하여 응답을 받는데까지 요구되는 평균시간\n\n\n시크타임: read/write head가 지정된 기억장소에 도달하기까지 소요 시간\n트랜스퍼 타임: 추출된 데이터를 장치내/외 필요한 곳으로 전송하는 시간\n레코드: 데이터가 기록되는 단위, 시크타임을 체크하는 기준.\n전송률: 장치가 레코드의 시작점에 위치하고서부터 전송 가능한 문자/워드 수\n\n\n효율적인 메모리 관리Associative memory\n내용에 의해 접근하는 메모리 장치\n\n메모리 장치? 자료의 저장과 접근을 용이하게 함\n이제는, 효율적 탐색(search) 이 필요 : 병렬 탐색을 하기에 적합\n외부인자와 내용을 비교할 수 있는 논리회로보유. ::RAM보다 비싸다.\n\n\n\nArgument register\nKey register 역할\n인자워드의 특정 영역이나 키를 선택하기 위한 마스크를 제공한다.\n\n\n\n캐쉬 메모리 (Cache memory)\n참조의 국한성 : 프로그램 수행중 메모리 참조는 국한된 영역에서만 이루어진다.\n\n프로그램 루프, 서브루틴 빈번\n순차적 프로그램 실행\n\n\n\n캐쉬 메모리의 동작/성능\n\nCache를 체크한다.\n워드가 발견되면(hit) 읽고\n없으면(miss) 주기억장치에 접근\n\n\n히트율\n\n\n효율적인 메모리관리\n\nassociative mapping\nassociative memory로 캐쉬를 만든다.\n가장 빠르고 융통성 있다.\nmiss 일 경우 주기억장치에서 해당자료를 찾아 옮긴다.\n여유공간이 있다면 그공간에 저장하지만\n여유공간이 없다면, 주어진 알고리즘에 의해 해당 주소-데이터 쌍이 새로운 정보로 대체된다.\n\n\n\n\n\n  @@@@@@@@@@@@@ 사진 예시\n\nDirect mapping\nSRAM 에 만든다. 하나의 공간에 하나씩 저장한다.\n동일한 인덱스를 보유한 워드가 반복접근시, 히트율 감소\n\n\nSet-associative mapping\n주어진 공간에 병렬로 여러개씩 저장한다.\n복잡한 알고리즘을 필요로한다.\n\n\n\n\n\n\n가상메모리가상메모리 VS 캐쉬메모리","dateCreated":"2021-06-09T01:50:54+09:00","dateModified":"2021-06-16T09:47:39+09:00","datePublished":"2021-06-09T01:50:54+09:00","description":"메모리 시스템# #","headline":"⛓ 컴퓨터구조-Memory System","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2021/06/09/%EC%BB%B4%ED%93%A8%ED%84%B0%EA%B5%AC%EC%A1%B0_%EB%A9%94%EB%AA%A8%EB%A6%AC%EA%B3%84%EC%B8%B5/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2021/06/09/%EC%BB%B4%ED%93%A8%ED%84%B0%EA%B5%AC%EC%A1%B0_%EB%A9%94%EB%AA%A8%EB%A6%AC%EA%B3%84%EC%B8%B5/","keywords":"computer_science"}</script>
+    <meta name="description" content="메모리 시스템# #">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="⛓ 컴퓨터구조-Memory System">
+<meta property="og:url" content="http://yoursite.com/2021/06/09/%EC%BB%B4%ED%93%A8%ED%84%B0%EA%B5%AC%EC%A1%B0_%EB%A9%94%EB%AA%A8%EB%A6%AC%EA%B3%84%EC%B8%B5/index.html">
+<meta property="og:site_name" content="동글씨">
+<meta property="og:description" content="메모리 시스템# #">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2021-06-08T16:50:54.000Z">
+<meta property="article:modified_time" content="2021-06-16T00:47:39.620Z">
+<meta property="article:author" content="Suyan Kim">
+<meta property="article:tag" content="computer_science">
+<meta name="twitter:card" content="summary">
+    
+    
+        
+    
+    
+        <meta property="og:image" content="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=640"/>
+    
+    
+    
+    
+    <!--STYLES-->
+    
+<link rel="stylesheet" href="/assets/css/all.css">
+
+    
+<link rel="stylesheet" href="/assets/css/jquery.fancybox.css">
+
+    
+<link rel="stylesheet" href="/assets/css/thumbs.css">
+
+    
+<link rel="stylesheet" href="/assets/css/tranquilpeak.css">
+
+    <!--STYLES END-->
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-158530470-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-158530470-1');
+    </script>
+
+
+    
+
+    
+        
+    
+</head>
+
+    <body>
+        <div id="blog">
+            <!-- Define author's picture -->
+
+
+    
+        
+    
+
+<header id="header" data-behavior="4">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <div class="header-title">
+        <a
+            class="header-title-link"
+            href="/index.html"
+            aria-label=""
+        >
+            동글씨
+        </a>
+    </div>
+    
+        
+            <a
+                class="header-right-picture "
+                href="#about"
+                aria-label="Open the link: /#about"
+            >
+        
+        
+            <img class="header-picture" src="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=90" alt="Author&#39;s picture"/>
+        
+        </a>
+    
+</header>
+
+            <!-- function -->
+
+
+<!-- Define author's picture -->
+
+
+    
+
+<nav id="sidebar" data-behavior="4">
+    <div class="sidebar-container">
+        
+            <div class="sidebar-profile">
+                <a
+                    href="/#about"
+                    aria-label="Read more about the author"
+                >
+                    <img class="sidebar-profile-picture" src="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=800" alt="Author&#39;s picture"/>
+                </a>
+                <h4 class="sidebar-profile-name">Suyan Kim</h4>
+                
+                    <h5 class="sidebar-profile-bio"><p>▲ Who Am I</p>
+</h5>
+                
+            </div>
+        
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="home"href="/index.html"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-home" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">home</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="archives"href="/all-archives"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-archive" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">archives</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="categories"href="/all-categories"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-bookmark" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">categories</span>
+                        </a>
+                    <!-- add -->
+                    
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F/">☁️ (1)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-AWS/">☁️ AWS (0)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (7)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Config/">☁️ Config (2)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-DataBase/">☁️ DataBase (1)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Git/">☁️ Git (3)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-JPA/">☁️ JPA (10)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Java/">☁️ Java (0)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Linux/">☁️ Linux (6)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-OS/">☁️ OS (14)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Python/">☁️ Python (2)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-React/">☁️ React (3)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Spring/">☁️ Spring (1)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-TIL/">☁️ TIL (9)</a></li>
+                            
+                        
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="tags"href="/all-tags"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-tags" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">tags</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="about"href="#about"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-question" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">about</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="https://github.com/ksso730" target="_blank" rel="noopener" title="github">
+                    
+                    <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">github</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="https://www.instagram.com/syankkim/" target="_blank" rel="noopener" title="life">
+                    
+                    <i class="sidebar-button-icon fab fa-instagram" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">life</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+        </ul>
+        
+    </div>
+</nav>
+
+            
+            <div id="main" data-behavior="4"
+                 class="
+                        hasCoverMetaIn
+                        ">
+                
+<article class="post">
+    
+    
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title">
+            ⛓ 컴퓨터구조-Memory System
+        </h1>
+    
+    
+        <div class="post-meta">
+    <time datetime="2021-06-09T01:50:54+09:00">
+	
+		    Jun 09, 2021
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/%E2%98%81%EF%B8%8F-TIL/">☁️ TIL</a>
+
+
+    
+</div>
+
+    
+</div>
+
+    
+    <div class="post-content markdown">
+        <div class="main-content-wrap">
+            <!-- excerpt -->
+<h1 id="table-of-contents">Contents</h1><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%EB%A9%94%EB%AA%A8%EB%A6%AC-%EA%B3%84%EC%B8%B5"><span class="toc-text">메모리 계층</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%EA%B8%B0%EC%96%B5%EC%9E%A5%EC%B9%98-MMU-buffer-AMU"><span class="toc-text">기억장치 (MMU, buffer, AMU)</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#RAM-%EC%9D%98-%EB%8F%99%EC%9E%91"><span class="toc-text">RAM 의 동작</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%EB%B3%B4%EC%A1%B0%EA%B8%B0%EC%96%B5-%EC%9E%A5%EC%B9%98"><span class="toc-text">보조기억 장치</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%ED%9A%A8%EC%9C%A8%EC%A0%81%EC%9D%B8-%EB%A9%94%EB%AA%A8%EB%A6%AC-%EA%B4%80%EB%A6%AC"><span class="toc-text">효율적인 메모리 관리</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Associative-memory"><span class="toc-text">Associative memory</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%EC%BA%90%EC%89%AC-%EB%A9%94%EB%AA%A8%EB%A6%AC-Cache-memory"><span class="toc-text">캐쉬 메모리 (Cache memory)</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%EA%B0%80%EC%83%81%EB%A9%94%EB%AA%A8%EB%A6%AC"><span class="toc-text">가상메모리</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%EA%B0%80%EC%83%81%EB%A9%94%EB%AA%A8%EB%A6%AC-VS-%EC%BA%90%EC%89%AC%EB%A9%94%EB%AA%A8%EB%A6%AC"><span class="toc-text">가상메모리 VS 캐쉬메모리</span></a></li></ol></li></ol>
+
+<hr>
+<h1 id="메모리-계층"><a href="#메모리-계층" class="headerlink" title="메모리 계층"></a>메모리 계층</h1><h2 id="기억장치-MMU-buffer-AMU"><a href="#기억장치-MMU-buffer-AMU" class="headerlink" title="기억장치 (MMU, buffer, AMU)"></a>기억장치 (MMU, buffer, AMU)</h2><blockquote>
+<p>CPU에 의하여 수행될 프로그램이 저장되는 곳.</p>
+</blockquote>
+<ul>
+<li><strong>주기억 장치 (Main memory Unit)</strong><ul>
+<li><strong>RAM</strong> Random Access Memory (마더보드에 장착)<ul>
+<li>비교적 대용량이며 고속, <code>휘발성</code></li>
+</ul>
+</li>
+<li><strong>ROM</strong> Read Only Memory<ul>
+<li>주기억장치의 일종</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>캐쉬 메모리</strong> Cache memory, buffer<ul>
+<li>수행중인 프로그램의 <code>사용빈도가 높은 임시데이터</code>를 저장한다.</li>
+</ul>
+</li>
+<li><strong>보조기억 장치 (Auxiliary memory Unit)</strong><ul>
+<li>대용량 자료보관 가능, 저속</li>
+<li>CPU 가 컨트롤 하지 못한다.</li>
+<li>보조기억 내의 필요한 자료는 <code>주기억장치</code>로 <code>Loading</code> ;옮겨진다.</li>
+<li><strong>SRAM</strong>: 캐시메모리, CPU와 1:1 정도의 속도</li>
+<li><strong>DRAM</strong>: 일반적 주기억장치, 상대적으로 느리다. 7배정도 기다려야 메인메모리가 기다려준다.</li>
+<li>Magnetic Tape, USB, SDcard : 파일 생성/삭제</li>
+<li>Magnetic drum, disk : 백업 저장장치</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>@ 메모리를 계층별로 나누는 이유?</p>
+<ul>
+<li>입출력의 경제성 때문이다.</li>
+</ul>
+</blockquote>
+<h3 id="RAM-의-동작"><a href="#RAM-의-동작" class="headerlink" title="RAM 의 동작"></a>RAM 의 동작</h3><p>⏬ <strong>MAR</strong> Memory Address Register 로 신호가 들어오면,<br>⏬ <strong>주소 디코더</strong> 에 의해서 <code>번지</code> 지정<br>⏬ <code>정보</code>에 의헤서 읽기/쓰기 수행: <strong>CS(Clock Segnal)=0/1, RD(Read)=0/1. WR(Write)=0/1</strong><br>⏬ <strong>MBR</strong> Memory Buffer Register 에 의해 출력된다.</p>
+<h3 id="보조기억-장치"><a href="#보조기억-장치" class="headerlink" title="보조기억 장치"></a>보조기억 장치</h3><blockquote>
+<p>섹터, 트랙, 헤드, 실린더<br><code>접근시간</code>: 메모리내의 기억장소에 도달하여 응답을 받는데까지 요구되는 평균시간</p>
+</blockquote>
+<ul>
+<li><strong>시크타임</strong>: read/write head가 지정된 기억장소에 <code>도달하기까지 소요 시간</code></li>
+<li><strong>트랜스퍼 타임</strong>: 추출된 데이터를 장치내/외 필요한 곳으로 <code>전송하는 시간</code></li>
+<li><strong>레코드</strong>: 데이터가 기록되는 <code>단위, 시크타임을 체크</code>하는 기준.</li>
+<li><strong>전송률</strong>: 장치가 레코드의 시작점에 위치하고서부터 <code>전송 가능한 문자/워드 수</code></li>
+</ul>
+<hr>
+<h1 id="효율적인-메모리-관리"><a href="#효율적인-메모리-관리" class="headerlink" title="효율적인 메모리 관리"></a>효율적인 메모리 관리</h1><h2 id="Associative-memory"><a href="#Associative-memory" class="headerlink" title="Associative memory"></a>Associative memory</h2><blockquote>
+<p><code>내용</code>에 의해 접근하는 <code>메모리 장치</code></p>
+<ul>
+<li>메모리 장치? 자료의 저장과 접근을 용이하게 함</li>
+<li>이제는, <strong>효율적 탐색(search)</strong> 이 필요 : <code>병렬 탐색</code>을 하기에 적합</li>
+<li>외부인자와 <code>내용</code>을 비교할 수 있는 논리회로보유. ::RAM보다 비싸다.</li>
+</ul>
+</blockquote>
+<ul>
+<li>Argument register</li>
+<li>Key register 역할<ul>
+<li>인자워드의 특정 영역이나 키를 선택하기 위한 <code>마스크</code>를 제공한다.</li>
+</ul>
+</li>
+</ul>
+<h2 id="캐쉬-메모리-Cache-memory"><a href="#캐쉬-메모리-Cache-memory" class="headerlink" title="캐쉬 메모리 (Cache memory)"></a>캐쉬 메모리 (Cache memory)</h2><blockquote>
+<p><strong>참조의 국한성</strong> : 프로그램 수행중 메모리 참조는 <code>국한된 영역</code>에서만 이루어진다.</p>
+<ul>
+<li>프로그램 루프, 서브루틴 빈번</li>
+<li>순차적 프로그램 실행</li>
+</ul>
+</blockquote>
+<ul>
+<li><p><strong>캐쉬 메모리의 동작/성능</strong></p>
+<ul>
+<li>Cache를 체크한다.<ul>
+<li>워드가 발견되면(<code>hit</code>) 읽고</li>
+<li>없으면(<code>miss</code>) 주기억장치에 접근</li>
+</ul>
+</li>
+<li>히트율</li>
+</ul>
+</li>
+<li><p><strong>효율적인 메모리관리</strong></p>
+<ul>
+<li>associative mapping<ul>
+<li>associative memory로 캐쉬를 만든다.</li>
+<li>가장 빠르고 융통성 있다.</li>
+<li><code>miss</code> 일 경우 <code>주기억장치</code>에서 해당자료를 찾아 옮긴다.</li>
+<li>여유공간이 있다면 그공간에 저장하지만<ul>
+<li>여유공간이 없다면, 주어진 알고리즘에 의해 해당 주소-데이터 쌍이 새로운 정보로 <code>대체</code>된다.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>  @@@@@@@@@@@@@ 사진 예시</p>
+<ul>
+<li>Direct mapping<ul>
+<li>SRAM 에 만든다. 하나의 공간에 하나씩 저장한다.</li>
+<li>동일한 인덱스를 보유한 워드가 반복접근시, <code>히트율 감소</code></li>
+</ul>
+</li>
+<li>Set-associative mapping<ul>
+<li>주어진 공간에 <code>병렬</code>로 여러개씩 저장한다.</li>
+<li>복잡한 알고리즘을 필요로한다.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h1 id="가상메모리"><a href="#가상메모리" class="headerlink" title="가상메모리"></a>가상메모리</h1><h2 id="가상메모리-VS-캐쉬메모리"><a href="#가상메모리-VS-캐쉬메모리" class="headerlink" title="가상메모리 VS 캐쉬메모리"></a>가상메모리 VS 캐쉬메모리</h2>
+            
+
+
+        </div>
+    </div>
+    <div id="post-footer" class="post-footer main-content-wrap">
+        
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">TAGGED IN</span><br/>
+                
+    <a class="tag tag--primary tag--small t-none-link" href="/tags/computer-science/" rel="tag">computer_science</a>
+
+            </div>
+        
+        
+            <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2021/06/12/%EC%BB%B4%ED%93%A8%ED%84%B0%EA%B5%AC%EC%A1%B0_%EB%A9%80%ED%8B%B0%ED%94%84%EB%A1%9C%EC%84%B8%EC%84%9C/"
+                    data-tooltip="컴퓨터구조-멀티프로세서"
+                    aria-label="PREVIOUS: 컴퓨터구조-멀티프로세서"
+                >
+                    
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                    </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2021/06/07/%ED%8C%8C%EC%9D%B4%ED%94%84%EB%9D%BC%EC%9D%B8/"
+                    data-tooltip="⛓ 컴퓨터구조-파이프라인"
+                    aria-label="NEXT: ⛓ 컴퓨터구조-파이프라인"
+                >
+                    
+                        <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a
+                class="post-action-btn btn btn--default btn-open-shareoptions"
+                href="#btn-open-shareoptions"
+                aria-label="Share this post"
+            >
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2021/06/09/%EC%BB%B4%ED%93%A8%ED%84%B0%EA%B5%AC%EC%A1%B0_%EB%A9%94%EB%AA%A8%EB%A6%AC%EA%B3%84%EC%B8%B5/"
+                    title="Share on Facebook"
+                    aria-label="Share on Facebook"
+                >
+                    <i class="fab fa-facebook" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2021/06/09/%EC%BB%B4%ED%93%A8%ED%84%B0%EA%B5%AC%EC%A1%B0_%EB%A9%94%EB%AA%A8%EB%A6%AC%EA%B3%84%EC%B8%B5/"
+                    title="Share on Twitter"
+                    aria-label="Share on Twitter"
+                >
+                    <i class="fab fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://plus.google.com/share?url=http://yoursite.com/2021/06/09/%EC%BB%B4%ED%93%A8%ED%84%B0%EA%B5%AC%EC%A1%B0_%EB%A9%94%EB%AA%A8%EB%A6%AC%EA%B3%84%EC%B8%B5/"
+                    title="Share on Google+"
+                    aria-label="Share on Google+"
+                >
+                    <i class="fab fa-google-plus" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+                <li class="post-action">
+                    <a
+                        class="post-action-btn btn btn--default"
+                        href="#disqus_thread"
+                        aria-label="Leave a comment"
+                    >
+                        <i class="fa fa-comment"></i>
+                    </a>
+                </li>
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#table-of-contents" aria-label="Contents">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+        
+        
+            
+                <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+            
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2021 Suyan Kim. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2021/06/12/%EC%BB%B4%ED%93%A8%ED%84%B0%EA%B5%AC%EC%A1%B0_%EB%A9%80%ED%8B%B0%ED%94%84%EB%A1%9C%EC%84%B8%EC%84%9C/"
+                    data-tooltip="컴퓨터구조-멀티프로세서"
+                    aria-label="PREVIOUS: 컴퓨터구조-멀티프로세서"
+                >
+                    
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                    </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2021/06/07/%ED%8C%8C%EC%9D%B4%ED%94%84%EB%9D%BC%EC%9D%B8/"
+                    data-tooltip="⛓ 컴퓨터구조-파이프라인"
+                    aria-label="NEXT: ⛓ 컴퓨터구조-파이프라인"
+                >
+                    
+                        <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a
+                class="post-action-btn btn btn--default btn-open-shareoptions"
+                href="#btn-open-shareoptions"
+                aria-label="Share this post"
+            >
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2021/06/09/%EC%BB%B4%ED%93%A8%ED%84%B0%EA%B5%AC%EC%A1%B0_%EB%A9%94%EB%AA%A8%EB%A6%AC%EA%B3%84%EC%B8%B5/"
+                    title="Share on Facebook"
+                    aria-label="Share on Facebook"
+                >
+                    <i class="fab fa-facebook" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2021/06/09/%EC%BB%B4%ED%93%A8%ED%84%B0%EA%B5%AC%EC%A1%B0_%EB%A9%94%EB%AA%A8%EB%A6%AC%EA%B3%84%EC%B8%B5/"
+                    title="Share on Twitter"
+                    aria-label="Share on Twitter"
+                >
+                    <i class="fab fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://plus.google.com/share?url=http://yoursite.com/2021/06/09/%EC%BB%B4%ED%93%A8%ED%84%B0%EA%B5%AC%EC%A1%B0_%EB%A9%94%EB%AA%A8%EB%A6%AC%EA%B3%84%EC%B8%B5/"
+                    title="Share on Google+"
+                    aria-label="Share on Google+"
+                >
+                    <i class="fab fa-google-plus" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+                <li class="post-action">
+                    <a
+                        class="post-action-btn btn btn--default"
+                        href="#disqus_thread"
+                        aria-label="Leave a comment"
+                    >
+                        <i class="fa fa-comment"></i>
+                    </a>
+                </li>
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#table-of-contents" aria-label="Contents">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                
+    <div id="share-options-bar" class="share-options-bar" data-behavior="4">
+        <i id="btn-close-shareoptions" class="fa fa-times"></i>
+        <ul class="share-options">
+            
+                
+                
+                <li class="share-option">
+                    <a
+                        class="share-option-btn"
+                        target="new"
+                        href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2021/06/09/%EC%BB%B4%ED%93%A8%ED%84%B0%EA%B5%AC%EC%A1%B0_%EB%A9%94%EB%AA%A8%EB%A6%AC%EA%B3%84%EC%B8%B5/"
+                        aria-label="Share on Facebook"
+                    >
+                        <i class="fab fa-facebook" aria-hidden="true"></i><span>Share on Facebook</span>
+                    </a>
+                </li>
+            
+                
+                
+                <li class="share-option">
+                    <a
+                        class="share-option-btn"
+                        target="new"
+                        href="https://twitter.com/intent/tweet?text=http://yoursite.com/2021/06/09/%EC%BB%B4%ED%93%A8%ED%84%B0%EA%B5%AC%EC%A1%B0_%EB%A9%94%EB%AA%A8%EB%A6%AC%EA%B3%84%EC%B8%B5/"
+                        aria-label="Share on Twitter"
+                    >
+                        <i class="fab fa-twitter" aria-hidden="true"></i><span>Share on Twitter</span>
+                    </a>
+                </li>
+            
+                
+                
+                <li class="share-option">
+                    <a
+                        class="share-option-btn"
+                        target="new"
+                        href="https://plus.google.com/share?url=http://yoursite.com/2021/06/09/%EC%BB%B4%ED%93%A8%ED%84%B0%EA%B5%AC%EC%A1%B0_%EB%A9%94%EB%AA%A8%EB%A6%AC%EA%B3%84%EC%B8%B5/"
+                        aria-label="Share on Google+"
+                    >
+                        <i class="fab fa-google-plus" aria-hidden="true"></i><span>Share on Google+</span>
+                    </a>
+                </li>
+            
+        </ul>
+    </div>
+
+
+            
+        </div>
+        
+
+
+    
+
+<div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-times"></i>
+        </div>
+        
+            <img id="about-card-picture" src="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=110" alt="Author&#39;s picture"/>
+        
+            <h4 id="about-card-name">Suyan Kim</h4>
+        <!--  -->
+            <!-- <div id="about-card-bio"><p>author.bio</p>
+</div> -->
+            <div id="about-card-bio">안녕하세요, 서버 백엔드 개발자 동글씨입니다.</div>
+        <!--  -->
+        <!--  -->
+            <div id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <!-- <p>Backend Developer</p>
+ -->
+                Backend Developer
+            </div>
+        <!--  -->
+        
+            <div id="about-card-location">
+                <i class="fa fa-map-marker-alt"></i>
+                <br/>
+                Korea
+            </div>
+        
+    </div>
+</div>
+
+        
+        
+<div id="cover" style="background-image:url('/assets/images/null');"></div>
+        <!--SCRIPTS-->
+
+<script src="/assets/js/jquery.js"></script>
+
+
+<script src="/assets/js/jquery.fancybox.js"></script>
+
+
+<script src="/assets/js/thumbs.js"></script>
+
+
+<script src="/assets/js/tranquilpeak.js"></script>
+
+<!--SCRIPTS END-->
+
+
+    
+        <script>
+          var disqus_config = function() {
+            this.page.url = 'http://yoursite.com/2021/06/09/%EC%BB%B4%ED%93%A8%ED%84%B0%EA%B5%AC%EC%A1%B0_%EB%A9%94%EB%AA%A8%EB%A6%AC%EA%B3%84%EC%B8%B5/';
+              
+            this.page.identifier = '2021/06/09/컴퓨터구조_메모리계층/';
+              
+          };
+          (function() {
+            var d = document, s = d.createElement('script');
+            var disqus_shortname = 'ksso730-github-io';
+            s.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+          })();
+        </script>
+    
+
+
+
+
+    </body>
+</html>
