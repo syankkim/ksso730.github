@@ -8,15 +8,8 @@
     </url>
 
     <url>
-        <loc>http://yoursite.com/categories/%25E2%2598%2581%25EF%25B8%258F/</loc>
-        <lastmod>2021-06-16T06:18:51.160Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
         <loc>http://yoursite.com/categories/%25E2%2598%2581%25EF%25B8%258F-TIL/</loc>
-        <lastmod>2021-06-16T06:07:51.864Z</lastmod>
+        <lastmod>2021-06-17T09:21:24.144Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
