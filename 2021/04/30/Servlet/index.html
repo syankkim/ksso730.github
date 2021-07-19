@@ -2,19 +2,23 @@
 <!DOCTYPE html>
 <html lang="en">
     
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="generator" content="동글씨">
-    <title>Servlet 정의와 생명주기, Servlet 컨테이너 - 동글씨</title>
-    <meta name="author" content="Suyan Kim">
-    
-    
-    
-        <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
-    
-    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\n요즘 당연하게 생각하고 사용해왔던 개념, 기능들을 찾아보며 정리중이다.Java, RESTful API 개발을 하고 있지만, 내부적으로 어떻게 돌아가는지 개념적인 부분을 다시 한번 짚고자 한다.\nServlet 이란?\n서버사이드에서 클라이언트 요청을 처리하고 그 결과를 응답해주는 규칙.\n\nServlet 특징\n동적 웹페이지를 작성하기 위해 나왔다.\n서버쪽에서 실행되면서 클라이언트의 요청에 따라 동적으로 일을 처리하는 자바 클래스 이다.\nServlet\n\nServlet 컨테이너\nServlet 클래스로 작성된 프로그램을 실행하고, 관리해준다.\n\nServlet 컨테이너 역할\n웹서버와의 통신을 지원해준다. 서블릿 컨테이너는 소켓을 만들고  listen, accept 등의 기능을 api 로 제공하여 개발자가 비지니스 로직에만 집중할 수 있도록 해준다.\n서블릿의 생명주기를 관리한다. 실행부터 종료까지. \n\nServlet 작동흐름\n\n클라이언트가 HTTP Request 를 Servlet Container 로 전송.\nServlet Container 는 HttpServletRequest, HttpServletResponse 두 객체 생성\n\n\n\nServlet 생명주기","dateCreated":"2021-04-30T10:26:43+09:00","dateModified":"2021-05-11T10:52:08+09:00","datePublished":"2021-04-30T10:26:43+09:00","description":"Servlet 개념 잡기 !💬 작성중","headline":"Servlet 정의와 생명주기, Servlet 컨테이너","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2021/04/30/Servlet/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2021/04/30/Servlet/","keywords":"java, servlet"}</script>
-    <meta name="description" content="Servlet 개념 잡기 !💬 작성중">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="generator" content="동글씨">
+        <title>
+            Servlet 정의와 생명주기, Servlet 컨테이너 - 동글씨
+        </title>
+        <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+        <meta name="author" content="Suyan Kim">
+        
+                
+                        
+                            <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
+                            
+                                <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\n요즘 당연하게 생각하고 사용해왔던 개념, 기능들을 찾아보며 정리중이다.Java, RESTful API 개발을 하고 있지만, 내부적으로 어떻게 돌아가는지 개념적인 부분을 다시 한번 짚고자 한다.\nServlet 이란?\n서버사이드에서 클라이언트 요청을 처리하고 그 결과를 응답해주는 규칙.\n\nServlet 특징\n동적 웹페이지를 작성하기 위해 나왔다.\n서버쪽에서 실행되면서 클라이언트의 요청에 따라 동적으로 일을 처리하는 자바 클래스 이다.\nServlet\n\nServlet 컨테이너\nServlet 클래스로 작성된 프로그램을 실행하고, 관리해준다.\n\nServlet 컨테이너 역할\n웹서버와의 통신을 지원해준다. 서블릿 컨테이너는 소켓을 만들고  listen, accept 등의 기능을 api 로 제공하여 개발자가 비지니스 로직에만 집중할 수 있도록 해준다.\n서블릿의 생명주기를 관리한다. 실행부터 종료까지. \n\nServlet 작동흐름\n\n클라이언트가 HTTP Request 를 Servlet Container 로 전송.\nServlet Container 는 HttpServletRequest, HttpServletResponse 두 객체 생성\n\n\n\nServlet 생명주기","dateCreated":"2021-04-30T10:26:43+09:00","dateModified":"2021-05-11T10:52:08+09:00","datePublished":"2021-04-30T10:26:43+09:00","description":"Servlet 개념 잡기 !💬 작성중","headline":"Servlet 정의와 생명주기, Servlet 컨테이너","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2021/04/30/Servlet/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2021/04/30/Servlet/","keywords":"java, servlet"}</script>
+                                    <meta name="description" content="Servlet 개념 잡기 !💬 작성중">
 <meta property="og:type" content="blog">
 <meta property="og:title" content="Servlet 정의와 생명주기, Servlet 컨테이너">
 <meta property="og:url" content="http://yoursite.com/2021/04/30/Servlet/index.html">
@@ -27,31 +31,22 @@
 <meta property="article:tag" content="java">
 <meta property="article:tag" content="servlet">
 <meta name="twitter:card" content="summary">
-    
-    
-        
-    
-    
-        <meta property="og:image" content="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=640"/>
-    
-    
-    
-    
-    <!--STYLES-->
-    
-<link rel="stylesheet" href="/assets/css/all.css">
-
-    
-<link rel="stylesheet" href="/assets/css/jquery.fancybox.css">
-
-    
-<link rel="stylesheet" href="/assets/css/thumbs.css">
-
-    
+                                        
+                                                
+                                                    
+                                                            
+                                                                
+                                                                    <meta property="og:image" content="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=640" />
+                                                                    
+                                                                            
+                                                                                    
+                                                                                            
+                                                                                                            <!--STYLES-->
+                                                                                                            
 <link rel="stylesheet" href="/assets/css/tranquilpeak.css">
 
-    <!--STYLES END-->
-    
+                                                                                                                <!--STYLES END-->
+                                                                                                                
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-158530470-1"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
@@ -62,13 +57,12 @@
     </script>
 
 
-    
+                                                                                                                    
 
-    
-        
-    
-</head>
-
+                                                                                                                        
+                                                                                                                            
+                                                                                                                                                
+    </head>
     <body>
         <div id="blog">
             <!-- Define author's picture -->
@@ -181,7 +175,7 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (7)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (9)</a></li>
                             
                         
                             
@@ -210,6 +204,10 @@
                         
                             
                                 <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Network/">☁️ Network (1)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-NodeJS/">☁️ NodeJS (1)</a></li>
                             
                         
                             
@@ -705,15 +703,6 @@
         
 <div id="cover" style="background-image:url('/assets/images/null');"></div>
         <!--SCRIPTS-->
-
-<script src="/assets/js/jquery.js"></script>
-
-
-<script src="/assets/js/jquery.fancybox.js"></script>
-
-
-<script src="/assets/js/thumbs.js"></script>
-
 
 <script src="/assets/js/tranquilpeak.js"></script>
 

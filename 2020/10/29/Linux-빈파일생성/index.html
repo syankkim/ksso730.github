@@ -2,19 +2,23 @@
 <!DOCTYPE html>
 <html lang="en">
     
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="generator" content="동글씨">
-    <title>💻 Linux 빈 파일생성을 위한 cat, cp 성능비교 및 strace - 동글씨</title>
-    <meta name="author" content="Suyan Kim">
-    
-    
-    
-        <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
-    
-    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\n\n\n\ncp /dev/null {filename} VS cat /dev/null&gt;&gt;{filename}두 명령어의 성능을 비교하기 위해 strace 명령을 사용했다.\n\nstrace : 특정 프로그램의 시스템 콜과 시그널을 추적하는 명령명령어 추적 결과, ✔️cat 의 성능이 더 좋다는 사실.\n\n\n\nstrace 결과 : cat /dev/null &gt;&gt; {filename}\n123456789101112131415161718&gt; strace -c cat dev/null&gt;&gt; access_test.log   cat: dev/null: No such file or directory% time     seconds  usecs/call     calls    errors syscall------ ----------- ----------- --------- --------- ----------------  0.00    0.000000           0         3           read  0.00    0.000000           0         4           write  0.00    0.000000           0        11         7 open  0.00    0.000000           0         6           close  0.00    0.000000           0         5           fstat  0.00    0.000000           0        10           mmap  0.00    0.000000           0         3           mprotect  0.00    0.000000           0         2           munmap  0.00    0.000000           0         3           brk  0.00    0.000000           0         1         1 access  0.00    0.000000           0         1           execve  0.00    0.000000           0         1           arch_prctl------ ----------- ----------- --------- --------- ----------------100.00    0.000000                    50         8 total\n\n\n\n1234567891011121314&gt; strace -e open cat dev/null&gt;&gt; access_test.log   open(&quot;/etc/ld.so.cache&quot;, O_RDONLY)      = 3open(&quot;/lib64/libc.so.6&quot;, O_RDONLY)      = 3open(&quot;/usr/lib/locale/locale-archive&quot;, O_RDONLY) = 3open(&quot;dev/null&quot;, O_RDONLY)              = -1 ENOENT (No such file or directory)cat: dev/nullopen(&quot;/usr/share/locale/locale.alias&quot;, O_RDONLY|O_CLOEXEC) = 3open(&quot;/usr/share/locale/en_US.UTF-8/LC_MESSAGES/libc.mo&quot;, O_RDONLY) = -1 ENOENT (No such file or directory)open(&quot;/usr/share/locale/en_US.utf8/LC_MESSAGES/libc.mo&quot;, O_RDONLY) = -1 ENOENT (No such file or directory)open(&quot;/usr/share/locale/en_US/LC_MESSAGES/libc.mo&quot;, O_RDONLY) = -1 ENOENT (No such file or directory)open(&quot;/usr/share/locale/en.UTF-8/LC_MESSAGES/libc.mo&quot;, O_RDONLY) = -1 ENOENT (No such file or directory)open(&quot;/usr/share/locale/en.utf8/LC_MESSAGES/libc.mo&quot;, O_RDONLY) = -1 ENOENT (No such file or directory)open(&quot;/usr/share/locale/en/LC_MESSAGES/libc.mo&quot;, O_RDONLY) = -1 ENOENT (No such file or directory): No such file or directory+++ exited with 1 +++\n\n\n\n\nstrace 결과 : cp /dev/null {filename}\n123456789101112131415161718192021222324252627&gt; strace -c cp dev/null access_test.log   cp: cannot stat `dev/null&#x27;: No such file or directory% time     seconds  usecs/call     calls    errors syscall------ ----------- ----------- --------- --------- ----------------  0.00    0.000000           0        11           read  0.00    0.000000           0         4           write  0.00    0.000000           0        23        11 open  0.00    0.000000           0        15           close  0.00    0.000000           0         2         1 stat  0.00    0.000000           0        12           fstat  0.00    0.000000           0        27           mmap  0.00    0.000000           0        15           mprotect  0.00    0.000000           0         3           munmap  0.00    0.000000           0         3           brk  0.00    0.000000           0         2           rt_sigaction  0.00    0.000000           0         1           rt_sigprocmask  0.00    0.000000           0         1         1 access  0.00    0.000000           0         1           execve  0.00    0.000000           0         1           getrlimit  0.00    0.000000           0         1           geteuid  0.00    0.000000           0         1           statfs  0.00    0.000000           0         1           arch_prctl  0.00    0.000000           0         2         1 futex  0.00    0.000000           0         1           set_tid_address  0.00    0.000000           0         1           set_robust_list------ ----------- ----------- --------- --------- ----------------100.00    0.000000                   128        14 total\n\n\n\n\n1234567891011121314151617181920212223242526&gt; strace -e open cp dev/null access_test.log  open(&quot;/etc/ld.so.cache&quot;, O_RDONLY)      = 3open(&quot;/lib64/libselinux.so.1&quot;, O_RDONLY) = 3open(&quot;/lib64/librt.so.1&quot;, O_RDONLY)     = 3open(&quot;/lib64/libacl.so.1&quot;, O_RDONLY)    = 3open(&quot;/lib64/libattr.so.1&quot;, O_RDONLY)   = 3open(&quot;/lib64/libc.so.6&quot;, O_RDONLY)      = 3open(&quot;/lib64/libdl.so.2&quot;, O_RDONLY)     = 3open(&quot;/lib64/libpthread.so.0&quot;, O_RDONLY) = 3open(&quot;/proc/filesystems&quot;, O_RDONLY)     = 3open(&quot;/usr/lib/locale/locale-archive&quot;, O_RDONLY) = 3open(&quot;/usr/share/locale/locale.alias&quot;, O_RDONLY|O_CLOEXEC) = 3open(&quot;/usr/share/locale/en_US.UTF-8/LC_MESSAGES/coreutils.mo&quot;, O_RDONLY) = -1 ENOENT (No such file or directory)open(&quot;/usr/share/locale/en_US.utf8/LC_MESSAGES/coreutils.mo&quot;, O_RDONLY) = -1 ENOENT (No such file or directory)open(&quot;/usr/share/locale/en_US/LC_MESSAGES/coreutils.mo&quot;, O_RDONLY) = -1 ENOENT (No such file or directory)open(&quot;/usr/share/locale/en.UTF-8/LC_MESSAGES/coreutils.mo&quot;, O_RDONLY) = -1 ENOENT (No such file or directory)open(&quot;/usr/share/locale/en.utf8/LC_MESSAGES/coreutils.mo&quot;, O_RDONLY) = -1 ENOENT (No such file or directory)open(&quot;/usr/share/locale/en/LC_MESSAGES/coreutils.mo&quot;, O_RDONLY) = 3cp: cannot stat `dev/null&#x27;open(&quot;/usr/share/locale/en_US.UTF-8/LC_MESSAGES/libc.mo&quot;, O_RDONLY) = -1 ENOENT (No such file or directory)open(&quot;/usr/share/locale/en_US.utf8/LC_MESSAGES/libc.mo&quot;, O_RDONLY) = -1 ENOENT (No such file or directory)open(&quot;/usr/share/locale/en_US/LC_MESSAGES/libc.mo&quot;, O_RDONLY) = -1 ENOENT (No such file or directory)open(&quot;/usr/share/locale/en.UTF-8/LC_MESSAGES/libc.mo&quot;, O_RDONLY) = -1 ENOENT (No such file or directory)open(&quot;/usr/share/locale/en.utf8/LC_MESSAGES/libc.mo&quot;, O_RDONLY) = -1 ENOENT (No such file or directory)open(&quot;/usr/share/locale/en/LC_MESSAGES/libc.mo&quot;, O_RDONLY) = -1 ENOENT (No such file or directory): No such file or directory+++ exited with 1 +++\n\n\n\n\n\n결과 비교💡 위 결과를 눈대중으로만 봐도 cat 은 적은 양의 라이브러리를 참조하며, open 하는 파일의 횟수도 상대적으로 적다.그에 반해 cp 는 cat보다 많은 양의 라이브러리를 참조하는것을 알 수 있으며, open file 도 많고, system call 또한 상대적으로 빈번하게 일어난다.\n\n\n\nBash 에서 파일 생성법그래서 cat 을 파일생성에 사용하기로 했다.사용법은 위에서 strace 시험에서 쓰인 명령어 처럼 하면된다.\n\ncat dev/null&gt;&gt; {filename}\n","dateCreated":"2020-10-29T11:03:52+09:00","dateModified":"2020-10-29T12:21:17+09:00","datePublished":"2020-10-29T11:03:52+09:00","description":"📁 vi 에서 파일 생성법 배우기.Bash 실행파일을 만들다가 로그를 찍기위해 찾아보게 되었습니다.linux strace cat cp","headline":"💻 Linux 빈 파일생성을 위한 cat, cp 성능비교 및 strace","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2020/10/29/Linux-%EB%B9%88%ED%8C%8C%EC%9D%BC%EC%83%9D%EC%84%B1/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2020/10/29/Linux-%EB%B9%88%ED%8C%8C%EC%9D%BC%EC%83%9D%EC%84%B1/","keywords":"linux, vi, bash"}</script>
-    <meta name="description" content="📁 vi 에서 파일 생성법 배우기.Bash 실행파일을 만들다가 로그를 찍기위해 찾아보게 되었습니다.linux strace cat cp">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="generator" content="동글씨">
+        <title>
+            💻 Linux 빈 파일생성을 위한 cat, cp 성능비교 및 strace - 동글씨
+        </title>
+        <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+        <meta name="author" content="Suyan Kim">
+        
+                
+                        
+                            <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
+                            
+                                <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\n\n\n\ncp /dev/null {filename} VS cat /dev/null&gt;&gt;{filename}두 명령어의 성능을 비교하기 위해 strace 명령을 사용했다.\n\nstrace : 특정 프로그램의 시스템 콜과 시그널을 추적하는 명령명령어 추적 결과, ✔️cat 의 성능이 더 좋다는 사실.\n\n\n\nstrace 결과 : cat /dev/null &gt;&gt; {filename}\n123456789101112131415161718&gt; strace -c cat dev/null&gt;&gt; access_test.log   cat: dev/null: No such file or directory% time     seconds  usecs/call     calls    errors syscall------ ----------- ----------- --------- --------- ----------------  0.00    0.000000           0         3           read  0.00    0.000000           0         4           write  0.00    0.000000           0        11         7 open  0.00    0.000000           0         6           close  0.00    0.000000           0         5           fstat  0.00    0.000000           0        10           mmap  0.00    0.000000           0         3           mprotect  0.00    0.000000           0         2           munmap  0.00    0.000000           0         3           brk  0.00    0.000000           0         1         1 access  0.00    0.000000           0         1           execve  0.00    0.000000           0         1           arch_prctl------ ----------- ----------- --------- --------- ----------------100.00    0.000000                    50         8 total\n\n\n\n1234567891011121314&gt; strace -e open cat dev/null&gt;&gt; access_test.log   open(&quot;/etc/ld.so.cache&quot;, O_RDONLY)      = 3open(&quot;/lib64/libc.so.6&quot;, O_RDONLY)      = 3open(&quot;/usr/lib/locale/locale-archive&quot;, O_RDONLY) = 3open(&quot;dev/null&quot;, O_RDONLY)              = -1 ENOENT (No such file or directory)cat: dev/nullopen(&quot;/usr/share/locale/locale.alias&quot;, O_RDONLY|O_CLOEXEC) = 3open(&quot;/usr/share/locale/en_US.UTF-8/LC_MESSAGES/libc.mo&quot;, O_RDONLY) = -1 ENOENT (No such file or directory)open(&quot;/usr/share/locale/en_US.utf8/LC_MESSAGES/libc.mo&quot;, O_RDONLY) = -1 ENOENT (No such file or directory)open(&quot;/usr/share/locale/en_US/LC_MESSAGES/libc.mo&quot;, O_RDONLY) = -1 ENOENT (No such file or directory)open(&quot;/usr/share/locale/en.UTF-8/LC_MESSAGES/libc.mo&quot;, O_RDONLY) = -1 ENOENT (No such file or directory)open(&quot;/usr/share/locale/en.utf8/LC_MESSAGES/libc.mo&quot;, O_RDONLY) = -1 ENOENT (No such file or directory)open(&quot;/usr/share/locale/en/LC_MESSAGES/libc.mo&quot;, O_RDONLY) = -1 ENOENT (No such file or directory): No such file or directory+++ exited with 1 +++\n\n\n\n\nstrace 결과 : cp /dev/null {filename}\n123456789101112131415161718192021222324252627&gt; strace -c cp dev/null access_test.log   cp: cannot stat `dev/null&#x27;: No such file or directory% time     seconds  usecs/call     calls    errors syscall------ ----------- ----------- --------- --------- ----------------  0.00    0.000000           0        11           read  0.00    0.000000           0         4           write  0.00    0.000000           0        23        11 open  0.00    0.000000           0        15           close  0.00    0.000000           0         2         1 stat  0.00    0.000000           0        12           fstat  0.00    0.000000           0        27           mmap  0.00    0.000000           0        15           mprotect  0.00    0.000000           0         3           munmap  0.00    0.000000           0         3           brk  0.00    0.000000           0         2           rt_sigaction  0.00    0.000000           0         1           rt_sigprocmask  0.00    0.000000           0         1         1 access  0.00    0.000000           0         1           execve  0.00    0.000000           0         1           getrlimit  0.00    0.000000           0         1           geteuid  0.00    0.000000           0         1           statfs  0.00    0.000000           0         1           arch_prctl  0.00    0.000000           0         2         1 futex  0.00    0.000000           0         1           set_tid_address  0.00    0.000000           0         1           set_robust_list------ ----------- ----------- --------- --------- ----------------100.00    0.000000                   128        14 total\n\n\n\n\n1234567891011121314151617181920212223242526&gt; strace -e open cp dev/null access_test.log  open(&quot;/etc/ld.so.cache&quot;, O_RDONLY)      = 3open(&quot;/lib64/libselinux.so.1&quot;, O_RDONLY) = 3open(&quot;/lib64/librt.so.1&quot;, O_RDONLY)     = 3open(&quot;/lib64/libacl.so.1&quot;, O_RDONLY)    = 3open(&quot;/lib64/libattr.so.1&quot;, O_RDONLY)   = 3open(&quot;/lib64/libc.so.6&quot;, O_RDONLY)      = 3open(&quot;/lib64/libdl.so.2&quot;, O_RDONLY)     = 3open(&quot;/lib64/libpthread.so.0&quot;, O_RDONLY) = 3open(&quot;/proc/filesystems&quot;, O_RDONLY)     = 3open(&quot;/usr/lib/locale/locale-archive&quot;, O_RDONLY) = 3open(&quot;/usr/share/locale/locale.alias&quot;, O_RDONLY|O_CLOEXEC) = 3open(&quot;/usr/share/locale/en_US.UTF-8/LC_MESSAGES/coreutils.mo&quot;, O_RDONLY) = -1 ENOENT (No such file or directory)open(&quot;/usr/share/locale/en_US.utf8/LC_MESSAGES/coreutils.mo&quot;, O_RDONLY) = -1 ENOENT (No such file or directory)open(&quot;/usr/share/locale/en_US/LC_MESSAGES/coreutils.mo&quot;, O_RDONLY) = -1 ENOENT (No such file or directory)open(&quot;/usr/share/locale/en.UTF-8/LC_MESSAGES/coreutils.mo&quot;, O_RDONLY) = -1 ENOENT (No such file or directory)open(&quot;/usr/share/locale/en.utf8/LC_MESSAGES/coreutils.mo&quot;, O_RDONLY) = -1 ENOENT (No such file or directory)open(&quot;/usr/share/locale/en/LC_MESSAGES/coreutils.mo&quot;, O_RDONLY) = 3cp: cannot stat `dev/null&#x27;open(&quot;/usr/share/locale/en_US.UTF-8/LC_MESSAGES/libc.mo&quot;, O_RDONLY) = -1 ENOENT (No such file or directory)open(&quot;/usr/share/locale/en_US.utf8/LC_MESSAGES/libc.mo&quot;, O_RDONLY) = -1 ENOENT (No such file or directory)open(&quot;/usr/share/locale/en_US/LC_MESSAGES/libc.mo&quot;, O_RDONLY) = -1 ENOENT (No such file or directory)open(&quot;/usr/share/locale/en.UTF-8/LC_MESSAGES/libc.mo&quot;, O_RDONLY) = -1 ENOENT (No such file or directory)open(&quot;/usr/share/locale/en.utf8/LC_MESSAGES/libc.mo&quot;, O_RDONLY) = -1 ENOENT (No such file or directory)open(&quot;/usr/share/locale/en/LC_MESSAGES/libc.mo&quot;, O_RDONLY) = -1 ENOENT (No such file or directory): No such file or directory+++ exited with 1 +++\n\n\n\n\n\n결과 비교💡 위 결과를 눈대중으로만 봐도 cat 은 적은 양의 라이브러리를 참조하며, open 하는 파일의 횟수도 상대적으로 적다.그에 반해 cp 는 cat보다 많은 양의 라이브러리를 참조하는것을 알 수 있으며, open file 도 많고, system call 또한 상대적으로 빈번하게 일어난다.\n\n\n\nBash 에서 파일 생성법그래서 cat 을 파일생성에 사용하기로 했다.사용법은 위에서 strace 시험에서 쓰인 명령어 처럼 하면된다.\n\ncat dev/null&gt;&gt; {filename}\n","dateCreated":"2020-10-29T11:03:52+09:00","dateModified":"2020-10-29T12:21:17+09:00","datePublished":"2020-10-29T11:03:52+09:00","description":"📁 vi 에서 파일 생성법 배우기.Bash 실행파일을 만들다가 로그를 찍기위해 찾아보게 되었습니다.linux strace cat cp","headline":"💻 Linux 빈 파일생성을 위한 cat, cp 성능비교 및 strace","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2020/10/29/Linux-%EB%B9%88%ED%8C%8C%EC%9D%BC%EC%83%9D%EC%84%B1/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2020/10/29/Linux-%EB%B9%88%ED%8C%8C%EC%9D%BC%EC%83%9D%EC%84%B1/","keywords":"linux, vi, bash"}</script>
+                                    <meta name="description" content="📁 vi 에서 파일 생성법 배우기.Bash 실행파일을 만들다가 로그를 찍기위해 찾아보게 되었습니다.linux strace cat cp">
 <meta property="og:type" content="blog">
 <meta property="og:title" content="💻 Linux 빈 파일생성을 위한 cat, cp 성능비교 및 strace">
 <meta property="og:url" content="http://yoursite.com/2020/10/29/Linux-%EB%B9%88%ED%8C%8C%EC%9D%BC%EC%83%9D%EC%84%B1/index.html">
@@ -28,31 +32,22 @@
 <meta property="article:tag" content="vi">
 <meta property="article:tag" content="bash">
 <meta name="twitter:card" content="summary">
-    
-    
-        
-    
-    
-        <meta property="og:image" content="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=640"/>
-    
-    
-    
-    
-    <!--STYLES-->
-    
-<link rel="stylesheet" href="/assets/css/all.css">
-
-    
-<link rel="stylesheet" href="/assets/css/jquery.fancybox.css">
-
-    
-<link rel="stylesheet" href="/assets/css/thumbs.css">
-
-    
+                                        
+                                                
+                                                    
+                                                            
+                                                                
+                                                                    <meta property="og:image" content="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=640" />
+                                                                    
+                                                                            
+                                                                                    
+                                                                                            
+                                                                                                            <!--STYLES-->
+                                                                                                            
 <link rel="stylesheet" href="/assets/css/tranquilpeak.css">
 
-    <!--STYLES END-->
-    
+                                                                                                                <!--STYLES END-->
+                                                                                                                
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-158530470-1"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
@@ -63,13 +58,12 @@
     </script>
 
 
-    
+                                                                                                                    
 
-    
-        
-    
-</head>
-
+                                                                                                                        
+                                                                                                                            
+                                                                                                                                                
+    </head>
     <body>
         <div id="blog">
             <!-- Define author's picture -->
@@ -182,7 +176,7 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (7)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (9)</a></li>
                             
                         
                             
@@ -211,6 +205,10 @@
                         
                             
                                 <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Network/">☁️ Network (1)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-NodeJS/">☁️ NodeJS (1)</a></li>
                             
                         
                             
@@ -721,15 +719,6 @@
         
 <div id="cover" style="background-image:url('/assets/images/null');"></div>
         <!--SCRIPTS-->
-
-<script src="/assets/js/jquery.js"></script>
-
-
-<script src="/assets/js/jquery.fancybox.js"></script>
-
-
-<script src="/assets/js/thumbs.js"></script>
-
 
 <script src="/assets/js/tranquilpeak.js"></script>
 

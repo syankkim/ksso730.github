@@ -2,19 +2,23 @@
 <!DOCTYPE html>
 <html lang="en">
     
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="generator" content="동글씨">
-    <title>CODING TEST with Java - 동글씨</title>
-    <meta name="author" content="Suyan Kim">
-    
-    
-    
-        <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
-    
-    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\n최대공약수와 최소공배수1234567891011121314151617181920212223242526272829303132333435363738394041424344454647484950515253// =====================================================================================================// 문제 설명// 두 수를 입력받아 두 수의 최대공약수와 최소공배수를 반환하는 함수,// solution을 완성해 보세요. 배열의 맨 앞에 최대공약수, 그다음 최소공배수를 넣어 반환하면 됩니다.// 예를 들어 두 수 3, 12의 최대공약수는 3, 최소공배수는 12이므로 solution(3, 12)는 [3, 12]를 반환해야 합니다.// 제한 사항// 두 수는 1이상 1000000이하의 자연수입니다.// =====================================================================================================public int[] solution(int n, int m) &#123;    int[] answer = new int[2];    int min = 1000000; int max=0;        int fstnum =0;    int sndnum = 0;    List&lt;Integer&gt; fstnumArr = new ArrayList&lt;&gt;();    int multi = 1;    if(n&lt;m)&#123;        fstnum= n;        sndnum = m;    &#125;else&#123; fstnum =m; sndnum=n; &#125;        System.out.println(&quot;fstnum : &quot;+fstnum);    for(int i=1; i&lt;=fstnum; i++)&#123;        System.out.println(String.format(&quot;i= %d/ fstnum 나머지= %d&quot;, i, fstnum%i));        if(fstnum%i==0) &#123;            fstnumArr.add(i);        &#125;    &#125;    System.out.println(&quot;fstnumArr : &quot;+ fstnumArr);        for(int i= fstnumArr.size()-1; i&gt;=0; i--)&#123;        if(sndnum%fstnumArr.get(i)==0)&#123;            if(min&gt;fstnumArr.get(i))&#123;                min = fstnumArr.get(i);            &#125;            multi *= fstnumArr.get(i);        &#125;    &#125;    System.out.println(&quot;최대 공약수 : &quot; + min);    System.out.println(&quot;multi : &quot; + multi);        // 최대공배수는 각 2개 숫자를 (최소공약수들의 곱의 값으로 나눈 수)* (최소공약수들의 곱)    max = (n/multi) * (m/multi) * multi;    System.out.println(&quot;최소 공배수 : &quot;+ max);        return answer;&#125;public static void main(String args[]) throws Exception&#123;    int[] answer = new Solution().solution(3, 12);&#125;\n\n\n행렬의 덧셈1234567891011121314151617181920212223242526    // =====================================================================================================    // 문제 설명    // 행렬의 덧셈은 행과 열의 크기가 같은 두 행렬의 같은 행, 같은 열의 값을 서로 더한 결과가 됩니다.     // 2개의 행렬 arr1과 arr2를 입력받아, 행렬 덧셈의 결과를 반환하는 함수, solution을 완성해주세요.    // =====================================================================================================public int[][] solution2(int[][] arr1, int[][] arr2) &#123;    int len = arr1.length;    int[][] answer =  new int[len][arr1[0].length];        for(int i=0; i&lt;2; i++)&#123;        for(int j=0; j&lt;arr1[i].length; j++)&#123;            answer[i][j] = arr1[i][j] + arr2[i][j];            System.out.println(&quot;answer : &quot;+ Arrays.deepToString(answer));            //1차원 배열에서는 toString 가능, 2차원 이상에서는 Arrays.deepToString(answer)         &#125;    &#125;        return answer;&#125;public static void main(String args[]) throws Exception&#123;    // int[] answer = new Solution().solution(3, 12);    int[][] arr1 = &#123;&#123;1&#125;,&#123;3&#125;&#125;;    int[][] arr2 = &#123;&#123;2&#125;,&#123;3&#125;&#125;;    int[][] answer = new Solution().solution2(arr1, arr2);&#125;","dateCreated":"2020-04-14T00:05:31+09:00","dateModified":"2021-04-28T15:21:58+09:00","datePublished":"2020-04-14T00:05:31+09:00","description":"📜 매일매일 코딩테스트 with 자바\n\n최대공약수와 최소공배수를 반환하는 함수 구현\n행렬의 덧셈을 반환하는 함수구현","headline":"CODING TEST with Java","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2020/04/14/coding-test-with-Java/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2020/04/14/coding-test-with-Java/"}</script>
-    <meta name="description" content="📜 매일매일 코딩테스트 with 자바  최대공약수와 최소공배수를 반환하는 함수 구현 행렬의 덧셈을 반환하는 함수구현">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="generator" content="동글씨">
+        <title>
+            CODING TEST with Java - 동글씨
+        </title>
+        <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+        <meta name="author" content="Suyan Kim">
+        
+                
+                        
+                            <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
+                            
+                                <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\n최대공약수와 최소공배수1234567891011121314151617181920212223242526272829303132333435363738394041424344454647484950515253// =====================================================================================================// 문제 설명// 두 수를 입력받아 두 수의 최대공약수와 최소공배수를 반환하는 함수,// solution을 완성해 보세요. 배열의 맨 앞에 최대공약수, 그다음 최소공배수를 넣어 반환하면 됩니다.// 예를 들어 두 수 3, 12의 최대공약수는 3, 최소공배수는 12이므로 solution(3, 12)는 [3, 12]를 반환해야 합니다.// 제한 사항// 두 수는 1이상 1000000이하의 자연수입니다.// =====================================================================================================public int[] solution(int n, int m) &#123;    int[] answer = new int[2];    int min = 1000000; int max=0;        int fstnum =0;    int sndnum = 0;    List&lt;Integer&gt; fstnumArr = new ArrayList&lt;&gt;();    int multi = 1;    if(n&lt;m)&#123;        fstnum= n;        sndnum = m;    &#125;else&#123; fstnum =m; sndnum=n; &#125;        System.out.println(&quot;fstnum : &quot;+fstnum);    for(int i=1; i&lt;=fstnum; i++)&#123;        System.out.println(String.format(&quot;i= %d/ fstnum 나머지= %d&quot;, i, fstnum%i));        if(fstnum%i==0) &#123;            fstnumArr.add(i);        &#125;    &#125;    System.out.println(&quot;fstnumArr : &quot;+ fstnumArr);        for(int i= fstnumArr.size()-1; i&gt;=0; i--)&#123;        if(sndnum%fstnumArr.get(i)==0)&#123;            if(min&gt;fstnumArr.get(i))&#123;                min = fstnumArr.get(i);            &#125;            multi *= fstnumArr.get(i);        &#125;    &#125;    System.out.println(&quot;최대 공약수 : &quot; + min);    System.out.println(&quot;multi : &quot; + multi);        // 최대공배수는 각 2개 숫자를 (최소공약수들의 곱의 값으로 나눈 수)* (최소공약수들의 곱)    max = (n/multi) * (m/multi) * multi;    System.out.println(&quot;최소 공배수 : &quot;+ max);        return answer;&#125;public static void main(String args[]) throws Exception&#123;    int[] answer = new Solution().solution(3, 12);&#125;\n\n\n행렬의 덧셈1234567891011121314151617181920212223242526    // =====================================================================================================    // 문제 설명    // 행렬의 덧셈은 행과 열의 크기가 같은 두 행렬의 같은 행, 같은 열의 값을 서로 더한 결과가 됩니다.     // 2개의 행렬 arr1과 arr2를 입력받아, 행렬 덧셈의 결과를 반환하는 함수, solution을 완성해주세요.    // =====================================================================================================public int[][] solution2(int[][] arr1, int[][] arr2) &#123;    int len = arr1.length;    int[][] answer =  new int[len][arr1[0].length];        for(int i=0; i&lt;2; i++)&#123;        for(int j=0; j&lt;arr1[i].length; j++)&#123;            answer[i][j] = arr1[i][j] + arr2[i][j];            System.out.println(&quot;answer : &quot;+ Arrays.deepToString(answer));            //1차원 배열에서는 toString 가능, 2차원 이상에서는 Arrays.deepToString(answer)         &#125;    &#125;        return answer;&#125;public static void main(String args[]) throws Exception&#123;    // int[] answer = new Solution().solution(3, 12);    int[][] arr1 = &#123;&#123;1&#125;,&#123;3&#125;&#125;;    int[][] arr2 = &#123;&#123;2&#125;,&#123;3&#125;&#125;;    int[][] answer = new Solution().solution2(arr1, arr2);&#125;","dateCreated":"2020-04-14T00:05:31+09:00","dateModified":"2021-04-28T15:21:58+09:00","datePublished":"2020-04-14T00:05:31+09:00","description":"📜 매일매일 코딩테스트 with 자바\n\n최대공약수와 최소공배수를 반환하는 함수 구현\n행렬의 덧셈을 반환하는 함수구현","headline":"CODING TEST with Java","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2020/04/14/coding-test-with-Java/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2020/04/14/coding-test-with-Java/"}</script>
+                                    <meta name="description" content="📜 매일매일 코딩테스트 with 자바  최대공약수와 최소공배수를 반환하는 함수 구현 행렬의 덧셈을 반환하는 함수구현">
 <meta property="og:type" content="blog">
 <meta property="og:title" content="CODING TEST with Java">
 <meta property="og:url" content="http://yoursite.com/2020/04/14/coding-test-with-Java/index.html">
@@ -25,31 +29,22 @@
 <meta property="article:modified_time" content="2021-04-28T06:21:58.253Z">
 <meta property="article:author" content="Suyan Kim">
 <meta name="twitter:card" content="summary">
-    
-    
-        
-    
-    
-        <meta property="og:image" content="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=640"/>
-    
-    
-    
-    
-    <!--STYLES-->
-    
-<link rel="stylesheet" href="/assets/css/all.css">
-
-    
-<link rel="stylesheet" href="/assets/css/jquery.fancybox.css">
-
-    
-<link rel="stylesheet" href="/assets/css/thumbs.css">
-
-    
+                                        
+                                                
+                                                    
+                                                            
+                                                                
+                                                                    <meta property="og:image" content="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=640" />
+                                                                    
+                                                                            
+                                                                                    
+                                                                                            
+                                                                                                            <!--STYLES-->
+                                                                                                            
 <link rel="stylesheet" href="/assets/css/tranquilpeak.css">
 
-    <!--STYLES END-->
-    
+                                                                                                                <!--STYLES END-->
+                                                                                                                
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-158530470-1"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
@@ -60,13 +55,12 @@
     </script>
 
 
-    
+                                                                                                                    
 
-    
-        
-    
-</head>
-
+                                                                                                                        
+                                                                                                                            
+                                                                                                                                                
+    </head>
     <body>
         <div id="blog">
             <!-- Define author's picture -->
@@ -179,7 +173,7 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (7)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (9)</a></li>
                             
                         
                             
@@ -208,6 +202,10 @@
                         
                             
                                 <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Network/">☁️ Network (1)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-NodeJS/">☁️ NodeJS (1)</a></li>
                             
                         
                             
@@ -676,15 +674,6 @@
         
 <div id="cover" style="background-image:url('/assets/images/null');"></div>
         <!--SCRIPTS-->
-
-<script src="/assets/js/jquery.js"></script>
-
-
-<script src="/assets/js/jquery.fancybox.js"></script>
-
-
-<script src="/assets/js/thumbs.js"></script>
-
 
 <script src="/assets/js/tranquilpeak.js"></script>
 

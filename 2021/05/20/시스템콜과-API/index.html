@@ -2,19 +2,23 @@
 <!DOCTYPE html>
 <html lang="en">
     
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="generator" content="동글씨">
-    <title>📲 시스템콜과 API - 동글씨</title>
-    <meta name="author" content="Suyan Kim">
-    
-    
-    
-        <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
-    
-    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\n💬 해당 강의는 fastcampus 에서 ‘컴공 전공자 따라잡기 온라인 완주반’ 강의를 들으며 스스로의 학습을 위해 작성한 포스팅입니다. 문제가 된다면 연락 부탁드립니다.\n시스템콜\n주요 시스템콜 명령어\n\n\n\n\n%eax\nKernel Function(System call)\n%ebx\n%ecx\n%edx\n\n\n\n1\nsys_exit(exit)\nint\n-\n-\n\n\n2\nsys_fork(fork)\nstruct pt_regs\n-\n-\n\n\n3\nsys_read(read)\nunsigned int\nchar *\nsize_t\n\n\n4\nsys_write(write)\nunsigned int\nconst char *\nsize_t\n\n\n5\nsys_open(open)\nconst char *\nint\nint\n\n\n6\nsys_close(clsoe)\nunsigned int\n-\n-\n\n\n시스템콜은 어떻게 구현?12345mov eax, 0x04 // 시스템콜 번호mov ebx, 0x03 // 인자값mov ecx, $bufmov edx, 14   // 문자열 사이즈int 0x80      // 소프트웨어 인터럽트 명령\n\n\n\n레지스터\n의미\n\n\n\neax\n산술 및 논리연산을 수행할 때 사용되며 함수의 반환값이 저장된다.\n\n\nebx\n메모리 주소를 저장하기 위한 용도로 사용된다. 인자를 넣어준다.\n\n\necx\n반복 명령어 사용시 반복 카운터로 사용되는 레지스터이다.\n\n\nedx\neax와 같이 쓰이며 부호 확장 명령등에 쓰이고 큰수의 곱셈, 나눗셈 등의 연산이 이루어질 때 사용된다.\n\n\nint 0x80\n소프트웨어 인터럽트 명령이다.\n\n\n\nC 컴파일러\n유닉스 C 컴파일러 c\n리눅스 C 컴파일러 -GNU cc- gcc\n우분투 리눅스에 gcc설치\n\n123sudo apt-get install gccgcc --versiongcc -o test.c test\n\n컴파일 과정 (전처리, 컴파일, 어셈블리, 링크)\n위 코드에서 gcc -o test.c test 를 수행할 때 발생하는 컴파일 과정이다.\n\n\n\n\n컴파일 과정\n서술\n\n\n\n(1) 전처리기\ncpp 라는 전처리기를 사용한다.\n\n\n\n전처리기가 #include 구문을 만나면 해당 헤더 파일을 찾아 그 내용을 순차적으로 삽입한다.\n\n\n\n#define, #ifdef 같은 매크로 구문을 치환하고 처리한다.\n\n\n(2) C컴파일러\nccl 에 의해 전단부에서 소스코드를 어휘, 구문, 의미를 분석하고 중간코드를 생성한다.\n\n\n\n중단부에서 최적화를 거치고 후단부에서 어셈블리 코드를 생성한다.\n\n\n(3) 어셈블러\nas 라는 어셈블러를 사용해 어셈블리 코드를 0과1의 기계어로 변환한다.\n\n\n\n최종적으로 ELF 바이너리 포맷 구조를 갖는 목적코드를 생성한다.\n\n\n(4) 링커\nld라는 링커를 사용한다.\n\n\n\n오브젝트 파일들과 프로그램에서 사용된 표준 C 라이브러리와 사용자 라이브러리를 링크한다.\n\n\n\n이 과정을 통해 실행파일이 만들어진다.\n\n\n\nAPI\n응용 프로그램과 분리된 하위 호환 인터페이스\neg. 시스템콜 래퍼, 입출력 라이브러리 등\nfork() 와 같은 시스템콜 함수 사용을 위해 사용자가 사용할 수 있는 함수들의 모음을 말한다.123process_fork()&#123;    fork()&#125;\n\n\nABI (Application Binary Interface)\n응용 프로그램 바이너리 인터페이스\n함수 실행방식, 레지스터 활용, 시스템콜 실행, 라이브러리 링크 방식 등\nABI가 호환되면 재컴파일 없이 동작한다. (ABI 표준)\n리눅스에서 만든 프로그램을 리눅스에서 실행하지 못하는이유? ABI가 완벽하게 달라서이다.\n컴파일러, 링커(라이브러리 링크), 툴체인(컴파일러를 만드는 프로그램)에서 제공\n\nPOSIX\n유닉스 시스템 프로그래밍 인터페이스 표준\n리차드 스톨만이 POSIX를 표준안 이름으로 제안\nIEEE 에서 표준화 시도\n\nC 언어 표준\n다양한 C 언어 변종이 존재한다.\nANSI 에서 ANSI C 표준을 정립했다.\n","dateCreated":"2021-05-20T23:59:59+09:00","dateModified":"2021-05-25T09:54:42+09:00","datePublished":"2021-05-20T23:59:59+09:00","description":"시스템콜의 수행과정, 컴파일 과정에 대해서도 알아본다.API ? ABI ?#API #ABI #IDT #system_call #gcc","headline":"📲 시스템콜과 API","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2021/05/20/%EC%8B%9C%EC%8A%A4%ED%85%9C%EC%BD%9C%EA%B3%BC-API/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2021/05/20/%EC%8B%9C%EC%8A%A4%ED%85%9C%EC%BD%9C%EA%B3%BC-API/","keywords":"abi, system_call, gcc"}</script>
-    <meta name="description" content="시스템콜의 수행과정, 컴파일 과정에 대해서도 알아본다.API ? ABI ?#API #ABI #IDT #system_call #gcc">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="generator" content="동글씨">
+        <title>
+            📲 시스템콜과 API - 동글씨
+        </title>
+        <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+        <meta name="author" content="Suyan Kim">
+        
+                
+                        
+                            <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
+                            
+                                <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\n💬 해당 강의는 fastcampus 에서 ‘컴공 전공자 따라잡기 온라인 완주반’ 강의를 들으며 스스로의 학습을 위해 작성한 포스팅입니다. 문제가 된다면 연락 부탁드립니다.\n시스템콜\n주요 시스템콜 명령어\n\n\n\n\n%eax\nKernel Function(System call)\n%ebx\n%ecx\n%edx\n\n\n\n1\nsys_exit(exit)\nint\n-\n-\n\n\n2\nsys_fork(fork)\nstruct pt_regs\n-\n-\n\n\n3\nsys_read(read)\nunsigned int\nchar *\nsize_t\n\n\n4\nsys_write(write)\nunsigned int\nconst char *\nsize_t\n\n\n5\nsys_open(open)\nconst char *\nint\nint\n\n\n6\nsys_close(clsoe)\nunsigned int\n-\n-\n\n\n시스템콜은 어떻게 구현?12345mov eax, 0x04 // 시스템콜 번호mov ebx, 0x03 // 인자값mov ecx, $bufmov edx, 14   // 문자열 사이즈int 0x80      // 소프트웨어 인터럽트 명령\n\n\n\n레지스터\n의미\n\n\n\neax\n산술 및 논리연산을 수행할 때 사용되며 함수의 반환값이 저장된다.\n\n\nebx\n메모리 주소를 저장하기 위한 용도로 사용된다. 인자를 넣어준다.\n\n\necx\n반복 명령어 사용시 반복 카운터로 사용되는 레지스터이다.\n\n\nedx\neax와 같이 쓰이며 부호 확장 명령등에 쓰이고 큰수의 곱셈, 나눗셈 등의 연산이 이루어질 때 사용된다.\n\n\nint 0x80\n소프트웨어 인터럽트 명령이다.\n\n\n\nC 컴파일러\n유닉스 C 컴파일러 c\n리눅스 C 컴파일러 -GNU cc- gcc\n우분투 리눅스에 gcc설치\n\n123sudo apt-get install gccgcc --versiongcc -o test.c test\n\n컴파일 과정 (전처리, 컴파일, 어셈블리, 링크)\n위 코드에서 gcc -o test.c test 를 수행할 때 발생하는 컴파일 과정이다.\n\n\n\n\n컴파일 과정\n서술\n\n\n\n(1) 전처리기\ncpp 라는 전처리기를 사용한다.\n\n\n\n전처리기가 #include 구문을 만나면 해당 헤더 파일을 찾아 그 내용을 순차적으로 삽입한다.\n\n\n\n#define, #ifdef 같은 매크로 구문을 치환하고 처리한다.\n\n\n(2) C컴파일러\nccl 에 의해 전단부에서 소스코드를 어휘, 구문, 의미를 분석하고 중간코드를 생성한다.\n\n\n\n중단부에서 최적화를 거치고 후단부에서 어셈블리 코드를 생성한다.\n\n\n(3) 어셈블러\nas 라는 어셈블러를 사용해 어셈블리 코드를 0과1의 기계어로 변환한다.\n\n\n\n최종적으로 ELF 바이너리 포맷 구조를 갖는 목적코드를 생성한다.\n\n\n(4) 링커\nld라는 링커를 사용한다.\n\n\n\n오브젝트 파일들과 프로그램에서 사용된 표준 C 라이브러리와 사용자 라이브러리를 링크한다.\n\n\n\n이 과정을 통해 실행파일이 만들어진다.\n\n\n\nAPI\n응용 프로그램과 분리된 하위 호환 인터페이스\neg. 시스템콜 래퍼, 입출력 라이브러리 등\nfork() 와 같은 시스템콜 함수 사용을 위해 사용자가 사용할 수 있는 함수들의 모음을 말한다.123process_fork()&#123;    fork()&#125;\n\n\nABI (Application Binary Interface)\n응용 프로그램 바이너리 인터페이스\n함수 실행방식, 레지스터 활용, 시스템콜 실행, 라이브러리 링크 방식 등\nABI가 호환되면 재컴파일 없이 동작한다. (ABI 표준)\n리눅스에서 만든 프로그램을 리눅스에서 실행하지 못하는이유? ABI가 완벽하게 달라서이다.\n컴파일러, 링커(라이브러리 링크), 툴체인(컴파일러를 만드는 프로그램)에서 제공\n\nPOSIX\n유닉스 시스템 프로그래밍 인터페이스 표준\n리차드 스톨만이 POSIX를 표준안 이름으로 제안\nIEEE 에서 표준화 시도\n\nC 언어 표준\n다양한 C 언어 변종이 존재한다.\nANSI 에서 ANSI C 표준을 정립했다.\n","dateCreated":"2021-05-20T23:59:59+09:00","dateModified":"2021-05-25T09:54:42+09:00","datePublished":"2021-05-20T23:59:59+09:00","description":"시스템콜의 수행과정, 컴파일 과정에 대해서도 알아본다.API ? ABI ?#API #ABI #IDT #system_call #gcc","headline":"📲 시스템콜과 API","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2021/05/20/%EC%8B%9C%EC%8A%A4%ED%85%9C%EC%BD%9C%EA%B3%BC-API/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2021/05/20/%EC%8B%9C%EC%8A%A4%ED%85%9C%EC%BD%9C%EA%B3%BC-API/","keywords":"abi, system_call, gcc"}</script>
+                                    <meta name="description" content="시스템콜의 수행과정, 컴파일 과정에 대해서도 알아본다.API ? ABI ?#API #ABI #IDT #system_call #gcc">
 <meta property="og:type" content="blog">
 <meta property="og:title" content="📲 시스템콜과 API">
 <meta property="og:url" content="http://yoursite.com/2021/05/20/%EC%8B%9C%EC%8A%A4%ED%85%9C%EC%BD%9C%EA%B3%BC-API/index.html">
@@ -28,31 +32,22 @@
 <meta property="article:tag" content="system_call">
 <meta property="article:tag" content="gcc">
 <meta name="twitter:card" content="summary">
-    
-    
-        
-    
-    
-        <meta property="og:image" content="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=640"/>
-    
-    
-    
-    
-    <!--STYLES-->
-    
-<link rel="stylesheet" href="/assets/css/all.css">
-
-    
-<link rel="stylesheet" href="/assets/css/jquery.fancybox.css">
-
-    
-<link rel="stylesheet" href="/assets/css/thumbs.css">
-
-    
+                                        
+                                                
+                                                    
+                                                            
+                                                                
+                                                                    <meta property="og:image" content="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=640" />
+                                                                    
+                                                                            
+                                                                                    
+                                                                                            
+                                                                                                            <!--STYLES-->
+                                                                                                            
 <link rel="stylesheet" href="/assets/css/tranquilpeak.css">
 
-    <!--STYLES END-->
-    
+                                                                                                                <!--STYLES END-->
+                                                                                                                
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-158530470-1"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
@@ -63,13 +58,12 @@
     </script>
 
 
-    
+                                                                                                                    
 
-    
-        
-    
-</head>
-
+                                                                                                                        
+                                                                                                                            
+                                                                                                                                                
+    </head>
     <body>
         <div id="blog">
             <!-- Define author's picture -->
@@ -182,7 +176,7 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (7)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (9)</a></li>
                             
                         
                             
@@ -211,6 +205,10 @@
                         
                             
                                 <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Network/">☁️ Network (1)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-NodeJS/">☁️ NodeJS (1)</a></li>
                             
                         
                             
@@ -850,15 +848,6 @@
         
 <div id="cover" style="background-image:url('/assets/images/null');"></div>
         <!--SCRIPTS-->
-
-<script src="/assets/js/jquery.js"></script>
-
-
-<script src="/assets/js/jquery.fancybox.js"></script>
-
-
-<script src="/assets/js/thumbs.js"></script>
-
 
 <script src="/assets/js/tranquilpeak.js"></script>
 

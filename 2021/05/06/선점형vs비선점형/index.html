@@ -2,19 +2,23 @@
 <!DOCTYPE html>
 <html lang="en">
     
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="generator" content="동글씨">
-    <title>🙋‍♀️ 선점형 vs 비선점형 - 동글씨</title>
-    <meta name="author" content="Suyan Kim">
-    
-    
-    
-        <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
-    
-    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\n💬 해당 강의는 fastcampus 에서 ‘컴공 전공자 따라잡기 온라인 완주반’ 강의를 들으며 스스로의 학습을 위해 작성한 포스팅입니다. 문제가 된다면 연락 부탁드립니다.\n\n\n선점형 스케줄링 vs 비선점형 스케줄링\n기존에는 비선점형 스케줄러가 기본이었다. 선점형 스케줄러를 지원하는 운영체제, 그러지 못한 운영체제가 있었다.현재, 시분할 시스템에서 선점형 스케줄러는 당연히 선행되는 개념이다.\n\n\n선점형 (Preemptive Scheduling): 하나의 프로세스가 다른 프로세스 대신에 프로세서(CPU)를 차지할 수 있음\nblocking 상태나 종료된 상태가 아니더라도 프로세스 running 중에 스케줄러가 이를 중단시키고, 다른 프로세스로 교체 가능.\n각 프로세스 응답시간 단축효과가 있지만 우선순위가 높은 프로세스들이 반복적으로 들어오는 경우 오버헤드를 초래할 수 있다.\n대표적 스케줄링 기법 \nRound Robin Schedling\n\n\n비선점형 (Non-Preemptive Scheduling): 하나의 프로세스가 끝나지 않으면 다른 프로세스는 프로세서(CPU)를 차지할 수 없음\n프로세스가 자발적으로 blocking 상태로 들어가거나 실행이 종료된 상태일때만 다른 프로세스로 교체 가능.\n대표적 스케줄링 기법 \nFIFO(FCFS), SJF, Priority-based\n\n\n","dateCreated":"2021-05-06T23:41:43+09:00","dateModified":"2021-05-11T10:52:08+09:00","datePublished":"2021-05-06T23:41:43+09:00","description":"선점형, 비선점형 무슨 차이일까?#preemptive #non_preemptive","headline":"🙋‍♀️ 선점형 vs 비선점형","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2021/05/06/%EC%84%A0%EC%A0%90%ED%98%95vs%EB%B9%84%EC%84%A0%EC%A0%90%ED%98%95/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2021/05/06/%EC%84%A0%EC%A0%90%ED%98%95vs%EB%B9%84%EC%84%A0%EC%A0%90%ED%98%95/","keywords":"scheduler"}</script>
-    <meta name="description" content="선점형, 비선점형 무슨 차이일까?#preemptive #non_preemptive">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="generator" content="동글씨">
+        <title>
+            🙋‍♀️ 선점형 vs 비선점형 - 동글씨
+        </title>
+        <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+        <meta name="author" content="Suyan Kim">
+        
+                
+                        
+                            <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
+                            
+                                <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\n💬 해당 강의는 fastcampus 에서 ‘컴공 전공자 따라잡기 온라인 완주반’ 강의를 들으며 스스로의 학습을 위해 작성한 포스팅입니다. 문제가 된다면 연락 부탁드립니다.\n\n\n선점형 스케줄링 vs 비선점형 스케줄링\n기존에는 비선점형 스케줄러가 기본이었다. 선점형 스케줄러를 지원하는 운영체제, 그러지 못한 운영체제가 있었다.현재, 시분할 시스템에서 선점형 스케줄러는 당연히 선행되는 개념이다.\n\n\n선점형 (Preemptive Scheduling): 하나의 프로세스가 다른 프로세스 대신에 프로세서(CPU)를 차지할 수 있음\nblocking 상태나 종료된 상태가 아니더라도 프로세스 running 중에 스케줄러가 이를 중단시키고, 다른 프로세스로 교체 가능.\n각 프로세스 응답시간 단축효과가 있지만 우선순위가 높은 프로세스들이 반복적으로 들어오는 경우 오버헤드를 초래할 수 있다.\n대표적 스케줄링 기법 \nRound Robin Schedling\n\n\n비선점형 (Non-Preemptive Scheduling): 하나의 프로세스가 끝나지 않으면 다른 프로세스는 프로세서(CPU)를 차지할 수 없음\n프로세스가 자발적으로 blocking 상태로 들어가거나 실행이 종료된 상태일때만 다른 프로세스로 교체 가능.\n대표적 스케줄링 기법 \nFIFO(FCFS), SJF, Priority-based\n\n\n","dateCreated":"2021-05-06T23:41:43+09:00","dateModified":"2021-05-11T10:52:08+09:00","datePublished":"2021-05-06T23:41:43+09:00","description":"선점형, 비선점형 무슨 차이일까?#preemptive #non_preemptive","headline":"🙋‍♀️ 선점형 vs 비선점형","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2021/05/06/%EC%84%A0%EC%A0%90%ED%98%95vs%EB%B9%84%EC%84%A0%EC%A0%90%ED%98%95/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2021/05/06/%EC%84%A0%EC%A0%90%ED%98%95vs%EB%B9%84%EC%84%A0%EC%A0%90%ED%98%95/","keywords":"scheduler"}</script>
+                                    <meta name="description" content="선점형, 비선점형 무슨 차이일까?#preemptive #non_preemptive">
 <meta property="og:type" content="blog">
 <meta property="og:title" content="🙋‍♀️ 선점형 vs 비선점형">
 <meta property="og:url" content="http://yoursite.com/2021/05/06/%EC%84%A0%EC%A0%90%ED%98%95vs%EB%B9%84%EC%84%A0%EC%A0%90%ED%98%95/index.html">
@@ -26,31 +30,22 @@
 <meta property="article:author" content="Suyan Kim">
 <meta property="article:tag" content="scheduler">
 <meta name="twitter:card" content="summary">
-    
-    
-        
-    
-    
-        <meta property="og:image" content="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=640"/>
-    
-    
-    
-    
-    <!--STYLES-->
-    
-<link rel="stylesheet" href="/assets/css/all.css">
-
-    
-<link rel="stylesheet" href="/assets/css/jquery.fancybox.css">
-
-    
-<link rel="stylesheet" href="/assets/css/thumbs.css">
-
-    
+                                        
+                                                
+                                                    
+                                                            
+                                                                
+                                                                    <meta property="og:image" content="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=640" />
+                                                                    
+                                                                            
+                                                                                    
+                                                                                            
+                                                                                                            <!--STYLES-->
+                                                                                                            
 <link rel="stylesheet" href="/assets/css/tranquilpeak.css">
 
-    <!--STYLES END-->
-    
+                                                                                                                <!--STYLES END-->
+                                                                                                                
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-158530470-1"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
@@ -61,13 +56,12 @@
     </script>
 
 
-    
+                                                                                                                    
 
-    
-        
-    
-</head>
-
+                                                                                                                        
+                                                                                                                            
+                                                                                                                                                
+    </head>
     <body>
         <div id="blog">
             <!-- Define author's picture -->
@@ -180,7 +174,7 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (7)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (9)</a></li>
                             
                         
                             
@@ -209,6 +203,10 @@
                         
                             
                                 <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Network/">☁️ Network (1)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-NodeJS/">☁️ NodeJS (1)</a></li>
                             
                         
                             
@@ -701,15 +699,6 @@
         
 <div id="cover" style="background-image:url('/assets/images/null');"></div>
         <!--SCRIPTS-->
-
-<script src="/assets/js/jquery.js"></script>
-
-
-<script src="/assets/js/jquery.fancybox.js"></script>
-
-
-<script src="/assets/js/thumbs.js"></script>
-
 
 <script src="/assets/js/tranquilpeak.js"></script>
 

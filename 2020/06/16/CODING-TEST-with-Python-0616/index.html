@@ -2,19 +2,23 @@
 <!DOCTYPE html>
 <html lang="en">
     
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="generator" content="동글씨">
-    <title>CODING TEST {동전} with Python - 동글씨</title>
-    <meta name="author" content="Suyan Kim">
-    
-    
-    
-        <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
-    
-    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\n\n\n\n[문제]\nQ. 준규가 가지고 있는 동전은 총 N종류이고, 각각의 동전을 매우 많이 가지고 있다.동전을 적절히 사용해서 그 가치의 합을 K로 만들려고 한다. 이때 필요한 동전 개수의 최솟값을 구하는 프로그램을 작성하시오.\n\n[입력]\n첫째 줄에 N과 K가 주어진다. (1 ≤ N ≤ 10, 1 ≤ K ≤ 100,000,000)둘째 줄부터 N개의 줄에 동전의 가치 Ai가 오름차순으로 주어진다. (1 ≤ Ai ≤ 1,000,000, A1 = 1, i ≥ 2인 경우에 Ai는 Ai-1의 배수)\n\n[예제 입력]\n10 4200151050100500100050001000050000\n\n[예제 출력]\n6\n\n[문제 답변]123456789101112131415161718192021def coin(priceArr):    global price    priceArr.sort(reverse=True)    total = 0    for i in priceArr:        if (price // i) &gt; 0:            total+= price // i            price -= (price // i)*i            if price==0:                break    return totalif __name__ ==  &#x27;__main__&#x27;:    arrLen, price= map(int, input().split())    priceArr = []    for i in range(arrLen):        priceArr.append(int(input()))    print(coin(priceArr))","dateCreated":"2020-06-16T11:03:14+09:00","dateModified":"2021-04-28T15:21:58+09:00","datePublished":"2020-06-16T11:03:14+09:00","description":"📜 코딩테스트 with PythonQ. 동전백준 알고리즘","headline":"CODING TEST {동전} with Python","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2020/06/16/CODING-TEST-with-Python-0616/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2020/06/16/CODING-TEST-with-Python-0616/","keywords":"python, codingtest"}</script>
-    <meta name="description" content="📜 코딩테스트 with PythonQ. 동전백준 알고리즘">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="generator" content="동글씨">
+        <title>
+            CODING TEST {동전} with Python - 동글씨
+        </title>
+        <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+        <meta name="author" content="Suyan Kim">
+        
+                
+                        
+                            <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
+                            
+                                <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\n\n\n\n[문제]\nQ. 준규가 가지고 있는 동전은 총 N종류이고, 각각의 동전을 매우 많이 가지고 있다.동전을 적절히 사용해서 그 가치의 합을 K로 만들려고 한다. 이때 필요한 동전 개수의 최솟값을 구하는 프로그램을 작성하시오.\n\n[입력]\n첫째 줄에 N과 K가 주어진다. (1 ≤ N ≤ 10, 1 ≤ K ≤ 100,000,000)둘째 줄부터 N개의 줄에 동전의 가치 Ai가 오름차순으로 주어진다. (1 ≤ Ai ≤ 1,000,000, A1 = 1, i ≥ 2인 경우에 Ai는 Ai-1의 배수)\n\n[예제 입력]\n10 4200151050100500100050001000050000\n\n[예제 출력]\n6\n\n[문제 답변]123456789101112131415161718192021def coin(priceArr):    global price    priceArr.sort(reverse=True)    total = 0    for i in priceArr:        if (price // i) &gt; 0:            total+= price // i            price -= (price // i)*i            if price==0:                break    return totalif __name__ ==  &#x27;__main__&#x27;:    arrLen, price= map(int, input().split())    priceArr = []    for i in range(arrLen):        priceArr.append(int(input()))    print(coin(priceArr))","dateCreated":"2020-06-16T11:03:14+09:00","dateModified":"2021-04-28T15:21:58+09:00","datePublished":"2020-06-16T11:03:14+09:00","description":"📜 코딩테스트 with PythonQ. 동전백준 알고리즘","headline":"CODING TEST {동전} with Python","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2020/06/16/CODING-TEST-with-Python-0616/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2020/06/16/CODING-TEST-with-Python-0616/","keywords":"codingtest, python"}</script>
+                                    <meta name="description" content="📜 코딩테스트 with PythonQ. 동전백준 알고리즘">
 <meta property="og:type" content="blog">
 <meta property="og:title" content="CODING TEST {동전} with Python">
 <meta property="og:url" content="http://yoursite.com/2020/06/16/CODING-TEST-with-Python-0616/index.html">
@@ -24,34 +28,25 @@
 <meta property="article:published_time" content="2020-06-16T02:03:14.000Z">
 <meta property="article:modified_time" content="2021-04-28T06:21:58.246Z">
 <meta property="article:author" content="Suyan Kim">
-<meta property="article:tag" content="python">
 <meta property="article:tag" content="codingtest">
+<meta property="article:tag" content="python">
 <meta name="twitter:card" content="summary">
-    
-    
-        
-    
-    
-        <meta property="og:image" content="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=640"/>
-    
-    
-    
-    
-    <!--STYLES-->
-    
-<link rel="stylesheet" href="/assets/css/all.css">
-
-    
-<link rel="stylesheet" href="/assets/css/jquery.fancybox.css">
-
-    
-<link rel="stylesheet" href="/assets/css/thumbs.css">
-
-    
+                                        
+                                                
+                                                    
+                                                            
+                                                                
+                                                                    <meta property="og:image" content="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=640" />
+                                                                    
+                                                                            
+                                                                                    
+                                                                                            
+                                                                                                            <!--STYLES-->
+                                                                                                            
 <link rel="stylesheet" href="/assets/css/tranquilpeak.css">
 
-    <!--STYLES END-->
-    
+                                                                                                                <!--STYLES END-->
+                                                                                                                
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-158530470-1"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
@@ -62,13 +57,12 @@
     </script>
 
 
-    
+                                                                                                                    
 
-    
-        
-    
-</head>
-
+                                                                                                                        
+                                                                                                                            
+                                                                                                                                                
+    </head>
     <body>
         <div id="blog">
             <!-- Define author's picture -->
@@ -181,7 +175,7 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (7)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (9)</a></li>
                             
                         
                             
@@ -210,6 +204,10 @@
                         
                             
                                 <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Network/">☁️ Network (1)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-NodeJS/">☁️ NodeJS (1)</a></li>
                             
                         
                             
@@ -697,15 +695,6 @@
         
 <div id="cover" style="background-image:url('/assets/images/null');"></div>
         <!--SCRIPTS-->
-
-<script src="/assets/js/jquery.js"></script>
-
-
-<script src="/assets/js/jquery.fancybox.js"></script>
-
-
-<script src="/assets/js/thumbs.js"></script>
-
 
 <script src="/assets/js/tranquilpeak.js"></script>
 

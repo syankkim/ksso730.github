@@ -2,19 +2,23 @@
 <!DOCTYPE html>
 <html lang="en">
     
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="generator" content="동글씨">
-    <title>⛓ 컴퓨터구조-Memory System - 동글씨</title>
-    <meta name="author" content="Suyan Kim">
-    
-    
-    
-        <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
-    
-    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\n메모리 계층기억장치 (MMU, buffer, AMU)\nCPU에 의하여 수행될 프로그램이 저장되는 곳.\n\n\n주기억 장치 (Main memory Unit)\nRAM Random Access Memory (마더보드에 장착)\n비교적 대용량이며 고속, 휘발성\n\n\nROM Read Only Memory\n주기억장치의 일종\n\n\n\n\n캐쉬 메모리 Cache memory, buffer\n수행중인 프로그램의 사용빈도가 높은 임시데이터를 저장한다.\n\n\n보조기억 장치 (Auxiliary memory Unit)\n대용량 자료보관 가능, 저속\nCPU 가 컨트롤 하지 못한다.\n보조기억 내의 필요한 자료는 주기억장치로 Loading ;옮겨진다.\nSRAM: 캐시메모리, CPU와 1:1 정도의 속도\nDRAM: 일반적 주기억장치, 상대적으로 느리다. 7배정도 기다려야 메인메모리가 기다려준다.\nMagnetic Tape, USB, SDcard : 파일 생성/삭제\nMagnetic drum, disk : 백업 저장장치\n\n\n\n\n@ 메모리를 계층별로 나누는 이유?\n\n입출력의 경제성 때문이다.\n\n\nRAM 의 동작⏬ MAR Memory Address Register 로 신호가 들어오면,⏬ 주소 디코더 에 의해서 번지 지정⏬ 정보에 의헤서 읽기/쓰기 수행: CS(Clock Segnal)=0/1, RD(Read)=0/1. WR(Write)=0/1⏬ MBR Memory Buffer Register 에 의해 출력된다.\n보조기억 장치\n섹터, 트랙, 헤드, 실린더접근시간: 메모리내의 기억장소에 도달하여 응답을 받는데까지 요구되는 평균시간\n\n\n시크타임: read/write head가 지정된 기억장소에 도달하기까지 소요 시간\n트랜스퍼 타임: 추출된 데이터를 장치내/외 필요한 곳으로 전송하는 시간\n레코드: 데이터가 기록되는 단위, 시크타임을 체크하는 기준.\n전송률: 장치가 레코드의 시작점에 위치하고서부터 전송 가능한 문자/워드 수\n\n\n효율적인 메모리 관리Associative memory\n내용에 의해 접근하는 메모리 장치\n\n메모리 장치? 자료의 저장과 접근을 용이하게 함\n이제는, 효율적 탐색(search) 이 필요 : 병렬 탐색을 하기에 적합\n외부인자와 내용을 비교할 수 있는 논리회로보유. ::RAM보다 비싸다.\n\n\n\nArgument register\nKey register 역할\n인자워드의 특정 영역이나 키를 선택하기 위한 마스크를 제공한다.\n\n\n\n캐쉬 메모리 (Cache memory)\n참조의 국한성 : 프로그램 수행중 메모리 참조는 국한된 영역에서만 이루어진다.\n\n프로그램 루프, 서브루틴 빈번\n순차적 프로그램 실행\n\n\n\n캐쉬 메모리의 동작/성능\n\nCache를 체크한다.\n워드가 발견되면(hit) 읽고\n없으면(miss) 주기억장치에 접근\n\n\n히트율\n\n\n효율적인 메모리관리\n\nassociative mapping\nassociative memory로 캐쉬를 만든다.\n가장 빠르고 융통성 있다.\nmiss 일 경우 주기억장치에서 해당자료를 찾아 옮긴다.\n여유공간이 있다면 그공간에 저장하지만\n여유공간이 없다면, 주어진 알고리즘에 의해 해당 주소-데이터 쌍이 새로운 정보로 대체된다.\n\n\n\n\n\n  @@@@@@@@@@@@@ 사진 예시\n\nDirect mapping\nSRAM 에 만든다. 하나의 공간에 하나씩 저장한다.\n동일한 인덱스를 보유한 워드가 반복접근시, 히트율 감소\n\n\nSet-associative mapping\n주어진 공간에 병렬로 여러개씩 저장한다.\n복잡한 알고리즘을 필요로한다.\n\n\n\n\n\n\n가상메모리가상메모리 VS 캐쉬메모리","dateCreated":"2021-06-09T01:50:54+09:00","dateModified":"2021-06-16T09:47:39+09:00","datePublished":"2021-06-09T01:50:54+09:00","description":"메모리 시스템# #","headline":"⛓ 컴퓨터구조-Memory System","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2021/06/09/%EC%BB%B4%ED%93%A8%ED%84%B0%EA%B5%AC%EC%A1%B0_%EB%A9%94%EB%AA%A8%EB%A6%AC%EA%B3%84%EC%B8%B5/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2021/06/09/%EC%BB%B4%ED%93%A8%ED%84%B0%EA%B5%AC%EC%A1%B0_%EB%A9%94%EB%AA%A8%EB%A6%AC%EA%B3%84%EC%B8%B5/","keywords":"computer_science"}</script>
-    <meta name="description" content="메모리 시스템# #">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="generator" content="동글씨">
+        <title>
+            ⛓ 컴퓨터구조-Memory System - 동글씨
+        </title>
+        <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+        <meta name="author" content="Suyan Kim">
+        
+                
+                        
+                            <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
+                            
+                                <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\n메모리 계층기억장치 (MMU, buffer, AMU)\nCPU에 의하여 수행될 프로그램이 저장되는 곳.\n\n\n주기억 장치 (Main memory Unit)\nRAM Random Access Memory (마더보드에 장착)\n비교적 대용량이며 고속, 휘발성\n\n\nROM Read Only Memory\n주기억장치의 일종\n\n\n\n\n캐쉬 메모리 Cache memory, buffer\n수행중인 프로그램의 사용빈도가 높은 임시데이터를 저장한다.\n\n\n보조기억 장치 (Auxiliary memory Unit)\n대용량 자료보관 가능, 저속\nCPU 가 컨트롤 하지 못한다.\n보조기억 내의 필요한 자료는 주기억장치로 Loading ;옮겨진다.\nSRAM: 캐시메모리, CPU와 1:1 정도의 속도\nDRAM: 일반적 주기억장치, 상대적으로 느리다. 7배정도 기다려야 메인메모리가 기다려준다.\nMagnetic Tape, USB, SDcard : 파일 생성/삭제\nMagnetic drum, disk : 백업 저장장치\n\n\n\n\n@ 메모리를 계층별로 나누는 이유?\n\n입출력의 경제성 때문이다.\n\n\nRAM 의 동작⏬ MAR Memory Address Register 로 신호가 들어오면,⏬ 주소 디코더 에 의해서 번지 지정⏬ 정보에 의헤서 읽기/쓰기 수행: CS(Clock Segnal)=0/1, RD(Read)=0/1. WR(Write)=0/1⏬ MBR Memory Buffer Register 에 의해 출력된다.\n보조기억 장치\n섹터, 트랙, 헤드, 실린더접근시간: 메모리내의 기억장소에 도달하여 응답을 받는데까지 요구되는 평균시간\n\n\n시크타임: read/write head가 지정된 기억장소에 도달하기까지 소요 시간\n트랜스퍼 타임: 추출된 데이터를 장치내/외 필요한 곳으로 전송하는 시간\n레코드: 데이터가 기록되는 단위, 시크타임을 체크하는 기준.\n전송률: 장치가 레코드의 시작점에 위치하고서부터 전송 가능한 문자/워드 수\n\n\n효율적인 메모리 관리Associative memory\n내용에 의해 접근하는 메모리 장치\n\n메모리 장치? 자료의 저장과 접근을 용이하게 함\n이제는, 효율적 탐색(search) 이 필요 : 병렬 탐색을 하기에 적합\n외부인자와 내용을 비교할 수 있는 논리회로보유. ::RAM보다 비싸다.\n\n\n\nArgument register\nKey register 역할\n인자워드의 특정 영역이나 키를 선택하기 위한 마스크를 제공한다.\n\n\n\n캐쉬 메모리 (Cache memory)\n참조의 국한성 : 프로그램 수행중 메모리 참조는 국한된 영역에서만 이루어진다.\n\n프로그램 루프, 서브루틴 빈번\n순차적 프로그램 실행\n\n\n\n캐쉬 메모리의 동작/성능\n\nCache를 체크한다.\n워드가 발견되면(hit) 읽고\n없으면(miss) 주기억장치에 접근\n\n\n히트율\n\n\n효율적인 메모리관리\n\nassociative mapping\nassociative memory로 캐쉬를 만든다.\n가장 빠르고 융통성 있다.\nmiss 일 경우 주기억장치에서 해당자료를 찾아 옮긴다.\n여유공간이 있다면 그공간에 저장하지만\n여유공간이 없다면, 주어진 알고리즘에 의해 해당 주소-데이터 쌍이 새로운 정보로 대체된다.\n\n\n\n\n\n  @@@@@@@@@@@@@ 사진 예시\n\nDirect mapping\nSRAM 에 만든다. 하나의 공간에 하나씩 저장한다.\n동일한 인덱스를 보유한 워드가 반복접근시, 히트율 감소\n\n\nSet-associative mapping\n주어진 공간에 병렬로 여러개씩 저장한다.\n복잡한 알고리즘을 필요로한다.\n\n\n\n\n\n\n가상메모리가상메모리 VS 캐쉬메모리","dateCreated":"2021-06-09T01:50:54+09:00","dateModified":"2021-06-16T09:47:39+09:00","datePublished":"2021-06-09T01:50:54+09:00","description":"메모리 시스템# #","headline":"⛓ 컴퓨터구조-Memory System","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2021/06/09/%EC%BB%B4%ED%93%A8%ED%84%B0%EA%B5%AC%EC%A1%B0_%EB%A9%94%EB%AA%A8%EB%A6%AC%EA%B3%84%EC%B8%B5/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2021/06/09/%EC%BB%B4%ED%93%A8%ED%84%B0%EA%B5%AC%EC%A1%B0_%EB%A9%94%EB%AA%A8%EB%A6%AC%EA%B3%84%EC%B8%B5/","keywords":"computer_science"}</script>
+                                    <meta name="description" content="메모리 시스템# #">
 <meta property="og:type" content="blog">
 <meta property="og:title" content="⛓ 컴퓨터구조-Memory System">
 <meta property="og:url" content="http://yoursite.com/2021/06/09/%EC%BB%B4%ED%93%A8%ED%84%B0%EA%B5%AC%EC%A1%B0_%EB%A9%94%EB%AA%A8%EB%A6%AC%EA%B3%84%EC%B8%B5/index.html">
@@ -26,31 +30,22 @@
 <meta property="article:author" content="Suyan Kim">
 <meta property="article:tag" content="computer_science">
 <meta name="twitter:card" content="summary">
-    
-    
-        
-    
-    
-        <meta property="og:image" content="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=640"/>
-    
-    
-    
-    
-    <!--STYLES-->
-    
-<link rel="stylesheet" href="/assets/css/all.css">
-
-    
-<link rel="stylesheet" href="/assets/css/jquery.fancybox.css">
-
-    
-<link rel="stylesheet" href="/assets/css/thumbs.css">
-
-    
+                                        
+                                                
+                                                    
+                                                            
+                                                                
+                                                                    <meta property="og:image" content="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=640" />
+                                                                    
+                                                                            
+                                                                                    
+                                                                                            
+                                                                                                            <!--STYLES-->
+                                                                                                            
 <link rel="stylesheet" href="/assets/css/tranquilpeak.css">
 
-    <!--STYLES END-->
-    
+                                                                                                                <!--STYLES END-->
+                                                                                                                
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-158530470-1"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
@@ -61,13 +56,12 @@
     </script>
 
 
-    
+                                                                                                                    
 
-    
-        
-    
-</head>
-
+                                                                                                                        
+                                                                                                                            
+                                                                                                                                                
+    </head>
     <body>
         <div id="blog">
             <!-- Define author's picture -->
@@ -180,7 +174,7 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (7)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (9)</a></li>
                             
                         
                             
@@ -209,6 +203,10 @@
                         
                             
                                 <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Network/">☁️ Network (1)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-NodeJS/">☁️ NodeJS (1)</a></li>
                             
                         
                             
@@ -790,15 +788,6 @@
         
 <div id="cover" style="background-image:url('/assets/images/null');"></div>
         <!--SCRIPTS-->
-
-<script src="/assets/js/jquery.js"></script>
-
-
-<script src="/assets/js/jquery.fancybox.js"></script>
-
-
-<script src="/assets/js/thumbs.js"></script>
-
 
 <script src="/assets/js/tranquilpeak.js"></script>
 

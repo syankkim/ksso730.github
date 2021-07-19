@@ -1,0 +1,807 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="generator" content="동글씨">
+        <title>
+            Node JS 기본, 시작해보기 - 동글씨
+        </title>
+        <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+        <meta name="author" content="Suyan Kim">
+        
+                
+                        
+                            <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
+                            
+                                <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n💡 NodeJS 시작하기시작하기\n다음 설치환경이 선행되어 있음\nnvm 버전관리 모듈 설치\nnpm 12.14.1 버전 사용\n\n\n\n\n프로젝트 폴더에서 npm 초기화\n\n1&gt; npm init y\n\n\n아래 npm 모듈을 설치해본다.\n\n12&gt; npm install parcel-bundler -D&gt; npm install lodash\n\n\n📌  Parcel?\n\n꾸러미 라는 뜻을 가졌다. 짐을 싸듯이 객체를 싸는 클래스이다.\n쉽고 빠른 웹/앱 bundler.  (bundler: 여라 파일들을 하나의 파일로 묶어주어 네트워크의 응답속도를 빠르게 도와주고 파일 간의 병목현상을 줄여, 유지보수의 효율성 증가)\nParcel 은 파일 변화를 자동으로 감지하여 다시 빌드하고, 빠른 모듈 교체를 지원하는 내장 개발용 서버를 보유하고 있어, 신속한 개발을 가능하게 한다.\n\n\n\n📌  lodash?\n\n유틸리티 라이브러리로 array, collection, date, number, object등이 있으며, 데이터를 쉽게 다룰 수 있도록 도와준다.\n특히 자바스크립트 배열 내부의 객체들을 핸들링할 때 유용하다.\n자주 사용하는 기능 : filter, map, uniqBy etc…\n\n\npackage.json ?\npackage.json : 패키지 모듈 직접 관리\npackage-lock.json : 인스톨한 패키지들을 내부에서 자동으로 관리\n\n옵션 -D, –save-dev\n옵션 -D, –save-dev : devDependencies 에 설치됨\n개발할 때만 필요. 웹브라우저에서는 직접적으로 동작하지 않는다.\n\n\n\n브라우저에서 index.html 띄우기\ndev: index.html 을 기준으로 개발용으로만 활용\nbuild: index.html 을 기준으로 웹브라우저에서 동작시키는 용도\n\n1234&quot;scripts&quot;: &#123;   &quot;dev&quot;: &quot;parcel index.html&quot;,   &quot;build&quot;: &quot;parcel build index.html&quot; &#125;,\n\n\n터미널에서 명령어 사용, localhost:1234 접속\n\n1&gt; npm run dev\n\nlodash 모듈 사용\n아래 코드를 입력하고\n\n12345import _ from &#x27;lodash&#x27;;console.log(&#x27;hellow&#x27;);// lodash 모듈을 사용console.log(_.camelCase(&#x27;hello suyeon&#x27;));\n\n npm run dev 실행후 브라우저에서 접속하면 console에서 아래와 같이 적용된다.\n\n\n\n\n💡 유의적 버전 (Semantic Versioning) ;버전규칙\n^Major.Minor.Patch\n\n^ : Major 버전 안에서 가장 최신 버전으로 업데이트 가능\n해당 기호를 지우면 npm update 사용하여 업데이트 불가하다\n\n\nMajor : 기존 버전과 호환되지 않는 새로운 버전\nMinor : 기존 버전과 호환되는 새로운 기능이 추가된 버전\nPatch : 기존 버전과 호환되는 버그 및 오타 등이 수정된 버전\n\n\n버전 정보 확인\n\n\n1npm info lodash\n\n버전을 낮춰서 설치하기1npm install lodash@4.17.20\n\n💡 프로젝트 버전 관리 NPM패키지 재설치 (package.json)\nnode_mudule 폴더를 지우더라도 npm -i 를 통해서 다시 설치 가능 (.cache, dist도 마찬가지)\n\n.gitignore 생성하여 버전관리 제외\n버전관리가 불필요한 파일들을 .gitignore 에 추가하여 제외할 수 있다.\n\n123.cache/distnode_modules/\n\n\ngit status 명령어로 확인, .gitignore 에 추가한 파일은 올라가지 않는다.\n\n","dateCreated":"2021-07-04T17:51:11+09:00","dateModified":"2021-07-19T09:39:14+09:00","datePublished":"2021-07-04T17:51:11+09:00","description":"parcel bundler를 이용하여 웹에 index.html을 띄워본다.버전관리, package.json 등의 의미#nvm #npm #parcel","headline":"Node JS 기본, 시작해보기","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2021/07/04/nodejs-start/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2021/07/04/nodejs-start/","keywords":"nodejs"}</script>
+                                    <meta name="description" content="parcel bundler를 이용하여 웹에 index.html을 띄워본다.버전관리, package.json 등의 의미#nvm #npm #parcel">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="Node JS 기본, 시작해보기">
+<meta property="og:url" content="http://yoursite.com/2021/07/04/nodejs-start/index.html">
+<meta property="og:site_name" content="동글씨">
+<meta property="og:description" content="parcel bundler를 이용하여 웹에 index.html을 띄워본다.버전관리, package.json 등의 의미#nvm #npm #parcel">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://user-images.githubusercontent.com/28856435/124388083-14a34800-dd1c-11eb-8d2a-2e04b337845e.PNG">
+<meta property="og:image" content="https://user-images.githubusercontent.com/28856435/124389250-4834a100-dd21-11eb-8a41-c59cb9e7c3d2.PNG">
+<meta property="article:published_time" content="2021-07-04T08:51:11.000Z">
+<meta property="article:modified_time" content="2021-07-19T00:39:14.202Z">
+<meta property="article:author" content="Suyan Kim">
+<meta property="article:tag" content="nodejs">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://user-images.githubusercontent.com/28856435/124388083-14a34800-dd1c-11eb-8d2a-2e04b337845e.PNG">
+                                        
+                                                
+                                                    
+                                                            
+                                                                
+                                                                    <meta property="og:image" content="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=640" />
+                                                                    
+                                                                            
+                                                                                    
+                                                                                            
+                                                                                                            <!--STYLES-->
+                                                                                                            
+<link rel="stylesheet" href="/assets/css/tranquilpeak.css">
+
+                                                                                                                <!--STYLES END-->
+                                                                                                                
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-158530470-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-158530470-1');
+    </script>
+
+
+                                                                                                                    
+
+                                                                                                                        
+                                                                                                                            
+                                                                                                                                                
+    </head>
+    <body>
+        <div id="blog">
+            <!-- Define author's picture -->
+
+
+    
+        
+    
+
+<header id="header" data-behavior="4">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <div class="header-title">
+        <a
+            class="header-title-link"
+            href="/index.html"
+            aria-label=""
+        >
+            동글씨
+        </a>
+    </div>
+    
+        
+            <a
+                class="header-right-picture "
+                href="#about"
+                aria-label="Open the link: /#about"
+            >
+        
+        
+            <img class="header-picture" src="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=90" alt="Author&#39;s picture"/>
+        
+        </a>
+    
+</header>
+
+            <!-- function -->
+
+
+<!-- Define author's picture -->
+
+
+    
+
+<nav id="sidebar" data-behavior="4">
+    <div class="sidebar-container">
+        
+            <div class="sidebar-profile">
+                <a
+                    href="/#about"
+                    aria-label="Read more about the author"
+                >
+                    <img class="sidebar-profile-picture" src="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=800" alt="Author&#39;s picture"/>
+                </a>
+                <h4 class="sidebar-profile-name">Suyan Kim</h4>
+                
+                    <h5 class="sidebar-profile-bio"><p>▲ Who Am I</p>
+</h5>
+                
+            </div>
+        
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="home"href="/index.html"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-home" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">home</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="archives"href="/all-archives"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-archive" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">archives</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="categories"href="/all-categories"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-bookmark" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">categories</span>
+                        </a>
+                    <!-- add -->
+                    
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-AWS/">☁️ AWS (0)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (9)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Config/">☁️ Config (2)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-DataBase/">☁️ DataBase (1)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Git/">☁️ Git (3)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-JPA/">☁️ JPA (10)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Java/">☁️ Java (0)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Linux/">☁️ Linux (6)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Network/">☁️ Network (1)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-NodeJS/">☁️ NodeJS (1)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-OS/">☁️ OS (14)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Python/">☁️ Python (2)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-React/">☁️ React (3)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Spring/">☁️ Spring (1)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-TIL/">☁️ TIL (9)</a></li>
+                            
+                        
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="tags"href="/all-tags"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-tags" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">tags</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="about"href="#about"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-question" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">about</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="https://github.com/ksso730" target="_blank" rel="noopener" title="github">
+                    
+                    <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">github</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="https://www.instagram.com/syankkim/" target="_blank" rel="noopener" title="life">
+                    
+                    <i class="sidebar-button-icon fab fa-instagram" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">life</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+        </ul>
+        
+    </div>
+</nav>
+
+            
+            <div id="main" data-behavior="4"
+                 class="
+                        hasCoverMetaIn
+                        ">
+                
+<article class="post">
+    
+    
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title">
+            Node JS 기본, 시작해보기
+        </h1>
+    
+    
+        <div class="post-meta">
+    <time datetime="2021-07-04T17:51:11+09:00">
+	
+		    Jul 04, 2021
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/%E2%98%81%EF%B8%8F-NodeJS/">☁️ NodeJS</a>
+
+
+    
+</div>
+
+    
+</div>
+
+    
+    <div class="post-content markdown">
+        <div class="main-content-wrap">
+            <!-- excerpt -->
+<h1 id="table-of-contents">Contents</h1><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%F0%9F%92%A1-NodeJS-%EC%8B%9C%EC%9E%91%ED%95%98%EA%B8%B0"><span class="toc-text">💡 NodeJS 시작하기</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%EC%8B%9C%EC%9E%91%ED%95%98%EA%B8%B0"><span class="toc-text">시작하기</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#package-json"><span class="toc-text">package.json ?</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%EC%98%B5%EC%85%98-D-%E2%80%93save-dev"><span class="toc-text">옵션 -D, –save-dev</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%EB%B8%8C%EB%9D%BC%EC%9A%B0%EC%A0%80%EC%97%90%EC%84%9C-index-html-%EB%9D%84%EC%9A%B0%EA%B8%B0"><span class="toc-text">브라우저에서 index.html 띄우기</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#lodash-%EB%AA%A8%EB%93%88-%EC%82%AC%EC%9A%A9"><span class="toc-text">lodash 모듈 사용</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%F0%9F%92%A1-%EC%9C%A0%EC%9D%98%EC%A0%81-%EB%B2%84%EC%A0%84-Semantic-Versioning-%EB%B2%84%EC%A0%84%EA%B7%9C%EC%B9%99"><span class="toc-text">💡 유의적 버전 (Semantic Versioning) ;버전규칙</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%EB%B2%84%EC%A0%84%EC%9D%84-%EB%82%AE%EC%B6%B0%EC%84%9C-%EC%84%A4%EC%B9%98%ED%95%98%EA%B8%B0"><span class="toc-text">버전을 낮춰서 설치하기</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%F0%9F%92%A1-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-%EB%B2%84%EC%A0%84-%EA%B4%80%EB%A6%AC-NPM"><span class="toc-text">💡 프로젝트 버전 관리 NPM</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%ED%8C%A8%ED%82%A4%EC%A7%80-%EC%9E%AC%EC%84%A4%EC%B9%98-package-json"><span class="toc-text">패키지 재설치 (package.json)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#gitignore-%EC%83%9D%EC%84%B1%ED%95%98%EC%97%AC-%EB%B2%84%EC%A0%84%EA%B4%80%EB%A6%AC-%EC%A0%9C%EC%99%B8"><span class="toc-text">.gitignore 생성하여 버전관리 제외</span></a></li></ol></li></ol>
+
+<h1 id="💡-NodeJS-시작하기"><a href="#💡-NodeJS-시작하기" class="headerlink" title="💡 NodeJS 시작하기"></a>💡 NodeJS 시작하기</h1><h2 id="시작하기"><a href="#시작하기" class="headerlink" title="시작하기"></a>시작하기</h2><ul>
+<li>다음 설치환경이 선행되어 있음<ul>
+<li>nvm 버전관리 모듈 설치</li>
+<li>npm 12.14.1 버전 사용</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>프로젝트 폴더에서 npm 초기화</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&gt; npm init y</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>아래 npm 모듈을 설치해본다.</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt; npm install parcel-bundler -D</span><br><span class="line">&gt; npm install lodash</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>📌  Parcel?</p>
+<ul>
+<li><code>꾸러미</code> 라는 뜻을 가졌다. 짐을 싸듯이 객체를 싸는 클래스이다.</li>
+<li>쉽고 빠른 웹/앱 bundler.<br>  (bundler: 여라 파일들을 하나의 파일로 묶어주어 네트워크의 응답속도를 빠르게 도와주고 파일 간의 병목현상을 줄여, 유지보수의 효율성 증가)</li>
+<li>Parcel 은 파일 변화를 자동으로 감지하여 다시 빌드하고, 빠른 모듈 교체를 지원하는 내장 개발용 서버를 보유하고 있어, 신속한 개발을 가능하게 한다.</li>
+</ul>
+</blockquote>
+<blockquote>
+<p>📌  lodash?</p>
+<ul>
+<li>유틸리티 라이브러리로 array, collection, date, number, object등이 있으며, 데이터를 쉽게 다룰 수 있도록 도와준다.</li>
+<li>특히 자바스크립트 배열 내부의 객체들을 핸들링할 때 유용하다.</li>
+<li>자주 사용하는 기능 : <code>filter</code>, <code>map</code>, <code>uniqBy</code> etc…</li>
+</ul>
+</blockquote>
+<h2 id="package-json"><a href="#package-json" class="headerlink" title="package.json ?"></a>package.json ?</h2><ul>
+<li>package.json : 패키지 모듈 직접 관리</li>
+<li>package-lock.json : 인스톨한 패키지들을 내부에서 자동으로 관리</li>
+</ul>
+<h2 id="옵션-D-–save-dev"><a href="#옵션-D-–save-dev" class="headerlink" title="옵션 -D, –save-dev"></a>옵션 -D, –save-dev</h2><ul>
+<li>옵션 -D, –save-dev : <code>devDependencies</code> 에 설치됨<ul>
+<li>개발할 때만 필요. 웹브라우저에서는 직접적으로 동작하지 않는다.</li>
+</ul>
+</li>
+</ul>
+<h2 id="브라우저에서-index-html-띄우기"><a href="#브라우저에서-index-html-띄우기" class="headerlink" title="브라우저에서 index.html 띄우기"></a>브라우저에서 index.html 띄우기</h2><ul>
+<li>dev: index.html 을 기준으로 <code>개발용</code>으로만 활용</li>
+<li>build: index.html 을 기준으로 <code>웹브라우저</code>에서 동작시키는 용도</li>
+</ul>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&quot;scripts&quot;</span>: &#123;</span><br><span class="line">   <span class="attr">&quot;dev&quot;</span>: <span class="string">&quot;parcel index.html&quot;</span>,</span><br><span class="line">   <span class="attr">&quot;build&quot;</span>: <span class="string">&quot;parcel build index.html&quot;</span></span><br><span class="line"> &#125;,</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>터미널에서 명령어 사용, localhost:1234 접속</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&gt; npm run dev</span><br></pre></td></tr></table></figure>
+
+<h2 id="lodash-모듈-사용"><a href="#lodash-모듈-사용" class="headerlink" title="lodash 모듈 사용"></a>lodash 모듈 사용</h2><ul>
+<li>아래 코드를 입력하고</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> _ <span class="keyword">from</span> <span class="string">&#x27;lodash&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">&#x27;hellow&#x27;</span>);</span><br><span class="line"><span class="comment">// lodash 모듈을 사용</span></span><br><span class="line"><span class="built_in">console</span>.log(_.camelCase(<span class="string">&#x27;hello suyeon&#x27;</span>));</span><br></pre></td></tr></table></figure>
+<ul>
+<li> <code>npm run dev</code> 실행후 브라우저에서 접속하면 console에서 아래와 같이 적용된다.<br><img src="https://user-images.githubusercontent.com/28856435/124388083-14a34800-dd1c-11eb-8d2a-2e04b337845e.PNG" alt="node1"></li>
+</ul>
+</br>
+
+<hr>
+<h1 id="💡-유의적-버전-Semantic-Versioning-버전규칙"><a href="#💡-유의적-버전-Semantic-Versioning-버전규칙" class="headerlink" title="💡 유의적 버전 (Semantic Versioning) ;버전규칙"></a>💡 유의적 버전 (Semantic Versioning) ;버전규칙</h1><ul>
+<li><p>^Major.Minor.Patch</p>
+<ul>
+<li>^ : Major 버전 안에서 가장 최신 버전으로 업데이트 가능<ul>
+<li>해당 기호를 지우면 <code>npm update</code> 사용하여 업데이트 불가하다</li>
+</ul>
+</li>
+<li>Major : 기존 버전과 호환되지 않는 새로운 버전</li>
+<li>Minor : 기존 버전과 호환되는 새로운 기능이 추가된 버전</li>
+<li>Patch : 기존 버전과 호환되는 버그 및 오타 등이 수정된 버전</li>
+</ul>
+</li>
+<li><p>버전 정보 확인</p>
+</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm info lodash</span><br></pre></td></tr></table></figure>
+
+<h2 id="버전을-낮춰서-설치하기"><a href="#버전을-낮춰서-설치하기" class="headerlink" title="버전을 낮춰서 설치하기"></a>버전을 낮춰서 설치하기</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install lodash@4.17.20</span><br></pre></td></tr></table></figure>
+<hr>
+<h1 id="💡-프로젝트-버전-관리-NPM"><a href="#💡-프로젝트-버전-관리-NPM" class="headerlink" title="💡 프로젝트 버전 관리 NPM"></a>💡 프로젝트 버전 관리 NPM</h1><h2 id="패키지-재설치-package-json"><a href="#패키지-재설치-package-json" class="headerlink" title="패키지 재설치 (package.json)"></a>패키지 재설치 (package.json)</h2><ul>
+<li>node_mudule 폴더를 지우더라도 <code>npm -i</code> 를 통해서 다시 설치 가능 (.cache, dist도 마찬가지)</li>
+</ul>
+<h2 id="gitignore-생성하여-버전관리-제외"><a href="#gitignore-생성하여-버전관리-제외" class="headerlink" title=".gitignore 생성하여 버전관리 제외"></a>.gitignore 생성하여 버전관리 제외</h2><ul>
+<li>버전관리가 불필요한 파일들을 .gitignore 에 추가하여 제외할 수 있다.</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">.cache/</span><br><span class="line">dist</span><br><span class="line">node_modules/</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>git status</code> 명령어로 확인, <code>.gitignore</code> 에 추가한 파일은 올라가지 않는다.</li>
+</ul>
+<p><img src="https://user-images.githubusercontent.com/28856435/124389250-4834a100-dd21-11eb-8a41-c59cb9e7c3d2.PNG" alt="nod2"></p>
+            
+
+
+        </div>
+    </div>
+    <div id="post-footer" class="post-footer main-content-wrap">
+        
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">TAGGED IN</span><br/>
+                
+    <a class="tag tag--primary tag--small t-none-link" href="/tags/nodejs/" rel="tag">nodejs</a>
+
+            </div>
+        
+        
+            <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2021/07/18/%ED%81%90-%EC%8A%A4%ED%83%9D/"
+                    data-tooltip="큐, 스택"
+                    aria-label="PREVIOUS: 큐, 스택"
+                >
+                    
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                    </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2021/06/23/python-postgresql-%EC%97%B0%EB%8F%99/"
+                    data-tooltip="python postgresql 연동"
+                    aria-label="NEXT: python postgresql 연동"
+                >
+                    
+                        <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a
+                class="post-action-btn btn btn--default btn-open-shareoptions"
+                href="#btn-open-shareoptions"
+                aria-label="Share this post"
+            >
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2021/07/04/nodejs-start/"
+                    title="Share on Facebook"
+                    aria-label="Share on Facebook"
+                >
+                    <i class="fab fa-facebook" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2021/07/04/nodejs-start/"
+                    title="Share on Twitter"
+                    aria-label="Share on Twitter"
+                >
+                    <i class="fab fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://plus.google.com/share?url=http://yoursite.com/2021/07/04/nodejs-start/"
+                    title="Share on Google+"
+                    aria-label="Share on Google+"
+                >
+                    <i class="fab fa-google-plus" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+                <li class="post-action">
+                    <a
+                        class="post-action-btn btn btn--default"
+                        href="#disqus_thread"
+                        aria-label="Leave a comment"
+                    >
+                        <i class="fa fa-comment"></i>
+                    </a>
+                </li>
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#table-of-contents" aria-label="Contents">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+        
+        
+            
+                <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+            
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2021 Suyan Kim. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2021/07/18/%ED%81%90-%EC%8A%A4%ED%83%9D/"
+                    data-tooltip="큐, 스택"
+                    aria-label="PREVIOUS: 큐, 스택"
+                >
+                    
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                    </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2021/06/23/python-postgresql-%EC%97%B0%EB%8F%99/"
+                    data-tooltip="python postgresql 연동"
+                    aria-label="NEXT: python postgresql 연동"
+                >
+                    
+                        <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a
+                class="post-action-btn btn btn--default btn-open-shareoptions"
+                href="#btn-open-shareoptions"
+                aria-label="Share this post"
+            >
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2021/07/04/nodejs-start/"
+                    title="Share on Facebook"
+                    aria-label="Share on Facebook"
+                >
+                    <i class="fab fa-facebook" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2021/07/04/nodejs-start/"
+                    title="Share on Twitter"
+                    aria-label="Share on Twitter"
+                >
+                    <i class="fab fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://plus.google.com/share?url=http://yoursite.com/2021/07/04/nodejs-start/"
+                    title="Share on Google+"
+                    aria-label="Share on Google+"
+                >
+                    <i class="fab fa-google-plus" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+                <li class="post-action">
+                    <a
+                        class="post-action-btn btn btn--default"
+                        href="#disqus_thread"
+                        aria-label="Leave a comment"
+                    >
+                        <i class="fa fa-comment"></i>
+                    </a>
+                </li>
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#table-of-contents" aria-label="Contents">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                
+    <div id="share-options-bar" class="share-options-bar" data-behavior="4">
+        <i id="btn-close-shareoptions" class="fa fa-times"></i>
+        <ul class="share-options">
+            
+                
+                
+                <li class="share-option">
+                    <a
+                        class="share-option-btn"
+                        target="new"
+                        href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2021/07/04/nodejs-start/"
+                        aria-label="Share on Facebook"
+                    >
+                        <i class="fab fa-facebook" aria-hidden="true"></i><span>Share on Facebook</span>
+                    </a>
+                </li>
+            
+                
+                
+                <li class="share-option">
+                    <a
+                        class="share-option-btn"
+                        target="new"
+                        href="https://twitter.com/intent/tweet?text=http://yoursite.com/2021/07/04/nodejs-start/"
+                        aria-label="Share on Twitter"
+                    >
+                        <i class="fab fa-twitter" aria-hidden="true"></i><span>Share on Twitter</span>
+                    </a>
+                </li>
+            
+                
+                
+                <li class="share-option">
+                    <a
+                        class="share-option-btn"
+                        target="new"
+                        href="https://plus.google.com/share?url=http://yoursite.com/2021/07/04/nodejs-start/"
+                        aria-label="Share on Google+"
+                    >
+                        <i class="fab fa-google-plus" aria-hidden="true"></i><span>Share on Google+</span>
+                    </a>
+                </li>
+            
+        </ul>
+    </div>
+
+
+            
+        </div>
+        
+
+
+    
+
+<div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-times"></i>
+        </div>
+        
+            <img id="about-card-picture" src="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=110" alt="Author&#39;s picture"/>
+        
+            <h4 id="about-card-name">Suyan Kim</h4>
+        <!--  -->
+            <!-- <div id="about-card-bio"><p>author.bio</p>
+</div> -->
+            <div id="about-card-bio">안녕하세요, 서버 백엔드 개발자 동글씨입니다.</div>
+        <!--  -->
+        <!--  -->
+            <div id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <!-- <p>Backend Developer</p>
+ -->
+                Backend Developer
+            </div>
+        <!--  -->
+        
+            <div id="about-card-location">
+                <i class="fa fa-map-marker-alt"></i>
+                <br/>
+                Korea
+            </div>
+        
+    </div>
+</div>
+
+        
+        
+<div id="cover" style="background-image:url('/assets/images/null');"></div>
+        <!--SCRIPTS-->
+
+<script src="/assets/js/tranquilpeak.js"></script>
+
+<!--SCRIPTS END-->
+
+
+    
+        <script>
+          var disqus_config = function() {
+            this.page.url = 'http://yoursite.com/2021/07/04/nodejs-start/';
+              
+            this.page.identifier = '2021/07/04/nodejs-start/';
+              
+          };
+          (function() {
+            var d = document, s = d.createElement('script');
+            var disqus_shortname = 'ksso730-github-io';
+            s.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+          })();
+        </script>
+    
+
+
+
+
+    </body>
+</html>

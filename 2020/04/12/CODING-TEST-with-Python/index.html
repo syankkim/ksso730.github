@@ -2,19 +2,23 @@
 <!DOCTYPE html>
 <html lang="en">
     
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="generator" content="동글씨">
-    <title>CODING TEST with Python - 동글씨</title>
-    <meta name="author" content="Suyan Kim">
-    
-    
-    
-        <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
-    
-    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\nReturn  n 정수를 받아서 각자리수의 합1234567891011121314151617181920212223#========================================================## 코딩 테스트#========================================================# 문제 설명# n 정수를 받아서 각자리수의 합을 구함 def substring(n):    sum = 0    num = str(n)    for i in range(0,len(num)):        print(&quot;i = &quot;+str(i))        cut= num[i:i+1]        print(&quot;num &#123;0&#125;=&gt; cut &#123;1&#125;&quot;.format(num, cut))        sum += cut        print(sum)    return sumdef solution(n):    answer = substring(n)    return answerprint(&quot;result : &quot; + str(solution(123)))\n\nReturn x부터 시작해 x씩 증가하는 숫자를 n개 지니는 리스트1234567891011121314151617#========================================================## 코딩 테스트#========================================================# 문제 설명# 함수 solution은 정수 x와 자연수 n을 입력 받아, x부터 시작해 x씩 증가하는 숫자를 n개 # 지니는 리스트를 리턴해야 합니다. 다음 제한 조건을 보고, 조건을 만족하는 함수, solution을 완성해주세요.# 제한 조건# x는 -10000000 이상, 10000000 이하인 정수입니다.# n은 1000 이하인 자연수입니다.def solution2(x, n):    answer= []    for i in range(1, n+1):        answer.append(x*i)        print(&quot;answer : &#123;0&#125;&quot;.format(answer))solution2(2, 5)\n\n각 문자열의 인덱스 n번째 글자기준 정렬1234567891011121314151617181920212223242526272829303132333435363738394041424344#========================================================## 코딩 테스트#========================================================# 문자열로 구성된 리스트 strings와, 정수 n이 주어졌을 때, 각 문자열의 인덱스 n번째 글자를 # 기준으로 오름차순 정렬하려 합니다. 예를 들어 strings가 [sun, bed, car]이고 n이 1이면 # 각 단어의 인덱스 1의 문자 u, e, a로 strings를 정렬합니다.# 제한 조건# strings는 길이 1 이상, 50이하인 배열입니다.# strings의 원소는 소문자 알파벳으로 이루어져 있습니다.# strings의 원소는 길이 1 이상, 100이하인 문자열입니다.# 모든 strings의 원소의 길이는 n보다 큽니다.# 인덱스 1의 문자가 같은 문자열이 여럿 일 경우, 사전순으로 앞선 문자열이 앞쪽에 위치합니다.# 입출력 예 1# sun, bed, car의 1번째 인덱스 값은 각각 u, e, a 입니다. 이를 기준으로 strings를 정렬하면 [car, bed, sun] 입니다.# 입출력 예 2# abce와 abcd, cdx의 2번째 인덱스 값은 c, c, x입니다. 따라서 정렬 후에는 cdx가 가장 뒤에 위치합니다. # abce와 abcd는 사전순으로 정렬하면 abcd가 우선하므로, 답은 [abcd, abce, cdx] 입니다.def makeArr(strings, n):    answer = []    tupList = []    for i in strings:        tmp = i[n:n+1]        tup = (i, tmp)        tupList.append(tup)        print(tupList)         # 기본 튜플 정렬         # key = lambda x : x[0]        # 1) 1번째 원소 정렬후 0번째 원소로 정렬        # key = lambda x : (x[1], x[0])        # 2) 1번째 원소 내림차순 정렬후 0번째 원소로 정렬        # key = lambda x : (-x[1], x[0])    tupList.sort(key = lambda x : (x[1],x[0]))    print(&quot;after sort&quot;)    print(tupList)    return answer    stringList = [&#x27;abcw&#x27;, &#x27;abce&#x27;, &#x27;cdx&#x27;]n = 2makeArr(stringList, n);","dateCreated":"2020-04-12T23:51:24+09:00","dateModified":"2021-04-28T15:21:58+09:00","datePublished":"2020-04-12T23:51:24+09:00","description":"📜 매일매일 코딩테스트 with 파이썬\n\n정수N 자릿수의 합\nX부터 X만큼 증가, N개를 저장하는 리스트\n배열내 갹 문자열의 인덱스 n번째 글자기준 정렬","headline":"CODING TEST with Python","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2020/04/12/CODING-TEST-with-Python/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2020/04/12/CODING-TEST-with-Python/","keywords":"python"}</script>
-    <meta name="description" content="📜 매일매일 코딩테스트 with 파이썬  정수N 자릿수의 합 X부터 X만큼 증가, N개를 저장하는 리스트 배열내 갹 문자열의 인덱스 n번째 글자기준 정렬">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="generator" content="동글씨">
+        <title>
+            CODING TEST with Python - 동글씨
+        </title>
+        <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+        <meta name="author" content="Suyan Kim">
+        
+                
+                        
+                            <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
+                            
+                                <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\nReturn  n 정수를 받아서 각자리수의 합1234567891011121314151617181920212223#========================================================## 코딩 테스트#========================================================# 문제 설명# n 정수를 받아서 각자리수의 합을 구함 def substring(n):    sum = 0    num = str(n)    for i in range(0,len(num)):        print(&quot;i = &quot;+str(i))        cut= num[i:i+1]        print(&quot;num &#123;0&#125;=&gt; cut &#123;1&#125;&quot;.format(num, cut))        sum += cut        print(sum)    return sumdef solution(n):    answer = substring(n)    return answerprint(&quot;result : &quot; + str(solution(123)))\n\nReturn x부터 시작해 x씩 증가하는 숫자를 n개 지니는 리스트1234567891011121314151617#========================================================## 코딩 테스트#========================================================# 문제 설명# 함수 solution은 정수 x와 자연수 n을 입력 받아, x부터 시작해 x씩 증가하는 숫자를 n개 # 지니는 리스트를 리턴해야 합니다. 다음 제한 조건을 보고, 조건을 만족하는 함수, solution을 완성해주세요.# 제한 조건# x는 -10000000 이상, 10000000 이하인 정수입니다.# n은 1000 이하인 자연수입니다.def solution2(x, n):    answer= []    for i in range(1, n+1):        answer.append(x*i)        print(&quot;answer : &#123;0&#125;&quot;.format(answer))solution2(2, 5)\n\n각 문자열의 인덱스 n번째 글자기준 정렬1234567891011121314151617181920212223242526272829303132333435363738394041424344#========================================================## 코딩 테스트#========================================================# 문자열로 구성된 리스트 strings와, 정수 n이 주어졌을 때, 각 문자열의 인덱스 n번째 글자를 # 기준으로 오름차순 정렬하려 합니다. 예를 들어 strings가 [sun, bed, car]이고 n이 1이면 # 각 단어의 인덱스 1의 문자 u, e, a로 strings를 정렬합니다.# 제한 조건# strings는 길이 1 이상, 50이하인 배열입니다.# strings의 원소는 소문자 알파벳으로 이루어져 있습니다.# strings의 원소는 길이 1 이상, 100이하인 문자열입니다.# 모든 strings의 원소의 길이는 n보다 큽니다.# 인덱스 1의 문자가 같은 문자열이 여럿 일 경우, 사전순으로 앞선 문자열이 앞쪽에 위치합니다.# 입출력 예 1# sun, bed, car의 1번째 인덱스 값은 각각 u, e, a 입니다. 이를 기준으로 strings를 정렬하면 [car, bed, sun] 입니다.# 입출력 예 2# abce와 abcd, cdx의 2번째 인덱스 값은 c, c, x입니다. 따라서 정렬 후에는 cdx가 가장 뒤에 위치합니다. # abce와 abcd는 사전순으로 정렬하면 abcd가 우선하므로, 답은 [abcd, abce, cdx] 입니다.def makeArr(strings, n):    answer = []    tupList = []    for i in strings:        tmp = i[n:n+1]        tup = (i, tmp)        tupList.append(tup)        print(tupList)         # 기본 튜플 정렬         # key = lambda x : x[0]        # 1) 1번째 원소 정렬후 0번째 원소로 정렬        # key = lambda x : (x[1], x[0])        # 2) 1번째 원소 내림차순 정렬후 0번째 원소로 정렬        # key = lambda x : (-x[1], x[0])    tupList.sort(key = lambda x : (x[1],x[0]))    print(&quot;after sort&quot;)    print(tupList)    return answer    stringList = [&#x27;abcw&#x27;, &#x27;abce&#x27;, &#x27;cdx&#x27;]n = 2makeArr(stringList, n);","dateCreated":"2020-04-12T23:51:24+09:00","dateModified":"2021-04-28T15:21:58+09:00","datePublished":"2020-04-12T23:51:24+09:00","description":"📜 매일매일 코딩테스트 with 파이썬\n\n정수N 자릿수의 합\nX부터 X만큼 증가, N개를 저장하는 리스트\n배열내 갹 문자열의 인덱스 n번째 글자기준 정렬","headline":"CODING TEST with Python","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2020/04/12/CODING-TEST-with-Python/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2020/04/12/CODING-TEST-with-Python/","keywords":"python"}</script>
+                                    <meta name="description" content="📜 매일매일 코딩테스트 with 파이썬  정수N 자릿수의 합 X부터 X만큼 증가, N개를 저장하는 리스트 배열내 갹 문자열의 인덱스 n번째 글자기준 정렬">
 <meta property="og:type" content="blog">
 <meta property="og:title" content="CODING TEST with Python">
 <meta property="og:url" content="http://yoursite.com/2020/04/12/CODING-TEST-with-Python/index.html">
@@ -26,31 +30,22 @@
 <meta property="article:author" content="Suyan Kim">
 <meta property="article:tag" content="python">
 <meta name="twitter:card" content="summary">
-    
-    
-        
-    
-    
-        <meta property="og:image" content="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=640"/>
-    
-    
-    
-    
-    <!--STYLES-->
-    
-<link rel="stylesheet" href="/assets/css/all.css">
-
-    
-<link rel="stylesheet" href="/assets/css/jquery.fancybox.css">
-
-    
-<link rel="stylesheet" href="/assets/css/thumbs.css">
-
-    
+                                        
+                                                
+                                                    
+                                                            
+                                                                
+                                                                    <meta property="og:image" content="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=640" />
+                                                                    
+                                                                            
+                                                                                    
+                                                                                            
+                                                                                                            <!--STYLES-->
+                                                                                                            
 <link rel="stylesheet" href="/assets/css/tranquilpeak.css">
 
-    <!--STYLES END-->
-    
+                                                                                                                <!--STYLES END-->
+                                                                                                                
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-158530470-1"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
@@ -61,13 +56,12 @@
     </script>
 
 
-    
+                                                                                                                    
 
-    
-        
-    
-</head>
-
+                                                                                                                        
+                                                                                                                            
+                                                                                                                                                
+    </head>
     <body>
         <div id="blog">
             <!-- Define author's picture -->
@@ -180,7 +174,7 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (7)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (9)</a></li>
                             
                         
                             
@@ -209,6 +203,10 @@
                         
                             
                                 <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Network/">☁️ Network (1)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-NodeJS/">☁️ NodeJS (1)</a></li>
                             
                         
                             
@@ -684,15 +682,6 @@
         
 <div id="cover" style="background-image:url('/assets/images/null');"></div>
         <!--SCRIPTS-->
-
-<script src="/assets/js/jquery.js"></script>
-
-
-<script src="/assets/js/jquery.fancybox.js"></script>
-
-
-<script src="/assets/js/thumbs.js"></script>
-
 
 <script src="/assets/js/tranquilpeak.js"></script>
 

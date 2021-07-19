@@ -2,19 +2,23 @@
 <!DOCTYPE html>
 <html lang="en">
     
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="generator" content="동글씨">
-    <title>✅ 프로세스 상태 기반 스케줄링 - 동글씨</title>
-    <meta name="author" content="Suyan Kim">
-    
-    
-    
-        <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
-    
-    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\n💬 해당 강의는 fastcampus 에서 ‘컴공 전공자 따라잡기 온라인 완주반’ 강의를 들으며 스스로의 학습을 위해 작성한 포스팅입니다. 문제가 된다면 연락 부탁드립니다.\n\n\n멀티 프로그래밍과 Wait\n멀티 프로그래밍 : CPU 활용도를 극대화하는 스케줄링 알고리즘\nWait : 예를 들면 I/O 장치나 저장매체로부터 파일 읽기를 기다리는 시간.\n\n프로세스 상태기반 알고리즘\n여러 프로그램을 스케줄링 할 때 어떤 프로세스를 CPU 에 던져줄지 정하기위해 프로세스 상태를 확인한다.\n프로세스 상태 큐\nRaady State Queue\nRaady State Queue\nRaady State Queue\n프로세스 주요 상태 (실제로는 더 세세하게 쪼개놓았다고 한다.)\nready state : CPU 에서 실행 가능상태 (실행 대기)\nrunning state : 현재 CPU 에서 실행 상태\nblock state = wait : 특정 이벤트 발생 대기 상태 (eg. 저장매체에서 파일읽기가 종료되기를 기다리는 시간)\nidle state : CPU 가 활용되지 않는 상태 (모든 프로세스 wait)\n\n프로세스 상태 관계\nraady, running, block states\n\n\n\n\n상태\n설명\n\n\n\nRunning -&gt; Block\nProcess blocks for input (특정 이벤트 대기)\n\n\nBlock -&gt; Ready\nProcess becomes available\n\n\nReady -&gt; Running\nScheduler picks another process\n\n\nRunning -&gt; Ready\nScheduler picks this process\n\n\n\n\n\n프로세스 상태기반 알고리즘 예시\n아래 그림이 조금 혼란스러울 수 있지만, 한 칸을 1초 라고 가정하여 상태기반 알고리즘이이 어떻게 수행되는지 순차적으로 그려보았다.각 프로그램이 수행할 프로세스는 Queue 로 설명된다.FIFO 기법에 따라 순차적으로 pop() 되어 CPU 로 넘어간다. 그 프로세스는 running 상태.해당 프로세스가 wait 라면 block 상태. 작업을 마친 프로세스는 종료되고, 남아있다면 다시 ready 로 넘어간다.수행해야할 프로세스가 남아있지만, 해당 시간에 수행될 프로세스가 없다면, (모두 block 상태) 그 때 CPU 는 Idle 상태이다.\n\n","dateCreated":"2021-05-05T20:40:25+09:00","dateModified":"2021-05-12T17:45:31+09:00","datePublished":"2021-05-05T20:40:25+09:00","description":"프로세스 주요 상태와 프로세스 상태에 따른 스케줄링 기법.#algorithm_by #process_state","headline":"✅ 프로세스 상태 기반 스케줄링","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2021/05/05/%ED%94%84%EB%A1%9C%EC%84%B8%EC%8A%A4%EC%83%81%ED%83%9C%EC%99%80_%EC%8A%A4%EC%BC%80%EC%A4%84%EB%A7%81/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2021/05/05/%ED%94%84%EB%A1%9C%EC%84%B8%EC%8A%A4%EC%83%81%ED%83%9C%EC%99%80_%EC%8A%A4%EC%BC%80%EC%A4%84%EB%A7%81/","keywords":"OS, algorithm"}</script>
-    <meta name="description" content="프로세스 주요 상태와 프로세스 상태에 따른 스케줄링 기법.#algorithm_by #process_state">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="generator" content="동글씨">
+        <title>
+            ✅ 프로세스 상태 기반 스케줄링 - 동글씨
+        </title>
+        <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+        <meta name="author" content="Suyan Kim">
+        
+                
+                        
+                            <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
+                            
+                                <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\n💬 해당 강의는 fastcampus 에서 ‘컴공 전공자 따라잡기 온라인 완주반’ 강의를 들으며 스스로의 학습을 위해 작성한 포스팅입니다. 문제가 된다면 연락 부탁드립니다.\n\n\n멀티 프로그래밍과 Wait\n멀티 프로그래밍 : CPU 활용도를 극대화하는 스케줄링 알고리즘\nWait : 예를 들면 I/O 장치나 저장매체로부터 파일 읽기를 기다리는 시간.\n\n프로세스 상태기반 알고리즘\n여러 프로그램을 스케줄링 할 때 어떤 프로세스를 CPU 에 던져줄지 정하기위해 프로세스 상태를 확인한다.\n프로세스 상태 큐\nRaady State Queue\nRaady State Queue\nRaady State Queue\n프로세스 주요 상태 (실제로는 더 세세하게 쪼개놓았다고 한다.)\nready state : CPU 에서 실행 가능상태 (실행 대기)\nrunning state : 현재 CPU 에서 실행 상태\nblock state = wait : 특정 이벤트 발생 대기 상태 (eg. 저장매체에서 파일읽기가 종료되기를 기다리는 시간)\nidle state : CPU 가 활용되지 않는 상태 (모든 프로세스 wait)\n\n프로세스 상태 관계\nraady, running, block states\n\n\n\n\n상태\n설명\n\n\n\nRunning -&gt; Block\nProcess blocks for input (특정 이벤트 대기)\n\n\nBlock -&gt; Ready\nProcess becomes available\n\n\nReady -&gt; Running\nScheduler picks another process\n\n\nRunning -&gt; Ready\nScheduler picks this process\n\n\n\n\n\n프로세스 상태기반 알고리즘 예시\n아래 그림이 조금 혼란스러울 수 있지만, 한 칸을 1초 라고 가정하여 상태기반 알고리즘이이 어떻게 수행되는지 순차적으로 그려보았다.각 프로그램이 수행할 프로세스는 Queue 로 설명된다.FIFO 기법에 따라 순차적으로 pop() 되어 CPU 로 넘어간다. 그 프로세스는 running 상태.해당 프로세스가 wait 라면 block 상태. 작업을 마친 프로세스는 종료되고, 남아있다면 다시 ready 로 넘어간다.수행해야할 프로세스가 남아있지만, 해당 시간에 수행될 프로세스가 없다면, (모두 block 상태) 그 때 CPU 는 Idle 상태이다.\n\n","dateCreated":"2021-05-05T20:40:25+09:00","dateModified":"2021-05-12T17:45:31+09:00","datePublished":"2021-05-05T20:40:25+09:00","description":"프로세스 주요 상태와 프로세스 상태에 따른 스케줄링 기법.#algorithm_by #process_state","headline":"✅ 프로세스 상태 기반 스케줄링","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2021/05/05/%ED%94%84%EB%A1%9C%EC%84%B8%EC%8A%A4%EC%83%81%ED%83%9C%EC%99%80_%EC%8A%A4%EC%BC%80%EC%A4%84%EB%A7%81/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2021/05/05/%ED%94%84%EB%A1%9C%EC%84%B8%EC%8A%A4%EC%83%81%ED%83%9C%EC%99%80_%EC%8A%A4%EC%BC%80%EC%A4%84%EB%A7%81/","keywords":"OS, algorithm"}</script>
+                                    <meta name="description" content="프로세스 주요 상태와 프로세스 상태에 따른 스케줄링 기법.#algorithm_by #process_state">
 <meta property="og:type" content="blog">
 <meta property="og:title" content="✅ 프로세스 상태 기반 스케줄링">
 <meta property="og:url" content="http://yoursite.com/2021/05/05/%ED%94%84%EB%A1%9C%EC%84%B8%EC%8A%A4%EC%83%81%ED%83%9C%EC%99%80_%EC%8A%A4%EC%BC%80%EC%A4%84%EB%A7%81/index.html">
@@ -29,31 +33,22 @@
 <meta property="article:tag" content="algorithm">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://user-images.githubusercontent.com/28856435/117147563-541ee800-adf0-11eb-95f2-40182e617062.png">
-    
-    
-        
-    
-    
-        <meta property="og:image" content="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=640"/>
-    
-    
-    
-    
-    <!--STYLES-->
-    
-<link rel="stylesheet" href="/assets/css/all.css">
-
-    
-<link rel="stylesheet" href="/assets/css/jquery.fancybox.css">
-
-    
-<link rel="stylesheet" href="/assets/css/thumbs.css">
-
-    
+                                        
+                                                
+                                                    
+                                                            
+                                                                
+                                                                    <meta property="og:image" content="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=640" />
+                                                                    
+                                                                            
+                                                                                    
+                                                                                            
+                                                                                                            <!--STYLES-->
+                                                                                                            
 <link rel="stylesheet" href="/assets/css/tranquilpeak.css">
 
-    <!--STYLES END-->
-    
+                                                                                                                <!--STYLES END-->
+                                                                                                                
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-158530470-1"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
@@ -64,13 +59,12 @@
     </script>
 
 
-    
+                                                                                                                    
 
-    
-        
-    
-</head>
-
+                                                                                                                        
+                                                                                                                            
+                                                                                                                                                
+    </head>
     <body>
         <div id="blog">
             <!-- Define author's picture -->
@@ -183,7 +177,7 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (7)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (9)</a></li>
                             
                         
                             
@@ -212,6 +206,10 @@
                         
                             
                                 <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Network/">☁️ Network (1)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-NodeJS/">☁️ NodeJS (1)</a></li>
                             
                         
                             
@@ -736,15 +734,6 @@
         
 <div id="cover" style="background-image:url('/assets/images/null');"></div>
         <!--SCRIPTS-->
-
-<script src="/assets/js/jquery.js"></script>
-
-
-<script src="/assets/js/jquery.fancybox.js"></script>
-
-
-<script src="/assets/js/thumbs.js"></script>
-
 
 <script src="/assets/js/tranquilpeak.js"></script>
 

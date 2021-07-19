@@ -2,19 +2,23 @@
 <!DOCTYPE html>
 <html lang="en">
     
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="generator" content="동글씨">
-    <title>React 입문해보자 - 동글씨</title>
-    <meta name="author" content="Suyan Kim">
-    
-    
-    
-        <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
-    
-    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\nReact ?\nVirtualDom리액트가 관리하는 가상 DOM. (브라우저의 DOM과 별도)\n\n페이지 내 내용이 변경되면 VirtualDom 은 차이가 있는 부분을 확인한다.\n자체적으로 변경된 부분만 찾아서 Reflow(재렌더링) 한다.\n\n\nJSX (JavaScript+XML)자바스크립트를 확장한 프로그래밍 언어.\n장점?\n\nComponent 를 사용하여 속도가 빠르다.\nreact-dom 이라는 가상돔에서 만든다.\n\n단점?\n\n단방향, 데이터를 바꿀 때 전체(최상위)를 바꿔야 함. -개선된것 Redux\nfunction 기반은 전역변수 사용이 어렵다. -개선 Hooks (속성으로 넘기기힘듦 - UserState: state를 자유자재로 쓸수있음)\n\n설치리액트를 사용하기위해 아래 순서대로 설치를 진행해준다.\n1. Node.js 설치\n2. React 설치\n1C:\\Users\\sist27&gt;npm install -g create-react-app\n\n3. WebStorm 설치 (편집기)\n\nReact 프로젝트 생성/실행 with WebStorm\n\n\nNew Project 생성 후 (왼쪽 사이드바에 React App 선택)\n\nApp.js 에서 약간의 수정이후 터미널에서 npm start 를 실행한다.\n\npackage.json 의 dependencies 에 axios 버전을 추가해준다.\n\n\n123&quot;axios&quot;: &quot;^0.19.2&quot;\n\n\nComponent 기본 형식 [class 기반, function 기반]\nclass 기반 : 생명주기가 있음\n\n1234567891011121314class App extends Component&#123;    constructor()&#123;&#125;    // 화면에 불러오기 전 (데이터 받기전)    componentWillMount()    // 화면 출력을 읽는 데이터 (데이터 받음)    render()&#123;&#125;    // 화면을 출력 (onLoad() 와 비슷)    componentDidMount()    //javaScript onLoad() 방식은 아래와 같음.    componentDidMount() =&gt; $(function()&#123;&#125;)        $(document).ready(function()&#123;&#125;)        window.onload=function()&#123;&#125;&#125;\n\n\nfunction : 생명주기가 없음 -&gt; Data를 넘겨주는 방식 -&gt; 그런데 어려움 -&gt; Hooks 사용\n\n1234567function App()&#123;    return&#123;        &lt;html&gt;        &lt;/html&gt;    )&#125;\n\nJSX 형식\n반드시 계층구조를 만든다.\n\n123&lt;div&gt;Hello&lt;/div&gt;&lt;div&gt;React&lt;/div&gt;//- Error\n12345/* 계층구조로 아래와 같이 */&lt;div&gt;  \t&lt;div&gt;Hello&lt;/div&gt;\t&lt;div&gt;React&lt;/div&gt;&lt;/div&gt;\n\nHTML 태그는 반드시 소문자1&lt;Html&gt; =&gt; //- Error\n속성은 반드시 “”1&lt;table width=&quot;100&quot;&gt;\n1&lt;table width=100&gt; //- Error\n","dateCreated":"2020-05-24T22:21:00+09:00","dateModified":"2020-05-29T10:25:15+09:00","datePublished":"2020-05-24T22:21:00+09:00","description":"React 의 기본개념과 생명주기에 대해 알아봅니다.","headline":"React 입문해보자","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2020/05/24/React-start/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2020/05/24/React-start/","keywords":"react, node"}</script>
-    <meta name="description" content="React 의 기본개념과 생명주기에 대해 알아봅니다.">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="generator" content="동글씨">
+        <title>
+            React 입문해보자 - 동글씨
+        </title>
+        <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+        <meta name="author" content="Suyan Kim">
+        
+                
+                        
+                            <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
+                            
+                                <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\nReact ?\nVirtualDom리액트가 관리하는 가상 DOM. (브라우저의 DOM과 별도)\n\n페이지 내 내용이 변경되면 VirtualDom 은 차이가 있는 부분을 확인한다.\n자체적으로 변경된 부분만 찾아서 Reflow(재렌더링) 한다.\n\n\nJSX (JavaScript+XML)자바스크립트를 확장한 프로그래밍 언어.\n장점?\n\nComponent 를 사용하여 속도가 빠르다.\nreact-dom 이라는 가상돔에서 만든다.\n\n단점?\n\n단방향, 데이터를 바꿀 때 전체(최상위)를 바꿔야 함. -개선된것 Redux\nfunction 기반은 전역변수 사용이 어렵다. -개선 Hooks (속성으로 넘기기힘듦 - UserState: state를 자유자재로 쓸수있음)\n\n설치리액트를 사용하기위해 아래 순서대로 설치를 진행해준다.\n1. Node.js 설치\n2. React 설치\n1C:\\Users\\sist27&gt;npm install -g create-react-app\n\n3. WebStorm 설치 (편집기)\n\nReact 프로젝트 생성/실행 with WebStorm\n\n\nNew Project 생성 후 (왼쪽 사이드바에 React App 선택)\n\nApp.js 에서 약간의 수정이후 터미널에서 npm start 를 실행한다.\n\npackage.json 의 dependencies 에 axios 버전을 추가해준다.\n\n\n123&quot;axios&quot;: &quot;^0.19.2&quot;\n\n\nComponent 기본 형식 [class 기반, function 기반]\nclass 기반 : 생명주기가 있음\n\n1234567891011121314class App extends Component&#123;    constructor()&#123;&#125;    // 화면에 불러오기 전 (데이터 받기전)    componentWillMount()    // 화면 출력을 읽는 데이터 (데이터 받음)    render()&#123;&#125;    // 화면을 출력 (onLoad() 와 비슷)    componentDidMount()    //javaScript onLoad() 방식은 아래와 같음.    componentDidMount() =&gt; $(function()&#123;&#125;)        $(document).ready(function()&#123;&#125;)        window.onload=function()&#123;&#125;&#125;\n\n\nfunction : 생명주기가 없음 -&gt; Data를 넘겨주는 방식 -&gt; 그런데 어려움 -&gt; Hooks 사용\n\n1234567function App()&#123;    return&#123;        &lt;html&gt;        &lt;/html&gt;    )&#125;\n\nJSX 형식\n반드시 계층구조를 만든다.\n\n123&lt;div&gt;Hello&lt;/div&gt;&lt;div&gt;React&lt;/div&gt;//- Error\n12345/* 계층구조로 아래와 같이 */&lt;div&gt;  \t&lt;div&gt;Hello&lt;/div&gt;\t&lt;div&gt;React&lt;/div&gt;&lt;/div&gt;\n\nHTML 태그는 반드시 소문자1&lt;Html&gt; =&gt; //- Error\n속성은 반드시 “”1&lt;table width=&quot;100&quot;&gt;\n1&lt;table width=100&gt; //- Error\n","dateCreated":"2020-05-24T22:21:00+09:00","dateModified":"2020-05-29T10:25:15+09:00","datePublished":"2020-05-24T22:21:00+09:00","description":"React 의 기본개념과 생명주기에 대해 알아봅니다.","headline":"React 입문해보자","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2020/05/24/React-start/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2020/05/24/React-start/","keywords":"react, node"}</script>
+                                    <meta name="description" content="React 의 기본개념과 생명주기에 대해 알아봅니다.">
 <meta property="og:type" content="blog">
 <meta property="og:title" content="React 입문해보자">
 <meta property="og:url" content="http://yoursite.com/2020/05/24/React-start/index.html">
@@ -30,31 +34,22 @@
 <meta property="article:tag" content="node">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://user-images.githubusercontent.com/28856435/81461652-340e1600-91e8-11ea-838f-fc8db1b4fd87.png">
-    
-    
-        
-    
-    
-        <meta property="og:image" content="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=640"/>
-    
-    
-    
-    
-    <!--STYLES-->
-    
-<link rel="stylesheet" href="/assets/css/all.css">
-
-    
-<link rel="stylesheet" href="/assets/css/jquery.fancybox.css">
-
-    
-<link rel="stylesheet" href="/assets/css/thumbs.css">
-
-    
+                                        
+                                                
+                                                    
+                                                            
+                                                                
+                                                                    <meta property="og:image" content="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=640" />
+                                                                    
+                                                                            
+                                                                                    
+                                                                                            
+                                                                                                            <!--STYLES-->
+                                                                                                            
 <link rel="stylesheet" href="/assets/css/tranquilpeak.css">
 
-    <!--STYLES END-->
-    
+                                                                                                                <!--STYLES END-->
+                                                                                                                
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-158530470-1"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
@@ -65,13 +60,12 @@
     </script>
 
 
-    
+                                                                                                                    
 
-    
-        
-    
-</head>
-
+                                                                                                                        
+                                                                                                                            
+                                                                                                                                                
+    </head>
     <body>
         <div id="blog">
             <!-- Define author's picture -->
@@ -184,7 +178,7 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (7)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (9)</a></li>
                             
                         
                             
@@ -213,6 +207,10 @@
                         
                             
                                 <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Network/">☁️ Network (1)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-NodeJS/">☁️ NodeJS (1)</a></li>
                             
                         
                             
@@ -742,15 +740,6 @@
         
 <div id="cover" style="background-image:url('/assets/images/null');"></div>
         <!--SCRIPTS-->
-
-<script src="/assets/js/jquery.js"></script>
-
-
-<script src="/assets/js/jquery.fancybox.js"></script>
-
-
-<script src="/assets/js/thumbs.js"></script>
-
 
 <script src="/assets/js/tranquilpeak.js"></script>
 

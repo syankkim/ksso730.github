@@ -2,19 +2,23 @@
 <!DOCTYPE html>
 <html lang="en">
     
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="generator" content="동글씨">
-    <title>✅ 스케줄링 알고리즘 - 동글씨</title>
-    <meta name="author" content="Suyan Kim">
-    
-    
-    
-        <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
-    
-    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\n💬 해당 강의는 fastcampus 에서 ‘컴공 전공자 따라잡기 온라인 완주반’ 강의를 들으며 스스로의 학습을 위해 작성한 포스팅입니다. 문제가 된다면 연락 부탁드립니다.\n\n\n스케줄링 알고리즘\n어느 순서대로 프로세스를 실행할까?\n\n\n목표\n시분할 시스템: 프로세스 응답시간을 최소화.\n멀티 프로그래밍: CPU 활용도를 높여서 프로세스를 빨리 실행\n\n\n\n\n\n프로세스? (Process)\n메모리에 올려져서 실행중인 프로그램을 의미한다. : 폰노이만 구조\n작업, task, job 이라는 용어롸 혼용\n응용 프로그램 != 프로세스\n하나의 응용 프로그램은 여러개의 프로세스로가 상호작용하며 실행 할 수 있다.\n간단한 C/C++ 프로그램을 만든다면 ?\n하나의 프로세스를 갖는 여러 프로그램을 만들어, 서로 통신하며 프로그램을 작성 하는 방법도 있다. (IPC 기법)\n\n스케줄러와 프로세스\n스케줄러는 프로세스 실행을 관리한다.\n\n\nFIFO 스케줄러\n프로세스가 저장매체를 읽거나 프린팅하는 작업 없이 CPU(프로세서)를 온전히 사용.\n\n\n가장 간단한 스케줄러 (배치처리 시스템)\n=FCFS (First Come First Served)\n\n우선순위 기반 (SJF) 스케줄러\nSJF (Shortest Job First)\n수행시간이 가장 짧은 작업부터 처리\n\nPriority-Based 스케줄러\n정적 우선순위 : 프로세스마다 우선순위를 미리 지정\n동적 우선순위 : 스케줄러가 상황에 따라 우선순위를 동적으로 변경\nProcss [3(10), 2(20), 2(20), 2(20), 1(1)](괄호안 숫자는 미리 정한 우선순위)\nCPU 처리 순서\n2 (20) -&gt; 2 (20) -&gt; 2 (20) -&gt; 3 (10) -&gt; 1 (1)\n\nRound Robin 스케줄러\nRR이라고 이야기 하기도 한다.\n시분할 시스템을 위해 설계된 스케줄링 중 하나이며\n프로세스들의 우선순위를 신경쓰지 않습니다.\n다만 시분할 시스템처럼 최초 요청부터 순서대로 프로세서들에게 일정한 시간단위로 공평하게 CPU를 할당.\n순서대로 공평하게 CPU를 할당해주기 때문에 그 시간에 프로세스가 완료되지 않을 경우 다시 뒤로 배치가 되서 차례를 기다린다.\nProcess [3, 3, 2, 2, 2, 1]\n\n\nRR Ready Queue\nCPU\n\n\n\n[3, 2, 1]\n[1]\n\n\n[3, 2]\n[1, 2]\n\n\n[2, 3]\n[1, 2, 3]\n\n\n[3, 2]\n[1, 2, 3, 2]\n\n\n[2, 3]\n[1, 2, 3, 2, 3]\n\n\n[2]\n[1, 2, 3, 2, 3, 2]\n\n\n\n\n\n\n\n[+] RTOS VS GPOS\nGeneral Purpose OS (GPOS):\n\n\n프로세스 실행시간에 민감하지 않고, 일반적으로 사용되는 OS : Windows, Linux\n\n\nRealTime OS (RTOS): 응용 프로그램 실시간 성능 보장을 목표로 하는 OS\n\n\n정확하게 프로그램 시작, 완료시간을 보장\nHardware RTOS, Software RTOS\n","dateCreated":"2021-05-04T23:40:25+09:00","dateModified":"2021-05-11T10:52:08+09:00","datePublished":"2021-05-04T23:40:25+09:00","description":"스케줄링 알고리즘의 기본 종류와 사용.scheduling_algorithm FIFO SJF","headline":"✅ 스케줄링 알고리즘","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2021/05/04/%EC%8A%A4%EC%BC%80%EC%A4%84%EB%A7%81-%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2021/05/04/%EC%8A%A4%EC%BC%80%EC%A4%84%EB%A7%81-%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98/","keywords":"OS, algorithm"}</script>
-    <meta name="description" content="스케줄링 알고리즘의 기본 종류와 사용.scheduling_algorithm FIFO SJF">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="generator" content="동글씨">
+        <title>
+            ✅ 스케줄링 알고리즘 - 동글씨
+        </title>
+        <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+        <meta name="author" content="Suyan Kim">
+        
+                
+                        
+                            <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
+                            
+                                <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\n💬 해당 강의는 fastcampus 에서 ‘컴공 전공자 따라잡기 온라인 완주반’ 강의를 들으며 스스로의 학습을 위해 작성한 포스팅입니다. 문제가 된다면 연락 부탁드립니다.\n\n\n스케줄링 알고리즘\n어느 순서대로 프로세스를 실행할까?\n\n\n목표\n시분할 시스템: 프로세스 응답시간을 최소화.\n멀티 프로그래밍: CPU 활용도를 높여서 프로세스를 빨리 실행\n\n\n\n\n\n프로세스? (Process)\n메모리에 올려져서 실행중인 프로그램을 의미한다. : 폰노이만 구조\n작업, task, job 이라는 용어롸 혼용\n응용 프로그램 != 프로세스\n하나의 응용 프로그램은 여러개의 프로세스로가 상호작용하며 실행 할 수 있다.\n간단한 C/C++ 프로그램을 만든다면 ?\n하나의 프로세스를 갖는 여러 프로그램을 만들어, 서로 통신하며 프로그램을 작성 하는 방법도 있다. (IPC 기법)\n\n스케줄러와 프로세스\n스케줄러는 프로세스 실행을 관리한다.\n\n\nFIFO 스케줄러\n프로세스가 저장매체를 읽거나 프린팅하는 작업 없이 CPU(프로세서)를 온전히 사용.\n\n\n가장 간단한 스케줄러 (배치처리 시스템)\n=FCFS (First Come First Served)\n\n우선순위 기반 (SJF) 스케줄러\nSJF (Shortest Job First)\n수행시간이 가장 짧은 작업부터 처리\n\nPriority-Based 스케줄러\n정적 우선순위 : 프로세스마다 우선순위를 미리 지정\n동적 우선순위 : 스케줄러가 상황에 따라 우선순위를 동적으로 변경\nProcss [3(10), 2(20), 2(20), 2(20), 1(1)](괄호안 숫자는 미리 정한 우선순위)\nCPU 처리 순서\n2 (20) -&gt; 2 (20) -&gt; 2 (20) -&gt; 3 (10) -&gt; 1 (1)\n\nRound Robin 스케줄러\nRR이라고 이야기 하기도 한다.\n시분할 시스템을 위해 설계된 스케줄링 중 하나이며\n프로세스들의 우선순위를 신경쓰지 않습니다.\n다만 시분할 시스템처럼 최초 요청부터 순서대로 프로세서들에게 일정한 시간단위로 공평하게 CPU를 할당.\n순서대로 공평하게 CPU를 할당해주기 때문에 그 시간에 프로세스가 완료되지 않을 경우 다시 뒤로 배치가 되서 차례를 기다린다.\nProcess [3, 3, 2, 2, 2, 1]\n\n\nRR Ready Queue\nCPU\n\n\n\n[3, 2, 1]\n[1]\n\n\n[3, 2]\n[1, 2]\n\n\n[2, 3]\n[1, 2, 3]\n\n\n[3, 2]\n[1, 2, 3, 2]\n\n\n[2, 3]\n[1, 2, 3, 2, 3]\n\n\n[2]\n[1, 2, 3, 2, 3, 2]\n\n\n\n\n\n\n\n[+] RTOS VS GPOS\nGeneral Purpose OS (GPOS):\n\n\n프로세스 실행시간에 민감하지 않고, 일반적으로 사용되는 OS : Windows, Linux\n\n\nRealTime OS (RTOS): 응용 프로그램 실시간 성능 보장을 목표로 하는 OS\n\n\n정확하게 프로그램 시작, 완료시간을 보장\nHardware RTOS, Software RTOS\n","dateCreated":"2021-05-04T23:40:25+09:00","dateModified":"2021-05-11T10:52:08+09:00","datePublished":"2021-05-04T23:40:25+09:00","description":"스케줄링 알고리즘의 기본 종류와 사용.scheduling_algorithm FIFO SJF","headline":"✅ 스케줄링 알고리즘","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2021/05/04/%EC%8A%A4%EC%BC%80%EC%A4%84%EB%A7%81-%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2021/05/04/%EC%8A%A4%EC%BC%80%EC%A4%84%EB%A7%81-%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98/","keywords":"OS, algorithm"}</script>
+                                    <meta name="description" content="스케줄링 알고리즘의 기본 종류와 사용.scheduling_algorithm FIFO SJF">
 <meta property="og:type" content="blog">
 <meta property="og:title" content="✅ 스케줄링 알고리즘">
 <meta property="og:url" content="http://yoursite.com/2021/05/04/%EC%8A%A4%EC%BC%80%EC%A4%84%EB%A7%81-%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98/index.html">
@@ -27,31 +31,22 @@
 <meta property="article:tag" content="OS">
 <meta property="article:tag" content="algorithm">
 <meta name="twitter:card" content="summary">
-    
-    
-        
-    
-    
-        <meta property="og:image" content="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=640"/>
-    
-    
-    
-    
-    <!--STYLES-->
-    
-<link rel="stylesheet" href="/assets/css/all.css">
-
-    
-<link rel="stylesheet" href="/assets/css/jquery.fancybox.css">
-
-    
-<link rel="stylesheet" href="/assets/css/thumbs.css">
-
-    
+                                        
+                                                
+                                                    
+                                                            
+                                                                
+                                                                    <meta property="og:image" content="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=640" />
+                                                                    
+                                                                            
+                                                                                    
+                                                                                            
+                                                                                                            <!--STYLES-->
+                                                                                                            
 <link rel="stylesheet" href="/assets/css/tranquilpeak.css">
 
-    <!--STYLES END-->
-    
+                                                                                                                <!--STYLES END-->
+                                                                                                                
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-158530470-1"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
@@ -62,13 +57,12 @@
     </script>
 
 
-    
+                                                                                                                    
 
-    
-        
-    
-</head>
-
+                                                                                                                        
+                                                                                                                            
+                                                                                                                                                
+    </head>
     <body>
         <div id="blog">
             <!-- Define author's picture -->
@@ -181,7 +175,7 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (7)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (9)</a></li>
                             
                         
                             
@@ -210,6 +204,10 @@
                         
                             
                                 <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Network/">☁️ Network (1)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-NodeJS/">☁️ NodeJS (1)</a></li>
                             
                         
                             
@@ -782,15 +780,6 @@
         
 <div id="cover" style="background-image:url('/assets/images/null');"></div>
         <!--SCRIPTS-->
-
-<script src="/assets/js/jquery.js"></script>
-
-
-<script src="/assets/js/jquery.fancybox.js"></script>
-
-
-<script src="/assets/js/thumbs.js"></script>
-
 
 <script src="/assets/js/tranquilpeak.js"></script>
 

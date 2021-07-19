@@ -2,19 +2,23 @@
 <!DOCTYPE html>
 <html lang="en">
     
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="generator" content="동글씨">
-    <title>스프링 시큐리티 OAuth 사용한 로그인 기능구현 - 동글씨</title>
-    <meta name="author" content="Suyan Kim">
-    
-    
-    
-        <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
-    
-    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\n\n\n스프링 시큐리티 Spring Security\n인증(Authentication)과 인가(Authorization) (권한부여)를 가진 프레임워크이다.\n\n\n2.0 버전에서 부터는 client 인증정보만 필요로 하게 되었다.\n\nGoogle Cloud Platform 에서 인증용 API 신청하기\n구글클라우드 플랫폼 에 접속하여 프로젝트를 생성한다. 여기서 발급된 인증정보 clientId, clientSecret 을 통해 스프링 시큐리티를 사용한 로그인 기능을 구현할 수 있다.\n\n생성된 프로젝트에서 OAuth 동의화면을 구성한다.\n웹 어플리케이션 유형의 사용자 인증정보를 만든다.\n아래와 같이 웹 어플리케이션의 클라이언트ID가 생성되었다.\n로그인 구현을 위한 설정build.gradle\n12345implementation &#x27;org.springframework.cloud:spring-cloud-starter-security:2.1.2.RELEASE&#x27;implementation &#x27;org.springframework.cloud:spring-cloud-starter-oauth2:2.1.2.RELEASE&#x27;compile(&#x27;org.springframework.security:spring-security-oauth2-client&#x27;)compile(&#x27;org.springframework.security:spring-security-oauth2-jose&#x27;)\n\n application-oauth.properties /src/main/resources/static/application-oauth.properties 파일을 추가한다.\n123spring.security.oauth2.client.registration.google.client-id=&#123;클라이언트 ID&#125;spring.security.oauth2.client.registration.google.client-secret=&#123;secret 코드&#125;spring.security.oauth2.client.registration.google.scope=profile,email\n\n.gitIgnore해당 설정파일을 gitIgnore 에 넣어준다.\n1application-oauth.properties\n\napplication.ymlinclude: oauth 를 추가한다.\n1234spring:  profiles:     active: local    include: oauth\n\n소셜 인증 구현하기ClientResources 클래스프로퍼티 설정을 편리하게 이용 할 수 있다.\n123456789101112131415public class ClientResources &#123;\t\t@NestedConfigurationProperty\tprivate AuthorizationCodeResourceDetails client = new AuthorizationCodeResourceDetails();\t@NestedConfigurationProperty\tprivate ResourceServerProperties resource = new ResourceServerProperties();\t\tpublic AuthorizationCodeResourceDetails geClient() &#123;\t\treturn client;\t&#125;\tpublic ResourceServerProperties getResource() &#123;\t\treturn resource;\t&#125;&#125;\n\n** 혹시나 AuthorizationCodeResourceDetails 이 추가되지 않으면 oauth2-autoconfigure 디펜던시가 필요하다.   build.gradle 에 아래와 같이 추가해준다.\n1compile &#x27;org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure:2.1.7.RELEASE&#x27;\n\nSecurityConfig 클래스 작성1234567891011@EnableWebSecurity@EnableOAuth2Clientpublic class SecurityConfig extends WebSecurityConfigAdapter()&#123;  @Bean  @ConfigurationProperties(&quot;google&quot;)  public ClientResources google()&#123;    return new ClientResources();  &#125;&#125;\n\n12345678// 인증 요청에 따른 리다이렉션을 위한 빈 등록@Beanpublic FilterRegistrationBean oauth2ClientFilterRegistration(OAuth2ClientContextFilter filter) &#123;\tFilterRegistrationBean registration = new FilterRegistrationBean();\tregistration.setFilter(filter);\tregistration.setOrder(-100); //Spring Security 필터보다 우선순위를 낮게 둔다.\treturn registration;&#125;\n\n\n123456789101112131415161718192021private Filter ssoFilter() &#123;\tCompositeFilter filter = new CompositeFilter();\tList&lt;Filter&gt; filters = new ArrayList&lt;Filter&gt;();\t\tfilters.add(ssoFilter(google(), &quot;/login/google&quot;));\tfilter.setFilters(filters);\treturn filter;&#125;private Filter ssoFilter(ClientResources client, String path) &#123;\t// OAuth2ClientAuthenticationProcessingFilter\t// -&gt; OAuth2 인증 서버에서 OAuth2 액세스 토큰을 획득.\t// -&gt; 인증 객체를 SecurityContext 에 로드하는 데 사용할 수 있는 OAuth2 클라이언트 필터\tOAuth2ClientAuthenticationProcessingFilter filter = new OAuth2ClientAuthenticationProcessingFilter(path);\tOAuth2RestTemplate restTemplate = new OAuth2RestTemplate(client.getClient(), oauth2ClientContext);\tfilter.setRestTemplate(restTemplate);\tUserInfoTokenServices tokenServices = \t\t\tnew UserInfoTokenServices(client.getResource().getUserInfoUri(), client.getClient().getClientId());\tfilter.setTokenServices(tokenServices);\treturn filter;&#125;","dateCreated":"2020-03-26T22:17:40+09:00","dateModified":"2020-04-28T10:36:01+09:00","datePublished":"2020-03-26T22:17:40+09:00","description":"🍃 SpringBoot, SpringSecurity, OAuth2 를 이용해 Google 로그인을 구현해 봅니다.","headline":"스프링 시큐리티 OAuth 사용한 로그인 기능구현","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2020/03/26/%EC%8A%A4%ED%94%84%EB%A7%81-%EC%8B%9C%ED%81%90%EB%A6%AC%ED%8B%B0%20%EB%A1%9C%EA%B7%B8%EC%9D%B8%EA%B5%AC%ED%98%84/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2020/03/26/%EC%8A%A4%ED%94%84%EB%A7%81-%EC%8B%9C%ED%81%90%EB%A6%AC%ED%8B%B0%20%EB%A1%9C%EA%B7%B8%EC%9D%B8%EA%B5%AC%ED%98%84/","keywords":"spring, OAuth2"}</script>
-    <meta name="description" content="🍃 SpringBoot, SpringSecurity, OAuth2 를 이용해 Google 로그인을 구현해 봅니다.">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="generator" content="동글씨">
+        <title>
+            스프링 시큐리티 OAuth 사용한 로그인 기능구현 - 동글씨
+        </title>
+        <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+        <meta name="author" content="Suyan Kim">
+        
+                
+                        
+                            <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
+                            
+                                <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\n\n\n스프링 시큐리티 Spring Security\n인증(Authentication)과 인가(Authorization) (권한부여)를 가진 프레임워크이다.\n\n\n2.0 버전에서 부터는 client 인증정보만 필요로 하게 되었다.\n\nGoogle Cloud Platform 에서 인증용 API 신청하기\n구글클라우드 플랫폼 에 접속하여 프로젝트를 생성한다. 여기서 발급된 인증정보 clientId, clientSecret 을 통해 스프링 시큐리티를 사용한 로그인 기능을 구현할 수 있다.\n\n생성된 프로젝트에서 OAuth 동의화면을 구성한다.\n웹 어플리케이션 유형의 사용자 인증정보를 만든다.\n아래와 같이 웹 어플리케이션의 클라이언트ID가 생성되었다.\n로그인 구현을 위한 설정build.gradle\n12345implementation &#x27;org.springframework.cloud:spring-cloud-starter-security:2.1.2.RELEASE&#x27;implementation &#x27;org.springframework.cloud:spring-cloud-starter-oauth2:2.1.2.RELEASE&#x27;compile(&#x27;org.springframework.security:spring-security-oauth2-client&#x27;)compile(&#x27;org.springframework.security:spring-security-oauth2-jose&#x27;)\n\n application-oauth.properties /src/main/resources/static/application-oauth.properties 파일을 추가한다.\n123spring.security.oauth2.client.registration.google.client-id=&#123;클라이언트 ID&#125;spring.security.oauth2.client.registration.google.client-secret=&#123;secret 코드&#125;spring.security.oauth2.client.registration.google.scope=profile,email\n\n.gitIgnore해당 설정파일을 gitIgnore 에 넣어준다.\n1application-oauth.properties\n\napplication.ymlinclude: oauth 를 추가한다.\n1234spring:  profiles:     active: local    include: oauth\n\n소셜 인증 구현하기ClientResources 클래스프로퍼티 설정을 편리하게 이용 할 수 있다.\n123456789101112131415public class ClientResources &#123;\t\t@NestedConfigurationProperty\tprivate AuthorizationCodeResourceDetails client = new AuthorizationCodeResourceDetails();\t@NestedConfigurationProperty\tprivate ResourceServerProperties resource = new ResourceServerProperties();\t\tpublic AuthorizationCodeResourceDetails geClient() &#123;\t\treturn client;\t&#125;\tpublic ResourceServerProperties getResource() &#123;\t\treturn resource;\t&#125;&#125;\n\n** 혹시나 AuthorizationCodeResourceDetails 이 추가되지 않으면 oauth2-autoconfigure 디펜던시가 필요하다.   build.gradle 에 아래와 같이 추가해준다.\n1compile &#x27;org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure:2.1.7.RELEASE&#x27;\n\nSecurityConfig 클래스 작성1234567891011@EnableWebSecurity@EnableOAuth2Clientpublic class SecurityConfig extends WebSecurityConfigAdapter()&#123;  @Bean  @ConfigurationProperties(&quot;google&quot;)  public ClientResources google()&#123;    return new ClientResources();  &#125;&#125;\n\n12345678// 인증 요청에 따른 리다이렉션을 위한 빈 등록@Beanpublic FilterRegistrationBean oauth2ClientFilterRegistration(OAuth2ClientContextFilter filter) &#123;\tFilterRegistrationBean registration = new FilterRegistrationBean();\tregistration.setFilter(filter);\tregistration.setOrder(-100); //Spring Security 필터보다 우선순위를 낮게 둔다.\treturn registration;&#125;\n\n\n123456789101112131415161718192021private Filter ssoFilter() &#123;\tCompositeFilter filter = new CompositeFilter();\tList&lt;Filter&gt; filters = new ArrayList&lt;Filter&gt;();\t\tfilters.add(ssoFilter(google(), &quot;/login/google&quot;));\tfilter.setFilters(filters);\treturn filter;&#125;private Filter ssoFilter(ClientResources client, String path) &#123;\t// OAuth2ClientAuthenticationProcessingFilter\t// -&gt; OAuth2 인증 서버에서 OAuth2 액세스 토큰을 획득.\t// -&gt; 인증 객체를 SecurityContext 에 로드하는 데 사용할 수 있는 OAuth2 클라이언트 필터\tOAuth2ClientAuthenticationProcessingFilter filter = new OAuth2ClientAuthenticationProcessingFilter(path);\tOAuth2RestTemplate restTemplate = new OAuth2RestTemplate(client.getClient(), oauth2ClientContext);\tfilter.setRestTemplate(restTemplate);\tUserInfoTokenServices tokenServices = \t\t\tnew UserInfoTokenServices(client.getResource().getUserInfoUri(), client.getClient().getClientId());\tfilter.setTokenServices(tokenServices);\treturn filter;&#125;","dateCreated":"2020-03-26T22:17:40+09:00","dateModified":"2020-04-28T10:36:01+09:00","datePublished":"2020-03-26T22:17:40+09:00","description":"🍃 SpringBoot, SpringSecurity, OAuth2 를 이용해 Google 로그인을 구현해 봅니다.","headline":"스프링 시큐리티 OAuth 사용한 로그인 기능구현","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2020/03/26/%EC%8A%A4%ED%94%84%EB%A7%81-%EC%8B%9C%ED%81%90%EB%A6%AC%ED%8B%B0%20%EB%A1%9C%EA%B7%B8%EC%9D%B8%EA%B5%AC%ED%98%84/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2020/03/26/%EC%8A%A4%ED%94%84%EB%A7%81-%EC%8B%9C%ED%81%90%EB%A6%AC%ED%8B%B0%20%EB%A1%9C%EA%B7%B8%EC%9D%B8%EA%B5%AC%ED%98%84/","keywords":"spring, OAuth2"}</script>
+                                    <meta name="description" content="🍃 SpringBoot, SpringSecurity, OAuth2 를 이용해 Google 로그인을 구현해 봅니다.">
 <meta property="og:type" content="blog">
 <meta property="og:title" content="스프링 시큐리티 OAuth 사용한 로그인 기능구현">
 <meta property="og:url" content="http://yoursite.com/2020/03/26/%EC%8A%A4%ED%94%84%EB%A7%81-%EC%8B%9C%ED%81%90%EB%A6%AC%ED%8B%B0%20%EB%A1%9C%EA%B7%B8%EC%9D%B8%EA%B5%AC%ED%98%84/index.html">
@@ -31,31 +35,22 @@
 <meta property="article:tag" content="OAuth2">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://user-images.githubusercontent.com/28856435/77653327-e1b7c380-6fb2-11ea-98bd-5ac9eb7393db.png">
-    
-    
-        
-    
-    
-        <meta property="og:image" content="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=640"/>
-    
-    
-    
-    
-    <!--STYLES-->
-    
-<link rel="stylesheet" href="/assets/css/all.css">
-
-    
-<link rel="stylesheet" href="/assets/css/jquery.fancybox.css">
-
-    
-<link rel="stylesheet" href="/assets/css/thumbs.css">
-
-    
+                                        
+                                                
+                                                    
+                                                            
+                                                                
+                                                                    <meta property="og:image" content="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=640" />
+                                                                    
+                                                                            
+                                                                                    
+                                                                                            
+                                                                                                            <!--STYLES-->
+                                                                                                            
 <link rel="stylesheet" href="/assets/css/tranquilpeak.css">
 
-    <!--STYLES END-->
-    
+                                                                                                                <!--STYLES END-->
+                                                                                                                
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-158530470-1"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
@@ -66,13 +61,12 @@
     </script>
 
 
-    
+                                                                                                                    
 
-    
-        
-    
-</head>
-
+                                                                                                                        
+                                                                                                                            
+                                                                                                                                                
+    </head>
     <body>
         <div id="blog">
             <!-- Define author's picture -->
@@ -185,7 +179,7 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (7)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (9)</a></li>
                             
                         
                             
@@ -214,6 +208,10 @@
                         
                             
                                 <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Network/">☁️ Network (1)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-NodeJS/">☁️ NodeJS (1)</a></li>
                             
                         
                             
@@ -723,15 +721,6 @@
         
 <div id="cover" style="background-image:url('/assets/images/null');"></div>
         <!--SCRIPTS-->
-
-<script src="/assets/js/jquery.js"></script>
-
-
-<script src="/assets/js/jquery.fancybox.js"></script>
-
-
-<script src="/assets/js/thumbs.js"></script>
-
 
 <script src="/assets/js/tranquilpeak.js"></script>
 

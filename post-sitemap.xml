@@ -8,6 +8,70 @@
     </url>
 
     <url>
+        <loc>http://yoursite.com/2020/03/16/gradle-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-MariaDB-%EC%97%B0%EB%8F%99/</loc>
+        <lastmod>2021-07-19T00:43:03.572Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>http://yoursite.com/2020/02/18/Maven-501-HTTPS-Required-%EC%97%90%EB%9F%AC/</loc>
+        <lastmod>2021-07-19T00:43:03.571Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>http://yoursite.com/2021/07/18/%ED%81%90-%EC%8A%A4%ED%83%9D/</loc>
+        <lastmod>2021-07-19T00:39:14.207Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>http://yoursite.com/2021/06/01/%EC%BB%B4%ED%93%A8%ED%84%B0%EA%B5%AC%EC%A1%B0_%EB%8D%B0%EC%9D%B4%ED%84%B0%EC%9D%98%EC%A2%85%EB%A5%98/</loc>
+        <lastmod>2021-07-19T00:39:14.206Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>http://yoursite.com/2021/07/19/%EB%A7%81%ED%81%AC%EB%93%9C%EB%A6%AC%EC%8A%A4%ED%8A%B8-%EA%B5%AC%ED%98%84/</loc>
+        <lastmod>2021-07-19T00:39:14.204Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>http://yoursite.com/2021/06/16/%EB%84%A4%ED%8A%B8%EC%9B%8C%ED%81%AC_%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%A7%81%ED%81%AC%EA%B3%84%EC%B8%B5/</loc>
+        <lastmod>2021-07-19T00:39:14.203Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>http://yoursite.com/2021/07/04/nodejs-start/</loc>
+        <lastmod>2021-07-19T00:39:14.202Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>http://yoursite.com/2021/06/23/python-postgresql-%EC%97%B0%EB%8F%99/</loc>
+        <lastmod>2021-06-30T08:17:37.007Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
         <loc>http://yoursite.com/2021/06/16/%EB%84%A4%ED%8A%B8%EC%9B%8C%ED%81%AC-OSI%EB%AA%A8%EB%8D%B8-%EB%AC%BC%EB%A6%AC%EA%B3%84%EC%B8%B5/</loc>
         <lastmod>2021-06-17T09:30:11.889Z</lastmod>
         <changefreq>weekly</changefreq>
@@ -50,14 +114,6 @@
     <url>
         <loc>http://yoursite.com/2021/06/03/CPU%EA%B5%AC%EC%A1%B0-%EB%A0%88%EC%A7%80%EC%8A%A4%ED%84%B0/</loc>
         <lastmod>2021-06-08T04:34:02.853Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>http://yoursite.com/2021/06/01/%EC%BB%B4%ED%93%A8%ED%84%B0%EA%B5%AC%EC%A1%B0_%EB%8D%B0%EC%9D%B4%ED%84%B0%EC%9D%98%EC%A2%85%EB%A5%98/</loc>
-        <lastmod>2021-06-03T09:31:07.434Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
 
@@ -432,14 +488,6 @@
     </url>
 
     <url>
-        <loc>http://yoursite.com/2020/03/16/gradle-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-MariaDB-%EC%97%B0%EB%8F%99/</loc>
-        <lastmod>2020-04-28T01:36:01.150Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
         <loc>http://yoursite.com/2020/02/17/SearchConsole-sitemap/</loc>
         <lastmod>2020-04-28T01:36:01.148Z</lastmod>
         <changefreq>weekly</changefreq>
@@ -466,14 +514,6 @@
     <url>
         <loc>http://yoursite.com/2020/02/20/Node-%EB%A1%9C-%EC%84%9C%EB%B2%84-%EC%83%9D%EC%84%B1%ED%95%98%EA%B8%B0/</loc>
         <lastmod>2020-04-28T01:36:01.146Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>http://yoursite.com/2020/02/18/Maven-501-HTTPS-Required-%EC%97%90%EB%9F%AC/</loc>
-        <lastmod>2020-04-28T01:36:01.145Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
 

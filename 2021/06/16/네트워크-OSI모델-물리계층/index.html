@@ -2,19 +2,23 @@
 <!DOCTYPE html>
 <html lang="en">
     
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="generator" content="동글씨">
-    <title>네트워크-OSI모델, 물리계층과 데이터링크계층 - 동글씨</title>
-    <meta name="author" content="Suyan Kim">
-    
-    
-    
-        <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
-    
-    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\nTCP/IP\n네트워크 프로토콜의 모음.패킷 통신 방식의 IP와전송 조절 프로토콜인 TCP로 이루어져 있다.\n\n\nTCP/IP &amp; OSI 7 Layer\n\n\n    \n        \n            TCP/IP\n            Service/Protocol\n            OSI 7Layer\n        \n    \n    \n        \n            Application\n            HTTP, SMTP, DNS\n            Application\n        \n        \n            Presentaition\n        \n        \n            Session\n        \n        \n          Transport\n          TCP, UDP\n          Transport\n        \n        \n          Network\n          IP, ICMP, OSPF\n          Network\n        \n        \n          Network Interface\n          Ethernet\n          Data Link\n        \n        \n          Physical\n        \n    \n\n\n\n\n\n물리계층\nOSI 7 Layer 1계층의 하드웨어\n\n\n네트워크 장치의 전기적, 기계적 속성과 전송하는 수단\n데이터 링크 계층 프레임 –&gt; (bit를 Signal 로 인코딩) –&gt; 네트워크 장치로 전송\n통신 장치와 커넥터, 인코딩(Bit to Signal), 송수신을 담당하는 회로 등의 요소 포함\n전송하는 수단인 Signaling(신호)은 전기, 광, 무선 등이 있다.\n\n물리계층 장비\n허브 &amp; 리피터\n허프는 전기신호를 증폭하여 포트에 연결된 PC들끼리 통신이 가능\n리피터는 현재 거의 쓰이지 않는다. 세기를 더 증폭하여 더 멀리까지 통신이 가능\n\n\n\n허브 동작방식\n허브는 브로드캐스팅 통신과 CSMA/CD 방식을 사용, Half Duplex 모드이다.\n\n\n브로드캐스팅 1 : All\n유니캐스트 1 : 1\n멀티캐스트 1 : N\n\nCSMA/CD\nCarrier Sense Multiple Access / Collision Detection\n\n\nCarrier Sensing: 데이터를 보내기 전에 다른 노드에서 데이터를 보내는 중인지 확인\nMultiple Access: 데이터를 보내는곳이 없으면 전송\nCollision Detection: 동시간대의 데이터 충돌 후 정지. 일정시간 이후 재동작\n\n전송방식\nSimplex: 단방향 통신으로 수신측은 송신척에 응답 불가\nHalf Duplex: 반이중 전송방식. 무전기.\nFull Duplex: 전이중 전송방식. 전화기.\n\n케이블/커넥터\nTP(Twisted Pair)\n총 8가닥의 선으로 구성. 두개의 선을 서로 꼬아놓음\nUTP(Unshield Twisted Pair), STP(Shielded Twisted Pair)\n\n\n\n\nCoaxial(동축)\n선 중앙에 심선있음. 전화 또는 회선망 등 사용\n\n\nFiber(광)  - 전기신호이 자기장이 없는 빛으로 통신하기 때문에 장거리 고속통신 가능\n모드(Single, Multi), 커넥터타입(LC, SC)\n\n\n광 트랜시버\n광통신에 사용되는 네트워크 인터페이스 모튤 커넥터\nSFP, GBIC 등\n\n\n\n\n\n장비의 Capacity 성능\nBandwidth(대역폭)::8차선 도로\n주어진 시간대에 네트워크를 통해 이동가능한 정보의 양\n\n\nThroughput(처리량)::8차선 도로를 달리는 자동차의 양\n단위 시간당 디지털 데이터 전송으로 처리하는 양\n\n\nBackPlane\n네트워크 장비가 최대로 처리가능한 데이터 용량\n\n\nCPS(Connections Per Second): 초당 커넥션 연결수, L4\nCC(Concurent Connections): 최대 수용가능한 커넥션\nTPS(Transactions Per Seconds): 초당 트랜젝션 연결수, L7, HTTP성능\n데이터 단위\nbit &amp; Byte 존재. Kilo, Mega, Giga, Tera로 표현\n\n\n\nUTP 케이블::Unshielded Twisted Pair, 주로 근거리 통신망에 사용되는 케이블로, 이더넷망 구성시 가장 많이 보임\n코드배열\n8P8C: 8개의 선 배열에 따라 다이렉트 또는 크로스 케이블로 구성\nDirect Cable: PC to Hub -&gt; DTE to DCE\nCross Cable: PC to PC, Hub to Hub -&gt; DTE to DTE, DCE to DCE\nDTE(Data Terminal Equipment), DCE(Data Communication Equipment)\n\n\n\nAuto MDI-X\nAutomatic Medium Dependent Interface Crossover\n어떤 노드의 연결인지에 따라 다이렉트와 크로스 케이블을 선택하는 불편함을 개선하여, 케이블 타입에 관계없이 노드 상호간 자동으로 통신 가능\n\nWi-Fi\n비영리 기구인 Wi-Fi Aliance의 상표로 전자기기들이 무선랜에 연결할 수 있게 하는 기술\n무선랜 구성시 WIPS(보안)-AP(무선 Hub)\n\nWireshark\n오픈소스 패킷 분석 프로그램\n\n\n인터페이스를 선택하고 실시간 패킷 확인과 저장, 분석이 가능\npcap 파일을 통해서 Fram-L2-L3-L4 정보 확인 가능\n\n\n데이터링크 계층\nOSI 7 Layer 2계층. 인접한 네트워크 노드끼리 데이터를 전송하는 기능과 절차 제공\n\n\n물리계층에서 발생가능한 오류를 감지, 수정\n대표적인 프로토콜에는 이더넷, 장비는 스위치\n\n부계층 MAC &amp; LLC\nMAC (Media Access Control): 물리적인 부분. 매체간의 연결방식 제어, 1계층과 연결\nLLC (Logical Link Control): 논리적인 부분. Frame을 만들어 3계층과 연결\n\n주요기능:: Framing, 회선제어, 흐름제어, 오류제어\nFraming\n데이터그램을 캡슐화하여 프레임단위로 만들고 header 헤더와 trailer 트레일러 추가\n헤더: 목적지, 출발지 주소, 데이터 내용 정의\n트레일러: 비트에러 감지\n\n회선제어\nSelect 모드: 송신자가 나머지 수신자들을 선택하여 전송\nPoll 모드: 수신자에게 데이터 수신 여부를 확인하여 응답을 확인하고 전송\n\n흐름제어:: 송신자와 수신자의 데이터를 처리하는 속도 차이를 해결하기 위한 제어\n\nFeedback 방식의 Flow Control, 상위 계층은 Rate기반\nStop &amp; Wait : 데이터를 보내고 ACK 응답이 올 때까지 기다림\n간단히 구현될 수 있지만 비효율적\n데이터를 보내고 ACK응답이 오지 않으면 일정시간 후 다시 보냄\n\n\nSliding window: ACK 응답 없이 여러개의 프레임 연속 전송\n\nPC1: Frame 전송후 Window size축소\n\n\n\nPC2: (현재ACK)-(이전ACK)= Window size\n\n\n\nPC1: ACK 수신후 Window size 확장\n\n\n\n\n\n오류제어:: 전송중에 오류나 손실 발생시 수신측에서 에러탐지 및 재전송\n\nARQ(Automatic Repeat Request): 프레임 손상시 재전송 수행과정\nStop &amp; Wait ARQ\n전송측에서 NAK 수신시 재전송\n주어진 시간에 ACK 안오면 재전송\n\n\nGo Back n ARQ\n\n전송측 Frame 6개전송\n\n\n\n수신측 NAK 3으로 손상응답\n\n\n\n전송측 3이 포함된 345 재전송\n\n\n\n\nSelective Repeat ARQ\n손상된 Frame만 선별하여 재전송\n\n\n\n이더넷 프레임 구조Ethernet v2:: 데이터 링크 계층에서 MAC 통신과 프로토콜 형식을 정의\n\nPreamble: 이더넷 프레임의 시작과 동기화\nDest Addr: 목적지 MAC주소\nSrc Addr: 출발지 MAC주소\nType: 캡슐화된 패킷의 프로토콜정의\nData: 상위 계층의 데이터\nFCS(Frame Check Sequence): 에러체크\n\n스위치:: 2계층의 대표적인 장비. MAC주소 기반 통신\n\n허브의 단점을 보완\nHalf duplex -&gt; Full duplex\n1 Collision Domain -&gt; 포트별 Collision Domain\n\n\nL3 스위치: 라우팅 기능이 있는 스위치\n\n스위치 동작방식:: 목적지 주소를 MAC 주소 테이블에서 확인, 연결된 포트로 프레임 전달\n\nLearning: 출발지 주소가 MAC 테이블에 없으면 해당 주소 저장\nFlooding-Broadcasting: 목적지 주소가 MAC 테이블에 없으면 전체포트로 전달\nForwarding: 목적지 주소가 MAC 테이블에 있으면 해당 포트로 전달\nFiltering-Collision Domain: 출발지와 목적지가 같은 네트워크 대역일 경우 다른 네트워크로 전달하지 않음\nAging: MAC 주소 테이블의 정보를 일정시간 이후에 삭제\n\nARP:: ARP(Address Resolution Protocol)- IP주소를 통해 MAC주소를 알려줌(ARP Request – ARP Reply)\nARP 동작과정\nPC1(172.10.10.1) –&gt; PC2(172.10.10.9) 패킷전송 시도\n\n\nPC1 자신의 ARP Cache Table 에서 목적지 MAC주소 확인\n\n\nARP Cache Table 에 있을경우: 패킷전송ARP Cache Table 에 없을경우: ARP Request-Broadcasting\nPC2(172.10.10.9) 에서 목적지 MAC주소 ARP Reply\n목적지 MAC주소 ARP Cache Table 에 저장, 패킷 전송\n\nARP 헤더구조(pcap)\nHardware Type: ARP 동작하는 네트워크 환경, 이더넷\nProtocol Type: 프로토콜 종류\nHardware &amp; Protocol Length\nOperation: 명령코드, 1=ARP Request, 2=ARP Reply\nHardware Address=MAC, Protocol Address=IP\n","dateCreated":"2021-06-16T15:17:17+09:00","dateModified":"2021-06-17T18:30:11+09:00","datePublished":"2021-06-16T15:17:17+09:00","description":"OSI모델의 물리계층? 우리가 알던 그 장비.항상 접하던 Ethernet, 스위치, ARP 프로토콜에 대하여.#osi_7_layer #tcp_ip #csma_cd #switch #ethernet #arp","headline":"네트워크-OSI모델, 물리계층과 데이터링크계층","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2021/06/16/%EB%84%A4%ED%8A%B8%EC%9B%8C%ED%81%AC-OSI%EB%AA%A8%EB%8D%B8-%EB%AC%BC%EB%A6%AC%EA%B3%84%EC%B8%B5/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2021/06/16/%EB%84%A4%ED%8A%B8%EC%9B%8C%ED%81%AC-OSI%EB%AA%A8%EB%8D%B8-%EB%AC%BC%EB%A6%AC%EA%B3%84%EC%B8%B5/","keywords":"network, osi_7_layer"}</script>
-    <meta name="description" content="OSI모델의 물리계층? 우리가 알던 그 장비.항상 접하던 Ethernet, 스위치, ARP 프로토콜에 대하여.#osi_7_layer #tcp_ip #csma_cd #switch #ethernet #arp">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="generator" content="동글씨">
+        <title>
+            네트워크-OSI모델, 물리계층과 데이터링크계층 - 동글씨
+        </title>
+        <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+        <meta name="author" content="Suyan Kim">
+        
+                
+                        
+                            <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
+                            
+                                <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\nTCP/IP\n네트워크 프로토콜의 모음.패킷 통신 방식의 IP와전송 조절 프로토콜인 TCP로 이루어져 있다.\n\n\nTCP/IP &amp; OSI 7 Layer\n\n\n    \n        \n            TCP/IP\n            Service/Protocol\n            OSI 7Layer\n        \n    \n    \n        \n            Application\n            HTTP, SMTP, DNS\n            Application\n        \n        \n            Presentaition\n        \n        \n            Session\n        \n        \n          Transport\n          TCP, UDP\n          Transport\n        \n        \n          Network\n          IP, ICMP, OSPF\n          Network\n        \n        \n          Network Interface\n          Ethernet\n          Data Link\n        \n        \n          Physical\n        \n    \n\n\n\n\n\n물리계층\nOSI 7 Layer 1계층의 하드웨어\n\n\n네트워크 장치의 전기적, 기계적 속성과 전송하는 수단\n데이터 링크 계층 프레임 –&gt; (bit를 Signal 로 인코딩) –&gt; 네트워크 장치로 전송\n통신 장치와 커넥터, 인코딩(Bit to Signal), 송수신을 담당하는 회로 등의 요소 포함\n전송하는 수단인 Signaling(신호)은 전기, 광, 무선 등이 있다.\n\n물리계층 장비\n허브 &amp; 리피터\n허프는 전기신호를 증폭하여 포트에 연결된 PC들끼리 통신이 가능\n리피터는 현재 거의 쓰이지 않는다. 세기를 더 증폭하여 더 멀리까지 통신이 가능\n\n\n\n허브 동작방식\n허브는 브로드캐스팅 통신과 CSMA/CD 방식을 사용, Half Duplex 모드이다.\n\n\n브로드캐스팅 1 : All\n유니캐스트 1 : 1\n멀티캐스트 1 : N\n\nCSMA/CD\nCarrier Sense Multiple Access / Collision Detection\n\n\nCarrier Sensing: 데이터를 보내기 전에 다른 노드에서 데이터를 보내는 중인지 확인\nMultiple Access: 데이터를 보내는곳이 없으면 전송\nCollision Detection: 동시간대의 데이터 충돌 후 정지. 일정시간 이후 재동작\n\n전송방식\nSimplex: 단방향 통신으로 수신측은 송신척에 응답 불가\nHalf Duplex: 반이중 전송방식. 무전기.\nFull Duplex: 전이중 전송방식. 전화기.\n\n케이블/커넥터\nTP(Twisted Pair)\n총 8가닥의 선으로 구성. 두개의 선을 서로 꼬아놓음\nUTP(Unshield Twisted Pair), STP(Shielded Twisted Pair)\n\n\n\n\nCoaxial(동축)\n선 중앙에 심선있음. 전화 또는 회선망 등 사용\n\n\nFiber(광)  - 전기신호이 자기장이 없는 빛으로 통신하기 때문에 장거리 고속통신 가능\n모드(Single, Multi), 커넥터타입(LC, SC)\n\n\n광 트랜시버\n광통신에 사용되는 네트워크 인터페이스 모튤 커넥터\nSFP, GBIC 등\n\n\n\n\n\n장비의 Capacity 성능\nBandwidth(대역폭)::8차선 도로\n주어진 시간대에 네트워크를 통해 이동가능한 정보의 양\n\n\nThroughput(처리량)::8차선 도로를 달리는 자동차의 양\n단위 시간당 디지털 데이터 전송으로 처리하는 양\n\n\nBackPlane\n네트워크 장비가 최대로 처리가능한 데이터 용량\n\n\nCPS(Connections Per Second): 초당 커넥션 연결수, L4\nCC(Concurent Connections): 최대 수용가능한 커넥션\nTPS(Transactions Per Seconds): 초당 트랜젝션 연결수, L7, HTTP성능\n데이터 단위\nbit &amp; Byte 존재. Kilo, Mega, Giga, Tera로 표현\n\n\n\nUTP 케이블::Unshielded Twisted Pair, 주로 근거리 통신망에 사용되는 케이블로, 이더넷망 구성시 가장 많이 보임\n코드배열\n8P8C: 8개의 선 배열에 따라 다이렉트 또는 크로스 케이블로 구성\nDirect Cable: PC to Hub -&gt; DTE to DCE\nCross Cable: PC to PC, Hub to Hub -&gt; DTE to DTE, DCE to DCE\nDTE(Data Terminal Equipment), DCE(Data Communication Equipment)\n\n\n\nAuto MDI-X\nAutomatic Medium Dependent Interface Crossover\n어떤 노드의 연결인지에 따라 다이렉트와 크로스 케이블을 선택하는 불편함을 개선하여, 케이블 타입에 관계없이 노드 상호간 자동으로 통신 가능\n\nWi-Fi\n비영리 기구인 Wi-Fi Aliance의 상표로 전자기기들이 무선랜에 연결할 수 있게 하는 기술\n무선랜 구성시 WIPS(보안)-AP(무선 Hub)\n\nWireshark\n오픈소스 패킷 분석 프로그램\n\n\n인터페이스를 선택하고 실시간 패킷 확인과 저장, 분석이 가능\npcap 파일을 통해서 Fram-L2-L3-L4 정보 확인 가능\n\n\n데이터링크 계층\nOSI 7 Layer 2계층. 인접한 네트워크 노드끼리 데이터를 전송하는 기능과 절차 제공\n\n\n물리계층에서 발생가능한 오류를 감지, 수정\n대표적인 프로토콜에는 이더넷, 장비는 스위치\n\n부계층 MAC &amp; LLC\nMAC (Media Access Control): 물리적인 부분. 매체간의 연결방식 제어, 1계층과 연결\nLLC (Logical Link Control): 논리적인 부분. Frame을 만들어 3계층과 연결\n\n주요기능:: Framing, 회선제어, 흐름제어, 오류제어\nFraming\n데이터그램을 캡슐화하여 프레임단위로 만들고 header 헤더와 trailer 트레일러 추가\n헤더: 목적지, 출발지 주소, 데이터 내용 정의\n트레일러: 비트에러 감지\n\n회선제어\nSelect 모드: 송신자가 나머지 수신자들을 선택하여 전송\nPoll 모드: 수신자에게 데이터 수신 여부를 확인하여 응답을 확인하고 전송\n\n흐름제어:: 송신자와 수신자의 데이터를 처리하는 속도 차이를 해결하기 위한 제어\n\nFeedback 방식의 Flow Control, 상위 계층은 Rate기반\nStop &amp; Wait : 데이터를 보내고 ACK 응답이 올 때까지 기다림\n간단히 구현될 수 있지만 비효율적\n데이터를 보내고 ACK응답이 오지 않으면 일정시간 후 다시 보냄\n\n\nSliding window: ACK 응답 없이 여러개의 프레임 연속 전송\n\nPC1: Frame 전송후 Window size축소\n\n\n\nPC2: (현재ACK)-(이전ACK)= Window size\n\n\n\nPC1: ACK 수신후 Window size 확장\n\n\n\n\n\n오류제어:: 전송중에 오류나 손실 발생시 수신측에서 에러탐지 및 재전송\n\nARQ(Automatic Repeat Request): 프레임 손상시 재전송 수행과정\nStop &amp; Wait ARQ\n전송측에서 NAK 수신시 재전송\n주어진 시간에 ACK 안오면 재전송\n\n\nGo Back n ARQ\n\n전송측 Frame 6개전송\n\n\n\n수신측 NAK 3으로 손상응답\n\n\n\n전송측 3이 포함된 345 재전송\n\n\n\n\nSelective Repeat ARQ\n손상된 Frame만 선별하여 재전송\n\n\n\n이더넷 프레임 구조Ethernet v2:: 데이터 링크 계층에서 MAC 통신과 프로토콜 형식을 정의\n\nPreamble: 이더넷 프레임의 시작과 동기화\nDest Addr: 목적지 MAC주소\nSrc Addr: 출발지 MAC주소\nType: 캡슐화된 패킷의 프로토콜정의\nData: 상위 계층의 데이터\nFCS(Frame Check Sequence): 에러체크\n\n스위치:: 2계층의 대표적인 장비. MAC주소 기반 통신\n\n허브의 단점을 보완\nHalf duplex -&gt; Full duplex\n1 Collision Domain -&gt; 포트별 Collision Domain\n\n\nL3 스위치: 라우팅 기능이 있는 스위치\n\n스위치 동작방식:: 목적지 주소를 MAC 주소 테이블에서 확인, 연결된 포트로 프레임 전달\n\nLearning: 출발지 주소가 MAC 테이블에 없으면 해당 주소 저장\nFlooding-Broadcasting: 목적지 주소가 MAC 테이블에 없으면 전체포트로 전달\nForwarding: 목적지 주소가 MAC 테이블에 있으면 해당 포트로 전달\nFiltering-Collision Domain: 출발지와 목적지가 같은 네트워크 대역일 경우 다른 네트워크로 전달하지 않음\nAging: MAC 주소 테이블의 정보를 일정시간 이후에 삭제\n\nARP:: ARP(Address Resolution Protocol)- IP주소를 통해 MAC주소를 알려줌(ARP Request – ARP Reply)\nARP 동작과정\nPC1(172.10.10.1) –&gt; PC2(172.10.10.9) 패킷전송 시도\n\n\nPC1 자신의 ARP Cache Table 에서 목적지 MAC주소 확인\n\n\nARP Cache Table 에 있을경우: 패킷전송ARP Cache Table 에 없을경우: ARP Request-Broadcasting\nPC2(172.10.10.9) 에서 목적지 MAC주소 ARP Reply\n목적지 MAC주소 ARP Cache Table 에 저장, 패킷 전송\n\nARP 헤더구조(pcap)\nHardware Type: ARP 동작하는 네트워크 환경, 이더넷\nProtocol Type: 프로토콜 종류\nHardware &amp; Protocol Length\nOperation: 명령코드, 1=ARP Request, 2=ARP Reply\nHardware Address=MAC, Protocol Address=IP\n","dateCreated":"2021-06-16T15:17:17+09:00","dateModified":"2021-06-17T18:30:11+09:00","datePublished":"2021-06-16T15:17:17+09:00","description":"OSI모델의 물리계층? 우리가 알던 그 장비.항상 접하던 Ethernet, 스위치, ARP 프로토콜에 대하여.#osi_7_layer #tcp_ip #csma_cd #switch #ethernet #arp","headline":"네트워크-OSI모델, 물리계층과 데이터링크계층","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2021/06/16/%EB%84%A4%ED%8A%B8%EC%9B%8C%ED%81%AC-OSI%EB%AA%A8%EB%8D%B8-%EB%AC%BC%EB%A6%AC%EA%B3%84%EC%B8%B5/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2021/06/16/%EB%84%A4%ED%8A%B8%EC%9B%8C%ED%81%AC-OSI%EB%AA%A8%EB%8D%B8-%EB%AC%BC%EB%A6%AC%EA%B3%84%EC%B8%B5/","keywords":"network, osi_7_layer"}</script>
+                                    <meta name="description" content="OSI모델의 물리계층? 우리가 알던 그 장비.항상 접하던 Ethernet, 스위치, ARP 프로토콜에 대하여.#osi_7_layer #tcp_ip #csma_cd #switch #ethernet #arp">
 <meta property="og:type" content="blog">
 <meta property="og:title" content="네트워크-OSI모델, 물리계층과 데이터링크계층">
 <meta property="og:url" content="http://yoursite.com/2021/06/16/%EB%84%A4%ED%8A%B8%EC%9B%8C%ED%81%AC-OSI%EB%AA%A8%EB%8D%B8-%EB%AC%BC%EB%A6%AC%EA%B3%84%EC%B8%B5/index.html">
@@ -27,31 +31,22 @@
 <meta property="article:tag" content="network">
 <meta property="article:tag" content="osi_7_layer">
 <meta name="twitter:card" content="summary">
-    
-    
-        
-    
-    
-        <meta property="og:image" content="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=640"/>
-    
-    
-    
-    
-    <!--STYLES-->
-    
-<link rel="stylesheet" href="/assets/css/all.css">
-
-    
-<link rel="stylesheet" href="/assets/css/jquery.fancybox.css">
-
-    
-<link rel="stylesheet" href="/assets/css/thumbs.css">
-
-    
+                                        
+                                                
+                                                    
+                                                            
+                                                                
+                                                                    <meta property="og:image" content="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=640" />
+                                                                    
+                                                                            
+                                                                                    
+                                                                                            
+                                                                                                            <!--STYLES-->
+                                                                                                            
 <link rel="stylesheet" href="/assets/css/tranquilpeak.css">
 
-    <!--STYLES END-->
-    
+                                                                                                                <!--STYLES END-->
+                                                                                                                
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-158530470-1"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
@@ -62,13 +57,12 @@
     </script>
 
 
-    
+                                                                                                                    
 
-    
-        
-    
-</head>
-
+                                                                                                                        
+                                                                                                                            
+                                                                                                                                                
+    </head>
     <body>
         <div id="blog">
             <!-- Define author's picture -->
@@ -181,7 +175,7 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (7)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (9)</a></li>
                             
                         
                             
@@ -210,6 +204,10 @@
                         
                             
                                 <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Network/">☁️ Network (1)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-NodeJS/">☁️ NodeJS (1)</a></li>
                             
                         
                             
@@ -632,11 +630,14 @@
         <ul class="post-actions post-action-nav">
             <li class="post-action">
                 
-                    <a
-                        class="post-action-btn btn btn--disabled"
-                        aria-hidden="true"
-                    >
-                        
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2021/06/23/python-postgresql-%EC%97%B0%EB%8F%99/"
+                    data-tooltip="python postgresql 연동"
+                    aria-label="PREVIOUS: python postgresql 연동"
+                >
+                    
                         <i class="fa fa-angle-left" aria-hidden="true"></i>
                         <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
                     </a>
@@ -646,9 +647,9 @@
                     
                 <a
                     class="post-action-btn btn btn--default tooltip--top"
-                    href="/2021/06/12/%EC%BB%B4%ED%93%A8%ED%84%B0%EA%B5%AC%EC%A1%B0_%EB%A9%80%ED%8B%B0%ED%94%84%EB%A1%9C%EC%84%B8%EC%84%9C/"
-                    data-tooltip="컴퓨터구조-멀티프로세서"
-                    aria-label="NEXT: 컴퓨터구조-멀티프로세서"
+                    href="/2021/06/16/%EB%84%A4%ED%8A%B8%EC%9B%8C%ED%81%AC_%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%A7%81%ED%81%AC%EA%B3%84%EC%B8%B5/"
+                    data-tooltip="네트워크-OSI모델, 물리계층과 데이터링크계층"
+                    aria-label="NEXT: 네트워크-OSI모델, 물리계층과 데이터링크계층"
                 >
                     
                         <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
@@ -758,11 +759,14 @@
         <ul class="post-actions post-action-nav">
             <li class="post-action">
                 
-                    <a
-                        class="post-action-btn btn btn--disabled"
-                        aria-hidden="true"
-                    >
-                        
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2021/06/23/python-postgresql-%EC%97%B0%EB%8F%99/"
+                    data-tooltip="python postgresql 연동"
+                    aria-label="PREVIOUS: python postgresql 연동"
+                >
+                    
                         <i class="fa fa-angle-left" aria-hidden="true"></i>
                         <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
                     </a>
@@ -772,9 +776,9 @@
                     
                 <a
                     class="post-action-btn btn btn--default tooltip--top"
-                    href="/2021/06/12/%EC%BB%B4%ED%93%A8%ED%84%B0%EA%B5%AC%EC%A1%B0_%EB%A9%80%ED%8B%B0%ED%94%84%EB%A1%9C%EC%84%B8%EC%84%9C/"
-                    data-tooltip="컴퓨터구조-멀티프로세서"
-                    aria-label="NEXT: 컴퓨터구조-멀티프로세서"
+                    href="/2021/06/16/%EB%84%A4%ED%8A%B8%EC%9B%8C%ED%81%AC_%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%A7%81%ED%81%AC%EA%B3%84%EC%B8%B5/"
+                    data-tooltip="네트워크-OSI모델, 물리계층과 데이터링크계층"
+                    aria-label="NEXT: 네트워크-OSI모델, 물리계층과 데이터링크계층"
                 >
                     
                         <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
@@ -950,15 +954,6 @@
         
 <div id="cover" style="background-image:url('/assets/images/null');"></div>
         <!--SCRIPTS-->
-
-<script src="/assets/js/jquery.js"></script>
-
-
-<script src="/assets/js/jquery.fancybox.js"></script>
-
-
-<script src="/assets/js/thumbs.js"></script>
-
 
 <script src="/assets/js/tranquilpeak.js"></script>
 

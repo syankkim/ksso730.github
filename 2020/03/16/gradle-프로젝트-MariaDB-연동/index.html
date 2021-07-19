@@ -2,19 +2,23 @@
 <!DOCTYPE html>
 <html lang="en">
     
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="generator" content="동글씨">
-    <title>gradle 프로젝트 MariaDB 연동 - 동글씨</title>
-    <meta name="author" content="Suyan Kim">
-    
-    
-    
-        <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
-    
-    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\nTest 소스 구조\n\n\nbuild.gradle 에 의존성 주입build.gradle\n12345678910111213141516171819202122232425262728293031323334plugins &#123;    id &#x27;java&#x27;    id &#x27;org.springframework.boot&#x27; version &#x27;2.1.7.RELEASE&#x27;    id &#x27;io.spring.dependency-management&#x27; version &#x27;1.0.7.RELEASE&#x27;&#125;group = &#x27;com.sue&#x27;version = &#x27;0.0.1-SNAPSHOT&#x27;sourceCompatibility = &#x27;1.8&#x27;repositories &#123;    mavenCentral()    maven &#123; url &quot;https://plugins.gradle.org/m2/&quot; &#125;&#125;dependencies &#123;    //mybatis    implementation &#x27;org.springframework.boot:spring-boot-dependencies:2.0.5.RELEASE&#x27;        // 스프링 부트를 사용하기 위함    implementation &#x27;org.springframework.boot:spring-boot-starter-web&#x27;        // 데이터를 연동하기 위함    implementation &#x27;org.springframework.boot:spring-boot-starter-data-jpa&#x27;    \t //mariadb 사용    compile(&quot;mysql:mysql-connector-java:5.1.34&quot;)    compile(&quot;org.mariadb.jdbc:mariadb-java-client&quot;)    // Use JUnit test framework    testImplementation &#x27;junit:junit:4.12&#x27;    testImplementation &#x27;org.springframework.boot:spring-boot-starter-test&#x27;&#125;\n\n\napplication.yml 설정파일 생성DB 연동 실패한 application.yml1234567891011121314151617181920212223242526272829server:  port: 8081  servlet:    context-path: /        datasource:    driver-class-name: com.mysql.cj.jdbc.Driver    url: jdbc:mysql://127.0.0.1/sosi?autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=utf8    username: root    password: mysql1234        jpa:    show-sql: true    hibernate:      ddl-auto: create      naming:        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl      use-new-id-generator-mappings: false    properties:       hibernate:          dialect: org.hibernate.dialect.MySQL5InnoDBDialect          format_sql: true    open-in-view: false  http:    encoding:      charset: UTF-8      enabled: true      force: true\n\n위와 같았던 application.yml 파일을 아래와 같이 고쳤더니 DB 연동에 성공했다.DB 연동에 필요했던 profile 이 없었던것.그리고 datasource 상위의 속성도 빠뜨려져 있었다.ddl-auto 속성은 DB 생성 이후 create -&gt; update 로 바꿔주었다.\nDB 연동 성공한 application.yml1234567891011121314151617181920212223242526272829303132server:  port: 8081  servlet:    context-path: /    spring:  profiles:    active:         datasource:    driver-class-name: com.mysql.jdbc.Driver    url: jdbc:mysql://localhost:3306/sue    username: root    password: ehdrmf      jpa:    show-sql: true    hibernate:      ddl-auto: update      naming:        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl      use-new-id-generator-mappings: false    properties:       hibernate:          dialect: org.hibernate.dialect.MySQL5InnoDBDialect          format_sql: true    open-in-view: false  http:    encoding:      charset: UTF-8      enabled: true      force: true","dateCreated":"2020-03-16T16:26:02+09:00","dateModified":"2020-04-28T10:36:01+09:00","datePublished":"2020-03-16T16:26:02+09:00","description":"gradle 프로젝트에서의 mariaDB 연동방법을 알아봅니다.","headline":"gradle 프로젝트 MariaDB 연동","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2020/03/16/gradle-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-MariaDB-%EC%97%B0%EB%8F%99/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2020/03/16/gradle-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-MariaDB-%EC%97%B0%EB%8F%99/","keywords":"jpa, gradle, mariadb"}</script>
-    <meta name="description" content="gradle 프로젝트에서의 mariaDB 연동방법을 알아봅니다.">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="generator" content="동글씨">
+        <title>
+            gradle 프로젝트 MariaDB 연동 - 동글씨
+        </title>
+        <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+        <meta name="author" content="Suyan Kim">
+        
+                
+                        
+                            <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
+                            
+                                <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\nTest 소스 구조\n\n\nbuild.gradle 에 의존성 주입build.gradle\n12345678910111213141516171819202122232425262728293031323334plugins &#123;    id &#x27;java&#x27;    id &#x27;org.springframework.boot&#x27; version &#x27;2.1.7.RELEASE&#x27;    id &#x27;io.spring.dependency-management&#x27; version &#x27;1.0.7.RELEASE&#x27;&#125;group = &#x27;com.sue&#x27;version = &#x27;0.0.1-SNAPSHOT&#x27;sourceCompatibility = &#x27;1.8&#x27;repositories &#123;    mavenCentral()    maven &#123; url &quot;https://plugins.gradle.org/m2/&quot; &#125;&#125;dependencies &#123;    //mybatis    implementation &#x27;org.springframework.boot:spring-boot-dependencies:2.0.5.RELEASE&#x27;        // 스프링 부트를 사용하기 위함    implementation &#x27;org.springframework.boot:spring-boot-starter-web&#x27;        // 데이터를 연동하기 위함    implementation &#x27;org.springframework.boot:spring-boot-starter-data-jpa&#x27;    \t //mariadb 사용    compile(&quot;mysql:mysql-connector-java:5.1.34&quot;)    compile(&quot;org.mariadb.jdbc:mariadb-java-client&quot;)    // Use JUnit test framework    testImplementation &#x27;junit:junit:4.12&#x27;    testImplementation &#x27;org.springframework.boot:spring-boot-starter-test&#x27;&#125;\n\n\napplication.yml 설정파일 생성DB 연동 실패한 application.yml1234567891011121314151617181920212223242526272829server:  port: 8081  servlet:    context-path: /        datasource:    driver-class-name: com.mysql.cj.jdbc.Driver    url: jdbc:mysql://127.0.0.1/sosi?autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=utf8    username: root    password: mysql1234        jpa:    show-sql: true    hibernate:      ddl-auto: create      naming:        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl      use-new-id-generator-mappings: false    properties:       hibernate:          dialect: org.hibernate.dialect.MySQL5InnoDBDialect          format_sql: true    open-in-view: false  http:    encoding:      charset: UTF-8      enabled: true      force: true\n\n위와 같았던 application.yml 파일을 아래와 같이 고쳤더니 DB 연동에 성공했다.DB 연동에 필요했던 profile 이 없었던것.그리고 datasource 상위의 속성도 빠뜨려져 있었다.ddl-auto 속성은 DB 생성 이후 create -&gt; update 로 바꿔주었다.\nDB 연동 성공한 application.yml1234567891011121314151617181920212223242526272829303132server:  port: 8081  servlet:    context-path: /    spring:  profiles:    active:         datasource:    driver-class-name: com.mysql.jdbc.Driver    url: jdbc:mysql://localhost:3306/sue    username: root    password: ehdrmf      jpa:    show-sql: true    hibernate:      ddl-auto: update      naming:        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl      use-new-id-generator-mappings: false    properties:       hibernate:          dialect: org.hibernate.dialect.MySQL5InnoDBDialect          format_sql: true    open-in-view: false  http:    encoding:      charset: UTF-8      enabled: true      force: true","dateCreated":"2020-03-16T16:26:02+09:00","dateModified":"2021-07-19T09:43:03+09:00","datePublished":"2020-03-16T16:26:02+09:00","description":"gradle 프로젝트에서의 mariaDB 연동방법을 알아봅니다.","headline":"gradle 프로젝트 MariaDB 연동","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2020/03/16/gradle-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-MariaDB-%EC%97%B0%EB%8F%99/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2020/03/16/gradle-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-MariaDB-%EC%97%B0%EB%8F%99/","keywords":"jpa, gradle, mariadb"}</script>
+                                    <meta name="description" content="gradle 프로젝트에서의 mariaDB 연동방법을 알아봅니다.">
 <meta property="og:type" content="blog">
 <meta property="og:title" content="gradle 프로젝트 MariaDB 연동">
 <meta property="og:url" content="http://yoursite.com/2020/03/16/gradle-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-MariaDB-%EC%97%B0%EB%8F%99/index.html">
@@ -23,38 +27,29 @@
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://user-images.githubusercontent.com/28856435/77139690-4efebc80-6aba-11ea-858e-ae959d58ea4a.png">
 <meta property="article:published_time" content="2020-03-16T07:26:02.000Z">
-<meta property="article:modified_time" content="2020-04-28T01:36:01.150Z">
+<meta property="article:modified_time" content="2021-07-19T00:43:03.572Z">
 <meta property="article:author" content="Suyan Kim">
 <meta property="article:tag" content="jpa">
 <meta property="article:tag" content="gradle">
 <meta property="article:tag" content="mariadb">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://user-images.githubusercontent.com/28856435/77139690-4efebc80-6aba-11ea-858e-ae959d58ea4a.png">
-    
-    
-        
-    
-    
-        <meta property="og:image" content="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=640"/>
-    
-    
-    
-    
-    <!--STYLES-->
-    
-<link rel="stylesheet" href="/assets/css/all.css">
-
-    
-<link rel="stylesheet" href="/assets/css/jquery.fancybox.css">
-
-    
-<link rel="stylesheet" href="/assets/css/thumbs.css">
-
-    
+                                        
+                                                
+                                                    
+                                                            
+                                                                
+                                                                    <meta property="og:image" content="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=640" />
+                                                                    
+                                                                            
+                                                                                    
+                                                                                            
+                                                                                                            <!--STYLES-->
+                                                                                                            
 <link rel="stylesheet" href="/assets/css/tranquilpeak.css">
 
-    <!--STYLES END-->
-    
+                                                                                                                <!--STYLES END-->
+                                                                                                                
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-158530470-1"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
@@ -65,13 +60,12 @@
     </script>
 
 
-    
+                                                                                                                    
 
-    
-        
-    
-</head>
-
+                                                                                                                        
+                                                                                                                            
+                                                                                                                                                
+    </head>
     <body>
         <div id="blog">
             <!-- Define author's picture -->
@@ -184,7 +178,7 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (7)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (9)</a></li>
                             
                         
                             
@@ -213,6 +207,10 @@
                         
                             
                                 <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Network/">☁️ Network (1)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-NodeJS/">☁️ NodeJS (1)</a></li>
                             
                         
                             
@@ -695,15 +693,6 @@
         
 <div id="cover" style="background-image:url('/assets/images/null');"></div>
         <!--SCRIPTS-->
-
-<script src="/assets/js/jquery.js"></script>
-
-
-<script src="/assets/js/jquery.fancybox.js"></script>
-
-
-<script src="/assets/js/thumbs.js"></script>
-
 
 <script src="/assets/js/tranquilpeak.js"></script>
 

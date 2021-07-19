@@ -2,19 +2,23 @@
 <!DOCTYPE html>
 <html lang="en">
     
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="generator" content="동글씨">
-    <title>JPA 플러시, 준영속 상태 - 동글씨</title>
-    <meta name="author" content="Suyan Kim">
-    
-    
-    
-        <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
-    
-    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\n플러시?\n영속성 컨텍스트의 변경내용을 데이터베이스에 적용.\n\n플러시 작용 순서\n변경감지\n수정된 엔티티쓰기지연 sql  저장소에 등록\nflush() : 쓰기지연 sql 저장소에 있는 쿼리들이 DB에 반영이 됨.\n\n플러시는 동기화를 위한 수동호출\n트랜잭션 커밋시 자동호출됨.JPQL 실행시 자동호출됨.트랜잭션이라는 작업 단위가 중요하다, 커밋 직전에만 동기화하면 된다.\n\n12345678Member member = new Member(200L, &quot;member200&quot;);// 1차 캐시에 저장됨.em.persist(member);// 쓰기지연 SQL 저장소 -&gt; DBem.flush();\n\n준영속 상태특정 엔티티만 준영속 상태로JPA 에서 조회(em.find) 했을때 1차 캐시에 없을 때 DB에서 가져와 넣음.\n\nem.detach()\n\n123456 Member findMember1 = em.find(Member.class, 150L);findMember1.setName(&quot;AAAA&quot;);// JPA 가 관리하지 않음. (select 문은 실행하지만 update 문은 실행하지 않음.)em.detach(findMember1);\n영속성 컨텍스트의 모든값을 초기화\nem.clear()\n\n영속성 컨텍스트를 종료\nem.close()\n","dateCreated":"2020-02-16T16:50:54+09:00","dateModified":"2020-04-28T10:36:01+09:00","datePublished":"2020-02-16T16:50:54+09:00","description":"플러시와 준영속 상태에 대해 알아봅니다.","headline":"JPA 플러시, 준영속 상태","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2020/02/16/JPA-flush/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2020/02/16/JPA-flush/","keywords":"JPA"}</script>
-    <meta name="description" content="플러시와 준영속 상태에 대해 알아봅니다.">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="generator" content="동글씨">
+        <title>
+            JPA 플러시, 준영속 상태 - 동글씨
+        </title>
+        <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+        <meta name="author" content="Suyan Kim">
+        
+                
+                        
+                            <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
+                            
+                                <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\n플러시?\n영속성 컨텍스트의 변경내용을 데이터베이스에 적용.\n\n플러시 작용 순서\n변경감지\n수정된 엔티티쓰기지연 sql  저장소에 등록\nflush() : 쓰기지연 sql 저장소에 있는 쿼리들이 DB에 반영이 됨.\n\n플러시는 동기화를 위한 수동호출\n트랜잭션 커밋시 자동호출됨.JPQL 실행시 자동호출됨.트랜잭션이라는 작업 단위가 중요하다, 커밋 직전에만 동기화하면 된다.\n\n12345678Member member = new Member(200L, &quot;member200&quot;);// 1차 캐시에 저장됨.em.persist(member);// 쓰기지연 SQL 저장소 -&gt; DBem.flush();\n\n준영속 상태특정 엔티티만 준영속 상태로JPA 에서 조회(em.find) 했을때 1차 캐시에 없을 때 DB에서 가져와 넣음.\n\nem.detach()\n\n123456 Member findMember1 = em.find(Member.class, 150L);findMember1.setName(&quot;AAAA&quot;);// JPA 가 관리하지 않음. (select 문은 실행하지만 update 문은 실행하지 않음.)em.detach(findMember1);\n영속성 컨텍스트의 모든값을 초기화\nem.clear()\n\n영속성 컨텍스트를 종료\nem.close()\n","dateCreated":"2020-02-16T16:50:54+09:00","dateModified":"2020-04-28T10:36:01+09:00","datePublished":"2020-02-16T16:50:54+09:00","description":"플러시와 준영속 상태에 대해 알아봅니다.","headline":"JPA 플러시, 준영속 상태","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2020/02/16/JPA-flush/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2020/02/16/JPA-flush/","keywords":"JPA"}</script>
+                                    <meta name="description" content="플러시와 준영속 상태에 대해 알아봅니다.">
 <meta property="og:type" content="blog">
 <meta property="og:title" content="JPA 플러시, 준영속 상태">
 <meta property="og:url" content="http://yoursite.com/2020/02/16/JPA-flush/index.html">
@@ -26,31 +30,22 @@
 <meta property="article:author" content="Suyan Kim">
 <meta property="article:tag" content="JPA">
 <meta name="twitter:card" content="summary">
-    
-    
-        
-    
-    
-        <meta property="og:image" content="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=640"/>
-    
-    
-    
-    
-    <!--STYLES-->
-    
-<link rel="stylesheet" href="/assets/css/all.css">
-
-    
-<link rel="stylesheet" href="/assets/css/jquery.fancybox.css">
-
-    
-<link rel="stylesheet" href="/assets/css/thumbs.css">
-
-    
+                                        
+                                                
+                                                    
+                                                            
+                                                                
+                                                                    <meta property="og:image" content="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=640" />
+                                                                    
+                                                                            
+                                                                                    
+                                                                                            
+                                                                                                            <!--STYLES-->
+                                                                                                            
 <link rel="stylesheet" href="/assets/css/tranquilpeak.css">
 
-    <!--STYLES END-->
-    
+                                                                                                                <!--STYLES END-->
+                                                                                                                
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-158530470-1"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
@@ -61,13 +56,12 @@
     </script>
 
 
-    
+                                                                                                                    
 
-    
-        
-    
-</head>
-
+                                                                                                                        
+                                                                                                                            
+                                                                                                                                                
+    </head>
     <body>
         <div id="blog">
             <!-- Define author's picture -->
@@ -180,7 +174,7 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (7)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (9)</a></li>
                             
                         
                             
@@ -209,6 +203,10 @@
                         
                             
                                 <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Network/">☁️ Network (1)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-NodeJS/">☁️ NodeJS (1)</a></li>
                             
                         
                             
@@ -704,15 +702,6 @@
         
 <div id="cover" style="background-image:url('/assets/images/null');"></div>
         <!--SCRIPTS-->
-
-<script src="/assets/js/jquery.js"></script>
-
-
-<script src="/assets/js/jquery.fancybox.js"></script>
-
-
-<script src="/assets/js/thumbs.js"></script>
-
 
 <script src="/assets/js/tranquilpeak.js"></script>
 

@@ -1,0 +1,774 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="generator" content="동글씨">
+        <title>
+            큐, 스택 - 동글씨
+        </title>
+        <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+        <meta name="author" content="Suyan Kim">
+        
+                
+                        
+                            <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
+                            
+                                <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\nQueue일반적인 큐 FIFO12import queuedata_q = queue.Queue()\n\n12data_q.put(&quot;red&quot;)data_q.put(1)\n\n\n\n\n\n\nStack\n스택은 단순하고 빠른 성능을 위해 사용되므로, 보통 배열 구조를 활용해서 구현하는것이 일반적\n\n\nPros &amp; Cons\n\n데이터를 제한적으로 접근 LIFO\n\n구조가 단순, 구현 쉽다.\n\n데이터 저장/읽기 속도가 빠름.\n\n데이터 최대갯수를 미리 정해야함.\n\n파이썬의 경우 재귀함수는 1000번까지만 호출 가능\n\n\n저장공간의 낭비 발생\n\n미리 최대 갯수만큼 저장공간 확보 필요\n\n\n\n\n\nStack - 프로세스 함수 동작 방식에서 많이 쓰인다.\n재귀함수의 동작방식과 비슷하다.\n\n12345678# 재귀함수의 동작 방식def recursive(data):    if data&lt;0:        print(&quot;ended&quot;)    else:        print(data)        recursive(data-1)        print(&quot;returned&quot;, data)\n\n\n\n위 recursive 함수를 실행시켜보면, 4-0 까지 stack data에 쌓인 뒤, 0이 되면 “ended” 를 찍는다.그리고 다시 stack data에서 맨 상단의 0부터 4까지 다시 꺼낸다. -&gt; “returned ~” 에 찍힌 data로 확인된다.\n\n\n\n\n\nStack - 파이썬 리스트 기능을 이용1234stack_ = list()stack_.append(1)stack_.append(2)\n\n\n\n\n\npop(), push() 함수 없이 직접 stack 구현123456789st = list()def push(data):    st.append(data)    def pop():    data = st[-1]    del st[-1]    return data\n\n\n\n","dateCreated":"2021-07-18T23:57:33+09:00","dateModified":"2021-07-19T09:39:14+09:00","datePublished":"2021-07-18T23:57:33+09:00","description":"Queue, Stack, Recursive Funtion큐, 스택, 재귀함수?#queue #stack #linked_list","headline":"큐, 스택","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2021/07/18/%ED%81%90-%EC%8A%A4%ED%83%9D/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2021/07/18/%ED%81%90-%EC%8A%A4%ED%83%9D/","keywords":"queue, stack"}</script>
+                                    <meta name="description" content="Queue, Stack, Recursive Funtion큐, 스택, 재귀함수?#queue #stack #linked_list">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="큐, 스택">
+<meta property="og:url" content="http://yoursite.com/2021/07/18/%ED%81%90-%EC%8A%A4%ED%83%9D/index.html">
+<meta property="og:site_name" content="동글씨">
+<meta property="og:description" content="Queue, Stack, Recursive Funtion큐, 스택, 재귀함수?#queue #stack #linked_list">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://user-images.githubusercontent.com/28856435/126072441-e3304e53-d9fd-4ea3-b765-958f30a31101.png">
+<meta property="og:image" content="https://user-images.githubusercontent.com/28856435/126072813-e13d0c9c-57f4-4e2d-bfb3-0fd9b86354ec.png">
+<meta property="og:image" content="https://user-images.githubusercontent.com/28856435/126073148-bffc889c-31ec-4fce-b46a-163579230b69.png">
+<meta property="og:image" content="https://user-images.githubusercontent.com/28856435/126073159-616658b8-7fc9-46f4-8f20-6849afa9c9da.png">
+<meta property="article:published_time" content="2021-07-18T14:57:33.000Z">
+<meta property="article:modified_time" content="2021-07-19T00:39:14.207Z">
+<meta property="article:author" content="Suyan Kim">
+<meta property="article:tag" content="queue">
+<meta property="article:tag" content="stack">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://user-images.githubusercontent.com/28856435/126072441-e3304e53-d9fd-4ea3-b765-958f30a31101.png">
+                                        
+                                                
+                                                    
+                                                            
+                                                                
+                                                                    <meta property="og:image" content="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=640" />
+                                                                    
+                                                                            
+                                                                                    
+                                                                                            
+                                                                                                            <!--STYLES-->
+                                                                                                            
+<link rel="stylesheet" href="/assets/css/tranquilpeak.css">
+
+                                                                                                                <!--STYLES END-->
+                                                                                                                
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-158530470-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-158530470-1');
+    </script>
+
+
+                                                                                                                    
+
+                                                                                                                        
+                                                                                                                            
+                                                                                                                                                
+    </head>
+    <body>
+        <div id="blog">
+            <!-- Define author's picture -->
+
+
+    
+        
+    
+
+<header id="header" data-behavior="4">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <div class="header-title">
+        <a
+            class="header-title-link"
+            href="/index.html"
+            aria-label=""
+        >
+            동글씨
+        </a>
+    </div>
+    
+        
+            <a
+                class="header-right-picture "
+                href="#about"
+                aria-label="Open the link: /#about"
+            >
+        
+        
+            <img class="header-picture" src="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=90" alt="Author&#39;s picture"/>
+        
+        </a>
+    
+</header>
+
+            <!-- function -->
+
+
+<!-- Define author's picture -->
+
+
+    
+
+<nav id="sidebar" data-behavior="4">
+    <div class="sidebar-container">
+        
+            <div class="sidebar-profile">
+                <a
+                    href="/#about"
+                    aria-label="Read more about the author"
+                >
+                    <img class="sidebar-profile-picture" src="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=800" alt="Author&#39;s picture"/>
+                </a>
+                <h4 class="sidebar-profile-name">Suyan Kim</h4>
+                
+                    <h5 class="sidebar-profile-bio"><p>▲ Who Am I</p>
+</h5>
+                
+            </div>
+        
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="home"href="/index.html"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-home" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">home</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="archives"href="/all-archives"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-archive" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">archives</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="categories"href="/all-categories"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-bookmark" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">categories</span>
+                        </a>
+                    <!-- add -->
+                    
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-AWS/">☁️ AWS (0)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (9)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Config/">☁️ Config (2)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-DataBase/">☁️ DataBase (1)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Git/">☁️ Git (3)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-JPA/">☁️ JPA (10)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Java/">☁️ Java (0)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Linux/">☁️ Linux (6)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Network/">☁️ Network (1)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-NodeJS/">☁️ NodeJS (1)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-OS/">☁️ OS (14)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Python/">☁️ Python (2)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-React/">☁️ React (3)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Spring/">☁️ Spring (1)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-TIL/">☁️ TIL (9)</a></li>
+                            
+                        
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="tags"href="/all-tags"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-tags" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">tags</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="about"href="#about"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-question" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">about</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="https://github.com/ksso730" target="_blank" rel="noopener" title="github">
+                    
+                    <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">github</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="https://www.instagram.com/syankkim/" target="_blank" rel="noopener" title="life">
+                    
+                    <i class="sidebar-button-icon fab fa-instagram" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">life</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+        </ul>
+        
+    </div>
+</nav>
+
+            
+            <div id="main" data-behavior="4"
+                 class="
+                        hasCoverMetaIn
+                        ">
+                
+<article class="post">
+    
+    
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title">
+            큐, 스택
+        </h1>
+    
+    
+        <div class="post-meta">
+    <time datetime="2021-07-18T23:57:33+09:00">
+	
+		    Jul 18, 2021
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm</a>
+
+
+    
+</div>
+
+    
+</div>
+
+    
+    <div class="post-content markdown">
+        <div class="main-content-wrap">
+            <!-- excerpt -->
+<h1 id="table-of-contents">Contents</h1><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Queue"><span class="toc-text">Queue</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%EC%9D%BC%EB%B0%98%EC%A0%81%EC%9D%B8-%ED%81%90-FIFO"><span class="toc-text">일반적인 큐 FIFO</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Stack"><span class="toc-text">Stack</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Stack-%ED%94%84%EB%A1%9C%EC%84%B8%EC%8A%A4-%ED%95%A8%EC%88%98-%EB%8F%99%EC%9E%91-%EB%B0%A9%EC%8B%9D%EC%97%90%EC%84%9C-%EB%A7%8E%EC%9D%B4-%EC%93%B0%EC%9D%B8%EB%8B%A4"><span class="toc-text">Stack - 프로세스 함수 동작 방식에서 많이 쓰인다.</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Stack-%ED%8C%8C%EC%9D%B4%EC%8D%AC-%EB%A6%AC%EC%8A%A4%ED%8A%B8-%EA%B8%B0%EB%8A%A5%EC%9D%84-%EC%9D%B4%EC%9A%A9"><span class="toc-text">Stack - 파이썬 리스트 기능을 이용</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#pop-push-%ED%95%A8%EC%88%98-%EC%97%86%EC%9D%B4-%EC%A7%81%EC%A0%91-stack-%EA%B5%AC%ED%98%84"><span class="toc-text">pop(), push() 함수 없이 직접 stack 구현</span></a></li></ol></li></ol></li></ol>
+
+<hr>
+<h1 id="Queue"><a href="#Queue" class="headerlink" title="Queue"></a>Queue</h1><h2 id="일반적인-큐-FIFO"><a href="#일반적인-큐-FIFO" class="headerlink" title="일반적인 큐 FIFO"></a>일반적인 큐 FIFO</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> queue</span><br><span class="line">data_q = queue.Queue()</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">data_q.put(<span class="string">&quot;red&quot;</span>)</span><br><span class="line">data_q.put(<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+
+</br>
+<img width="909" alt="jupyter" src="https://user-images.githubusercontent.com/28856435/126072441-e3304e53-d9fd-4ea3-b765-958f30a31101.png">
+</br>
+
+
+<h1 id="Stack"><a href="#Stack" class="headerlink" title="Stack"></a>Stack</h1><blockquote>
+<p>스택은 단순하고 빠른 성능을 위해 사용되므로, 보통 배열 구조를 활용해서 구현하는것이 일반적</p>
+</blockquote>
+<ul>
+<li><p>Pros &amp; Cons</p>
+<ul>
+<li><p>데이터를 제한적으로 접근 <code>LIFO</code></p>
+</li>
+<li><p>구조가 단순, 구현 쉽다.</p>
+</li>
+<li><p>데이터 저장/읽기 속도가 빠름.</p>
+</li>
+<li><p>데이터 최대갯수를 미리 정해야함.</p>
+<ul>
+<li>파이썬의 경우 <code>재귀함수는 1000번까지만 호출</code> 가능</li>
+</ul>
+</li>
+<li><p>저장공간의 낭비 발생</p>
+<ul>
+<li>미리 최대 갯수만큼 저장공간 확보 필요</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="Stack-프로세스-함수-동작-방식에서-많이-쓰인다"><a href="#Stack-프로세스-함수-동작-방식에서-많이-쓰인다" class="headerlink" title="Stack - 프로세스 함수 동작 방식에서 많이 쓰인다."></a>Stack - 프로세스 함수 동작 방식에서 많이 쓰인다.</h2><blockquote>
+<p><code>재귀함수</code>의 동작방식과 비슷하다.</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 재귀함수의 동작 방식</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">recursive</span>(<span class="params">data</span>):</span></span><br><span class="line">    <span class="keyword">if</span> data&lt;<span class="number">0</span>:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;ended&quot;</span>)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="built_in">print</span>(data)</span><br><span class="line">        recursive(data-<span class="number">1</span>)</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;returned&quot;</span>, data)</span><br></pre></td></tr></table></figure>
+</br>
+
+<ul>
+<li>위 recursive 함수를 실행시켜보면, 4-0 까지 stack data에 쌓인 뒤, 0이 되면 “ended” 를 찍는다.<br>그리고 다시 stack data에서 맨 상단의 0부터 4까지 다시 꺼낸다. -&gt; “returned ~” 에 찍힌 data로 확인된다.</br></li>
+</ul>
+<img width="982" alt="recursive" src="https://user-images.githubusercontent.com/28856435/126072813-e13d0c9c-57f4-4e2d-bfb3-0fd9b86354ec.png">
+
+</br>
+
+<h2 id="Stack-파이썬-리스트-기능을-이용"><a href="#Stack-파이썬-리스트-기능을-이용" class="headerlink" title="Stack - 파이썬 리스트 기능을 이용"></a>Stack - 파이썬 리스트 기능을 이용</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">stack_ = <span class="built_in">list</span>()</span><br><span class="line"></span><br><span class="line">stack_.append(<span class="number">1</span>)</span><br><span class="line">stack_.append(<span class="number">2</span>)</span><br></pre></td></tr></table></figure>
+
+</br>
+<img width="703" alt="1" src="https://user-images.githubusercontent.com/28856435/126073148-bffc889c-31ec-4fce-b46a-163579230b69.png">
+</br>
+
+<h3 id="pop-push-함수-없이-직접-stack-구현"><a href="#pop-push-함수-없이-직접-stack-구현" class="headerlink" title="pop(), push() 함수 없이 직접 stack 구현"></a>pop(), push() 함수 없이 직접 stack 구현</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">st = <span class="built_in">list</span>()</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">push</span>(<span class="params">data</span>):</span></span><br><span class="line">    st.append(data)</span><br><span class="line">    </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">pop</span>():</span></span><br><span class="line">    data = st[-<span class="number">1</span>]</span><br><span class="line">    <span class="keyword">del</span> st[-<span class="number">1</span>]</span><br><span class="line">    <span class="keyword">return</span> data</span><br></pre></td></tr></table></figure>
+
+</br>
+<img width="611" alt="2" src="https://user-images.githubusercontent.com/28856435/126073159-616658b8-7fc9-46f4-8f20-6849afa9c9da.png">
+</br>
+            
+
+
+        </div>
+    </div>
+    <div id="post-footer" class="post-footer main-content-wrap">
+        
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">TAGGED IN</span><br/>
+                
+    <a class="tag tag--primary tag--small t-none-link" href="/tags/queue/" rel="tag">queue</a> <a class="tag tag--primary tag--small t-none-link" href="/tags/stack/" rel="tag">stack</a>
+
+            </div>
+        
+        
+            <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2021/07/19/%EB%A7%81%ED%81%AC%EB%93%9C%EB%A6%AC%EC%8A%A4%ED%8A%B8-%EA%B5%AC%ED%98%84/"
+                    data-tooltip="링크드리스트 구현"
+                    aria-label="PREVIOUS: 링크드리스트 구현"
+                >
+                    
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                    </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2021/07/04/nodejs-start/"
+                    data-tooltip="Node JS 기본, 시작해보기"
+                    aria-label="NEXT: Node JS 기본, 시작해보기"
+                >
+                    
+                        <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a
+                class="post-action-btn btn btn--default btn-open-shareoptions"
+                href="#btn-open-shareoptions"
+                aria-label="Share this post"
+            >
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2021/07/18/%ED%81%90-%EC%8A%A4%ED%83%9D/"
+                    title="Share on Facebook"
+                    aria-label="Share on Facebook"
+                >
+                    <i class="fab fa-facebook" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2021/07/18/%ED%81%90-%EC%8A%A4%ED%83%9D/"
+                    title="Share on Twitter"
+                    aria-label="Share on Twitter"
+                >
+                    <i class="fab fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://plus.google.com/share?url=http://yoursite.com/2021/07/18/%ED%81%90-%EC%8A%A4%ED%83%9D/"
+                    title="Share on Google+"
+                    aria-label="Share on Google+"
+                >
+                    <i class="fab fa-google-plus" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+                <li class="post-action">
+                    <a
+                        class="post-action-btn btn btn--default"
+                        href="#disqus_thread"
+                        aria-label="Leave a comment"
+                    >
+                        <i class="fa fa-comment"></i>
+                    </a>
+                </li>
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#table-of-contents" aria-label="Contents">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+        
+        
+            
+                <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+            
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2021 Suyan Kim. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2021/07/19/%EB%A7%81%ED%81%AC%EB%93%9C%EB%A6%AC%EC%8A%A4%ED%8A%B8-%EA%B5%AC%ED%98%84/"
+                    data-tooltip="링크드리스트 구현"
+                    aria-label="PREVIOUS: 링크드리스트 구현"
+                >
+                    
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                    </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2021/07/04/nodejs-start/"
+                    data-tooltip="Node JS 기본, 시작해보기"
+                    aria-label="NEXT: Node JS 기본, 시작해보기"
+                >
+                    
+                        <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a
+                class="post-action-btn btn btn--default btn-open-shareoptions"
+                href="#btn-open-shareoptions"
+                aria-label="Share this post"
+            >
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2021/07/18/%ED%81%90-%EC%8A%A4%ED%83%9D/"
+                    title="Share on Facebook"
+                    aria-label="Share on Facebook"
+                >
+                    <i class="fab fa-facebook" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2021/07/18/%ED%81%90-%EC%8A%A4%ED%83%9D/"
+                    title="Share on Twitter"
+                    aria-label="Share on Twitter"
+                >
+                    <i class="fab fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://plus.google.com/share?url=http://yoursite.com/2021/07/18/%ED%81%90-%EC%8A%A4%ED%83%9D/"
+                    title="Share on Google+"
+                    aria-label="Share on Google+"
+                >
+                    <i class="fab fa-google-plus" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+                <li class="post-action">
+                    <a
+                        class="post-action-btn btn btn--default"
+                        href="#disqus_thread"
+                        aria-label="Leave a comment"
+                    >
+                        <i class="fa fa-comment"></i>
+                    </a>
+                </li>
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#table-of-contents" aria-label="Contents">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                
+    <div id="share-options-bar" class="share-options-bar" data-behavior="4">
+        <i id="btn-close-shareoptions" class="fa fa-times"></i>
+        <ul class="share-options">
+            
+                
+                
+                <li class="share-option">
+                    <a
+                        class="share-option-btn"
+                        target="new"
+                        href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2021/07/18/%ED%81%90-%EC%8A%A4%ED%83%9D/"
+                        aria-label="Share on Facebook"
+                    >
+                        <i class="fab fa-facebook" aria-hidden="true"></i><span>Share on Facebook</span>
+                    </a>
+                </li>
+            
+                
+                
+                <li class="share-option">
+                    <a
+                        class="share-option-btn"
+                        target="new"
+                        href="https://twitter.com/intent/tweet?text=http://yoursite.com/2021/07/18/%ED%81%90-%EC%8A%A4%ED%83%9D/"
+                        aria-label="Share on Twitter"
+                    >
+                        <i class="fab fa-twitter" aria-hidden="true"></i><span>Share on Twitter</span>
+                    </a>
+                </li>
+            
+                
+                
+                <li class="share-option">
+                    <a
+                        class="share-option-btn"
+                        target="new"
+                        href="https://plus.google.com/share?url=http://yoursite.com/2021/07/18/%ED%81%90-%EC%8A%A4%ED%83%9D/"
+                        aria-label="Share on Google+"
+                    >
+                        <i class="fab fa-google-plus" aria-hidden="true"></i><span>Share on Google+</span>
+                    </a>
+                </li>
+            
+        </ul>
+    </div>
+
+
+            
+        </div>
+        
+
+
+    
+
+<div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-times"></i>
+        </div>
+        
+            <img id="about-card-picture" src="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=110" alt="Author&#39;s picture"/>
+        
+            <h4 id="about-card-name">Suyan Kim</h4>
+        <!--  -->
+            <!-- <div id="about-card-bio"><p>author.bio</p>
+</div> -->
+            <div id="about-card-bio">안녕하세요, 서버 백엔드 개발자 동글씨입니다.</div>
+        <!--  -->
+        <!--  -->
+            <div id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <!-- <p>Backend Developer</p>
+ -->
+                Backend Developer
+            </div>
+        <!--  -->
+        
+            <div id="about-card-location">
+                <i class="fa fa-map-marker-alt"></i>
+                <br/>
+                Korea
+            </div>
+        
+    </div>
+</div>
+
+        
+        
+<div id="cover" style="background-image:url('/assets/images/null');"></div>
+        <!--SCRIPTS-->
+
+<script src="/assets/js/tranquilpeak.js"></script>
+
+<!--SCRIPTS END-->
+
+
+    
+        <script>
+          var disqus_config = function() {
+            this.page.url = 'http://yoursite.com/2021/07/18/%ED%81%90-%EC%8A%A4%ED%83%9D/';
+              
+            this.page.identifier = '2021/07/18/큐-스택/';
+              
+          };
+          (function() {
+            var d = document, s = d.createElement('script');
+            var disqus_shortname = 'ksso730-github-io';
+            s.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+          })();
+        </script>
+    
+
+
+
+
+    </body>
+</html>

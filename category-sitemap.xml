@@ -8,15 +8,43 @@
     </url>
 
     <url>
-        <loc>http://yoursite.com/categories/%25E2%2598%2581%25EF%25B8%258F-Network/</loc>
-        <lastmod>2021-06-17T09:30:11.889Z</lastmod>
+        <loc>http://yoursite.com/categories/%25E2%2598%2581%25EF%25B8%258F-Config/</loc>
+        <lastmod>2021-07-19T00:43:03.572Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://yoursite.com/categories/%25E2%2598%2581%25EF%25B8%258F-Algorithm/</loc>
+        <lastmod>2021-07-19T00:39:14.207Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
         <loc>http://yoursite.com/categories/%25E2%2598%2581%25EF%25B8%258F-TIL/</loc>
-        <lastmod>2021-06-16T06:07:51.864Z</lastmod>
+        <lastmod>2021-07-19T00:39:14.206Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://yoursite.com/categories/%25E2%2598%2581%25EF%25B8%258F-Network/</loc>
+        <lastmod>2021-07-19T00:39:14.203Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://yoursite.com/categories/%25E2%2598%2581%25EF%25B8%258F-NodeJS/</loc>
+        <lastmod>2021-07-19T00:39:14.202Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://yoursite.com/categories/%25E2%2598%2581%25EF%25B8%258F-DataBase/</loc>
+        <lastmod>2021-06-30T08:17:37.007Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
@@ -38,13 +66,6 @@
     <url>
         <loc>http://yoursite.com/categories/%25E2%2598%2581%25EF%25B8%258F-AWS/</loc>
         <lastmod>2021-05-25T00:54:42.539Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://yoursite.com/categories/%25E2%2598%2581%25EF%25B8%258F-Algorithm/</loc>
-        <lastmod>2021-05-12T08:42:55.259Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
@@ -78,22 +99,8 @@
     </url>
 
     <url>
-        <loc>http://yoursite.com/categories/%25E2%2598%2581%25EF%25B8%258F-DataBase/</loc>
-        <lastmod>2020-05-28T05:39:32.737Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
         <loc>http://yoursite.com/categories/%25E2%2598%2581%25EF%25B8%258F-Spring/</loc>
         <lastmod>2020-04-28T01:36:01.152Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://yoursite.com/categories/%25E2%2598%2581%25EF%25B8%258F-Config/</loc>
-        <lastmod>2020-04-28T01:36:01.150Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>

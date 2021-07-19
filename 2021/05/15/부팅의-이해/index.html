@@ -2,19 +2,23 @@
 <!DOCTYPE html>
 <html lang="en">
     
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="generator" content="동글씨">
-    <title>💻 부팅의 이해 - 동글씨</title>
-    <meta name="author" content="Suyan Kim">
-    
-    
-    
-        <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
-    
-    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\n💬 해당 강의는 fastcampus 에서 ‘컴공 전공자 따라잡기 온라인 완주반’ 강의를 들으며 스스로의 학습을 위해 작성한 포스팅입니다. 문제가 된다면 연락 부탁드립니다.\n\n\nBoot\n컴퓨터를 켜서 동작시키는 절차를 말한다.\nBIOS 가 특정 Storage 를 Memory 에 읽어와 bootstrap loader 를 메모리에 올리고 실행한다.\nbootstrap loader 프로그램이 있는곳을 찾아서 실행시킨다.\n\n\nCPU &gt; ROM-BIOS(특별한RAM: 컴퓨터가 종료되어도 메모리 기억)\n\n\nCPU 가 BIOS 에서 매핑된 Memory 주소를 찾는다.\n\n\nBIOS -&gt; Memory (RAM)\n\n\nBIOS 프로그램을 Memory 에 올린다.\nBIOS 는 컴퓨터를 초기화한다.\n\n\nMemory &lt;-&gt; MBR(Master Boot Record ;저장매체)\n\n\n부트로더 라는 프로그램을 로드한다.\n부트로더에는 파티션 table 정보가 있다. (C:/, D:/)\n어떤 파티션이 메인 파티션인지 확인.\n\n\nMemory &lt;-&gt; 부트섹터(저장매체)\n\n\n해당 메인 파티션에 들어가있는 특정 부트섹터 영역의 부트 코드를 로드한다.\n\n\nMemory &lt;-&gt; 커널 이미지(저장매체)\n\n\n부트 코드까지 Memory 에 올라가면 커널로부터 운영체제 이미지를 가져온다.\n\n\n컴퓨터가 실행된다. \n\n\n\n\n\n실제 운영체제\n리눅스 운영체제\n\n\nprocess management\n\n\n응용프로그램은 여러개의 process로 관리.\n프로세스 스케줄러: 프로세스 실행/종료 및 인터럽트 처리 관리.\n\n\nmemory management\n\n\n가상메모리. page 기반 메모리 관리.\n\n\nIO device management\n\n\nVFS (Virsual File System)    - 가상 파일 시스템 인터페이스 사용\nfild, Device drivers, Network 관리\n\n시스템 프로그램\nbash(bourne-again shell)\n내부는 시스템콜을 호출하도록 구현\n필요시 해당 운영체제의 시스템콜을 호출. (라이브러리-시스템콜)\n\n\n\n안드로이드 스마트폰\nLinux Kernel + Android Framework\n리눅스OS 기반으로 안드로이드 플랫폼이 존재한다. \n\n\nIoT\n\n\nIoT 관련 OS 의 경우 기능을 최소화 한다. (Tiny OS : 멀티태스킹, 보호모드, 가상메모리, 파일시스템 사용하지 않는다.)\n\n","dateCreated":"2021-05-15T21:59:56+09:00","dateModified":"2021-05-20T10:06:40+09:00","datePublished":"2021-05-15T21:59:56+09:00","description":"부팅은 무엇이고, 실제로 어떻게 일어날까?#BIOS #booting","headline":"💻 부팅의 이해","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2021/05/15/%EB%B6%80%ED%8C%85%EC%9D%98-%EC%9D%B4%ED%95%B4/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2021/05/15/%EB%B6%80%ED%8C%85%EC%9D%98-%EC%9D%B4%ED%95%B4/","keywords":"booting, BIOS"}</script>
-    <meta name="description" content="부팅은 무엇이고, 실제로 어떻게 일어날까?#BIOS #booting">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="generator" content="동글씨">
+        <title>
+            💻 부팅의 이해 - 동글씨
+        </title>
+        <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+        <meta name="author" content="Suyan Kim">
+        
+                
+                        
+                            <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
+                            
+                                <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\n💬 해당 강의는 fastcampus 에서 ‘컴공 전공자 따라잡기 온라인 완주반’ 강의를 들으며 스스로의 학습을 위해 작성한 포스팅입니다. 문제가 된다면 연락 부탁드립니다.\n\n\nBoot\n컴퓨터를 켜서 동작시키는 절차를 말한다.\nBIOS 가 특정 Storage 를 Memory 에 읽어와 bootstrap loader 를 메모리에 올리고 실행한다.\nbootstrap loader 프로그램이 있는곳을 찾아서 실행시킨다.\n\n\nCPU &gt; ROM-BIOS(특별한RAM: 컴퓨터가 종료되어도 메모리 기억)\n\n\nCPU 가 BIOS 에서 매핑된 Memory 주소를 찾는다.\n\n\nBIOS -&gt; Memory (RAM)\n\n\nBIOS 프로그램을 Memory 에 올린다.\nBIOS 는 컴퓨터를 초기화한다.\n\n\nMemory &lt;-&gt; MBR(Master Boot Record ;저장매체)\n\n\n부트로더 라는 프로그램을 로드한다.\n부트로더에는 파티션 table 정보가 있다. (C:/, D:/)\n어떤 파티션이 메인 파티션인지 확인.\n\n\nMemory &lt;-&gt; 부트섹터(저장매체)\n\n\n해당 메인 파티션에 들어가있는 특정 부트섹터 영역의 부트 코드를 로드한다.\n\n\nMemory &lt;-&gt; 커널 이미지(저장매체)\n\n\n부트 코드까지 Memory 에 올라가면 커널로부터 운영체제 이미지를 가져온다.\n\n\n컴퓨터가 실행된다. \n\n\n\n\n\n실제 운영체제\n리눅스 운영체제\n\n\nprocess management\n\n\n응용프로그램은 여러개의 process로 관리.\n프로세스 스케줄러: 프로세스 실행/종료 및 인터럽트 처리 관리.\n\n\nmemory management\n\n\n가상메모리. page 기반 메모리 관리.\n\n\nIO device management\n\n\nVFS (Virsual File System)    - 가상 파일 시스템 인터페이스 사용\nfild, Device drivers, Network 관리\n\n시스템 프로그램\nbash(bourne-again shell)\n내부는 시스템콜을 호출하도록 구현\n필요시 해당 운영체제의 시스템콜을 호출. (라이브러리-시스템콜)\n\n\n\n안드로이드 스마트폰\nLinux Kernel + Android Framework\n리눅스OS 기반으로 안드로이드 플랫폼이 존재한다. \n\n\nIoT\n\n\nIoT 관련 OS 의 경우 기능을 최소화 한다. (Tiny OS : 멀티태스킹, 보호모드, 가상메모리, 파일시스템 사용하지 않는다.)\n\n","dateCreated":"2021-05-15T21:59:56+09:00","dateModified":"2021-05-20T10:06:40+09:00","datePublished":"2021-05-15T21:59:56+09:00","description":"부팅은 무엇이고, 실제로 어떻게 일어날까?#BIOS #booting","headline":"💻 부팅의 이해","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2021/05/15/%EB%B6%80%ED%8C%85%EC%9D%98-%EC%9D%B4%ED%95%B4/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2021/05/15/%EB%B6%80%ED%8C%85%EC%9D%98-%EC%9D%B4%ED%95%B4/","keywords":"booting, BIOS"}</script>
+                                    <meta name="description" content="부팅은 무엇이고, 실제로 어떻게 일어날까?#BIOS #booting">
 <meta property="og:type" content="blog">
 <meta property="og:title" content="💻 부팅의 이해">
 <meta property="og:url" content="http://yoursite.com/2021/05/15/%EB%B6%80%ED%8C%85%EC%9D%98-%EC%9D%B4%ED%95%B4/index.html">
@@ -29,31 +33,22 @@
 <meta property="article:tag" content="BIOS">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://user-images.githubusercontent.com/28856435/118362451-85ef3600-b5ca-11eb-9f56-c2f281b47f1e.PNG">
-    
-    
-        
-    
-    
-        <meta property="og:image" content="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=640"/>
-    
-    
-    
-    
-    <!--STYLES-->
-    
-<link rel="stylesheet" href="/assets/css/all.css">
-
-    
-<link rel="stylesheet" href="/assets/css/jquery.fancybox.css">
-
-    
-<link rel="stylesheet" href="/assets/css/thumbs.css">
-
-    
+                                        
+                                                
+                                                    
+                                                            
+                                                                
+                                                                    <meta property="og:image" content="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=640" />
+                                                                    
+                                                                            
+                                                                                    
+                                                                                            
+                                                                                                            <!--STYLES-->
+                                                                                                            
 <link rel="stylesheet" href="/assets/css/tranquilpeak.css">
 
-    <!--STYLES END-->
-    
+                                                                                                                <!--STYLES END-->
+                                                                                                                
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-158530470-1"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
@@ -64,13 +59,12 @@
     </script>
 
 
-    
+                                                                                                                    
 
-    
-        
-    
-</head>
-
+                                                                                                                        
+                                                                                                                            
+                                                                                                                                                
+    </head>
     <body>
         <div id="blog">
             <!-- Define author's picture -->
@@ -183,7 +177,7 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (7)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (9)</a></li>
                             
                         
                             
@@ -212,6 +206,10 @@
                         
                             
                                 <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Network/">☁️ Network (1)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-NodeJS/">☁️ NodeJS (1)</a></li>
                             
                         
                             
@@ -772,15 +770,6 @@
         
 <div id="cover" style="background-image:url('/assets/images/null');"></div>
         <!--SCRIPTS-->
-
-<script src="/assets/js/jquery.js"></script>
-
-
-<script src="/assets/js/jquery.fancybox.js"></script>
-
-
-<script src="/assets/js/thumbs.js"></script>
-
 
 <script src="/assets/js/tranquilpeak.js"></script>
 

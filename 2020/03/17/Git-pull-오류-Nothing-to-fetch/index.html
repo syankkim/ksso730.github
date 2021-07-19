@@ -2,19 +2,23 @@
 <!DOCTYPE html>
 <html lang="en">
     
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="generator" content="동글씨">
-    <title>Git pull 오류: Nothing to fetch - 동글씨</title>
-    <meta name="author" content="Suyan Kim">
-    
-    
-    
-        <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
-    
-    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\nGit pull 오류이클립스에서 git pull 을 실행하고 아래와 같으 오류를 직면했다.\n\n원인?\nremote 에 fetch 가 잡히지 않아서이다.\n\n그럼 또 의문이 생긴다. 왜 remote 에 fetch 를 잡아줘야 할까 ?Git 에 대해 정확한 개념이 잡혀 있지 않은 듯해서 모호한 개념들에 대해 찾아봤다.\norigin remote 정확히 짚고 가기필자의 블로그 repository 주소는 https://github.com/ksso730/myblog.git 이다.로컬에 이 서버를 clone 하게되면 Git 은 자동으로 origin 이라는 이름을 붙인다.origin 으로부터 해당 repository 데이터를 모두 받고, master 브랜치를 가리키는 포인터를 만든다. 이 포인터를 origin/master 라 부른다.Git 은 로컬의 master 브랜치가 origin/master 를 가리키게 한다.\n정리해보자면 ,\nhttps://github.com/ksso730/myblog.git\n(My Computer - origin/master) -&gt; ","dateCreated":"2020-03-17T12:09:22+09:00","dateModified":"2020-04-28T10:36:01+09:00","datePublished":"2020-03-17T12:09:22+09:00","description":"💬 작성중이클립스에서 Git pull 오류: Nothing to fetch 해결 방법입니다.","headline":"Git pull 오류: Nothing to fetch","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2020/03/17/Git-pull-%EC%98%A4%EB%A5%98-Nothing-to-fetch/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2020/03/17/Git-pull-%EC%98%A4%EB%A5%98-Nothing-to-fetch/","keywords":"git"}</script>
-    <meta name="description" content="💬 작성중이클립스에서 Git pull 오류: Nothing to fetch 해결 방법입니다.">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="generator" content="동글씨">
+        <title>
+            Git pull 오류: Nothing to fetch - 동글씨
+        </title>
+        <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+        <meta name="author" content="Suyan Kim">
+        
+                
+                        
+                            <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
+                            
+                                <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\nGit pull 오류이클립스에서 git pull 을 실행하고 아래와 같으 오류를 직면했다.\n\n원인?\nremote 에 fetch 가 잡히지 않아서이다.\n\n그럼 또 의문이 생긴다. 왜 remote 에 fetch 를 잡아줘야 할까 ?Git 에 대해 정확한 개념이 잡혀 있지 않은 듯해서 모호한 개념들에 대해 찾아봤다.\norigin remote 정확히 짚고 가기필자의 블로그 repository 주소는 https://github.com/ksso730/myblog.git 이다.로컬에 이 서버를 clone 하게되면 Git 은 자동으로 origin 이라는 이름을 붙인다.origin 으로부터 해당 repository 데이터를 모두 받고, master 브랜치를 가리키는 포인터를 만든다. 이 포인터를 origin/master 라 부른다.Git 은 로컬의 master 브랜치가 origin/master 를 가리키게 한다.\n정리해보자면 ,\nhttps://github.com/ksso730/myblog.git\n(My Computer - origin/master) -&gt; ","dateCreated":"2020-03-17T12:09:22+09:00","dateModified":"2020-04-28T10:36:01+09:00","datePublished":"2020-03-17T12:09:22+09:00","description":"💬 작성중이클립스에서 Git pull 오류: Nothing to fetch 해결 방법입니다.","headline":"Git pull 오류: Nothing to fetch","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2020/03/17/Git-pull-%EC%98%A4%EB%A5%98-Nothing-to-fetch/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2020/03/17/Git-pull-%EC%98%A4%EB%A5%98-Nothing-to-fetch/","keywords":"git"}</script>
+                                    <meta name="description" content="💬 작성중이클립스에서 Git pull 오류: Nothing to fetch 해결 방법입니다.">
 <meta property="og:type" content="blog">
 <meta property="og:title" content="Git pull 오류: Nothing to fetch">
 <meta property="og:url" content="http://yoursite.com/2020/03/17/Git-pull-%EC%98%A4%EB%A5%98-Nothing-to-fetch/index.html">
@@ -28,31 +32,22 @@
 <meta property="article:tag" content="git">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://user-images.githubusercontent.com/28856435/76814014-f969ac00-683c-11ea-865c-62c14c550d22.png">
-    
-    
-        
-    
-    
-        <meta property="og:image" content="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=640"/>
-    
-    
-    
-    
-    <!--STYLES-->
-    
-<link rel="stylesheet" href="/assets/css/all.css">
-
-    
-<link rel="stylesheet" href="/assets/css/jquery.fancybox.css">
-
-    
-<link rel="stylesheet" href="/assets/css/thumbs.css">
-
-    
+                                        
+                                                
+                                                    
+                                                            
+                                                                
+                                                                    <meta property="og:image" content="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=640" />
+                                                                    
+                                                                            
+                                                                                    
+                                                                                            
+                                                                                                            <!--STYLES-->
+                                                                                                            
 <link rel="stylesheet" href="/assets/css/tranquilpeak.css">
 
-    <!--STYLES END-->
-    
+                                                                                                                <!--STYLES END-->
+                                                                                                                
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-158530470-1"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
@@ -63,13 +58,12 @@
     </script>
 
 
-    
+                                                                                                                    
 
-    
-        
-    
-</head>
-
+                                                                                                                        
+                                                                                                                            
+                                                                                                                                                
+    </head>
     <body>
         <div id="blog">
             <!-- Define author's picture -->
@@ -182,7 +176,7 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (7)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (9)</a></li>
                             
                         
                             
@@ -211,6 +205,10 @@
                         
                             
                                 <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Network/">☁️ Network (1)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-NodeJS/">☁️ NodeJS (1)</a></li>
                             
                         
                             
@@ -692,15 +690,6 @@
         
 <div id="cover" style="background-image:url('/assets/images/null');"></div>
         <!--SCRIPTS-->
-
-<script src="/assets/js/jquery.js"></script>
-
-
-<script src="/assets/js/jquery.fancybox.js"></script>
-
-
-<script src="/assets/js/thumbs.js"></script>
-
 
 <script src="/assets/js/tranquilpeak.js"></script>
 

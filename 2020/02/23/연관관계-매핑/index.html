@@ -2,19 +2,23 @@
 <!DOCTYPE html>
 <html lang="en">
     
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="generator" content="동글씨">
-    <title>JPA-연관관계 매핑 - 동글씨</title>
-    <meta name="author" content="Suyan Kim">
-    
-    
-    
-        <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
-    
-    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n연관관계 매핑\n단방향, 양방향 매핑이 있다. 항상 기본이 되는것은 단방향 매핑이고,여기에 양방향으로 조회를 가능토록 해준다면 양방향.여기서는 양방향에 단방향이 포함되므로 양방향을 기록하도록 하겠다.\n\n우선 기본 설계를 구두화하자면,MEMBER, ORDERS, ORDERITEM, ITEM 테이블이 존재한다.\n각 테이블의 연관관계는 아래와 같다.\n\n\n\nTABLES\nRELATION\ntable(FK)\n\n\n\nMEMBER : ORDERS\n1 : N\nORDERS(MEMBER_ID)\n\n\nORDERS : ORDERITEM\n1 : N\nORDERITEM(ORDER_ID)\n\n\nORDERITEM : ITEM\nN : 1\nORDERITEM(ITEM_ID)\n\n\n\n\n\n\n\n@ManyToOne\n1:N 관계에서 N 인쪽 객체에 설정해준다.아래는 Order.java 객체 일부이다.위 연관관계를 기준으로 MEMBER 는 여러 ORDER 를 생성할 수 있다.\n\n@ManyToOne 을 MEMBER_ID 에 설정해 주었는데,Order 객체가 MEMBER_ID 를 FK 로 갖는다는 의미이다.그리고 member 의 타입은 MEMBER 객체를 가져와 사용한다.\nOrder.java\n12345678910@Entity@Table(name=&quot;ORDERS&quot;)public class Order &#123;    @ManyToOne    @JoinColumn(&quot;MEMBER_ID&quot;)    private Member member;    ...&#125;\n\n@OneToMany위에서 @ManyToOne 을 MEMBER_ID 에 설정해 주었다면,그 MEMBER_ID 가 있는 MEMBER 객체에ORDER 객체로 orderList 를 생성해준다.\n연관관계 주인여기서 연관관계 주인이 결정된다.@OneToMany(mappedBy = &quot;&quot;) mappedBy 속성에 연관관계 주인을 넣어준다.여기서 연관관계 주인은 Order.java 에서 @ManyToOne 으로 설정해준 Member 객체의 member 변수 이다.\n\n연관관계 주인은 FK 에 설정해준다.\n\n아래와 같이 Member 객체 내에 orderList 리스트 객체가 만들어진다.\nMember.java\n1234567891011@Entitypublic class Member &#123;    @Id    @GeneratedValue    @Column(name = &quot;MEMBER_ID&quot;)    private Long id;        // mappedBy -&gt; Order.java 의 member 변수    @OneToMany(mappedBy = &quot;member&quot;)    private List&lt;Order&gt; orderList = new ArrayList&lt;Order&gt;();&#125;\n\nOrderItem.java 도 마찬가지로 ORDER_ID 와 ITEM_ID 가 FK 이므로@ManyToOne 을 설정해주고 객체타입을 각 Order, Item 객체로.\n123456789101112131415161718@Entity@Table(name = &quot;ORDER_ITEM&quot;)public class OrderItem &#123;    @Id    @GeneratedValue    @Column(name = &quot;ORDER_ITEM_ID&quot;)    private Long orderItemId;    @ManyToOne    @JoinColumn(name = &quot;ORDER_ID&quot;)    private Order order;    @ManyToOne    @JoinColumn(name = &quot;ITEM_ID&quot;)    private Item item;\n\nOrder 객체에는@OneToMany 를 추가해준다.Order 는 OderItem 리스트를 갖는다.\nOrder.java\n12345678910111213@Entity@Table(name=&quot;ORDERS&quot;)public class Order &#123;    @ManyToOne    @Column(&quot;MEMBER_ID&quot;)    private Member member;    @OneToMany(mappedBy=&quot;order&quot;)    List&lt;OrderItem&gt; orderItemList = new ArrayList()&lt;&gt;;    ...&#125;\n\nItem 에서는 조회할 필요없으니 원래대로 기본키만 지정.\nItem.java\n12345678@Entitypublic class Item &#123;    @Id @GeneratedValue    @Column(name = &quot;ITEM_ID&quot;)    private Long itemId;    ...&#125;\n\n위의 방식대로 매핑을 마치면 터미널에서 아래와 같이객체를 기준으로 한 테이블이 생성되는걸 확인할 수 있다.\n1234567891011121314151617181920212223242526272829303132333435   create table ITEM (       ITEM_ID bigint not null,        name varchar(255),        price integer not null,        stockQuantity integer not null,        primary key (ITEM_ID)    )Hibernate:         create table Member (       MEMBER_ID bigint not null,        city varchar(255),        name varchar(255),        street varchar(255),        zipcode varchar(255),        primary key (MEMBER_ID)    )Hibernate:         create table ORDER_ITEM (       ORDER_ITEM_ID bigint not null,        count integer not null,        orderPrice integer not null,        ITEM_ID bigint,        ORDER_ID bigint,        primary key (ORDER_ITEM_ID)    )Hibernate:         create table ORDERS (       id bigint not null,        status varchar(255),        MEMBER_ID bigint,        primary key (id)    )","dateCreated":"2020-02-23T23:32:55+09:00","dateModified":"2020-04-28T10:36:01+09:00","datePublished":"2020-02-23T23:32:55+09:00","description":"연관관계 매핑에서의 @ManyToOne, @OneToMany 사용법과연관관계 주인을 지정해본다.","headline":"JPA-연관관계 매핑","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2020/02/23/%EC%97%B0%EA%B4%80%EA%B4%80%EA%B3%84-%EB%A7%A4%ED%95%91/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2020/02/23/%EC%97%B0%EA%B4%80%EA%B4%80%EA%B3%84-%EB%A7%A4%ED%95%91/","keywords":"JPA"}</script>
-    <meta name="description" content="연관관계 매핑에서의 @ManyToOne, @OneToMany 사용법과연관관계 주인을 지정해본다.">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="generator" content="동글씨">
+        <title>
+            JPA-연관관계 매핑 - 동글씨
+        </title>
+        <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+        <meta name="author" content="Suyan Kim">
+        
+                
+                        
+                            <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
+                            
+                                <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n연관관계 매핑\n단방향, 양방향 매핑이 있다. 항상 기본이 되는것은 단방향 매핑이고,여기에 양방향으로 조회를 가능토록 해준다면 양방향.여기서는 양방향에 단방향이 포함되므로 양방향을 기록하도록 하겠다.\n\n우선 기본 설계를 구두화하자면,MEMBER, ORDERS, ORDERITEM, ITEM 테이블이 존재한다.\n각 테이블의 연관관계는 아래와 같다.\n\n\n\nTABLES\nRELATION\ntable(FK)\n\n\n\nMEMBER : ORDERS\n1 : N\nORDERS(MEMBER_ID)\n\n\nORDERS : ORDERITEM\n1 : N\nORDERITEM(ORDER_ID)\n\n\nORDERITEM : ITEM\nN : 1\nORDERITEM(ITEM_ID)\n\n\n\n\n\n\n\n@ManyToOne\n1:N 관계에서 N 인쪽 객체에 설정해준다.아래는 Order.java 객체 일부이다.위 연관관계를 기준으로 MEMBER 는 여러 ORDER 를 생성할 수 있다.\n\n@ManyToOne 을 MEMBER_ID 에 설정해 주었는데,Order 객체가 MEMBER_ID 를 FK 로 갖는다는 의미이다.그리고 member 의 타입은 MEMBER 객체를 가져와 사용한다.\nOrder.java\n12345678910@Entity@Table(name=&quot;ORDERS&quot;)public class Order &#123;    @ManyToOne    @JoinColumn(&quot;MEMBER_ID&quot;)    private Member member;    ...&#125;\n\n@OneToMany위에서 @ManyToOne 을 MEMBER_ID 에 설정해 주었다면,그 MEMBER_ID 가 있는 MEMBER 객체에ORDER 객체로 orderList 를 생성해준다.\n연관관계 주인여기서 연관관계 주인이 결정된다.@OneToMany(mappedBy = &quot;&quot;) mappedBy 속성에 연관관계 주인을 넣어준다.여기서 연관관계 주인은 Order.java 에서 @ManyToOne 으로 설정해준 Member 객체의 member 변수 이다.\n\n연관관계 주인은 FK 에 설정해준다.\n\n아래와 같이 Member 객체 내에 orderList 리스트 객체가 만들어진다.\nMember.java\n1234567891011@Entitypublic class Member &#123;    @Id    @GeneratedValue    @Column(name = &quot;MEMBER_ID&quot;)    private Long id;        // mappedBy -&gt; Order.java 의 member 변수    @OneToMany(mappedBy = &quot;member&quot;)    private List&lt;Order&gt; orderList = new ArrayList&lt;Order&gt;();&#125;\n\nOrderItem.java 도 마찬가지로 ORDER_ID 와 ITEM_ID 가 FK 이므로@ManyToOne 을 설정해주고 객체타입을 각 Order, Item 객체로.\n123456789101112131415161718@Entity@Table(name = &quot;ORDER_ITEM&quot;)public class OrderItem &#123;    @Id    @GeneratedValue    @Column(name = &quot;ORDER_ITEM_ID&quot;)    private Long orderItemId;    @ManyToOne    @JoinColumn(name = &quot;ORDER_ID&quot;)    private Order order;    @ManyToOne    @JoinColumn(name = &quot;ITEM_ID&quot;)    private Item item;\n\nOrder 객체에는@OneToMany 를 추가해준다.Order 는 OderItem 리스트를 갖는다.\nOrder.java\n12345678910111213@Entity@Table(name=&quot;ORDERS&quot;)public class Order &#123;    @ManyToOne    @Column(&quot;MEMBER_ID&quot;)    private Member member;    @OneToMany(mappedBy=&quot;order&quot;)    List&lt;OrderItem&gt; orderItemList = new ArrayList()&lt;&gt;;    ...&#125;\n\nItem 에서는 조회할 필요없으니 원래대로 기본키만 지정.\nItem.java\n12345678@Entitypublic class Item &#123;    @Id @GeneratedValue    @Column(name = &quot;ITEM_ID&quot;)    private Long itemId;    ...&#125;\n\n위의 방식대로 매핑을 마치면 터미널에서 아래와 같이객체를 기준으로 한 테이블이 생성되는걸 확인할 수 있다.\n1234567891011121314151617181920212223242526272829303132333435   create table ITEM (       ITEM_ID bigint not null,        name varchar(255),        price integer not null,        stockQuantity integer not null,        primary key (ITEM_ID)    )Hibernate:         create table Member (       MEMBER_ID bigint not null,        city varchar(255),        name varchar(255),        street varchar(255),        zipcode varchar(255),        primary key (MEMBER_ID)    )Hibernate:         create table ORDER_ITEM (       ORDER_ITEM_ID bigint not null,        count integer not null,        orderPrice integer not null,        ITEM_ID bigint,        ORDER_ID bigint,        primary key (ORDER_ITEM_ID)    )Hibernate:         create table ORDERS (       id bigint not null,        status varchar(255),        MEMBER_ID bigint,        primary key (id)    )","dateCreated":"2020-02-23T23:32:55+09:00","dateModified":"2020-04-28T10:36:01+09:00","datePublished":"2020-02-23T23:32:55+09:00","description":"연관관계 매핑에서의 @ManyToOne, @OneToMany 사용법과연관관계 주인을 지정해본다.","headline":"JPA-연관관계 매핑","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2020/02/23/%EC%97%B0%EA%B4%80%EA%B4%80%EA%B3%84-%EB%A7%A4%ED%95%91/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2020/02/23/%EC%97%B0%EA%B4%80%EA%B4%80%EA%B3%84-%EB%A7%A4%ED%95%91/","keywords":"JPA"}</script>
+                                    <meta name="description" content="연관관계 매핑에서의 @ManyToOne, @OneToMany 사용법과연관관계 주인을 지정해본다.">
 <meta property="og:type" content="blog">
 <meta property="og:title" content="JPA-연관관계 매핑">
 <meta property="og:url" content="http://yoursite.com/2020/02/23/%EC%97%B0%EA%B4%80%EA%B4%80%EA%B3%84-%EB%A7%A4%ED%95%91/index.html">
@@ -26,31 +30,22 @@
 <meta property="article:author" content="Suyan Kim">
 <meta property="article:tag" content="JPA">
 <meta name="twitter:card" content="summary">
-    
-    
-        
-    
-    
-        <meta property="og:image" content="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=640"/>
-    
-    
-    
-    
-    <!--STYLES-->
-    
-<link rel="stylesheet" href="/assets/css/all.css">
-
-    
-<link rel="stylesheet" href="/assets/css/jquery.fancybox.css">
-
-    
-<link rel="stylesheet" href="/assets/css/thumbs.css">
-
-    
+                                        
+                                                
+                                                    
+                                                            
+                                                                
+                                                                    <meta property="og:image" content="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=640" />
+                                                                    
+                                                                            
+                                                                                    
+                                                                                            
+                                                                                                            <!--STYLES-->
+                                                                                                            
 <link rel="stylesheet" href="/assets/css/tranquilpeak.css">
 
-    <!--STYLES END-->
-    
+                                                                                                                <!--STYLES END-->
+                                                                                                                
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-158530470-1"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
@@ -61,13 +56,12 @@
     </script>
 
 
-    
+                                                                                                                    
 
-    
-        
-    
-</head>
-
+                                                                                                                        
+                                                                                                                            
+                                                                                                                                                
+    </head>
     <body>
         <div id="blog">
             <!-- Define author's picture -->
@@ -180,7 +174,7 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (7)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (9)</a></li>
                             
                         
                             
@@ -209,6 +203,10 @@
                         
                             
                                 <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Network/">☁️ Network (1)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-NodeJS/">☁️ NodeJS (1)</a></li>
                             
                         
                             
@@ -742,15 +740,6 @@
         
 <div id="cover" style="background-image:url('/assets/images/null');"></div>
         <!--SCRIPTS-->
-
-<script src="/assets/js/jquery.js"></script>
-
-
-<script src="/assets/js/jquery.fancybox.js"></script>
-
-
-<script src="/assets/js/thumbs.js"></script>
-
 
 <script src="/assets/js/tranquilpeak.js"></script>
 

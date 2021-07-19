@@ -2,19 +2,23 @@
 <!DOCTYPE html>
 <html lang="en">
     
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="generator" content="동글씨">
-    <title>JPA 공통 매핑정보 사용 - 동글씨</title>
-    <meta name="author" content="Suyan Kim">
-    
-    
-    
-        <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
-    
-    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\n@MappedSuperclassBaseEntity 클래스.자주쓰이는 공통으로 사용되는 매핑정보들을 모아, 상속받아 사용.실무에서 많이 사용되는 방식이다.추상 클래스로 만들어둔다. abstract물론 조회는 안된다.\n123456@MappedSuperclasspublic abstract class BaseEntity &#123;    private String modDate;    private String regDate;    private String createdBy;&#125;\n\n예를 들어 Member 가 BasdEnty 를 상속받는다면,\n12345678910@Entitypublic class Member extends BaseEntity &#123;    @Id    @GeneratedValue    @Column(name = &quot;MEMBER_ID&quot;)    private Long id;    @Column(name = &quot;USERNAME&quot;)    private Long username;\n\n123456789try&#123;    Member member = new Member();    member.setCreatedBy(&quot;Sue&quot;);    member.setModDate(&quot;20200212&quot;);    member.setRegDate(&quot;20200110&quot;);    em.persist(member);    ...&#125;\n\n아래와 같이 상속받은 슈퍼 클래스의 값이 잘 입력된것을 확인 !\n","dateCreated":"2020-03-04T23:07:50+09:00","dateModified":"2021-04-28T15:21:58+09:00","datePublished":"2020-03-04T23:07:50+09:00","description":"@MappedSuperclass 공통 속성을 모아두는 클래스.공통 객체에서 상속받아 공통 속성들을 사용한다.JPA BaseEntity","headline":"JPA 공통 매핑정보 사용","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2020/03/04/JPA-%EA%B3%B5%ED%86%B5-%EB%A7%A4%ED%95%91%EC%A0%95%EB%B3%B4-%EC%82%AC%EC%9A%A9/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2020/03/04/JPA-%EA%B3%B5%ED%86%B5-%EB%A7%A4%ED%95%91%EC%A0%95%EB%B3%B4-%EC%82%AC%EC%9A%A9/","keywords":"jpa"}</script>
-    <meta name="description" content="@MappedSuperclass 공통 속성을 모아두는 클래스.공통 객체에서 상속받아 공통 속성들을 사용한다.JPA BaseEntity">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="generator" content="동글씨">
+        <title>
+            JPA 공통 매핑정보 사용 - 동글씨
+        </title>
+        <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+        <meta name="author" content="Suyan Kim">
+        
+                
+                        
+                            <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
+                            
+                                <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\n@MappedSuperclassBaseEntity 클래스.자주쓰이는 공통으로 사용되는 매핑정보들을 모아, 상속받아 사용.실무에서 많이 사용되는 방식이다.추상 클래스로 만들어둔다. abstract물론 조회는 안된다.\n123456@MappedSuperclasspublic abstract class BaseEntity &#123;    private String modDate;    private String regDate;    private String createdBy;&#125;\n\n예를 들어 Member 가 BasdEnty 를 상속받는다면,\n12345678910@Entitypublic class Member extends BaseEntity &#123;    @Id    @GeneratedValue    @Column(name = &quot;MEMBER_ID&quot;)    private Long id;    @Column(name = &quot;USERNAME&quot;)    private Long username;\n\n123456789try&#123;    Member member = new Member();    member.setCreatedBy(&quot;Sue&quot;);    member.setModDate(&quot;20200212&quot;);    member.setRegDate(&quot;20200110&quot;);    em.persist(member);    ...&#125;\n\n아래와 같이 상속받은 슈퍼 클래스의 값이 잘 입력된것을 확인 !\n","dateCreated":"2020-03-04T23:07:50+09:00","dateModified":"2021-04-28T15:21:58+09:00","datePublished":"2020-03-04T23:07:50+09:00","description":"@MappedSuperclass 공통 속성을 모아두는 클래스.공통 객체에서 상속받아 공통 속성들을 사용한다.JPA BaseEntity","headline":"JPA 공통 매핑정보 사용","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2020/03/04/JPA-%EA%B3%B5%ED%86%B5-%EB%A7%A4%ED%95%91%EC%A0%95%EB%B3%B4-%EC%82%AC%EC%9A%A9/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2020/03/04/JPA-%EA%B3%B5%ED%86%B5-%EB%A7%A4%ED%95%91%EC%A0%95%EB%B3%B4-%EC%82%AC%EC%9A%A9/","keywords":"jpa"}</script>
+                                    <meta name="description" content="@MappedSuperclass 공통 속성을 모아두는 클래스.공통 객체에서 상속받아 공통 속성들을 사용한다.JPA BaseEntity">
 <meta property="og:type" content="blog">
 <meta property="og:title" content="JPA 공통 매핑정보 사용">
 <meta property="og:url" content="http://yoursite.com/2020/03/04/JPA-%EA%B3%B5%ED%86%B5-%EB%A7%A4%ED%95%91%EC%A0%95%EB%B3%B4-%EC%82%AC%EC%9A%A9/index.html">
@@ -28,31 +32,22 @@
 <meta property="article:tag" content="jpa">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://user-images.githubusercontent.com/28856435/75888907-6cebe080-5e6f-11ea-9e33-17dc4321d674.png">
-    
-    
-        
-    
-    
-        <meta property="og:image" content="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=640"/>
-    
-    
-    
-    
-    <!--STYLES-->
-    
-<link rel="stylesheet" href="/assets/css/all.css">
-
-    
-<link rel="stylesheet" href="/assets/css/jquery.fancybox.css">
-
-    
-<link rel="stylesheet" href="/assets/css/thumbs.css">
-
-    
+                                        
+                                                
+                                                    
+                                                            
+                                                                
+                                                                    <meta property="og:image" content="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=640" />
+                                                                    
+                                                                            
+                                                                                    
+                                                                                            
+                                                                                                            <!--STYLES-->
+                                                                                                            
 <link rel="stylesheet" href="/assets/css/tranquilpeak.css">
 
-    <!--STYLES END-->
-    
+                                                                                                                <!--STYLES END-->
+                                                                                                                
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-158530470-1"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
@@ -63,13 +58,12 @@
     </script>
 
 
-    
+                                                                                                                    
 
-    
-        
-    
-</head>
-
+                                                                                                                        
+                                                                                                                            
+                                                                                                                                                
+    </head>
     <body>
         <div id="blog">
             <!-- Define author's picture -->
@@ -182,7 +176,7 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (7)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (9)</a></li>
                             
                         
                             
@@ -211,6 +205,10 @@
                         
                             
                                 <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Network/">☁️ Network (1)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-NodeJS/">☁️ NodeJS (1)</a></li>
                             
                         
                             
@@ -692,15 +690,6 @@
         
 <div id="cover" style="background-image:url('/assets/images/null');"></div>
         <!--SCRIPTS-->
-
-<script src="/assets/js/jquery.js"></script>
-
-
-<script src="/assets/js/jquery.fancybox.js"></script>
-
-
-<script src="/assets/js/thumbs.js"></script>
-
 
 <script src="/assets/js/tranquilpeak.js"></script>
 

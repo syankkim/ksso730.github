@@ -2,19 +2,23 @@
 <!DOCTYPE html>
 <html lang="en">
     
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="generator" content="동글씨">
-    <title>📱 CPU구조_레지스터 - 동글씨</title>
-    <meta name="author" content="Suyan Kim">
-    
-    
-    
-        <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
-    
-    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\nCPU 구성요소\n중앙처리장치 = CPU(Central Processing Unit)\n\n레지스터 세트 (Register set) : 명령어를 실행시 필요한 데이터를 보관\n산술논리장치 (ALU; Arithmetic Logic Unit) : 명령어를 실행하기 위한 마이크로 연산 수행\n마이크로 연산 종류- shift, count, clear, load\n제어장치 (Contol Unit) : RS 간의 정보전송 감시, ALU에 수행할 동작 지시. ID(명령어해독기) 로부터 보내진 신호를 기준으로 명령어 실행\n\n\n각 레지스터들의 기능\nMAR Memory Address Register : 메모리의 상태\nMBR Memory Buffer Register : 메모리 임시저장공간\nIR Instruction Register 명령어 레지스터 : 계수기가 지정하는 주소에 기억된 명령어를 해독하기 위해 임시 기억\nID Instruction decoder 명령어 해독기: IR에 들어있는 명령코드의 해석\n\n\nPC (Program Counter) 프로그램 계수기 : 다음 수행될 명령어가 들어있는 주소(주기억장치)를 기억.\nSR Status Register 상태레지스터: CPU의 상태를 나타내는 특수목적의 레지스터. flag 정보를 저장한다.\n연산결과 상태\n0(Z; Zero), 부호(S; sign), 오버플로우(V; overflow), 캐리(C; carry), 인터럽트(I; interrupt)\n\n\nWR Work Register 작업레지스터: 산술논리연산을 실행할 수 있게 자료 및 결과 저장. (GPR 은 ALU를 사용하지 않는다.)\nGR General Purpose Register 범용 레지스터 : 작업 레지스터에서 데이터가 용이하게 처리되도록 임시자료 저장\n\nADD 명령의 실행예\n\n\n\nseq\nstage\nflow\nfunction\n\n\n\n1\nFETCH\nMAR &lt;- PC\n다음 실행할 명령어의 주소를 MAR로 이동\n\n\n2\nFETCH\nMBR &lt;- 기억장치[MAR]\nMAR 이 지정하는 주소의 내용을 MSR로 이동\n\n\n3\nFETCH\nIR &lt;- MBR\nMBR의 내용을 IR 명령어 레지스터로 이동\n\n\n\n\n&lt;어떤 명령인가 ?&gt;\n\n\n\n4\nEXECUTE\nMAR &lt;- IR[OPRD]\n명령어 레지스터의 주소 부분을 MAR로 이동\n\n\n5\nEXECUTE\nMBR &lt;- 기억장치[MAR]\nADD 할 내용을 MBR로 이동\n\n\n6\nEXECUTE\nWR &lt;- GR[IR]\nIR에서 지정하는 GR의 내용을 WR로 이동\n\n\n7\nEXECUTE\nWR &lt;- WR + MBR\nADD 작업: data(WR) + data(MBR)\n\n\n8\nEXECUTE\nGR[IR] &lt;- WR\nWR의 결과를 GR로 이동\n\n\n9\nEXECUTE\nPC &lt;- PC+1\n다음 명령어 수행 위해 PC값 증가\n\n\nCPU 내부 구조\n명령어 구성 및 실행\n\n\n레지스터 간의 전송문으로 나타나는 컴퓨터의 각 연산이 어떻게 동작하는가?\n컴퓨터의 구조: 내부 레지스터, 타이밍, 제어구조 명령어 집합에 의해 정의\n\n레지스터 전송 언어\n마이크로 연산 : 레지스터에 저장된 데이터 조작을 위해 실해되는 동작\n하나의 Clock Pulse 클럭 펄스 내에서 실행.\nshift, count, clear, road etc.\n\n\n\n레지스터 전송\n레지스터 전송의 기본기호\n\n\n\n\n\n\nR1 -&gt; R2 : 치환연산자를 이용한 레지스터간 정보 전송\nP: R1 -&gt; R2\nif(P=1) then(R1-&gt;R2)\n소스레지스터로부터 목적레지스터까지의 연결.\n목적 레지스터애는 조건부 처리 가능한 병렬로드 기능이 있어야한다.\n\n\n\n\n레지스터 전송을 나타내는 각 문장들은 그 전송을 수행하는 하드웨어가 구성되어 있음을 의미한다.\n\nCPU 디자인\n다양한 디바이스들 간 상호 연결\n직접연결: 연결 복잡도가 장치수의 제곱에 비례\n버스연결\n공용선에 의한 연결 -&gt; MUX (멀티플렉서) 를 이용한다.\n디코더 decoder 이용 -&gt; 코드화된 데이터로부터 정보를 찾아내는 논리회로\n가성비가 높다.\n관리를 위한 다양한 방식이 존재한다.\n\n\n\n\n자료구조\n스택(stack): 주 함수에서 서브루틴을 호출할 경우(콜스택)\n큐(queue): 버퍼(buffer) 등과 같이 순차적 처리를 요하는 자료의 대기시에 활용\n데크(deque): 스택과 큐의 동작을 동시에 가능. (*이건 잘 모르겠다..)\n입력제한 데크: scroll\n출력제한 데크: shelf\n\n\n\n\n","dateCreated":"2021-06-03T00:35:59+09:00","dateModified":"2021-06-08T13:34:02+09:00","datePublished":"2021-06-03T00:35:59+09:00","description":"CPU 구성과 디자인 그리고 레지스터들의 종류와 기능을 알아본다.#MBR #register #마이크로_연산","headline":"📱 CPU구조_레지스터","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2021/06/03/CPU%EA%B5%AC%EC%A1%B0-%EB%A0%88%EC%A7%80%EC%8A%A4%ED%84%B0/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2021/06/03/CPU%EA%B5%AC%EC%A1%B0-%EB%A0%88%EC%A7%80%EC%8A%A4%ED%84%B0/","keywords":"computer_science"}</script>
-    <meta name="description" content="CPU 구성과 디자인 그리고 레지스터들의 종류와 기능을 알아본다.#MBR #register #마이크로_연산">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="generator" content="동글씨">
+        <title>
+            📱 CPU구조_레지스터 - 동글씨
+        </title>
+        <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+        <meta name="author" content="Suyan Kim">
+        
+                
+                        
+                            <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
+                            
+                                <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\nCPU 구성요소\n중앙처리장치 = CPU(Central Processing Unit)\n\n레지스터 세트 (Register set) : 명령어를 실행시 필요한 데이터를 보관\n산술논리장치 (ALU; Arithmetic Logic Unit) : 명령어를 실행하기 위한 마이크로 연산 수행\n마이크로 연산 종류- shift, count, clear, load\n제어장치 (Contol Unit) : RS 간의 정보전송 감시, ALU에 수행할 동작 지시. ID(명령어해독기) 로부터 보내진 신호를 기준으로 명령어 실행\n\n\n각 레지스터들의 기능\nMAR Memory Address Register : 메모리의 상태\nMBR Memory Buffer Register : 메모리 임시저장공간\nIR Instruction Register 명령어 레지스터 : 계수기가 지정하는 주소에 기억된 명령어를 해독하기 위해 임시 기억\nID Instruction decoder 명령어 해독기: IR에 들어있는 명령코드의 해석\n\n\nPC (Program Counter) 프로그램 계수기 : 다음 수행될 명령어가 들어있는 주소(주기억장치)를 기억.\nSR Status Register 상태레지스터: CPU의 상태를 나타내는 특수목적의 레지스터. flag 정보를 저장한다.\n연산결과 상태\n0(Z; Zero), 부호(S; sign), 오버플로우(V; overflow), 캐리(C; carry), 인터럽트(I; interrupt)\n\n\nWR Work Register 작업레지스터: 산술논리연산을 실행할 수 있게 자료 및 결과 저장. (GPR 은 ALU를 사용하지 않는다.)\nGR General Purpose Register 범용 레지스터 : 작업 레지스터에서 데이터가 용이하게 처리되도록 임시자료 저장\n\nADD 명령의 실행예\n\n\n\nseq\nstage\nflow\nfunction\n\n\n\n1\nFETCH\nMAR &lt;- PC\n다음 실행할 명령어의 주소를 MAR로 이동\n\n\n2\nFETCH\nMBR &lt;- 기억장치[MAR]\nMAR 이 지정하는 주소의 내용을 MSR로 이동\n\n\n3\nFETCH\nIR &lt;- MBR\nMBR의 내용을 IR 명령어 레지스터로 이동\n\n\n\n\n&lt;어떤 명령인가 ?&gt;\n\n\n\n4\nEXECUTE\nMAR &lt;- IR[OPRD]\n명령어 레지스터의 주소 부분을 MAR로 이동\n\n\n5\nEXECUTE\nMBR &lt;- 기억장치[MAR]\nADD 할 내용을 MBR로 이동\n\n\n6\nEXECUTE\nWR &lt;- GR[IR]\nIR에서 지정하는 GR의 내용을 WR로 이동\n\n\n7\nEXECUTE\nWR &lt;- WR + MBR\nADD 작업: data(WR) + data(MBR)\n\n\n8\nEXECUTE\nGR[IR] &lt;- WR\nWR의 결과를 GR로 이동\n\n\n9\nEXECUTE\nPC &lt;- PC+1\n다음 명령어 수행 위해 PC값 증가\n\n\nCPU 내부 구조\n명령어 구성 및 실행\n\n\n레지스터 간의 전송문으로 나타나는 컴퓨터의 각 연산이 어떻게 동작하는가?\n컴퓨터의 구조: 내부 레지스터, 타이밍, 제어구조 명령어 집합에 의해 정의\n\n레지스터 전송 언어\n마이크로 연산 : 레지스터에 저장된 데이터 조작을 위해 실해되는 동작\n하나의 Clock Pulse 클럭 펄스 내에서 실행.\nshift, count, clear, road etc.\n\n\n\n레지스터 전송\n레지스터 전송의 기본기호\n\n\n\n\n\n\nR1 -&gt; R2 : 치환연산자를 이용한 레지스터간 정보 전송\nP: R1 -&gt; R2\nif(P=1) then(R1-&gt;R2)\n소스레지스터로부터 목적레지스터까지의 연결.\n목적 레지스터애는 조건부 처리 가능한 병렬로드 기능이 있어야한다.\n\n\n\n\n레지스터 전송을 나타내는 각 문장들은 그 전송을 수행하는 하드웨어가 구성되어 있음을 의미한다.\n\nCPU 디자인\n다양한 디바이스들 간 상호 연결\n직접연결: 연결 복잡도가 장치수의 제곱에 비례\n버스연결\n공용선에 의한 연결 -&gt; MUX (멀티플렉서) 를 이용한다.\n디코더 decoder 이용 -&gt; 코드화된 데이터로부터 정보를 찾아내는 논리회로\n가성비가 높다.\n관리를 위한 다양한 방식이 존재한다.\n\n\n\n\n자료구조\n스택(stack): 주 함수에서 서브루틴을 호출할 경우(콜스택)\n큐(queue): 버퍼(buffer) 등과 같이 순차적 처리를 요하는 자료의 대기시에 활용\n데크(deque): 스택과 큐의 동작을 동시에 가능. (*이건 잘 모르겠다..)\n입력제한 데크: scroll\n출력제한 데크: shelf\n\n\n\n\n","dateCreated":"2021-06-03T00:35:59+09:00","dateModified":"2021-06-08T13:34:02+09:00","datePublished":"2021-06-03T00:35:59+09:00","description":"CPU 구성과 디자인 그리고 레지스터들의 종류와 기능을 알아본다.#MBR #register #마이크로_연산","headline":"📱 CPU구조_레지스터","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2021/06/03/CPU%EA%B5%AC%EC%A1%B0-%EB%A0%88%EC%A7%80%EC%8A%A4%ED%84%B0/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2021/06/03/CPU%EA%B5%AC%EC%A1%B0-%EB%A0%88%EC%A7%80%EC%8A%A4%ED%84%B0/","keywords":"computer_science"}</script>
+                                    <meta name="description" content="CPU 구성과 디자인 그리고 레지스터들의 종류와 기능을 알아본다.#MBR #register #마이크로_연산">
 <meta property="og:type" content="blog">
 <meta property="og:title" content="📱 CPU구조_레지스터">
 <meta property="og:url" content="http://yoursite.com/2021/06/03/CPU%EA%B5%AC%EC%A1%B0-%EB%A0%88%EC%A7%80%EC%8A%A4%ED%84%B0/index.html">
@@ -28,31 +32,22 @@
 <meta property="article:tag" content="computer_science">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://user-images.githubusercontent.com/28856435/120518845-f7bde100-c40c-11eb-9643-9e9cac53d0dc.PNG">
-    
-    
-        
-    
-    
-        <meta property="og:image" content="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=640"/>
-    
-    
-    
-    
-    <!--STYLES-->
-    
-<link rel="stylesheet" href="/assets/css/all.css">
-
-    
-<link rel="stylesheet" href="/assets/css/jquery.fancybox.css">
-
-    
-<link rel="stylesheet" href="/assets/css/thumbs.css">
-
-    
+                                        
+                                                
+                                                    
+                                                            
+                                                                
+                                                                    <meta property="og:image" content="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=640" />
+                                                                    
+                                                                            
+                                                                                    
+                                                                                            
+                                                                                                            <!--STYLES-->
+                                                                                                            
 <link rel="stylesheet" href="/assets/css/tranquilpeak.css">
 
-    <!--STYLES END-->
-    
+                                                                                                                <!--STYLES END-->
+                                                                                                                
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-158530470-1"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
@@ -63,13 +58,12 @@
     </script>
 
 
-    
+                                                                                                                    
 
-    
-        
-    
-</head>
-
+                                                                                                                        
+                                                                                                                            
+                                                                                                                                                
+    </head>
     <body>
         <div id="blog">
             <!-- Define author's picture -->
@@ -182,7 +176,7 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (7)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (9)</a></li>
                             
                         
                             
@@ -211,6 +205,10 @@
                         
                             
                                 <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Network/">☁️ Network (1)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-NodeJS/">☁️ NodeJS (1)</a></li>
                             
                         
                             
@@ -528,8 +526,8 @@
                 <a
                     class="post-action-btn btn btn--default tooltip--top"
                     href="/2021/06/01/%EC%BB%B4%ED%93%A8%ED%84%B0%EA%B5%AC%EC%A1%B0_%EB%8D%B0%EC%9D%B4%ED%84%B0%EC%9D%98%EC%A2%85%EB%A5%98/"
-                    data-tooltip="🖥 컴퓨터구조-데이터의 종류, 논리회로"
-                    aria-label="NEXT: 🖥 컴퓨터구조-데이터의 종류, 논리회로"
+                    data-tooltip="ㅊ 컴퓨터구조-데이터의 종류, 논리회로"
+                    aria-label="NEXT: ㅊ 컴퓨터구조-데이터의 종류, 논리회로"
                 >
                     
                         <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
@@ -657,8 +655,8 @@
                 <a
                     class="post-action-btn btn btn--default tooltip--top"
                     href="/2021/06/01/%EC%BB%B4%ED%93%A8%ED%84%B0%EA%B5%AC%EC%A1%B0_%EB%8D%B0%EC%9D%B4%ED%84%B0%EC%9D%98%EC%A2%85%EB%A5%98/"
-                    data-tooltip="🖥 컴퓨터구조-데이터의 종류, 논리회로"
-                    aria-label="NEXT: 🖥 컴퓨터구조-데이터의 종류, 논리회로"
+                    data-tooltip="ㅊ 컴퓨터구조-데이터의 종류, 논리회로"
+                    aria-label="NEXT: ㅊ 컴퓨터구조-데이터의 종류, 논리회로"
                 >
                     
                         <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
@@ -834,15 +832,6 @@
         
 <div id="cover" style="background-image:url('/assets/images/null');"></div>
         <!--SCRIPTS-->
-
-<script src="/assets/js/jquery.js"></script>
-
-
-<script src="/assets/js/jquery.fancybox.js"></script>
-
-
-<script src="/assets/js/thumbs.js"></script>
-
 
 <script src="/assets/js/tranquilpeak.js"></script>
 

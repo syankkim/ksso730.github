@@ -2,19 +2,23 @@
 <!DOCTYPE html>
 <html lang="en">
     
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="generator" content="동글씨">
-    <title>AWS-Docker,Jira 설치 - 동글씨</title>
-    <meta name="author" content="Suyan Kim">
-    
-    
-    
-        <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
-    
-    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\nAWS 인스턴스에서 Docker 설치\njira container 는 메모리를 많이 차지하기 때문에 AWS 인스턴스는 최소 t2.larg 로 선택해야 한다.\n$ sudo yum install docker-io\n\n\n\n\n\n12345678910111213141516$ ssh -i suyeon.pem ec2-user@15.164.50.108The authenticity of host &#x27;15.164.50.108 (15.164.50.108)&#x27; can&#x27;t be established.ECDSA key fingerprint is SHA256:KwsFct4EwSLlShPOuWPC0yr0ewcI4lGT352J9tLKKwQ.Are you sure you want to continue connecting (yes/no/[fingerprint])? yesWarning: Permanently added &#x27;15.164.50.108&#x27; (ECDSA) to the list of known hosts.       __|  __|_  )       _|  (     /   Amazon Linux 2 AMI      ___|\\___|___|https://aws.amazon.com/amazon-linux-2/[ec2-user@ip-172-31-36-132 ~]$ ^C[ec2-user@ip-172-31-36-132 ~]$ docker-bash: docker: command not found[ec2-user@ip-172-31-36-132 ~]$ sudo yum install docker-io\n\ndocker ps -a 리스트 확인\nIs the docker daemon running? : 도커를 실행해준다.\nsudo systemctl start docker\ndial unix /var/run/docker.sock: connect: permission denied : 권한 부여\nsudo setfacl -m user:ec2-user:rw /var/run/docker.sock\n\n123456789[ec2-user@ip-172-31-36-132 ~]$ docker ps -aCannot connect to the Docker daemon at unix:///var/run/docker.sock. Is the docker daemon running?[ec2-user@ip-172-31-36-132 ~]$ sudo systemctl start docker[ec2-user@ip-172-31-36-132 ~]$ docker ps -aGot permission denied while trying to connect to the Docker daemon socket at unix:///var/run/docker.sock: Get &quot;http://%2Fvar%2Frun%2Fdocker.sock/v1.24/containers/json?all=1&quot;: dial unix /var/run/docker.sock: connect: permission denied[ec2-user@ip-172-31-36-132 ~]$ sudo setfacl -m user:ec2-user:rw /var/run/ddbus/               dhclient-eth0.pid   dmeventd-server     docker.piddhclient6-eth0.pid  dmeventd-client     docker/             docker.sock[ec2-user@ip-172-31-36-132 ~]$ sudo setfacl -m user:ec2-user:rw /var/run/docker.sock\n\n\n잘 실행된다.\n\n12[ec2-user@ip-172-31-36-132 ~]$ docker ps -aCONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES\n\n\nJira 협업툴 설치\n기존 지라 도커 컨테이너 삭제\n지라 도커 컨테이너 설치1$ docker pull cptactionhank/atlassian-jira-software:latest\n지라 도커 컨테이너 생성\n\n\n``123456$ docker create --restart=no --name &quot;jira-container&quot;\\ --publish &quot;8080:8080&quot;\\ --volume &quot;hostpath:/var/atlassian/jira&quot;\\ --env &quot;CATALINA_OPTS= -Xms1024m -Xmx1024m -Datlassian.plugins.enable.wait=300&quot;\\ cptactionhank/atlassian-jira-software:latest$ 0c8922efd3800885da4b46af5bc17e6804fc91b102e186dec61efa41e39f117d\n\n\n지라 도커 컨테이너 실행1\n","dateCreated":"2021-05-22T20:46:29+09:00","dateModified":"2021-05-25T09:54:42+09:00","datePublished":"2021-05-22T20:46:29+09:00","description":"AWS 에서 Jira와 Docker를 설치해보자.","headline":"AWS-Docker,Jira 설치","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2021/05/22/Docker-Jira-AWS-%EC%84%A4%EC%B9%98/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2021/05/22/Docker-Jira-AWS-%EC%84%A4%EC%B9%98/"}</script>
-    <meta name="description" content="AWS 에서 Jira와 Docker를 설치해보자.">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="generator" content="동글씨">
+        <title>
+            AWS-Docker,Jira 설치 - 동글씨
+        </title>
+        <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+        <meta name="author" content="Suyan Kim">
+        
+                
+                        
+                            <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
+                            
+                                <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\nAWS 인스턴스에서 Docker 설치\njira container 는 메모리를 많이 차지하기 때문에 AWS 인스턴스는 최소 t2.larg 로 선택해야 한다.\n$ sudo yum install docker-io\n\n\n\n\n\n12345678910111213141516$ ssh -i suyeon.pem ec2-user@15.164.50.108The authenticity of host &#x27;15.164.50.108 (15.164.50.108)&#x27; can&#x27;t be established.ECDSA key fingerprint is SHA256:KwsFct4EwSLlShPOuWPC0yr0ewcI4lGT352J9tLKKwQ.Are you sure you want to continue connecting (yes/no/[fingerprint])? yesWarning: Permanently added &#x27;15.164.50.108&#x27; (ECDSA) to the list of known hosts.       __|  __|_  )       _|  (     /   Amazon Linux 2 AMI      ___|\\___|___|https://aws.amazon.com/amazon-linux-2/[ec2-user@ip-172-31-36-132 ~]$ ^C[ec2-user@ip-172-31-36-132 ~]$ docker-bash: docker: command not found[ec2-user@ip-172-31-36-132 ~]$ sudo yum install docker-io\n\ndocker ps -a 리스트 확인\nIs the docker daemon running? : 도커를 실행해준다.\nsudo systemctl start docker\ndial unix /var/run/docker.sock: connect: permission denied : 권한 부여\nsudo setfacl -m user:ec2-user:rw /var/run/docker.sock\n\n123456789[ec2-user@ip-172-31-36-132 ~]$ docker ps -aCannot connect to the Docker daemon at unix:///var/run/docker.sock. Is the docker daemon running?[ec2-user@ip-172-31-36-132 ~]$ sudo systemctl start docker[ec2-user@ip-172-31-36-132 ~]$ docker ps -aGot permission denied while trying to connect to the Docker daemon socket at unix:///var/run/docker.sock: Get &quot;http://%2Fvar%2Frun%2Fdocker.sock/v1.24/containers/json?all=1&quot;: dial unix /var/run/docker.sock: connect: permission denied[ec2-user@ip-172-31-36-132 ~]$ sudo setfacl -m user:ec2-user:rw /var/run/ddbus/               dhclient-eth0.pid   dmeventd-server     docker.piddhclient6-eth0.pid  dmeventd-client     docker/             docker.sock[ec2-user@ip-172-31-36-132 ~]$ sudo setfacl -m user:ec2-user:rw /var/run/docker.sock\n\n\n잘 실행된다.\n\n12[ec2-user@ip-172-31-36-132 ~]$ docker ps -aCONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES\n\n\nJira 협업툴 설치\n기존 지라 도커 컨테이너 삭제\n지라 도커 컨테이너 설치1$ docker pull cptactionhank/atlassian-jira-software:latest\n지라 도커 컨테이너 생성\n\n\n``123456$ docker create --restart=no --name &quot;jira-container&quot;\\ --publish &quot;8080:8080&quot;\\ --volume &quot;hostpath:/var/atlassian/jira&quot;\\ --env &quot;CATALINA_OPTS= -Xms1024m -Xmx1024m -Datlassian.plugins.enable.wait=300&quot;\\ cptactionhank/atlassian-jira-software:latest$ 0c8922efd3800885da4b46af5bc17e6804fc91b102e186dec61efa41e39f117d\n\n\n지라 도커 컨테이너 실행1\n","dateCreated":"2021-05-22T20:46:29+09:00","dateModified":"2021-05-25T09:54:42+09:00","datePublished":"2021-05-22T20:46:29+09:00","description":"AWS 에서 Jira와 Docker를 설치해보자.","headline":"AWS-Docker,Jira 설치","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2021/05/22/Docker-Jira-AWS-%EC%84%A4%EC%B9%98/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2021/05/22/Docker-Jira-AWS-%EC%84%A4%EC%B9%98/"}</script>
+                                    <meta name="description" content="AWS 에서 Jira와 Docker를 설치해보자.">
 <meta property="og:type" content="blog">
 <meta property="og:title" content="AWS-Docker,Jira 설치">
 <meta property="og:url" content="http://yoursite.com/2021/05/22/Docker-Jira-AWS-%EC%84%A4%EC%B9%98/index.html">
@@ -25,31 +29,22 @@
 <meta property="article:modified_time" content="2021-05-25T00:54:42.539Z">
 <meta property="article:author" content="Suyan Kim">
 <meta name="twitter:card" content="summary">
-    
-    
-        
-    
-    
-        <meta property="og:image" content="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=640"/>
-    
-    
-    
-    
-    <!--STYLES-->
-    
-<link rel="stylesheet" href="/assets/css/all.css">
-
-    
-<link rel="stylesheet" href="/assets/css/jquery.fancybox.css">
-
-    
-<link rel="stylesheet" href="/assets/css/thumbs.css">
-
-    
+                                        
+                                                
+                                                    
+                                                            
+                                                                
+                                                                    <meta property="og:image" content="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=640" />
+                                                                    
+                                                                            
+                                                                                    
+                                                                                            
+                                                                                                            <!--STYLES-->
+                                                                                                            
 <link rel="stylesheet" href="/assets/css/tranquilpeak.css">
 
-    <!--STYLES END-->
-    
+                                                                                                                <!--STYLES END-->
+                                                                                                                
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-158530470-1"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
@@ -60,13 +55,12 @@
     </script>
 
 
-    
+                                                                                                                    
 
-    
-        
-    
-</head>
-
+                                                                                                                        
+                                                                                                                            
+                                                                                                                                                
+    </head>
     <body>
         <div id="blog">
             <!-- Define author's picture -->
@@ -179,7 +173,7 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (7)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (9)</a></li>
                             
                         
                             
@@ -208,6 +202,10 @@
                         
                             
                                 <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Network/">☁️ Network (1)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-NodeJS/">☁️ NodeJS (1)</a></li>
                             
                         
                             
@@ -707,15 +705,6 @@
         
 <div id="cover" style="background-image:url('/assets/images/null');"></div>
         <!--SCRIPTS-->
-
-<script src="/assets/js/jquery.js"></script>
-
-
-<script src="/assets/js/jquery.fancybox.js"></script>
-
-
-<script src="/assets/js/thumbs.js"></script>
-
 
 <script src="/assets/js/tranquilpeak.js"></script>
 

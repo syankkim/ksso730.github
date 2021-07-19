@@ -2,19 +2,23 @@
 <!DOCTYPE html>
 <html lang="en">
     
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="generator" content="동글씨">
-    <title>파이썬의 __init__ 과 self - 동글씨</title>
-    <meta name="author" content="Suyan Kim">
-    
-    
-    
-        <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
-    
-    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\n\n생성자 init __init__ : 파이썬의 생성자를 나타낸다.클래스 Person() 를 호출하면 객체가 생성되고 __init__ 메소드에 첫 번째 매개변수로 전달된다.추가 매개변수 또한 가능하다.\nself : 객체 자체의 인스턴스를 의미한다.파이썬은 다른 객체지향 언어와는 달리 (대부분 메소드에 숨겨진 매개변수로 전달) self 와 같이 명시적으로 선언해야 한다.\n\n\n\n클래스 Person 예시12345678910111213141516class Person:    def __init__(self, name, age):        self.n_name= name        self.n_age= age    def getName(self):        print(self.n_name)    def addAge(self, num):        self.n_age += num        print(self.n_age)p = Person(&#x27;Jenny&#x27;, 12)p.getName()p.addAge(5)\n\n결과\n\nJenny17\n\n# Line2 : self 가 포함되어 있지만 실제로 name 과 age 두가지 매개변수만 전달한다.# Line9 : self 의 n_age 값에 addAge 에 매개변수로 전달되는 숫자를 더해 출력한다.","dateCreated":"2020-10-08T11:38:09+09:00","dateModified":"2020-10-08T12:49:16+09:00","datePublished":"2020-10-08T11:38:09+09:00","description":"자주쓰는 __init__ 그리고 self 무엇을 의미하는 것일까?생성자 인스턴스","headline":"파이썬의 __init__ 과 self","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2020/10/08/%ED%8C%8C%EC%9D%B4%EC%8D%AC-init-%EA%B3%BC-self/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2020/10/08/%ED%8C%8C%EC%9D%B4%EC%8D%AC-init-%EA%B3%BC-self/"}</script>
-    <meta name="description" content="자주쓰는 __init__ 그리고 self 무엇을 의미하는 것일까?생성자 인스턴스">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="generator" content="동글씨">
+        <title>
+            파이썬의 __init__ 과 self - 동글씨
+        </title>
+        <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+        <meta name="author" content="Suyan Kim">
+        
+                
+                        
+                            <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
+                            
+                                <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\n\n생성자 init __init__ : 파이썬의 생성자를 나타낸다.클래스 Person() 를 호출하면 객체가 생성되고 __init__ 메소드에 첫 번째 매개변수로 전달된다.추가 매개변수 또한 가능하다.\nself : 객체 자체의 인스턴스를 의미한다.파이썬은 다른 객체지향 언어와는 달리 (대부분 메소드에 숨겨진 매개변수로 전달) self 와 같이 명시적으로 선언해야 한다.\n\n\n\n클래스 Person 예시12345678910111213141516class Person:    def __init__(self, name, age):        self.n_name= name        self.n_age= age    def getName(self):        print(self.n_name)    def addAge(self, num):        self.n_age += num        print(self.n_age)p = Person(&#x27;Jenny&#x27;, 12)p.getName()p.addAge(5)\n\n결과\n\nJenny17\n\n# Line2 : self 가 포함되어 있지만 실제로 name 과 age 두가지 매개변수만 전달한다.# Line9 : self 의 n_age 값에 addAge 에 매개변수로 전달되는 숫자를 더해 출력한다.","dateCreated":"2020-10-08T11:38:09+09:00","dateModified":"2020-10-08T12:49:16+09:00","datePublished":"2020-10-08T11:38:09+09:00","description":"자주쓰는 __init__ 그리고 self 무엇을 의미하는 것일까?생성자 인스턴스","headline":"파이썬의 __init__ 과 self","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2020/10/08/%ED%8C%8C%EC%9D%B4%EC%8D%AC-init-%EA%B3%BC-self/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2020/10/08/%ED%8C%8C%EC%9D%B4%EC%8D%AC-init-%EA%B3%BC-self/"}</script>
+                                    <meta name="description" content="자주쓰는 __init__ 그리고 self 무엇을 의미하는 것일까?생성자 인스턴스">
 <meta property="og:type" content="blog">
 <meta property="og:title" content="파이썬의 __init__ 과 self">
 <meta property="og:url" content="http://yoursite.com/2020/10/08/%ED%8C%8C%EC%9D%B4%EC%8D%AC-init-%EA%B3%BC-self/index.html">
@@ -25,31 +29,22 @@
 <meta property="article:modified_time" content="2020-10-08T03:49:16.789Z">
 <meta property="article:author" content="Suyan Kim">
 <meta name="twitter:card" content="summary">
-    
-    
-        
-    
-    
-        <meta property="og:image" content="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=640"/>
-    
-    
-    
-    
-    <!--STYLES-->
-    
-<link rel="stylesheet" href="/assets/css/all.css">
-
-    
-<link rel="stylesheet" href="/assets/css/jquery.fancybox.css">
-
-    
-<link rel="stylesheet" href="/assets/css/thumbs.css">
-
-    
+                                        
+                                                
+                                                    
+                                                            
+                                                                
+                                                                    <meta property="og:image" content="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=640" />
+                                                                    
+                                                                            
+                                                                                    
+                                                                                            
+                                                                                                            <!--STYLES-->
+                                                                                                            
 <link rel="stylesheet" href="/assets/css/tranquilpeak.css">
 
-    <!--STYLES END-->
-    
+                                                                                                                <!--STYLES END-->
+                                                                                                                
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-158530470-1"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
@@ -60,13 +55,12 @@
     </script>
 
 
-    
+                                                                                                                    
 
-    
-        
-    
-</head>
-
+                                                                                                                        
+                                                                                                                            
+                                                                                                                                                
+    </head>
     <body>
         <div id="blog">
             <!-- Define author's picture -->
@@ -179,7 +173,7 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (7)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (9)</a></li>
                             
                         
                             
@@ -208,6 +202,10 @@
                         
                             
                                 <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Network/">☁️ Network (1)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-NodeJS/">☁️ NodeJS (1)</a></li>
                             
                         
                             
@@ -685,15 +683,6 @@
         
 <div id="cover" style="background-image:url('/assets/images/null');"></div>
         <!--SCRIPTS-->
-
-<script src="/assets/js/jquery.js"></script>
-
-
-<script src="/assets/js/jquery.fancybox.js"></script>
-
-
-<script src="/assets/js/thumbs.js"></script>
-
 
 <script src="/assets/js/tranquilpeak.js"></script>
 

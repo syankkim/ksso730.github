@@ -2,19 +2,23 @@
 <!DOCTYPE html>
 <html lang="en">
     
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="generator" content="동글씨">
-    <title>react router 사용하기 - 동글씨</title>
-    <meta name="author" content="Suyan Kim">
-    
-    
-    
-        <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
-    
-    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\nReact Router\nReact Router 란, SPA(Single Page Application: 모든코드를 하나의 파일에서 관리) 의 라우팅 문제를 보완할 수 있도록 코드의 모듈화를 가능하게 해주는 라이브러리 이다.서로 다른 주소를 가진 view 를 만들어 관리한다. 즉, component 마다 다른 url 을 호출하여 화면을 그려줄 수 있다.function 방식인 Hooks 를 적용.\n\n\n예제에 대한 클래스 트리이다.&nbsp;&nbsp;&nbsp;public&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ㄴindex.html&nbsp;&nbsp;&nbsp;src&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ㄴ components&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ㄴ Header.js&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ㄴ Recipe.js&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ㄴ RecipeDetail.js&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ㄴ RecipeFind.js&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ㄴ RecipeNews.js&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ㄴ Chef.js&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ㄴ ChefDetail.js&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ㄴ App.js&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ㄴ index.js&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ㄴ server.js&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ㄴ package.json\n\n\nApp.js\nApp.js 에서 Router 를 이용하여 각 함수들을 묶어준다.123456789101112131415161718192021222324252627282930313233343536373839import React from &#x27;react&#x27;;import &#123;BrowserRouter as Router, Route, Switch&#125; from &quot;react-router-dom&quot;;import logo from &#x27;./logo.svg&#x27;;import &#x27;./App.css&#x27;;import Header from &quot;./components/Header&quot;;import Recipe from &quot;./components/Recipe&quot;;import RecipeDetail from &quot;./components/RecipeDetail&quot;;import RecipeFind from &quot;./components/RecipeFind&quot;;import RecipeNews from &quot;./components/RecipeNews&quot;;import Chef from &quot;./components/Chef&quot;;import ChefDetail from &quot;./components/ChefDetail&quot;;/*  index.js  ReactDom.render(&lt;App/&gt;, document.getElementById(&#x27;root&#x27;))  &lt;App/&gt; =&gt; html 을 읽어서 =&gt; &lt;div id=&quot;root&quot;&gt;&lt;/div&gt;*/function App() &#123;  return (    &lt;Router&gt;        &lt;Header/&gt;        &lt;div className=&#123;&quot;container-fluid&quot;&#125;&gt;          &lt;div className=&#123;&quot;jumbotron&quot;&#125;&gt;            &lt;Switch&gt;              &lt;Route exact path=&#123;&quot;/&quot;&#125; component=&#123;Recipe&#125;/&gt;              &lt;Route path=&#123;&quot;/recipe_detail&quot;&#125; component=&#123;RecipeDetail&#125;/&gt;              &lt;Route path=&#123;&quot;/chef&quot;&#125; component=&#123;Chef&#125;/&gt;              &lt;Route path=&#123;&quot;/chef_detail&quot;&#125; component=&#123;ChefDetail&#125;/&gt;              &lt;Route path=&#123;&quot;/news&quot;&#125; component=&#123;RecipeNews&#125;/&gt;              &lt;Route path=&#123;&quot;/find&quot;&#125; component=&#123;RecipeFind&#125;/&gt;            &lt;/Switch&gt;          &lt;/div&gt;        &lt;/div&gt;    &lt;/Router&gt;  );&#125;export default App;\n\nHeader.js\nnavigation 을 그려주는 함수\n\n123456789101112131415161718192021222324import React from &quot;react&quot;;import &#123;NavLink&#125; from &quot;react-router-dom&quot;;// &lt;NavLink exact to=&#123;&quot;&quot;&#125;&gt;// NavLink 에서 exact 는 default 값이다.//render()export default function Header() &#123;    return (        &lt;nav className=&quot;navbar navbar-inverse&quot;&gt;            &lt;div className=&quot;container-fluid&quot;&gt;                &lt;div className=&quot;navbar-header&quot;&gt;                    &lt;NavLink className=&quot;navbar-brand&quot; to=&#123;&quot;/&quot;&#125;&gt;SIST Recipe&lt;/NavLink&gt;                &lt;/div&gt;                &lt;ul className=&quot;nav navbar-nav&quot;&gt;                    &lt;li className=&quot;active&quot;&gt;&lt;NavLink exact to=&#123;&quot;/&quot;&#125;&gt;레시피&lt;/NavLink&gt;&lt;/li&gt;                    &lt;li&gt;&lt;NavLink to=&#123;&quot;/chef&quot;&#125;&gt;쉐프&lt;/NavLink&gt;&lt;/li&gt;                    &lt;li&gt;&lt;NavLink to=&#123;&quot;/news&quot;&#125;&gt;레시피뉴스&lt;/NavLink&gt;&lt;/li&gt;                    &lt;li&gt;&lt;NavLink to=&#123;&quot;/find&quot;&#125;&gt;레시피검색&lt;/NavLink&gt;&lt;/li&gt;                &lt;/ul&gt;            &lt;/div&gt;        &lt;/nav&gt;    )&#125;\n\n\n\nRecipe.js\nApp.js 에 넣어준 RecipeDetail.js RecipeFind.js … 각 화면은 아래와 같이 Recipe.js 와 같은 함수 구조로 되어있다.1234567import React from &quot;react&quot;;export default function Recipe() &#123;    return (        &lt;div&gt;&lt;h1&gt;레시피&lt;/h1&gt;&lt;/div&gt;    )&#125;\n\n\n\n\nserver.js 서버를 생성하는 방법\nMongoDB 서버를 구축한다.skip =&gt; offset 과 비슷하다.\n\n\n라이브러리 로드\n서버생성\n서버구동\ncross domain 허용\n클라이언트 통신 및 몽고디비 연결\nrequest 요청처리 =&gt; reponse 결과전송\n\n1234567891011121314151617181920212223242526272829303132333435363738394041424344454647484950const express=require(&quot;express&quot;)const app = express();/** bind() =&gt; IP, PORT 를 연결 =&gt; 개통* listen() =&gt; 대기상태* accept() =&gt; 클라이언트가 접속시에 처리* */app.listen(3355, ()=&gt;&#123;    console.log(&quot;Server Start ...&quot;, &quot;http://localhost:3355&quot;)&#125;)// cross domainapp.all(&#x27;/*&#x27;, function(req, res, next) &#123;    res.header(&quot;Access-Control-Allow-Origin&quot;, &quot;*&quot;);    res.header(&quot;Access-Control-Allow-Headers&quot;, &quot;X-Requested-With&quot;);    next();&#125;);// 클라이언트 통신// 사용자  URI =&gt; /recipe?page=1// 몽고디비 연결// MongoDB Connectionconst Client = require(&quot;mongodb&quot;).MongoClient;app.get(&#x27;/recipe&#x27;, (request, response)=&gt;&#123;    // request =&gt; 사용자가 보낸 요청 : page, id, pwd    // 요청 처리    // response =&gt;  결과전송    var page= request.query.page; //request.getParameter(&quot;page&quot;)    var rowSize =12;    var skip = (page*rowSize) - rowSize;    // 1page =&gt; skip=0    // 2page =&gt; skip 12(버림) ==&gt; 13    var url = &quot;mongodb://211.238.142.181:27017&quot;;    Client.connect(url, (err, client)=&gt;&#123;        var db = client.db(&#x27;mydb&#x27;);        // SELECT * FROM recipe =&gt; find&#123;()&#125;        // SELECT * FROM recipe WHERE no=1 =&gt; find&#123;(no:1)&#125;        // skip =&gt; offset 과 비슷함.        // toArray(err, docs) 콜백 함수: 가져온 데이터를 배열로 묶어줌. (docs에 있음)        db.collection(&#x27;recipe&#x27;).find(&#123;&#125;).skip(skip).limit(rowSize)            .toArray((err, docs)=&gt;&#123;                response.json(docs);                client.close();            &#125;);    &#125;)&#125;)\n\n\n\naxios: 서버에서 데이터 읽어오기axios.get({URL, params:&#123;&#125;}).then((result)=&gt;{ setState변수(result.data) })\n\n\nuseState() 변수 recipe 데이터에 넣어준 값을 화면에 그려준다.\n\n\n\n\n\nNavLink: props 넘기기\nRecipe.js 내의 음식 이미지를 클릭하면 그 이미지에 해당하는 상세보기로 넘어갈 수 있도록 NavLink 를 달아줄 것이다.\n\n_\n\nApp.jsRecipeDetail의 path를 다음과 같이 바꿔준다. (no 변수가 추가됨)/recipe_detail → /recipe_detail/:no \n1&lt;Route path=&#123;&quot;/recipe_detail/:no&quot;&#125; component=&#123;RecipeDetail&#125;/&gt;\nRecipe.js/recipe_detail/&quot;+m.no\n\n\n123&lt;NavLink to=&#123;&quot;/recipe_detail/&quot;+m.no&#125;&gt;  &lt;img src=&#123;m.poster&#125; alt=&quot;Lights&quot; style=&#123;&#123;&quot;width&quot;:&quot;100%&quot;&#125;&#125;/&gt;&lt;/NavLink&gt;\n\n\nRecipeDetail.jsno 라는 파라미터를 match 를 사용하여 넘길 수 있다.props.match.params.no \n\n방법1)\n12345export default function RecipeDetail(props) &#123;    return (        &lt;div&gt;&lt;h1&gt;레시피 상세보기: &#123;props.match.params.no&#125;&lt;/h1&gt;&lt;/div&gt;    )&#125;\n방법2) match클래스를 props에 할당.\n123456export default function RecipeDetail(props) &#123;const &#123;match&#125; = props;    return (        &lt;div&gt;&lt;h1&gt;레시피 상세보기: &#123;match.params.no&#125;&lt;/h1&gt;&lt;/div&gt;    )&#125;\n\n\nsever.js사용자가 넘겨준 no 라는 파라미터는 서버단에서 request.query.no 로 받을 수 있다.이 때, 형변환이 필요하다는 사실도 잊지 않는다.즉, /recipe-detail?no=1 의 형식이다.이제, http://localhost:3355/recipe-detail 를 사용할 수 있다.\n123456789101112app.get(&#x27;/recipe-detail&#x27;, (request, response)=&gt;&#123;    // 파라미터를 받는 방법    var no = request.query.no;    Client.connect(URL, (err, client)=&gt;&#123;        var db = client.db(&#x27;mydb&#x27;);        // 형변환 : Number() or parseInt()        db.collection(&#x27;recipe_detail&#x27;).find(&#123;no:Number(no)&#125;).toArray((err, docs)=&gt;&#123;            response.json(docs[0]); // Array 타입이기 때문에 하나의 Object 만 가져온다.            client.close();        &#125;)    &#125;);&#125;)\n다시 RecipeDetail.jsserver.js 에서 만들었던 API 를 사용하여 상세정보를 뿌려준다.\n1234567891011const [detail, setDetail] = useState(&#123;&#125;);useEffect(()=&gt;&#123;  axios.get(&#x27;http://localhost:3355/recipe-detail&#x27;, &#123;    params:&#123;      no: match.params.no    &#125;  &#125;).then((result)=&gt;&#123;    setDetail(result.data);  &#125;)&#125;,[])\n","dateCreated":"2020-06-01T15:10:25+09:00","dateModified":"2020-06-01T15:30:42+09:00","datePublished":"2020-06-01T15:10:25+09:00","description":"SPA 의 단점을 보완하고, 표준적으로 쓰이고 있는 React Router : code split 을 가능하게 해주는 라이브러리를 사용해 봅니다.React react router Hooks","headline":"react router 사용하기","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2020/06/01/react-router-%EC%82%AC%EC%9A%A9%ED%95%98%EA%B8%B0/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2020/06/01/react-router-%EC%82%AC%EC%9A%A9%ED%95%98%EA%B8%B0/","keywords":"Hooks, react, react router"}</script>
-    <meta name="description" content="SPA 의 단점을 보완하고, 표준적으로 쓰이고 있는 React Router : code split 을 가능하게 해주는 라이브러리를 사용해 봅니다.React react router Hooks">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="generator" content="동글씨">
+        <title>
+            react router 사용하기 - 동글씨
+        </title>
+        <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+        <meta name="author" content="Suyan Kim">
+        
+                
+                        
+                            <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
+                            
+                                <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\nReact Router\nReact Router 란, SPA(Single Page Application: 모든코드를 하나의 파일에서 관리) 의 라우팅 문제를 보완할 수 있도록 코드의 모듈화를 가능하게 해주는 라이브러리 이다.서로 다른 주소를 가진 view 를 만들어 관리한다. 즉, component 마다 다른 url 을 호출하여 화면을 그려줄 수 있다.function 방식인 Hooks 를 적용.\n\n\n예제에 대한 클래스 트리이다.&nbsp;&nbsp;&nbsp;public&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ㄴindex.html&nbsp;&nbsp;&nbsp;src&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ㄴ components&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ㄴ Header.js&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ㄴ Recipe.js&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ㄴ RecipeDetail.js&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ㄴ RecipeFind.js&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ㄴ RecipeNews.js&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ㄴ Chef.js&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ㄴ ChefDetail.js&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ㄴ App.js&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ㄴ index.js&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ㄴ server.js&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ㄴ package.json\n\n\nApp.js\nApp.js 에서 Router 를 이용하여 각 함수들을 묶어준다.123456789101112131415161718192021222324252627282930313233343536373839import React from &#x27;react&#x27;;import &#123;BrowserRouter as Router, Route, Switch&#125; from &quot;react-router-dom&quot;;import logo from &#x27;./logo.svg&#x27;;import &#x27;./App.css&#x27;;import Header from &quot;./components/Header&quot;;import Recipe from &quot;./components/Recipe&quot;;import RecipeDetail from &quot;./components/RecipeDetail&quot;;import RecipeFind from &quot;./components/RecipeFind&quot;;import RecipeNews from &quot;./components/RecipeNews&quot;;import Chef from &quot;./components/Chef&quot;;import ChefDetail from &quot;./components/ChefDetail&quot;;/*  index.js  ReactDom.render(&lt;App/&gt;, document.getElementById(&#x27;root&#x27;))  &lt;App/&gt; =&gt; html 을 읽어서 =&gt; &lt;div id=&quot;root&quot;&gt;&lt;/div&gt;*/function App() &#123;  return (    &lt;Router&gt;        &lt;Header/&gt;        &lt;div className=&#123;&quot;container-fluid&quot;&#125;&gt;          &lt;div className=&#123;&quot;jumbotron&quot;&#125;&gt;            &lt;Switch&gt;              &lt;Route exact path=&#123;&quot;/&quot;&#125; component=&#123;Recipe&#125;/&gt;              &lt;Route path=&#123;&quot;/recipe_detail&quot;&#125; component=&#123;RecipeDetail&#125;/&gt;              &lt;Route path=&#123;&quot;/chef&quot;&#125; component=&#123;Chef&#125;/&gt;              &lt;Route path=&#123;&quot;/chef_detail&quot;&#125; component=&#123;ChefDetail&#125;/&gt;              &lt;Route path=&#123;&quot;/news&quot;&#125; component=&#123;RecipeNews&#125;/&gt;              &lt;Route path=&#123;&quot;/find&quot;&#125; component=&#123;RecipeFind&#125;/&gt;            &lt;/Switch&gt;          &lt;/div&gt;        &lt;/div&gt;    &lt;/Router&gt;  );&#125;export default App;\n\nHeader.js\nnavigation 을 그려주는 함수\n\n123456789101112131415161718192021222324import React from &quot;react&quot;;import &#123;NavLink&#125; from &quot;react-router-dom&quot;;// &lt;NavLink exact to=&#123;&quot;&quot;&#125;&gt;// NavLink 에서 exact 는 default 값이다.//render()export default function Header() &#123;    return (        &lt;nav className=&quot;navbar navbar-inverse&quot;&gt;            &lt;div className=&quot;container-fluid&quot;&gt;                &lt;div className=&quot;navbar-header&quot;&gt;                    &lt;NavLink className=&quot;navbar-brand&quot; to=&#123;&quot;/&quot;&#125;&gt;SIST Recipe&lt;/NavLink&gt;                &lt;/div&gt;                &lt;ul className=&quot;nav navbar-nav&quot;&gt;                    &lt;li className=&quot;active&quot;&gt;&lt;NavLink exact to=&#123;&quot;/&quot;&#125;&gt;레시피&lt;/NavLink&gt;&lt;/li&gt;                    &lt;li&gt;&lt;NavLink to=&#123;&quot;/chef&quot;&#125;&gt;쉐프&lt;/NavLink&gt;&lt;/li&gt;                    &lt;li&gt;&lt;NavLink to=&#123;&quot;/news&quot;&#125;&gt;레시피뉴스&lt;/NavLink&gt;&lt;/li&gt;                    &lt;li&gt;&lt;NavLink to=&#123;&quot;/find&quot;&#125;&gt;레시피검색&lt;/NavLink&gt;&lt;/li&gt;                &lt;/ul&gt;            &lt;/div&gt;        &lt;/nav&gt;    )&#125;\n\n\n\nRecipe.js\nApp.js 에 넣어준 RecipeDetail.js RecipeFind.js … 각 화면은 아래와 같이 Recipe.js 와 같은 함수 구조로 되어있다.1234567import React from &quot;react&quot;;export default function Recipe() &#123;    return (        &lt;div&gt;&lt;h1&gt;레시피&lt;/h1&gt;&lt;/div&gt;    )&#125;\n\n\n\n\nserver.js 서버를 생성하는 방법\nMongoDB 서버를 구축한다.skip =&gt; offset 과 비슷하다.\n\n\n라이브러리 로드\n서버생성\n서버구동\ncross domain 허용\n클라이언트 통신 및 몽고디비 연결\nrequest 요청처리 =&gt; reponse 결과전송\n\n1234567891011121314151617181920212223242526272829303132333435363738394041424344454647484950const express=require(&quot;express&quot;)const app = express();/** bind() =&gt; IP, PORT 를 연결 =&gt; 개통* listen() =&gt; 대기상태* accept() =&gt; 클라이언트가 접속시에 처리* */app.listen(3355, ()=&gt;&#123;    console.log(&quot;Server Start ...&quot;, &quot;http://localhost:3355&quot;)&#125;)// cross domainapp.all(&#x27;/*&#x27;, function(req, res, next) &#123;    res.header(&quot;Access-Control-Allow-Origin&quot;, &quot;*&quot;);    res.header(&quot;Access-Control-Allow-Headers&quot;, &quot;X-Requested-With&quot;);    next();&#125;);// 클라이언트 통신// 사용자  URI =&gt; /recipe?page=1// 몽고디비 연결// MongoDB Connectionconst Client = require(&quot;mongodb&quot;).MongoClient;app.get(&#x27;/recipe&#x27;, (request, response)=&gt;&#123;    // request =&gt; 사용자가 보낸 요청 : page, id, pwd    // 요청 처리    // response =&gt;  결과전송    var page= request.query.page; //request.getParameter(&quot;page&quot;)    var rowSize =12;    var skip = (page*rowSize) - rowSize;    // 1page =&gt; skip=0    // 2page =&gt; skip 12(버림) ==&gt; 13    var url = &quot;mongodb://211.238.142.181:27017&quot;;    Client.connect(url, (err, client)=&gt;&#123;        var db = client.db(&#x27;mydb&#x27;);        // SELECT * FROM recipe =&gt; find&#123;()&#125;        // SELECT * FROM recipe WHERE no=1 =&gt; find&#123;(no:1)&#125;        // skip =&gt; offset 과 비슷함.        // toArray(err, docs) 콜백 함수: 가져온 데이터를 배열로 묶어줌. (docs에 있음)        db.collection(&#x27;recipe&#x27;).find(&#123;&#125;).skip(skip).limit(rowSize)            .toArray((err, docs)=&gt;&#123;                response.json(docs);                client.close();            &#125;);    &#125;)&#125;)\n\n\n\naxios: 서버에서 데이터 읽어오기axios.get({URL, params:&#123;&#125;}).then((result)=&gt;{ setState변수(result.data) })\n\n\nuseState() 변수 recipe 데이터에 넣어준 값을 화면에 그려준다.\n\n\n\n\n\nNavLink: props 넘기기\nRecipe.js 내의 음식 이미지를 클릭하면 그 이미지에 해당하는 상세보기로 넘어갈 수 있도록 NavLink 를 달아줄 것이다.\n\n_\n\nApp.jsRecipeDetail의 path를 다음과 같이 바꿔준다. (no 변수가 추가됨)/recipe_detail → /recipe_detail/:no \n1&lt;Route path=&#123;&quot;/recipe_detail/:no&quot;&#125; component=&#123;RecipeDetail&#125;/&gt;\nRecipe.js/recipe_detail/&quot;+m.no\n\n\n123&lt;NavLink to=&#123;&quot;/recipe_detail/&quot;+m.no&#125;&gt;  &lt;img src=&#123;m.poster&#125; alt=&quot;Lights&quot; style=&#123;&#123;&quot;width&quot;:&quot;100%&quot;&#125;&#125;/&gt;&lt;/NavLink&gt;\n\n\nRecipeDetail.jsno 라는 파라미터를 match 를 사용하여 넘길 수 있다.props.match.params.no \n\n방법1)\n12345export default function RecipeDetail(props) &#123;    return (        &lt;div&gt;&lt;h1&gt;레시피 상세보기: &#123;props.match.params.no&#125;&lt;/h1&gt;&lt;/div&gt;    )&#125;\n방법2) match클래스를 props에 할당.\n123456export default function RecipeDetail(props) &#123;const &#123;match&#125; = props;    return (        &lt;div&gt;&lt;h1&gt;레시피 상세보기: &#123;match.params.no&#125;&lt;/h1&gt;&lt;/div&gt;    )&#125;\n\n\nsever.js사용자가 넘겨준 no 라는 파라미터는 서버단에서 request.query.no 로 받을 수 있다.이 때, 형변환이 필요하다는 사실도 잊지 않는다.즉, /recipe-detail?no=1 의 형식이다.이제, http://localhost:3355/recipe-detail 를 사용할 수 있다.\n123456789101112app.get(&#x27;/recipe-detail&#x27;, (request, response)=&gt;&#123;    // 파라미터를 받는 방법    var no = request.query.no;    Client.connect(URL, (err, client)=&gt;&#123;        var db = client.db(&#x27;mydb&#x27;);        // 형변환 : Number() or parseInt()        db.collection(&#x27;recipe_detail&#x27;).find(&#123;no:Number(no)&#125;).toArray((err, docs)=&gt;&#123;            response.json(docs[0]); // Array 타입이기 때문에 하나의 Object 만 가져온다.            client.close();        &#125;)    &#125;);&#125;)\n다시 RecipeDetail.jsserver.js 에서 만들었던 API 를 사용하여 상세정보를 뿌려준다.\n1234567891011const [detail, setDetail] = useState(&#123;&#125;);useEffect(()=&gt;&#123;  axios.get(&#x27;http://localhost:3355/recipe-detail&#x27;, &#123;    params:&#123;      no: match.params.no    &#125;  &#125;).then((result)=&gt;&#123;    setDetail(result.data);  &#125;)&#125;,[])\n","dateCreated":"2020-06-01T15:10:25+09:00","dateModified":"2020-06-01T15:30:42+09:00","datePublished":"2020-06-01T15:10:25+09:00","description":"SPA 의 단점을 보완하고, 표준적으로 쓰이고 있는 React Router : code split 을 가능하게 해주는 라이브러리를 사용해 봅니다.React react router Hooks","headline":"react router 사용하기","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2020/06/01/react-router-%EC%82%AC%EC%9A%A9%ED%95%98%EA%B8%B0/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2020/06/01/react-router-%EC%82%AC%EC%9A%A9%ED%95%98%EA%B8%B0/","keywords":"Hooks, react, react router"}</script>
+                                    <meta name="description" content="SPA 의 단점을 보완하고, 표준적으로 쓰이고 있는 React Router : code split 을 가능하게 해주는 라이브러리를 사용해 봅니다.React react router Hooks">
 <meta property="og:type" content="blog">
 <meta property="og:title" content="react router 사용하기">
 <meta property="og:url" content="http://yoursite.com/2020/06/01/react-router-%EC%82%AC%EC%9A%A9%ED%95%98%EA%B8%B0/index.html">
@@ -31,31 +35,22 @@
 <meta property="article:tag" content="react router">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://user-images.githubusercontent.com/28856435/83317751-f3933c80-a269-11ea-9cbc-43443ad22eeb.png">
-    
-    
-        
-    
-    
-        <meta property="og:image" content="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=640"/>
-    
-    
-    
-    
-    <!--STYLES-->
-    
-<link rel="stylesheet" href="/assets/css/all.css">
-
-    
-<link rel="stylesheet" href="/assets/css/jquery.fancybox.css">
-
-    
-<link rel="stylesheet" href="/assets/css/thumbs.css">
-
-    
+                                        
+                                                
+                                                    
+                                                            
+                                                                
+                                                                    <meta property="og:image" content="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=640" />
+                                                                    
+                                                                            
+                                                                                    
+                                                                                            
+                                                                                                            <!--STYLES-->
+                                                                                                            
 <link rel="stylesheet" href="/assets/css/tranquilpeak.css">
 
-    <!--STYLES END-->
-    
+                                                                                                                <!--STYLES END-->
+                                                                                                                
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-158530470-1"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
@@ -66,13 +61,12 @@
     </script>
 
 
-    
+                                                                                                                    
 
-    
-        
-    
-</head>
-
+                                                                                                                        
+                                                                                                                            
+                                                                                                                                                
+    </head>
     <body>
         <div id="blog">
             <!-- Define author's picture -->
@@ -185,7 +179,7 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (7)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (9)</a></li>
                             
                         
                             
@@ -214,6 +208,10 @@
                         
                             
                                 <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Network/">☁️ Network (1)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-NodeJS/">☁️ NodeJS (1)</a></li>
                             
                         
                             
@@ -758,15 +756,6 @@
         
 <div id="cover" style="background-image:url('/assets/images/null');"></div>
         <!--SCRIPTS-->
-
-<script src="/assets/js/jquery.js"></script>
-
-
-<script src="/assets/js/jquery.fancybox.js"></script>
-
-
-<script src="/assets/js/thumbs.js"></script>
-
 
 <script src="/assets/js/tranquilpeak.js"></script>
 
