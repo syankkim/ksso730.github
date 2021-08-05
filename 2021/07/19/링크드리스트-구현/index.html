@@ -4,11 +4,16 @@
     
 
     <head>
+        <script type="text/javascript" src="http://code.jquery.com/jquery-3.2.1.min.js"></script>
+        <script type="text/java script">
+            var $= jquery.noConflict();
+        </script>
+
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="generator" content="동글씨">
         <title>
-            링크드리스트 구현 - 동글씨
+            Linked List 구현 - 동글씨
         </title>
         <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
         <meta name="author" content="Suyan Kim">
@@ -17,10 +22,10 @@
                         
                             <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
                             
-                                <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\n\n\nLinked List\nLinked List 구조\n\n\n연결 리스트\n배열은 순차적으로 연결된 공간에 데이터를 나열\n링크드 리스트는 떨어진 곳에 존재하는 데이터를 화살표로 연결\n\n\n기본 용어\n\n\n노드\n포인터\n\n\nNode 객체를 생성할 클래스1234class Node:    def __init__(self, data):        self.data = data        self.next = None\n\n\n\n아래와 같이도 쓸 수 있다.\nnext 인자에 아무것도 넣지 않으면 default 값으로 None이 들어감\n\n\n\n1234class Node:    def __init__(self, data, next=None):        self.data = data        self.next = next\n\n\n* Node 객체 하나(0)를 할당하고, add함수를 활용하여 1-9까지의 노드를 더한다.\n\n12345678910111213141516# 1. 입력node1= Node(0)head = node1for i in range(1,10):    print(&#x27;add &#x27;,i)    add(i)# 2. 출력node = head#node 다음 객체가 있을 때까지while node.next :     print(node.data)    node = node.next# 가장 마지막 node의 next값은 없기 때문에 for문을 마치고 마지막에 한번더 출력print(node.data) \n\n\n\n\n파이썬 객체지향 Linked List 구현1234567891011121314151617181920212223class Node:    def __init__(self, data, next=None):        self.data=data        self.next=next        class NodeMgt:    def __init__(self, data):        self.head = Node(data)    def add(self, data):        if self.head==&#x27;&#x27;:            self.head=Node(data)        else:            node=self.head            while node.next:                node=node.next            node.next=Node(data)        def printDesc(self):        node = self.head        while node:            print(node.data)            node = node.next\n\n\n\n구현한 Linked List 사용\n\n\n\n","dateCreated":"2021-07-19T00:39:43+09:00","dateModified":"2021-07-19T09:39:14+09:00","datePublished":"2021-07-19T00:39:43+09:00","description":"Linked List with Python링크드 리스트의 Node, Data#node #data #linked_list","headline":"링크드리스트 구현","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2021/07/19/%EB%A7%81%ED%81%AC%EB%93%9C%EB%A6%AC%EC%8A%A4%ED%8A%B8-%EA%B5%AC%ED%98%84/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2021/07/19/%EB%A7%81%ED%81%AC%EB%93%9C%EB%A6%AC%EC%8A%A4%ED%8A%B8-%EA%B5%AC%ED%98%84/"}</script>
+                                <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\n\n\nLinked List\nLinked List 구조\n\n\n연결 리스트\n배열은 순차적으로 연결된 공간에 데이터를 나열\n링크드 리스트는 떨어진 곳에 존재하는 데이터를 화살표로 연결\n\n\n기본 용어\n\n\n노드\n포인터\n\n\nNode 객체를 생성할 클래스1234class Node:    def __init__(self, data):        self.data = data        self.next = None\n\n\n\n아래와 같이도 쓸 수 있다.\nnext 인자에 아무것도 넣지 않으면 default 값으로 None이 들어감\n\n\n\n1234class Node:    def __init__(self, data, next=None):        self.data = data        self.next = next\n\n\n* Node 객체 하나(0)를 할당하고, add함수를 활용하여 1-9까지의 노드를 더한다.\n\n12345678910111213141516# 1. 입력node1= Node(0)head = node1for i in range(1,10):    print(&#x27;add &#x27;,i)    add(i)# 2. 출력node = head#node 다음 객체가 있을 때까지while node.next :     print(node.data)    node = node.next# 가장 마지막 node의 next값은 없기 때문에 for문을 마치고 마지막에 한번더 출력print(node.data) \n\n\n\n\n파이썬 객체지향 Linked List 구현1234567891011121314151617181920212223class Node:    def __init__(self, data, next=None):        self.data=data        self.next=next        class NodeMgt:    def __init__(self, data):        self.head = Node(data)    def add(self, data):        if self.head==&#x27;&#x27;:            self.head=Node(data)        else:            node=self.head            while node.next:                node=node.next            node.next=Node(data)        def printDesc(self):        node = self.head        while node:            print(node.data)            node = node.next\n\n\n\n구현한 Linked List 사용\n\n\n\n","dateCreated":"2021-07-19T00:39:43+09:00","dateModified":"2021-07-23T13:25:49+09:00","datePublished":"2021-07-19T00:39:43+09:00","description":"Linked List with Python링크드 리스트의 Node, Data#node #data #linked_list","headline":"Linked List 구현","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2021/07/19/%EB%A7%81%ED%81%AC%EB%93%9C%EB%A6%AC%EC%8A%A4%ED%8A%B8-%EA%B5%AC%ED%98%84/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2021/07/19/%EB%A7%81%ED%81%AC%EB%93%9C%EB%A6%AC%EC%8A%A4%ED%8A%B8-%EA%B5%AC%ED%98%84/","keywords":"linked_list"}</script>
                                     <meta name="description" content="Linked List with Python링크드 리스트의 Node, Data#node #data #linked_list">
 <meta property="og:type" content="blog">
-<meta property="og:title" content="링크드리스트 구현">
+<meta property="og:title" content="Linked List 구현">
 <meta property="og:url" content="http://yoursite.com/2021/07/19/%EB%A7%81%ED%81%AC%EB%93%9C%EB%A6%AC%EC%8A%A4%ED%8A%B8-%EA%B5%AC%ED%98%84/index.html">
 <meta property="og:site_name" content="동글씨">
 <meta property="og:description" content="Linked List with Python링크드 리스트의 Node, Data#node #data #linked_list">
@@ -28,8 +33,9 @@
 <meta property="og:image" content="https://user-images.githubusercontent.com/28856435/126073591-23031a06-9a7b-42d9-ad47-667624343fbd.png">
 <meta property="og:image" content="https://user-images.githubusercontent.com/28856435/126073891-c22c8817-0c1a-478e-9b86-53b9adf5394c.png">
 <meta property="article:published_time" content="2021-07-18T15:39:43.000Z">
-<meta property="article:modified_time" content="2021-07-19T00:39:14.204Z">
+<meta property="article:modified_time" content="2021-07-23T04:25:49.852Z">
 <meta property="article:author" content="Suyan Kim">
+<meta property="article:tag" content="linked_list">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://user-images.githubusercontent.com/28856435/126073591-23031a06-9a7b-42d9-ad47-667624343fbd.png">
                                         
@@ -46,7 +52,7 @@
                                                                                                             
 <link rel="stylesheet" href="/assets/css/tranquilpeak.css">
 
-                                                                                                                <!--STYLES END-->
+                                                                                                            <!--STYLES END-->
                                                                                                                 
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-158530470-1"></script>
     <script>
@@ -176,7 +182,7 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (9)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (10)</a></li>
                             
                         
                             
@@ -185,6 +191,10 @@
                         
                             
                                 <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-DataBase/">☁️ DataBase (1)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Django/">☁️ Django (1)</a></li>
                             
                         
                             
@@ -228,7 +238,7 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-TIL/">☁️ TIL (9)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-TIL/">☁️ TIL (10)</a></li>
                             
                         
                     
@@ -307,7 +317,7 @@
         <div class="post-header main-content-wrap text-left">
     
         <h1 class="post-title">
-            링크드리스트 구현
+            Linked List 구현
         </h1>
     
     
@@ -389,17 +399,27 @@
     </div>
     <div id="post-footer" class="post-footer main-content-wrap">
         
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">TAGGED IN</span><br/>
+                
+    <a class="tag tag--primary tag--small t-none-link" href="/tags/linked-list/" rel="tag">linked_list</a>
+
+            </div>
+        
         
             <div class="post-actions-wrap">
     <nav>
         <ul class="post-actions post-action-nav">
             <li class="post-action">
                 
-                    <a
-                        class="post-action-btn btn btn--disabled"
-                        aria-hidden="true"
-                    >
-                        
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2021/07/20/%EB%A7%81%ED%81%AC%EB%93%9C%EB%A6%AC%EC%8A%A4%ED%8A%B8-%EA%B5%AC%ED%98%84-removeNode%ED%95%A8%EC%88%98/"
+                    data-tooltip="Linked List 구현 - remove 함수"
+                    aria-label="PREVIOUS: Linked List 구현 - remove 함수"
+                >
+                    
                         <i class="fa fa-angle-left" aria-hidden="true"></i>
                         <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
                     </a>
@@ -410,8 +430,8 @@
                 <a
                     class="post-action-btn btn btn--default tooltip--top"
                     href="/2021/07/18/%ED%81%90-%EC%8A%A4%ED%83%9D/"
-                    data-tooltip="큐, 스택"
-                    aria-label="NEXT: 큐, 스택"
+                    data-tooltip="Queue 그리고 Statck 과 Recursive 재귀함수의 연관성"
+                    aria-label="NEXT: Queue 그리고 Statck 과 Recursive 재귀함수의 연관성"
                 >
                     
                         <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
@@ -512,7 +532,6 @@
         Copyrights &copy; 2021 Suyan Kim. All Rights Reserved.
     </span>
 </footer>
-
             </div>
             
                 <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">
@@ -521,11 +540,14 @@
         <ul class="post-actions post-action-nav">
             <li class="post-action">
                 
-                    <a
-                        class="post-action-btn btn btn--disabled"
-                        aria-hidden="true"
-                    >
-                        
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2021/07/20/%EB%A7%81%ED%81%AC%EB%93%9C%EB%A6%AC%EC%8A%A4%ED%8A%B8-%EA%B5%AC%ED%98%84-removeNode%ED%95%A8%EC%88%98/"
+                    data-tooltip="Linked List 구현 - remove 함수"
+                    aria-label="PREVIOUS: Linked List 구현 - remove 함수"
+                >
+                    
                         <i class="fa fa-angle-left" aria-hidden="true"></i>
                         <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
                     </a>
@@ -536,8 +558,8 @@
                 <a
                     class="post-action-btn btn btn--default tooltip--top"
                     href="/2021/07/18/%ED%81%90-%EC%8A%A4%ED%83%9D/"
-                    data-tooltip="큐, 스택"
-                    aria-label="NEXT: 큐, 스택"
+                    data-tooltip="Queue 그리고 Statck 과 Recursive 재귀함수의 연관성"
+                    aria-label="NEXT: Queue 그리고 Statck 과 Recursive 재귀함수의 연관성"
                 >
                     
                         <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>

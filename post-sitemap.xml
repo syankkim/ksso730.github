@@ -8,6 +8,46 @@
     </url>
 
     <url>
+        <loc>http://yoursite.com/2021/07/23/Django-api%EC%84%9C%EB%B2%84-%EA%B5%AC%ED%98%84/</loc>
+        <lastmod>2021-08-05T04:49:08.423Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>http://yoursite.com/2021/07/18/%ED%81%90-%EC%8A%A4%ED%83%9D/</loc>
+        <lastmod>2021-07-23T04:25:49.854Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>http://yoursite.com/2021/07/21/%EC%9E%94%EB%8C%80%EB%B0%AD%EC%9D%B4-%EC%95%88%EC%8B%AC%EC%96%B4%EC%A7%88%EB%95%8C/</loc>
+        <lastmod>2021-07-23T04:25:49.853Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>http://yoursite.com/2021/07/19/%EB%A7%81%ED%81%AC%EB%93%9C%EB%A6%AC%EC%8A%A4%ED%8A%B8-%EA%B5%AC%ED%98%84/</loc>
+        <lastmod>2021-07-23T04:25:49.852Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>http://yoursite.com/2021/07/20/%EB%A7%81%ED%81%AC%EB%93%9C%EB%A6%AC%EC%8A%A4%ED%8A%B8-%EA%B5%AC%ED%98%84-removeNode%ED%95%A8%EC%88%98/</loc>
+        <lastmod>2021-07-23T04:25:49.851Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
         <loc>http://yoursite.com/2020/03/16/gradle-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-MariaDB-%EC%97%B0%EB%8F%99/</loc>
         <lastmod>2021-07-19T00:43:03.572Z</lastmod>
         <changefreq>weekly</changefreq>
@@ -24,24 +64,8 @@
     </url>
 
     <url>
-        <loc>http://yoursite.com/2021/07/18/%ED%81%90-%EC%8A%A4%ED%83%9D/</loc>
-        <lastmod>2021-07-19T00:39:14.207Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
         <loc>http://yoursite.com/2021/06/01/%EC%BB%B4%ED%93%A8%ED%84%B0%EA%B5%AC%EC%A1%B0_%EB%8D%B0%EC%9D%B4%ED%84%B0%EC%9D%98%EC%A2%85%EB%A5%98/</loc>
         <lastmod>2021-07-19T00:39:14.206Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>http://yoursite.com/2021/07/19/%EB%A7%81%ED%81%AC%EB%93%9C%EB%A6%AC%EC%8A%A4%ED%8A%B8-%EA%B5%AC%ED%98%84/</loc>
-        <lastmod>2021-07-19T00:39:14.204Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
 

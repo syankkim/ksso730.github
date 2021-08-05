@@ -8,22 +8,29 @@
     </url>
 
     <url>
-        <loc>http://yoursite.com/categories/%25E2%2598%2581%25EF%25B8%258F-Config/</loc>
-        <lastmod>2021-07-19T00:43:03.572Z</lastmod>
+        <loc>http://yoursite.com/categories/%25E2%2598%2581%25EF%25B8%258F-Django/</loc>
+        <lastmod>2021-08-05T04:49:08.423Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
         <loc>http://yoursite.com/categories/%25E2%2598%2581%25EF%25B8%258F-Algorithm/</loc>
-        <lastmod>2021-07-19T00:39:14.207Z</lastmod>
+        <lastmod>2021-07-23T04:25:49.854Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
         <loc>http://yoursite.com/categories/%25E2%2598%2581%25EF%25B8%258F-TIL/</loc>
-        <lastmod>2021-07-19T00:39:14.206Z</lastmod>
+        <lastmod>2021-07-23T04:25:49.853Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://yoursite.com/categories/%25E2%2598%2581%25EF%25B8%258F-Config/</loc>
+        <lastmod>2021-07-19T00:43:03.572Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
