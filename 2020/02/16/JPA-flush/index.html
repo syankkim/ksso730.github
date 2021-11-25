@@ -4,11 +4,6 @@
     
 
     <head>
-        <script type="text/javascript" src="http://code.jquery.com/jquery-3.2.1.min.js"></script>
-        <script type="text/java script">
-            var $= jquery.noConflict();
-        </script>
-
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="generator" content="동글씨">
@@ -22,7 +17,7 @@
                         
                             <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
                             
-                                <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\n플러시?\n영속성 컨텍스트의 변경내용을 데이터베이스에 적용.\n\n플러시 작용 순서\n변경감지\n수정된 엔티티쓰기지연 sql  저장소에 등록\nflush() : 쓰기지연 sql 저장소에 있는 쿼리들이 DB에 반영이 됨.\n\n플러시는 동기화를 위한 수동호출\n트랜잭션 커밋시 자동호출됨.JPQL 실행시 자동호출됨.트랜잭션이라는 작업 단위가 중요하다, 커밋 직전에만 동기화하면 된다.\n\n12345678Member member = new Member(200L, &quot;member200&quot;);// 1차 캐시에 저장됨.em.persist(member);// 쓰기지연 SQL 저장소 -&gt; DBem.flush();\n\n준영속 상태특정 엔티티만 준영속 상태로JPA 에서 조회(em.find) 했을때 1차 캐시에 없을 때 DB에서 가져와 넣음.\n\nem.detach()\n\n123456 Member findMember1 = em.find(Member.class, 150L);findMember1.setName(&quot;AAAA&quot;);// JPA 가 관리하지 않음. (select 문은 실행하지만 update 문은 실행하지 않음.)em.detach(findMember1);\n영속성 컨텍스트의 모든값을 초기화\nem.clear()\n\n영속성 컨텍스트를 종료\nem.close()\n","dateCreated":"2020-02-16T16:50:54+09:00","dateModified":"2020-04-28T10:36:01+09:00","datePublished":"2020-02-16T16:50:54+09:00","description":"플러시와 준영속 상태에 대해 알아봅니다.","headline":"JPA 플러시, 준영속 상태","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2020/02/16/JPA-flush/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2020/02/16/JPA-flush/","keywords":"JPA"}</script>
+                                <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\n플러시?\n영속성 컨텍스트의 변경내용을 데이터베이스에 적용.\n\n플러시 작용 순서\n변경감지\n수정된 엔티티쓰기지연 sql  저장소에 등록\nflush() : 쓰기지연 sql 저장소에 있는 쿼리들이 DB에 반영이 됨.\n\n플러시는 동기화를 위한 수동호출\n트랜잭션 커밋시 자동호출됨.JPQL 실행시 자동호출됨.트랜잭션이라는 작업 단위가 중요하다, 커밋 직전에만 동기화하면 된다.\n\n12345678Member member = new Member(200L, &quot;member200&quot;);// 1차 캐시에 저장됨.em.persist(member);// 쓰기지연 SQL 저장소 -&gt; DBem.flush();\n\n준영속 상태특정 엔티티만 준영속 상태로JPA 에서 조회(em.find) 했을때 1차 캐시에 없을 때 DB에서 가져와 넣음.\n\nem.detach()\n\n123456 Member findMember1 = em.find(Member.class, 150L);findMember1.setName(&quot;AAAA&quot;);// JPA 가 관리하지 않음. (select 문은 실행하지만 update 문은 실행하지 않음.)em.detach(findMember1);\n영속성 컨텍스트의 모든값을 초기화\nem.clear()\n\n영속성 컨텍스트를 종료\nem.close()\n","dateCreated":"2020-02-16T16:50:54+09:00","dateModified":"2020-04-28T10:36:01+09:00","datePublished":"2020-02-16T16:50:54+09:00","description":"플러시와 준영속 상태에 대해 알아봅니다.","headline":"JPA 플러시, 준영속 상태","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2020/02/16/JPA-flush/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2020/02/16/JPA-flush/","keywords":"JPA"}</script>
                                     <meta name="description" content="플러시와 준영속 상태에 대해 알아봅니다.">
 <meta property="og:type" content="blog">
 <meta property="og:title" content="JPA 플러시, 준영속 상태">
@@ -77,6 +72,10 @@
     
 
 <header id="header" data-behavior="4">
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js"></script>
+    <script src="https://kit.fontawesome.com/cfcae25ced.js" crossorigin="anonymous"></script>
     <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
     <div class="header-title">
         <a
@@ -122,13 +121,35 @@
                 </a>
                 <h4 class="sidebar-profile-name">Suyan Kim</h4>
                 
-                    <h5 class="sidebar-profile-bio"><p>▲ Who Am I</p>
+                    <h5 class="sidebar-profile-bio"><p><strong><a target="_blank" rel="noopener" href="https://nice-spectrum-2aa.notion.site/Suyeon-Kim-09e271916a504e24a5307e9f67d7bc16">Click 👀 Resume</a></strong></p>
 </h5>
                 
             </div>
         
         
             <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="https://nice-spectrum-2aa.notion.site/Suyeon-Kim-09e271916a504e24a5307e9f67d7bc16" target="_blank" rel="noopener" title="resume 👀">
+                    
+                    <i class="sidebar-button-icon far fa-smile-wink" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">resume 👀</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="https://github.com/ksso730" target="_blank" rel="noopener" title="github">
+                    
+                    <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">github</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
             
                 <li class="sidebar-button">
                     
@@ -179,7 +200,7 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (10)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (15)</a></li>
                             
                         
                             
@@ -195,7 +216,7 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Git/">☁️ Git (3)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Git/">☁️ Git (4)</a></li>
                             
                         
                             
@@ -215,7 +236,9 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-NodeJS/">☁️ NodeJS (1)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-NodeJS/">☁️ NodeJS (8)</a></li>
+                            
+                        
                             
                         
                             
@@ -231,11 +254,11 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Spring/">☁️ Spring (1)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Spring/">☁️ Spring (2)</a></li>
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-TIL/">☁️ TIL (10)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-TIL/">☁️ TIL (9)</a></li>
                             
                         
                     
@@ -256,35 +279,9 @@
                     
                 </li>
             
-                <li class="sidebar-button">
-                    
-                        <a  class="sidebar-button-link "
-                             
-                                title="about"href="#about"
-                                
-                                >
-                    
-                    <i class="sidebar-button-icon fa fa-question" aria-hidden="true"></i>
-                    <span class="sidebar-button-desc">about</span>
-                        </a>
-                    <!-- add -->
-                    
-                </li>
-            
         </ul>
         
             <ul class="sidebar-buttons">
-            
-                <li class="sidebar-button">
-                    
-                        <a  class="sidebar-button-link " href="https://github.com/ksso730" target="_blank" rel="noopener" title="github">
-                    
-                    <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
-                    <span class="sidebar-button-desc">github</span>
-                        </a>
-                    <!-- add -->
-                    
-                </li>
             
                 <li class="sidebar-button">
                     
@@ -507,6 +504,7 @@
         Copyrights &copy; 2021 Suyan Kim. All Rights Reserved.
     </span>
 </footer>
+
             </div>
             
                 <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">

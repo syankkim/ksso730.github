@@ -4,11 +4,6 @@
     
 
     <head>
-        <script type="text/javascript" src="http://code.jquery.com/jquery-3.2.1.min.js"></script>
-        <script type="text/java script">
-            var $= jquery.noConflict();
-        </script>
-
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="generator" content="동글씨">
@@ -72,6 +67,10 @@
     
 
 <header id="header" data-behavior="1">
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js"></script>
+    <script src="https://kit.fontawesome.com/cfcae25ced.js" crossorigin="anonymous"></script>
     <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
     <div class="header-title">
         <a
@@ -117,13 +116,35 @@
                 </a>
                 <h4 class="sidebar-profile-name">Suyan Kim</h4>
                 
-                    <h5 class="sidebar-profile-bio"><p>▲ Who Am I</p>
+                    <h5 class="sidebar-profile-bio"><p><strong><a target="_blank" rel="noopener" href="https://nice-spectrum-2aa.notion.site/Suyeon-Kim-09e271916a504e24a5307e9f67d7bc16">Click 👀 Resume</a></strong></p>
 </h5>
                 
             </div>
         
         
             <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="https://nice-spectrum-2aa.notion.site/Suyeon-Kim-09e271916a504e24a5307e9f67d7bc16" target="_blank" rel="noopener" title="resume 👀">
+                    
+                    <i class="sidebar-button-icon far fa-smile-wink" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">resume 👀</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="https://github.com/ksso730" target="_blank" rel="noopener" title="github">
+                    
+                    <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">github</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
             
                 <li class="sidebar-button">
                     
@@ -174,7 +195,7 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (10)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (15)</a></li>
                             
                         
                             
@@ -190,7 +211,7 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Git/">☁️ Git (3)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Git/">☁️ Git (4)</a></li>
                             
                         
                             
@@ -210,7 +231,9 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-NodeJS/">☁️ NodeJS (1)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-NodeJS/">☁️ NodeJS (8)</a></li>
+                            
+                        
                             
                         
                             
@@ -226,11 +249,11 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Spring/">☁️ Spring (1)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Spring/">☁️ Spring (2)</a></li>
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-TIL/">☁️ TIL (10)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-TIL/">☁️ TIL (9)</a></li>
                             
                         
                     
@@ -251,35 +274,9 @@
                     
                 </li>
             
-                <li class="sidebar-button">
-                    
-                        <a  class="sidebar-button-link "
-                             
-                                title="about"href="#about"
-                                
-                                >
-                    
-                    <i class="sidebar-button-icon fa fa-question" aria-hidden="true"></i>
-                    <span class="sidebar-button-desc">about</span>
-                        </a>
-                    <!-- add -->
-                    
-                </li>
-            
         </ul>
         
             <ul class="sidebar-buttons">
-            
-                <li class="sidebar-button">
-                    
-                        <a  class="sidebar-button-link " href="https://github.com/ksso730" target="_blank" rel="noopener" title="github">
-                    
-                    <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
-                    <span class="sidebar-button-desc">github</span>
-                        </a>
-                    <!-- add -->
-                    
-                </li>
             
                 <li class="sidebar-button">
                     
@@ -316,42 +313,38 @@
                     
                         <a
                             class="link-unstyled"
-                            href="/2020/02/16/JPA-flush/"
-                            aria-label=": JPA 플러시, 준영속 상태"
+                            href="/2020/03/26/%EC%8A%A4%ED%94%84%EB%A7%81-%EC%8B%9C%ED%81%90%EB%A6%AC%ED%8B%B0%20%EB%A1%9C%EA%B7%B8%EC%9D%B8%EA%B5%AC%ED%98%84/"
+                            aria-label=": 스프링 시큐리티 OAuth 사용한 로그인 기능구현"
                         >
-                            JPA 플러시, 준영속 상태
+                            스프링 시큐리티 OAuth 사용한 로그인 기능구현
                         </a>
                     
                 </h1>
                 <div class="postShorten-meta">
-    <time datetime="2020-02-16T16:50:54+09:00">
+    <time datetime="2020-03-26T22:17:40+09:00">
 	
-		    Feb 16, 2020
+		    Mar 26, 2020
     	
     </time>
     
         <span>in </span>
         
-    <a class="category-link" href="/categories/%E2%98%81%EF%B8%8F-JPA/">☁️ JPA</a>
+    <a class="category-link" href="/categories/%E2%98%81%EF%B8%8F-Spring/">☁️ Spring</a>
 
 
     
 </div>
 
                 
-                    <div style="display: inline-block;">
-                        <img width="25" alt="inflearn2" src="https://user-images.githubusercontent.com/28856435/74893276-55244f00-53cf-11ea-8a6d-90ac0c4eb72a.png">
-                    </div>
-                
             </div>
             
                 <div class="postShorten-excerpt">
-                    <p>플러시와 준영속 상태에 대해 알아봅니다.</p>
+                    <p>🍃 SpringBoot, SpringSecurity, OAuth2 를 이용해 Google 로그인을 구현해 봅니다.</p>
                     
                         <a
-                            href="/2020/02/16/JPA-flush/"
+                            href="/2020/03/26/%EC%8A%A4%ED%94%84%EB%A7%81-%EC%8B%9C%ED%81%90%EB%A6%AC%ED%8B%B0%20%EB%A1%9C%EA%B7%B8%EC%9D%B8%EA%B5%AC%ED%98%84/"
                             class="postShorten-excerpt_link link"
-                            aria-label=": JPA 플러시, 준영속 상태"
+                            aria-label=": 스프링 시큐리티 OAuth 사용한 로그인 기능구현"
                         >
                             Continue reading
                         </a>
@@ -375,135 +368,17 @@
                     
                         <a
                             class="link-unstyled"
-                            href="/2020/02/15/JPA-%EC%98%81%EC%86%8D%EC%84%B1-%EC%BB%A8%ED%85%8D%EC%8A%A4%ED%8A%B8/"
-                            aria-label=": JPA 영속성 컨텍스트"
+                            href="/2020/03/17/Git-pull-%EC%98%A4%EB%A5%98-Nothing-to-fetch/"
+                            aria-label=": Git pull 오류: Nothing to fetch"
                         >
-                            JPA 영속성 컨텍스트
+                            Git pull 오류: Nothing to fetch
                         </a>
                     
                 </h1>
                 <div class="postShorten-meta">
-    <time datetime="2020-02-15T12:19:04+09:00">
+    <time datetime="2020-03-17T12:09:22+09:00">
 	
-		    Feb 15, 2020
-    	
-    </time>
-    
-        <span>in </span>
-        
-    <a class="category-link" href="/categories/%E2%98%81%EF%B8%8F-JPA/">☁️ JPA</a>
-
-
-    
-</div>
-
-                
-                    <div style="display: inline-block;">
-                        <img width="25" alt="inflearn2" src="https://user-images.githubusercontent.com/28856435/74893276-55244f00-53cf-11ea-8a6d-90ac0c4eb72a.png">
-                    </div>
-                
-            </div>
-            
-                <div class="postShorten-excerpt">
-                    <p>JPA 를 이해하는데 가장 중요한 용어.<br>엔티티 매니저와 영속성 컨텍스트를 알아봅니다.</p>
-                    
-                        <a
-                            href="/2020/02/15/JPA-%EC%98%81%EC%86%8D%EC%84%B1-%EC%BB%A8%ED%85%8D%EC%8A%A4%ED%8A%B8/"
-                            class="postShorten-excerpt_link link"
-                            aria-label=": JPA 영속성 컨텍스트"
-                        >
-                            Continue reading
-                        </a>
-                        
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
-    
-    
-
-    
-    <article class="postShorten postShorten--thumbnailimg-right">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title">
-                    
-                        <a
-                            class="link-unstyled"
-                            href="/2020/02/14/JPA-maven-%EC%97%B0%EB%8F%99/"
-                            aria-label=": JPA - maven 연동"
-                        >
-                            JPA - maven 연동
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time datetime="2020-02-14T01:19:04+09:00">
-	
-		    Feb 14, 2020
-    	
-    </time>
-    
-        <span>in </span>
-        
-    <a class="category-link" href="/categories/%E2%98%81%EF%B8%8F-JPA/">☁️ JPA</a>
-
-
-    
-</div>
-
-                
-                    <div style="display: inline-block;">
-                        <img width="25" alt="inflearn2" src="https://user-images.githubusercontent.com/28856435/74893276-55244f00-53cf-11ea-8a6d-90ac0c4eb72a.png">
-                    </div>
-                
-            </div>
-            
-                <div class="postShorten-excerpt">
-                    <p>JPA 처음 시작하기. 연동과정을 알아보고 H2 를 이용한 기본 CRUD 를 연습해봅니다.<br>​
-                    
-                        <a
-                            href="/2020/02/14/JPA-maven-%EC%97%B0%EB%8F%99/"
-                            class="postShorten-excerpt_link link"
-                            aria-label=": JPA - maven 연동"
-                        >
-                            Continue reading
-                        </a>
-                        
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
-    
-    
-
-    
-    <article class="postShorten postShorten--thumbnailimg-right">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title">
-                    
-                        <a
-                            class="link-unstyled"
-                            href="/2020/01/18/Git-%EB%B8%94%EB%A1%9C%EA%B7%B8-%EC%83%9D%EC%84%B1-with-hexo/"
-                            aria-label=": Git 블로그 생성 with hexo"
-                        >
-                            Git 블로그 생성 with hexo
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time datetime="2020-01-18T01:19:04+09:00">
-	
-		    Jan 18, 2020
+		    Mar 17, 2020
     	
     </time>
     
@@ -519,12 +394,417 @@
             </div>
             
                 <div class="postShorten-excerpt">
-                    <p>✔️ Hexo 를 이용해 Git Blog 를 생성합니다.<br>   연동 전 기본 setting 부터 git repo 연동과 배포까지.</p>
+                    <p>💬 <em>작성중</em><br>이클립스에서 Git pull 오류: Nothing to fetch 해결 방법입니다.</p>
                     
                         <a
-                            href="/2020/01/18/Git-%EB%B8%94%EB%A1%9C%EA%B7%B8-%EC%83%9D%EC%84%B1-with-hexo/"
+                            href="/2020/03/17/Git-pull-%EC%98%A4%EB%A5%98-Nothing-to-fetch/"
                             class="postShorten-excerpt_link link"
-                            aria-label=": Git 블로그 생성 with hexo"
+                            aria-label=": Git pull 오류: Nothing to fetch"
+                        >
+                            Continue reading
+                        </a>
+                        
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    
+
+    
+    <article class="postShorten postShorten--thumbnailimg-right">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title">
+                    
+                        <a
+                            class="link-unstyled"
+                            href="/2020/03/16/gradle-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-MariaDB-%EC%97%B0%EB%8F%99/"
+                            aria-label=": gradle 프로젝트 MariaDB 연동"
+                        >
+                            gradle 프로젝트 MariaDB 연동
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time datetime="2020-03-16T16:26:02+09:00">
+	
+		    Mar 16, 2020
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/%E2%98%81%EF%B8%8F-Config/">☁️ Config</a>
+
+
+    
+</div>
+
+                
+            </div>
+            
+                <div class="postShorten-excerpt">
+                    <p>gradle 프로젝트에서의 mariaDB 연동방법을 알아봅니다.</p>
+                    
+                        <a
+                            href="/2020/03/16/gradle-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-MariaDB-%EC%97%B0%EB%8F%99/"
+                            class="postShorten-excerpt_link link"
+                            aria-label=": gradle 프로젝트 MariaDB 연동"
+                        >
+                            Continue reading
+                        </a>
+                        
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    
+
+    
+    <article class="postShorten postShorten--thumbnailimg-right">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title">
+                    
+                        <a
+                            class="link-unstyled"
+                            href="/2020/03/04/JPA-%EA%B3%B5%ED%86%B5-%EB%A7%A4%ED%95%91%EC%A0%95%EB%B3%B4-%EC%82%AC%EC%9A%A9/"
+                            aria-label=": JPA 공통 매핑정보 사용"
+                        >
+                            JPA 공통 매핑정보 사용
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time datetime="2020-03-04T23:07:50+09:00">
+	
+		    Mar 04, 2020
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/%E2%98%81%EF%B8%8F-JPA/">☁️ JPA</a>
+
+
+    
+</div>
+
+                
+                    <div style="display: inline-block;">
+                        <img width="25" alt="inflearn2" src="https://user-images.githubusercontent.com/28856435/74893276-55244f00-53cf-11ea-8a6d-90ac0c4eb72a.png">
+                    </div>
+                
+            </div>
+            
+                <div class="postShorten-excerpt">
+                    <p>@MappedSuperclass 공통 속성을 모아두는 클래스.<br>공통 객체에서 상속받아 공통 속성들을 사용한다.<br><code>JPA</code> <code>BaseEntity</code></p>
+                    
+                        <a
+                            href="/2020/03/04/JPA-%EA%B3%B5%ED%86%B5-%EB%A7%A4%ED%95%91%EC%A0%95%EB%B3%B4-%EC%82%AC%EC%9A%A9/"
+                            class="postShorten-excerpt_link link"
+                            aria-label=": JPA 공통 매핑정보 사용"
+                        >
+                            Continue reading
+                        </a>
+                        
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    
+
+    
+    <article class="postShorten postShorten--thumbnailimg-right">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title">
+                    
+                        <a
+                            class="link-unstyled"
+                            href="/2020/03/04/JPA-%EC%83%81%EC%86%8D%EA%B4%80%EA%B3%84-%EB%A7%A4%ED%95%91/"
+                            aria-label=": JPA 상속관계 매핑"
+                        >
+                            JPA 상속관계 매핑
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time datetime="2020-03-04T00:32:57+09:00">
+	
+		    Mar 04, 2020
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/%E2%98%81%EF%B8%8F-JPA/">☁️ JPA</a>
+
+
+    
+</div>
+
+                
+                    <div style="display: inline-block;">
+                        <img width="25" alt="inflearn2" src="https://user-images.githubusercontent.com/28856435/74893276-55244f00-53cf-11ea-8a6d-90ac0c4eb72a.png">
+                    </div>
+                
+            </div>
+            
+                <div class="postShorten-excerpt">
+                    <p>상속관계 매핑을 통해 모델링 전략을 알아봅니다.<br>조인전략, 단일 테이블전략, 구현 클래스마다의 서브테이블로,의 전략.</p>
+                    
+                        <a
+                            href="/2020/03/04/JPA-%EC%83%81%EC%86%8D%EA%B4%80%EA%B3%84-%EB%A7%A4%ED%95%91/"
+                            class="postShorten-excerpt_link link"
+                            aria-label=": JPA 상속관계 매핑"
+                        >
+                            Continue reading
+                        </a>
+                        
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    
+
+    
+    
+    
+
+    
+    <article class="postShorten postShorten--thumbnailimg-right">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title">
+                    
+                        <a
+                            class="link-unstyled"
+                            href="/2020/02/23/%EC%97%B0%EA%B4%80%EA%B4%80%EA%B3%84-%EB%A7%A4%ED%95%91/"
+                            aria-label=": JPA-연관관계 매핑"
+                        >
+                            JPA-연관관계 매핑
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time datetime="2020-02-23T23:32:55+09:00">
+	
+		    Feb 23, 2020
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/%E2%98%81%EF%B8%8F-JPA/">☁️ JPA</a>
+
+
+    
+</div>
+
+                
+                    <div style="display: inline-block;">
+                        <img width="25" alt="inflearn2" src="https://user-images.githubusercontent.com/28856435/74893276-55244f00-53cf-11ea-8a6d-90ac0c4eb72a.png">
+                    </div>
+                
+            </div>
+            
+                <div class="postShorten-excerpt">
+                    <p>연관관계 매핑에서의 @ManyToOne, @OneToMany 사용법과<br>연관관계 주인을 지정해본다.</p>
+                    
+                        <a
+                            href="/2020/02/23/%EC%97%B0%EA%B4%80%EA%B4%80%EA%B3%84-%EB%A7%A4%ED%95%91/"
+                            class="postShorten-excerpt_link link"
+                            aria-label=": JPA-연관관계 매핑"
+                        >
+                            Continue reading
+                        </a>
+                        
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    
+
+    
+    <article class="postShorten postShorten--thumbnailimg-right">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title">
+                    
+                        <a
+                            class="link-unstyled"
+                            href="/2020/02/20/%EA%B8%B0%EB%B3%B8%ED%82%A4-%EB%A7%A4%ED%95%91/"
+                            aria-label=": JPA 기본키 매핑"
+                        >
+                            JPA 기본키 매핑
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time datetime="2020-02-20T22:08:15+09:00">
+	
+		    Feb 20, 2020
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/%E2%98%81%EF%B8%8F-JPA/">☁️ JPA</a>
+
+
+    
+</div>
+
+                
+                    <div style="display: inline-block;">
+                        <img width="25" alt="inflearn2" src="https://user-images.githubusercontent.com/28856435/74893276-55244f00-53cf-11ea-8a6d-90ac0c4eb72a.png">
+                    </div>
+                
+            </div>
+            
+                <div class="postShorten-excerpt">
+                    <p>기본키의 strategy;전략들의 타입들을 알아보고<br>타입별 데이터베이스에 수행되는 원리를 알아봅니다.</p>
+                    
+                        <a
+                            href="/2020/02/20/%EA%B8%B0%EB%B3%B8%ED%82%A4-%EB%A7%A4%ED%95%91/"
+                            class="postShorten-excerpt_link link"
+                            aria-label=": JPA 기본키 매핑"
+                        >
+                            Continue reading
+                        </a>
+                        
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    
+
+    
+    <article class="postShorten postShorten--thumbnailimg-right">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title">
+                    
+                        <a
+                            class="link-unstyled"
+                            href="/2020/02/18/Maven-501-HTTPS-Required-%EC%97%90%EB%9F%AC/"
+                            aria-label=": Maven 501 HTTPS Required , protocol_version Error"
+                        >
+                            Maven 501 HTTPS Required , protocol_version Error
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time datetime="2020-02-18T14:58:11+09:00">
+	
+		    Feb 18, 2020
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/%E2%98%81%EF%B8%8F-Config/">☁️ Config</a>
+
+
+    
+</div>
+
+                
+            </div>
+            
+                <div class="postShorten-excerpt">
+                    <p>+Maven 빌드 중, 501 HTTPS Required 에러<br>+jdk 버전에 따른 protocol_version 버전 불일치 에러<br>+cached in the local repository, resolution will not be reattempted</p>
+                    
+                        <a
+                            href="/2020/02/18/Maven-501-HTTPS-Required-%EC%97%90%EB%9F%AC/"
+                            class="postShorten-excerpt_link link"
+                            aria-label=": Maven 501 HTTPS Required , protocol_version Error"
+                        >
+                            Continue reading
+                        </a>
+                        
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    
+
+    
+    <article class="postShorten postShorten--thumbnailimg-right">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title">
+                    
+                        <a
+                            class="link-unstyled"
+                            href="/2020/02/17/SearchConsole-sitemap/"
+                            aria-label=": 구글 검색엔진 +사이트맵 생성"
+                        >
+                            구글 검색엔진 +사이트맵 생성
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time datetime="2020-02-17T22:54:49+09:00">
+	
+		    Feb 17, 2020
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/%E2%98%81%EF%B8%8F-Git/">☁️ Git</a>
+
+
+    
+</div>
+
+                
+            </div>
+            
+                <div class="postShorten-excerpt">
+                    <p>hexo 플러그인을 이용해 Google Search Console 에 github 블로그 소유권을 인증하고 사이트맵을 등록해봅니다.</p>
+                    
+                        <a
+                            href="/2020/02/17/SearchConsole-sitemap/"
+                            class="postShorten-excerpt_link link"
+                            aria-label=": 구글 검색엔진 +사이트맵 생성"
                         >
                             Continue reading
                         </a>
@@ -552,7 +832,18 @@
           </li>
         
         
-        <li class="pagination-number">page 8 of 8</li>
+          <li class="pagination-next">
+            <a
+                class="btn btn--default btn--small"
+                href="/archives/page/9/"
+                aria-label="OLDER POSTS"
+            >
+              <span>OLDER POSTS</span>
+              <i class="fa fa-angle-right text-base icon-ml"></i>
+            </a>
+          </li>
+        
+        <li class="pagination-number">page 8 of 9</li>
     </ul>
 </div>
 
@@ -565,6 +856,7 @@
         Copyrights &copy; 2021 Suyan Kim. All Rights Reserved.
     </span>
 </footer>
+
             </div>
             
         </div>

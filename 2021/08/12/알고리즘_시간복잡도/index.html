@@ -1,0 +1,773 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="generator" content="동글씨">
+        <title>
+            알고리즘 시간 복잡도 - 동글씨
+        </title>
+        <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+        <meta name="author" content="Suyan Kim">
+        
+                
+                        
+                            <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
+                            
+                                <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\n알고리즘 복잡도왜 필요할까?\n다양한 알고리즘 중 어느 알고리즘이 더 효율적인지 분석하기 위해 복잡도를 정의하고 계산하는 것이 중요하다.\n\n복잡도 계산 항목\n시간 복잡도: 알고리즘 실행 속도\n공간 복잡도: 알고리즘이 사용하는 메모리 사이즈\n시간 복잡도를 계산할 수 있어야 한다.\n\n\n\n많이 사용되는 빅오 실행시간아래 가장 기본적이고 흔한 실행시간이다. 몇 알고리즘은 빅오 표기법으로 표시할 수 없는 경우도 있다고 한다.\n\nO(log n) 로그시간 : 이진탐색\nO(n) 선형시간 : 단순탐색\nO(n * log n) : 퀵 정렬과 같이 빠른 알고리즘\nO(n2) : 선택 정렬과 같이 느린 알고리즘\nO(n!) : 정~말 느린 알고리즘 (외판원 문제)\n\n\n빠름 | 　 O(log n) - O(n) - O(n * log n) - O(n2) - O(n!) 　 | 느림\n\n\n\n알고리즘 기억해야할 사항\n알고리즘의 속도는 연산횟수가 어떻게 증가하는지!? 로 측정. 시간이 아님.\n연산횟수 의 증감으로 데이터의 크기가 늘어날 때 알고리즘의 실행속도가 얼마나 즘감하는지 알 수 있다.\n즉, O(log n)는 O(n) 보다 빠르며, 찾으려는 데이터 수가 늘어나면 상대적으로 더 빨라진다.\n\n\nQuiz1부터 n까지의 합\n알고리즘 1\n\n12345def sum(n):    total=0    for num in range(1, n+1):        total = total+num    return total\n\n\n알고리즘 2\n1부터 n까지 구하는 공식을 이용한다.\n\n\n\n12def sum(n):    return (n * (n+1)/2)\n\n\n알고리즘 1과 2중에 더 효율적인 알고리즘은 알고리즘 2이다.\n\n알고리즘 1에서는 반복문으로 인해 입력 n에 따라 덧셈을 n번 해야한다. 시간 복잡도는 n, 빅 오 표기법은 O(n) 이 된다.\n알고리즘 2에서는 반복문 없이 단순 공식을 계산하기 때문에, n의 값은 변화가 없다. 시간 복잡도는 1, 빅 오 표기법은 O(1) 이다.\n\n\n이진탐색 크기와 횟수\n크기가 두배가 된다고 횟수도 두배가 되는것은 아니다.\n\n\n128 개의 이름이 정렬되어있는 리스트가 있습니다. 이진탐색으로 찾을 때 필요한 최대 추측 횟수는?  : O(log n128) = 7\n위 리스트의 크기가 두배가 된다면 최대 추측 횟수는?  : O(log n256) = 8\n","dateCreated":"2021-08-12T10:27:23+09:00","dateModified":"2021-08-12T10:52:17+09:00","datePublished":"2021-08-12T10:27:23+09:00","description":"알고리즘 복잡도, 빅오 표기법까지.#Big-O #알고리즘","headline":"알고리즘 시간 복잡도","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2021/08/12/%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98_%EC%8B%9C%EA%B0%84%EB%B3%B5%EC%9E%A1%EB%8F%84/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2021/08/12/%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98_%EC%8B%9C%EA%B0%84%EB%B3%B5%EC%9E%A1%EB%8F%84/","keywords":"algorithm, bigO"}</script>
+                                    <meta name="description" content="알고리즘 복잡도, 빅오 표기법까지.#Big-O #알고리즘">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="알고리즘 시간 복잡도">
+<meta property="og:url" content="http://yoursite.com/2021/08/12/%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98_%EC%8B%9C%EA%B0%84%EB%B3%B5%EC%9E%A1%EB%8F%84/index.html">
+<meta property="og:site_name" content="동글씨">
+<meta property="og:description" content="알고리즘 복잡도, 빅오 표기법까지.#Big-O #알고리즘">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2021-08-12T01:27:23.000Z">
+<meta property="article:modified_time" content="2021-08-12T01:52:17.568Z">
+<meta property="article:author" content="Suyan Kim">
+<meta property="article:tag" content="algorithm">
+<meta property="article:tag" content="bigO">
+<meta name="twitter:card" content="summary">
+                                        
+                                                
+                                                    
+                                                            
+                                                                
+                                                                    <meta property="og:image" content="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=640" />
+                                                                    
+                                                                            
+                                                                                    
+                                                                                            
+                                                                                                            <!--STYLES-->
+                                                                                                            
+<link rel="stylesheet" href="/assets/css/tranquilpeak.css">
+
+                                                                                                            <!--STYLES END-->
+                                                                                                                
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-158530470-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-158530470-1');
+    </script>
+
+
+                                                                                                                    
+
+                                                                                                                        
+                                                                                                                            
+                                                                                                                                                
+    </head>
+    <body>
+        <div id="blog">
+            <!-- Define author's picture -->
+
+
+    
+        
+    
+
+<header id="header" data-behavior="4">
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js"></script>
+    <script src="https://kit.fontawesome.com/cfcae25ced.js" crossorigin="anonymous"></script>
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <div class="header-title">
+        <a
+            class="header-title-link"
+            href="/index.html"
+            aria-label=""
+        >
+            동글씨
+        </a>
+    </div>
+    
+        
+            <a
+                class="header-right-picture "
+                href="#about"
+                aria-label="Open the link: /#about"
+            >
+        
+        
+            <img class="header-picture" src="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=90" alt="Author&#39;s picture"/>
+        
+        </a>
+    
+</header>
+
+            <!-- function -->
+
+
+<!-- Define author's picture -->
+
+
+    
+
+<nav id="sidebar" data-behavior="4">
+    <div class="sidebar-container">
+        
+            <div class="sidebar-profile">
+                <a
+                    href="/#about"
+                    aria-label="Read more about the author"
+                >
+                    <img class="sidebar-profile-picture" src="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=800" alt="Author&#39;s picture"/>
+                </a>
+                <h4 class="sidebar-profile-name">Suyan Kim</h4>
+                
+                    <h5 class="sidebar-profile-bio"><p><strong><a target="_blank" rel="noopener" href="https://nice-spectrum-2aa.notion.site/Suyeon-Kim-09e271916a504e24a5307e9f67d7bc16">Click 👀 Resume</a></strong></p>
+</h5>
+                
+            </div>
+        
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="https://nice-spectrum-2aa.notion.site/Suyeon-Kim-09e271916a504e24a5307e9f67d7bc16" target="_blank" rel="noopener" title="resume 👀">
+                    
+                    <i class="sidebar-button-icon far fa-smile-wink" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">resume 👀</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="https://github.com/ksso730" target="_blank" rel="noopener" title="github">
+                    
+                    <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">github</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="home"href="/index.html"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-home" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">home</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="archives"href="/all-archives"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-archive" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">archives</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="categories"href="/all-categories"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-bookmark" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">categories</span>
+                        </a>
+                    <!-- add -->
+                    
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-AWS/">☁️ AWS (0)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (15)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Config/">☁️ Config (2)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-DataBase/">☁️ DataBase (1)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Django/">☁️ Django (1)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Git/">☁️ Git (4)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-JPA/">☁️ JPA (10)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Java/">☁️ Java (0)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Linux/">☁️ Linux (6)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Network/">☁️ Network (1)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-NodeJS/">☁️ NodeJS (8)</a></li>
+                            
+                        
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-OS/">☁️ OS (14)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Python/">☁️ Python (2)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-React/">☁️ React (3)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Spring/">☁️ Spring (2)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-TIL/">☁️ TIL (9)</a></li>
+                            
+                        
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="tags"href="/all-tags"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-tags" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">tags</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="https://www.instagram.com/syankkim/" target="_blank" rel="noopener" title="life">
+                    
+                    <i class="sidebar-button-icon fab fa-instagram" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">life</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+        </ul>
+        
+    </div>
+</nav>
+
+            
+            <div id="main" data-behavior="4"
+                 class="
+                        hasCoverMetaIn
+                        ">
+                
+<article class="post">
+    
+    
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title">
+            알고리즘 시간 복잡도
+        </h1>
+    
+    
+        <div class="post-meta">
+    <time datetime="2021-08-12T10:27:23+09:00">
+	
+		    Aug 12, 2021
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm</a>
+
+
+    
+</div>
+
+    
+</div>
+
+    
+    <div class="post-content markdown">
+        <div class="main-content-wrap">
+            <!-- excerpt -->
+<h1 id="table-of-contents">Contents</h1><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98-%EB%B3%B5%EC%9E%A1%EB%8F%84"><span class="toc-text">알고리즘 복잡도</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%EC%99%9C-%ED%95%84%EC%9A%94%ED%95%A0%EA%B9%8C"><span class="toc-text">왜 필요할까?</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%EB%B3%B5%EC%9E%A1%EB%8F%84-%EA%B3%84%EC%82%B0-%ED%95%AD%EB%AA%A9"><span class="toc-text">복잡도 계산 항목</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%EB%A7%8E%EC%9D%B4-%EC%82%AC%EC%9A%A9%EB%90%98%EB%8A%94-%EB%B9%85%EC%98%A4-%EC%8B%A4%ED%96%89%EC%8B%9C%EA%B0%84"><span class="toc-text">많이 사용되는 빅오 실행시간</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98-%EA%B8%B0%EC%96%B5%ED%95%B4%EC%95%BC%ED%95%A0-%EC%82%AC%ED%95%AD"><span class="toc-text">알고리즘 기억해야할 사항</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Quiz"><span class="toc-text">Quiz</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1%EB%B6%80%ED%84%B0-n%EA%B9%8C%EC%A7%80%EC%9D%98-%ED%95%A9"><span class="toc-text">1부터 n까지의 합</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%EC%9D%B4%EC%A7%84%ED%83%90%EC%83%89-%ED%81%AC%EA%B8%B0%EC%99%80-%ED%9A%9F%EC%88%98"><span class="toc-text">이진탐색 크기와 횟수</span></a></li></ol></li></ol>
+
+<hr>
+<h1 id="알고리즘-복잡도"><a href="#알고리즘-복잡도" class="headerlink" title="알고리즘 복잡도"></a>알고리즘 복잡도</h1><h2 id="왜-필요할까"><a href="#왜-필요할까" class="headerlink" title="왜 필요할까?"></a>왜 필요할까?</h2><blockquote>
+<p>다양한 알고리즘 중 어느 알고리즘이 더 효율적인지 분석하기 위해 복잡도를 정의하고 계산하는 것이 중요하다.</p>
+</blockquote>
+<h2 id="복잡도-계산-항목"><a href="#복잡도-계산-항목" class="headerlink" title="복잡도 계산 항목"></a>복잡도 계산 항목</h2><ol>
+<li>시간 복잡도: 알고리즘 실행 속도</li>
+<li>공간 복잡도: 알고리즘이 사용하는 메모리 사이즈<blockquote>
+<p>시간 복잡도를 계산할 수 있어야 한다.</p>
+</blockquote>
+</li>
+</ol>
+<h2 id="많이-사용되는-빅오-실행시간"><a href="#많이-사용되는-빅오-실행시간" class="headerlink" title="많이 사용되는 빅오 실행시간"></a>많이 사용되는 빅오 실행시간</h2><p>아래 가장 기본적이고 흔한 실행시간이다. 몇 알고리즘은 빅오 표기법으로 표시할 수 없는 경우도 있다고 한다.</p>
+<ul>
+<li>O(log n) 로그시간 : 이진탐색</li>
+<li>O(n) 선형시간 : 단순탐색</li>
+<li>O(n * log n) : 퀵 정렬과 같이 빠른 알고리즘</li>
+<li>O(n<sup>2</sup>) : 선택 정렬과 같이 느린 알고리즘</li>
+<li>O(n!) : 정~말 느린 알고리즘 (외판원 문제)</li>
+</ul>
+<blockquote>
+<p>빠름 | 　 O(log n) - O(n) - O(n * log n) - O(n<sup>2</sup>) - O(n!) 　 | 느림</p>
+</blockquote>
+<br>
+
+<h2 id="알고리즘-기억해야할-사항"><a href="#알고리즘-기억해야할-사항" class="headerlink" title="알고리즘 기억해야할 사항"></a>알고리즘 기억해야할 사항</h2><ul>
+<li>알고리즘의 속도는 <code>연산횟수</code>가 어떻게 증가하는지!? 로 측정. <del>시간이 아님.</del></li>
+<li><code>연산횟수</code> 의 증감으로 데이터의 크기가 늘어날 때 알고리즘의 실행속도가 얼마나 즘감하는지 알 수 있다.</li>
+<li>즉, O(log n)는 O(n) 보다 빠르며, <strong>찾으려는 데이터 수가 늘어나면 상대적으로 더 빨라진다.</strong></li>
+</ul>
+<hr>
+<h1 id="Quiz"><a href="#Quiz" class="headerlink" title="Quiz"></a>Quiz</h1><h2 id="1부터-n까지의-합"><a href="#1부터-n까지의-합" class="headerlink" title="1부터 n까지의 합"></a>1부터 n까지의 합</h2><ul>
+<li><strong>알고리즘 1</strong></li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sum</span>(<span class="params">n</span>):</span></span><br><span class="line">    total=<span class="number">0</span></span><br><span class="line">    <span class="keyword">for</span> num <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, n+<span class="number">1</span>):</span><br><span class="line">        total = total+num</span><br><span class="line">    <span class="keyword">return</span> total</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>알고리즘 2</strong><ul>
+<li>1부터 n까지 구하는 공식을 이용한다.</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sum</span>(<span class="params">n</span>):</span></span><br><span class="line">    <span class="keyword">return</span> (n * (n+<span class="number">1</span>)/<span class="number">2</span>)</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>알고리즘 1과 2중에 더 효율적인 알고리즘은 알고리즘 2이다.</p>
+<ul>
+<li>알고리즘 1에서는 반복문으로 인해 입력 n에 따라 덧셈을 n번 해야한다. 시간 복잡도는 n, 빅 오 표기법은 O(n) 이 된다.</li>
+<li>알고리즘 2에서는 반복문 없이 단순 공식을 계산하기 때문에, n의 값은 변화가 없다. 시간 복잡도는 1, 빅 오 표기법은 O(1) 이다.</li>
+</ul>
+</blockquote>
+<h2 id="이진탐색-크기와-횟수"><a href="#이진탐색-크기와-횟수" class="headerlink" title="이진탐색 크기와 횟수"></a>이진탐색 크기와 횟수</h2><blockquote>
+<p>크기가 두배가 된다고 횟수도 두배가 되는것은 아니다.</p>
+</blockquote>
+<ul>
+<li>128 개의 이름이 정렬되어있는 리스트가 있습니다. 이진탐색으로 찾을 때 필요한 최대 추측 횟수는?<br>  : O(log n<sup>128</sup>) = 7</li>
+<li>위 리스트의 크기가 두배가 된다면 최대 추측 횟수는?<br>  : O(log n<sup>256</sup>) = 8</li>
+</ul>
+            
+
+
+        </div>
+    </div>
+    <div id="post-footer" class="post-footer main-content-wrap">
+        
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">TAGGED IN</span><br/>
+                
+    <a class="tag tag--primary tag--small t-none-link" href="/tags/algorithm/" rel="tag">algorithm</a> <a class="tag tag--primary tag--small t-none-link" href="/tags/bigO/" rel="tag">bigO</a>
+
+            </div>
+        
+        
+            <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2021/08/12/%ED%95%B4%EC%89%AC%ED%85%8C%EC%9D%B4%EB%B8%941/"
+                    data-tooltip="✌️ 해시 테이블.1"
+                    aria-label="PREVIOUS: ✌️ 해시 테이블.1"
+                >
+                    
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                    </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2021/08/10/%EB%A7%81%ED%81%AC%EB%93%9C%EB%A6%AC%EC%8A%A4%ED%8A%B8-%EA%B5%AC%ED%98%84-double%20linked/"
+                    data-tooltip="↔️ Linked List 구현 - Double Linked"
+                    aria-label="NEXT: ↔️ Linked List 구현 - Double Linked"
+                >
+                    
+                        <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a
+                class="post-action-btn btn btn--default btn-open-shareoptions"
+                href="#btn-open-shareoptions"
+                aria-label="Share this post"
+            >
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2021/08/12/%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98_%EC%8B%9C%EA%B0%84%EB%B3%B5%EC%9E%A1%EB%8F%84/"
+                    title="Share on Facebook"
+                    aria-label="Share on Facebook"
+                >
+                    <i class="fab fa-facebook" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2021/08/12/%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98_%EC%8B%9C%EA%B0%84%EB%B3%B5%EC%9E%A1%EB%8F%84/"
+                    title="Share on Twitter"
+                    aria-label="Share on Twitter"
+                >
+                    <i class="fab fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://plus.google.com/share?url=http://yoursite.com/2021/08/12/%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98_%EC%8B%9C%EA%B0%84%EB%B3%B5%EC%9E%A1%EB%8F%84/"
+                    title="Share on Google+"
+                    aria-label="Share on Google+"
+                >
+                    <i class="fab fa-google-plus" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+                <li class="post-action">
+                    <a
+                        class="post-action-btn btn btn--default"
+                        href="#disqus_thread"
+                        aria-label="Leave a comment"
+                    >
+                        <i class="fa fa-comment"></i>
+                    </a>
+                </li>
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#table-of-contents" aria-label="Contents">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+        
+        
+            
+                <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+            
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2021 Suyan Kim. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2021/08/12/%ED%95%B4%EC%89%AC%ED%85%8C%EC%9D%B4%EB%B8%941/"
+                    data-tooltip="✌️ 해시 테이블.1"
+                    aria-label="PREVIOUS: ✌️ 해시 테이블.1"
+                >
+                    
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                    </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2021/08/10/%EB%A7%81%ED%81%AC%EB%93%9C%EB%A6%AC%EC%8A%A4%ED%8A%B8-%EA%B5%AC%ED%98%84-double%20linked/"
+                    data-tooltip="↔️ Linked List 구현 - Double Linked"
+                    aria-label="NEXT: ↔️ Linked List 구현 - Double Linked"
+                >
+                    
+                        <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a
+                class="post-action-btn btn btn--default btn-open-shareoptions"
+                href="#btn-open-shareoptions"
+                aria-label="Share this post"
+            >
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2021/08/12/%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98_%EC%8B%9C%EA%B0%84%EB%B3%B5%EC%9E%A1%EB%8F%84/"
+                    title="Share on Facebook"
+                    aria-label="Share on Facebook"
+                >
+                    <i class="fab fa-facebook" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2021/08/12/%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98_%EC%8B%9C%EA%B0%84%EB%B3%B5%EC%9E%A1%EB%8F%84/"
+                    title="Share on Twitter"
+                    aria-label="Share on Twitter"
+                >
+                    <i class="fab fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://plus.google.com/share?url=http://yoursite.com/2021/08/12/%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98_%EC%8B%9C%EA%B0%84%EB%B3%B5%EC%9E%A1%EB%8F%84/"
+                    title="Share on Google+"
+                    aria-label="Share on Google+"
+                >
+                    <i class="fab fa-google-plus" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+                <li class="post-action">
+                    <a
+                        class="post-action-btn btn btn--default"
+                        href="#disqus_thread"
+                        aria-label="Leave a comment"
+                    >
+                        <i class="fa fa-comment"></i>
+                    </a>
+                </li>
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#table-of-contents" aria-label="Contents">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                
+    <div id="share-options-bar" class="share-options-bar" data-behavior="4">
+        <i id="btn-close-shareoptions" class="fa fa-times"></i>
+        <ul class="share-options">
+            
+                
+                
+                <li class="share-option">
+                    <a
+                        class="share-option-btn"
+                        target="new"
+                        href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2021/08/12/%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98_%EC%8B%9C%EA%B0%84%EB%B3%B5%EC%9E%A1%EB%8F%84/"
+                        aria-label="Share on Facebook"
+                    >
+                        <i class="fab fa-facebook" aria-hidden="true"></i><span>Share on Facebook</span>
+                    </a>
+                </li>
+            
+                
+                
+                <li class="share-option">
+                    <a
+                        class="share-option-btn"
+                        target="new"
+                        href="https://twitter.com/intent/tweet?text=http://yoursite.com/2021/08/12/%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98_%EC%8B%9C%EA%B0%84%EB%B3%B5%EC%9E%A1%EB%8F%84/"
+                        aria-label="Share on Twitter"
+                    >
+                        <i class="fab fa-twitter" aria-hidden="true"></i><span>Share on Twitter</span>
+                    </a>
+                </li>
+            
+                
+                
+                <li class="share-option">
+                    <a
+                        class="share-option-btn"
+                        target="new"
+                        href="https://plus.google.com/share?url=http://yoursite.com/2021/08/12/%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98_%EC%8B%9C%EA%B0%84%EB%B3%B5%EC%9E%A1%EB%8F%84/"
+                        aria-label="Share on Google+"
+                    >
+                        <i class="fab fa-google-plus" aria-hidden="true"></i><span>Share on Google+</span>
+                    </a>
+                </li>
+            
+        </ul>
+    </div>
+
+
+            
+        </div>
+        
+
+
+    
+
+<div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-times"></i>
+        </div>
+        
+            <img id="about-card-picture" src="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=110" alt="Author&#39;s picture"/>
+        
+            <h4 id="about-card-name">Suyan Kim</h4>
+        <!--  -->
+            <!-- <div id="about-card-bio"><p>author.bio</p>
+</div> -->
+            <div id="about-card-bio">안녕하세요, 서버 백엔드 개발자 동글씨입니다.</div>
+        <!--  -->
+        <!--  -->
+            <div id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <!-- <p>Backend Developer</p>
+ -->
+                Backend Developer
+            </div>
+        <!--  -->
+        
+            <div id="about-card-location">
+                <i class="fa fa-map-marker-alt"></i>
+                <br/>
+                Korea
+            </div>
+        
+    </div>
+</div>
+
+        
+        
+<div id="cover" style="background-image:url('/assets/images/null');"></div>
+        <!--SCRIPTS-->
+
+<script src="/assets/js/tranquilpeak.js"></script>
+
+<!--SCRIPTS END-->
+
+
+    
+        <script>
+          var disqus_config = function() {
+            this.page.url = 'http://yoursite.com/2021/08/12/%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98_%EC%8B%9C%EA%B0%84%EB%B3%B5%EC%9E%A1%EB%8F%84/';
+              
+            this.page.identifier = '2021/08/12/알고리즘_시간복잡도/';
+              
+          };
+          (function() {
+            var d = document, s = d.createElement('script');
+            var disqus_shortname = 'ksso730-github-io';
+            s.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+          })();
+        </script>
+    
+
+
+
+
+    </body>
+</html>

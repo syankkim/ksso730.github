@@ -1,0 +1,784 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="generator" content="동글씨">
+        <title>
+            NodeJS - Router - 동글씨
+        </title>
+        <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+        <meta name="author" content="Suyan Kim">
+        
+                
+                        
+                            <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
+                            
+                                <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\n\nRouters ?\nurl을 공통 모듈로 그룹화 하여 명시할 수 있다.\n\nRouter 생성 &amp; 사용\n각 Router는 그 하위의 get 요청으로 불리는 url을 포함하는 그룹 역할을 하는것을 볼 수 있다.\n\n123456789101112131415161718192021// Router 생성const globalRouter = express.Router();const userRouter = express.Router();const videoRouter = express.Router();// Router 사용// url : &quot;/&quot;app.use(&quot;/&quot;, globalRouter);const handleHome = (req, res) =&gt; res.send(&quot;Home&quot;);globalRouter.get(&quot;/&quot;, handleHome);// url : &quot;/users/edit&quot;app.use(&quot;/users&quot;, userRouter);const handleEditUser = (req, res) =&gt; res.send(&quot;Edit User&quot;);userRouter.get(&quot;/edit&quot;, handleEditUser);// url : &quot;/videos/watch&quot;app.use(&quot;/videos&quot;, videoRouter);const handleWatchVideo = (req, res) =&gt; res.send(&quot;Watch Video&quot;);videoRouter.get(&quot;/watch&quot;, handleWatchVideo);\n\n정리된 Router 모듈\n위에서 생성했던 3개의 Router를 독립적인 모듈로 분리해준다.\nexport 를 이용해, 다른 모듈에서 import 가능하다.\n\n\nrouter 폴더 내에 각 Router 모듈 생성\n\n\n\n\n\n\n아래와 같이 각 router를 export\n\n123import express from &quot;express&quot;;const userRouter = express.Router();export default userRouter;\n\n\nserver.js 에서 각 router 를 import\n\n1234567import globalRouter from &quot;./routers/globalRouter&quot;;import videoRouter from &quot;./routers/videoRouter&quot;;import userRouter from &quot;./routers/userRouter&quot;;app.use(&quot;/&quot;, globalRouter);app.use(&quot;/users&quot;, userRouter);app.use(&quot;/videos&quot;, videoRouter);\n\n\nController와 Router 변수 사용\nhandleHome, handleEditUser, handleWatchVideo 등의 handler 메서드는 controller 모듈로 분리한다.\nurl로부터 전달받은 파라미터는 router에서 controller의 req 객체로 전달되어 res 객체에서 확인 가능하다.\n\n\n\n\nUserRouter.js\n\n12345678import express from &quot;express&quot;;import &#123;see&#125; from &quot;../contorllers/userController&quot;;// http://localhost:4001/users/5const userRouter = express.Router();userRouter.get(&quot;/:id&quot;, see)export default userRouter;\n\n\nUserController.js\n\n123export see = (req, res) =&gt; &#123;    res.send(`Hello #$&#123;req.params.id&#125;`);&#125;;\n\n\n\n\nlocalhost:4001/users/12 요청 결과이다.\n\n\n\nrequest 순서\nupload 를 2번째로 내리면, request는 가장 위에서부터 요청을 처리하기 때문에 express는 upload가 id라고 인식한다.\n하지만 가장 상단으로 올려주면 정상적으로 작동한다.\n\n1234videoRouter.get(&quot;/upload&quot;, upload);videoRouter.get(&quot;/:id&quot;, see);videoRouter.get(&quot;/:id/edit&quot;, edit);videoRouter.get(&quot;/:id/delete&quot;, deleteVideo);\n\n정규식으로 원하는 변수만\n정규식을 사용하여 id 에 숫자만 허용할 수 있다.\n\n1videoRouter.get(&quot;/:id(\\\\d+)&quot;, see);","dateCreated":"2021-09-15T22:23:47+09:00","dateModified":"2021-11-04T10:14:49+09:00","datePublished":"2021-09-15T22:23:47+09:00","description":"express의  Router를 사용하여 모듈화 하기.#express #reouter #controller","headline":"NodeJS - Router","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2021/09/15/nodejs_wetube_3_router/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2021/09/15/nodejs_wetube_3_router/","keywords":"nodejs, express"}</script>
+                                    <meta name="description" content="express의  Router를 사용하여 모듈화 하기.#express #reouter #controller">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="NodeJS - Router">
+<meta property="og:url" content="http://yoursite.com/2021/09/15/nodejs_wetube_3_router/index.html">
+<meta property="og:site_name" content="동글씨">
+<meta property="og:description" content="express의  Router를 사용하여 모듈화 하기.#express #reouter #controller">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://user-images.githubusercontent.com/28856435/133460281-299b2201-1e24-4c5d-abfe-79d81820ba04.png">
+<meta property="og:image" content="https://user-images.githubusercontent.com/28856435/134004924-6aba058e-ec18-47fd-bddf-68a0197a089c.png">
+<meta property="article:published_time" content="2021-09-15T13:23:47.000Z">
+<meta property="article:modified_time" content="2021-11-04T01:14:49.631Z">
+<meta property="article:author" content="Suyan Kim">
+<meta property="article:tag" content="nodejs">
+<meta property="article:tag" content="express">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://user-images.githubusercontent.com/28856435/133460281-299b2201-1e24-4c5d-abfe-79d81820ba04.png">
+                                        
+                                                
+                                                    
+                                                            
+                                                                
+                                                                    <meta property="og:image" content="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=640" />
+                                                                    
+                                                                            
+                                                                                    
+                                                                                            
+                                                                                                            <!--STYLES-->
+                                                                                                            
+<link rel="stylesheet" href="/assets/css/tranquilpeak.css">
+
+                                                                                                            <!--STYLES END-->
+                                                                                                                
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-158530470-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-158530470-1');
+    </script>
+
+
+                                                                                                                    
+
+                                                                                                                        
+                                                                                                                            
+                                                                                                                                                
+    </head>
+    <body>
+        <div id="blog">
+            <!-- Define author's picture -->
+
+
+    
+        
+    
+
+<header id="header" data-behavior="4">
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js"></script>
+    <script src="https://kit.fontawesome.com/cfcae25ced.js" crossorigin="anonymous"></script>
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <div class="header-title">
+        <a
+            class="header-title-link"
+            href="/index.html"
+            aria-label=""
+        >
+            동글씨
+        </a>
+    </div>
+    
+        
+            <a
+                class="header-right-picture "
+                href="#about"
+                aria-label="Open the link: /#about"
+            >
+        
+        
+            <img class="header-picture" src="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=90" alt="Author&#39;s picture"/>
+        
+        </a>
+    
+</header>
+
+            <!-- function -->
+
+
+<!-- Define author's picture -->
+
+
+    
+
+<nav id="sidebar" data-behavior="4">
+    <div class="sidebar-container">
+        
+            <div class="sidebar-profile">
+                <a
+                    href="/#about"
+                    aria-label="Read more about the author"
+                >
+                    <img class="sidebar-profile-picture" src="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=800" alt="Author&#39;s picture"/>
+                </a>
+                <h4 class="sidebar-profile-name">Suyan Kim</h4>
+                
+                    <h5 class="sidebar-profile-bio"><p><strong><a target="_blank" rel="noopener" href="https://nice-spectrum-2aa.notion.site/Suyeon-Kim-09e271916a504e24a5307e9f67d7bc16">Click 👀 Resume</a></strong></p>
+</h5>
+                
+            </div>
+        
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="https://nice-spectrum-2aa.notion.site/Suyeon-Kim-09e271916a504e24a5307e9f67d7bc16" target="_blank" rel="noopener" title="resume 👀">
+                    
+                    <i class="sidebar-button-icon far fa-smile-wink" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">resume 👀</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="https://github.com/ksso730" target="_blank" rel="noopener" title="github">
+                    
+                    <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">github</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="home"href="/index.html"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-home" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">home</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="archives"href="/all-archives"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-archive" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">archives</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="categories"href="/all-categories"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-bookmark" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">categories</span>
+                        </a>
+                    <!-- add -->
+                    
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-AWS/">☁️ AWS (0)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (15)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Config/">☁️ Config (2)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-DataBase/">☁️ DataBase (1)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Django/">☁️ Django (1)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Git/">☁️ Git (4)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-JPA/">☁️ JPA (10)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Java/">☁️ Java (0)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Linux/">☁️ Linux (6)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Network/">☁️ Network (1)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-NodeJS/">☁️ NodeJS (8)</a></li>
+                            
+                        
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-OS/">☁️ OS (14)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Python/">☁️ Python (2)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-React/">☁️ React (3)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Spring/">☁️ Spring (2)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-TIL/">☁️ TIL (9)</a></li>
+                            
+                        
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="tags"href="/all-tags"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-tags" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">tags</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="https://www.instagram.com/syankkim/" target="_blank" rel="noopener" title="life">
+                    
+                    <i class="sidebar-button-icon fab fa-instagram" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">life</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+        </ul>
+        
+    </div>
+</nav>
+
+            
+            <div id="main" data-behavior="4"
+                 class="
+                        hasCoverMetaIn
+                        ">
+                
+<article class="post">
+    
+    
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title">
+            NodeJS - Router
+        </h1>
+    
+    
+        <div class="post-meta">
+    <time datetime="2021-09-15T22:23:47+09:00">
+	
+		    Sep 15, 2021
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/%E2%98%81%EF%B8%8F-NodeJS/">☁️ NodeJS</a>
+
+
+    
+</div>
+
+    
+</div>
+
+    
+    <div class="post-content markdown">
+        <div class="main-content-wrap">
+            <!-- excerpt -->
+
+<h1 id="table-of-contents">Contents</h1><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Routers"><span class="toc-text">Routers ?</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Router-%EC%83%9D%EC%84%B1-amp-%EC%82%AC%EC%9A%A9"><span class="toc-text">Router 생성 &amp; 사용</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%EC%A0%95%EB%A6%AC%EB%90%9C-Router-%EB%AA%A8%EB%93%88"><span class="toc-text">정리된 Router 모듈</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Controller%EC%99%80-Router-%EB%B3%80%EC%88%98-%EC%82%AC%EC%9A%A9"><span class="toc-text">Controller와 Router 변수 사용</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#request-%EC%88%9C%EC%84%9C"><span class="toc-text">request 순서</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%EC%A0%95%EA%B7%9C%EC%8B%9D%EC%9C%BC%EB%A1%9C-%EC%9B%90%ED%95%98%EB%8A%94-%EB%B3%80%EC%88%98%EB%A7%8C"><span class="toc-text">정규식으로 원하는 변수만</span></a></li></ol></li></ol></li></ol>
+
+<hr>
+<h1 id="Routers"><a href="#Routers" class="headerlink" title="Routers ?"></a>Routers ?</h1><blockquote>
+<p>url을 공통 모듈로 그룹화 하여 명시할 수 있다.</p>
+</blockquote>
+<h2 id="Router-생성-amp-사용"><a href="#Router-생성-amp-사용" class="headerlink" title="Router 생성 &amp; 사용"></a>Router 생성 &amp; 사용</h2><ul>
+<li>각 Router는 그 하위의 get 요청으로 불리는 url을 포함하는 그룹 역할을 하는것을 볼 수 있다.</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Router 생성</span></span><br><span class="line"><span class="keyword">const</span> globalRouter = express.Router();</span><br><span class="line"><span class="keyword">const</span> userRouter = express.Router();</span><br><span class="line"><span class="keyword">const</span> videoRouter = express.Router();</span><br><span class="line"></span><br><span class="line"><span class="comment">// Router 사용</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// url : &quot;/&quot;</span></span><br><span class="line">app.use(<span class="string">&quot;/&quot;</span>, globalRouter);</span><br><span class="line"><span class="keyword">const</span> handleHome = <span class="function">(<span class="params">req, res</span>) =&gt;</span> res.send(<span class="string">&quot;Home&quot;</span>);</span><br><span class="line">globalRouter.get(<span class="string">&quot;/&quot;</span>, handleHome);</span><br><span class="line"></span><br><span class="line"><span class="comment">// url : &quot;/users/edit&quot;</span></span><br><span class="line">app.use(<span class="string">&quot;/users&quot;</span>, userRouter);</span><br><span class="line"><span class="keyword">const</span> handleEditUser = <span class="function">(<span class="params">req, res</span>) =&gt;</span> res.send(<span class="string">&quot;Edit User&quot;</span>);</span><br><span class="line">userRouter.get(<span class="string">&quot;/edit&quot;</span>, handleEditUser);</span><br><span class="line"></span><br><span class="line"><span class="comment">// url : &quot;/videos/watch&quot;</span></span><br><span class="line">app.use(<span class="string">&quot;/videos&quot;</span>, videoRouter);</span><br><span class="line"><span class="keyword">const</span> handleWatchVideo = <span class="function">(<span class="params">req, res</span>) =&gt;</span> res.send(<span class="string">&quot;Watch Video&quot;</span>);</span><br><span class="line">videoRouter.get(<span class="string">&quot;/watch&quot;</span>, handleWatchVideo);</span><br></pre></td></tr></table></figure>
+
+<h2 id="정리된-Router-모듈"><a href="#정리된-Router-모듈" class="headerlink" title="정리된 Router 모듈"></a>정리된 Router 모듈</h2><ol>
+<li>위에서 생성했던 3개의 Router를 독립적인 모듈로 분리해준다.</li>
+<li><code>export</code> 를 이용해, 다른 모듈에서 <code>import</code> 가능하다.</li>
+</ol>
+<ul>
+<li>router 폴더 내에 각 Router 모듈 생성</li>
+</ul>
+<img width="253" alt="스크린샷 2021-09-16 오전 12 10 49" src="https://user-images.githubusercontent.com/28856435/133460281-299b2201-1e24-4c5d-abfe-79d81820ba04.png">
+
+<br>
+
+<ul>
+<li>아래와 같이 각 router를 <code>export</code></li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> express <span class="keyword">from</span> <span class="string">&quot;express&quot;</span>;</span><br><span class="line"><span class="keyword">const</span> userRouter = express.Router();</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> userRouter;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>server.js 에서 각 router 를 <code>import</code></li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> globalRouter <span class="keyword">from</span> <span class="string">&quot;./routers/globalRouter&quot;</span>;</span><br><span class="line"><span class="keyword">import</span> videoRouter <span class="keyword">from</span> <span class="string">&quot;./routers/videoRouter&quot;</span>;</span><br><span class="line"><span class="keyword">import</span> userRouter <span class="keyword">from</span> <span class="string">&quot;./routers/userRouter&quot;</span>;</span><br><span class="line"></span><br><span class="line">app.use(<span class="string">&quot;/&quot;</span>, globalRouter);</span><br><span class="line">app.use(<span class="string">&quot;/users&quot;</span>, userRouter);</span><br><span class="line">app.use(<span class="string">&quot;/videos&quot;</span>, videoRouter);</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="Controller와-Router-변수-사용"><a href="#Controller와-Router-변수-사용" class="headerlink" title="Controller와 Router 변수 사용"></a>Controller와 Router 변수 사용</h2><ul>
+<li>handleHome, handleEditUser, handleWatchVideo 등의 handler 메서드는 controller 모듈로 분리한다.</li>
+<li>url로부터 전달받은 파라미터는 router에서 controller의 <code>req</code> 객체로 전달되어 <code>res</code> 객체에서 확인 가능하다.</li>
+</ul>
+<br>
+
+<ul>
+<li>UserRouter.js</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> express <span class="keyword">from</span> <span class="string">&quot;express&quot;</span>;</span><br><span class="line"><span class="keyword">import</span> &#123;see&#125; <span class="keyword">from</span> <span class="string">&quot;../contorllers/userController&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// http://localhost:4001/users/5</span></span><br><span class="line"><span class="keyword">const</span> userRouter = express.Router();</span><br><span class="line">userRouter.get(<span class="string">&quot;/:id&quot;</span>, see)</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> userRouter;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>UserController.js</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> see = <span class="function">(<span class="params">req, res</span>) =&gt;</span> &#123;</span><br><span class="line">    res.send(<span class="string">`Hello #<span class="subst">$&#123;req.params.id&#125;</span>`</span>);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<ul>
+<li><em>localhost:4001/users/12</em> 요청 결과이다.</li>
+</ul>
+<img width="600" alt="스크린샷 2021-09-20 오후 9 48 45" src="https://user-images.githubusercontent.com/28856435/134004924-6aba058e-ec18-47fd-bddf-68a0197a089c.png">
+
+<h3 id="request-순서"><a href="#request-순서" class="headerlink" title="request 순서"></a>request 순서</h3><ul>
+<li>upload 를 2번째로 내리면, request는 가장 위에서부터 요청을 처리하기 때문에 express는 <code>upload</code>가 <code>id</code>라고 인식한다.</li>
+<li>하지만 가장 상단으로 올려주면 정상적으로 작동한다.</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">videoRouter.get(<span class="string">&quot;/upload&quot;</span>, upload);</span><br><span class="line">videoRouter.get(<span class="string">&quot;/:id&quot;</span>, see);</span><br><span class="line">videoRouter.get(<span class="string">&quot;/:id/edit&quot;</span>, edit);</span><br><span class="line">videoRouter.get(<span class="string">&quot;/:id/delete&quot;</span>, deleteVideo);</span><br></pre></td></tr></table></figure>
+
+<h3 id="정규식으로-원하는-변수만"><a href="#정규식으로-원하는-변수만" class="headerlink" title="정규식으로 원하는 변수만"></a>정규식으로 원하는 변수만</h3><ul>
+<li>정규식을 사용하여 id 에 숫자만 허용할 수 있다.</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">videoRouter.get(<span class="string">&quot;/:id(\\d+)&quot;</span>, see);</span><br></pre></td></tr></table></figure>
+            
+
+
+        </div>
+    </div>
+    <div id="post-footer" class="post-footer main-content-wrap">
+        
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">TAGGED IN</span><br/>
+                
+    <a class="tag tag--primary tag--small t-none-link" href="/tags/express/" rel="tag">express</a> <a class="tag tag--primary tag--small t-none-link" href="/tags/nodejs/" rel="tag">nodejs</a>
+
+            </div>
+        
+        
+            <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2021/09/20/nodejs_wetube_4_pug/"
+                    data-tooltip="NodeJS with Pug 🐶"
+                    aria-label="PREVIOUS: NodeJS with Pug 🐶"
+                >
+                    
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                    </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2021/09/10/nodejs_wetube_2/"
+                    data-tooltip="NodeJS - middleware (feat.morgan)"
+                    aria-label="NEXT: NodeJS - middleware (feat.morgan)"
+                >
+                    
+                        <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a
+                class="post-action-btn btn btn--default btn-open-shareoptions"
+                href="#btn-open-shareoptions"
+                aria-label="Share this post"
+            >
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2021/09/15/nodejs_wetube_3_router/"
+                    title="Share on Facebook"
+                    aria-label="Share on Facebook"
+                >
+                    <i class="fab fa-facebook" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2021/09/15/nodejs_wetube_3_router/"
+                    title="Share on Twitter"
+                    aria-label="Share on Twitter"
+                >
+                    <i class="fab fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://plus.google.com/share?url=http://yoursite.com/2021/09/15/nodejs_wetube_3_router/"
+                    title="Share on Google+"
+                    aria-label="Share on Google+"
+                >
+                    <i class="fab fa-google-plus" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+                <li class="post-action">
+                    <a
+                        class="post-action-btn btn btn--default"
+                        href="#disqus_thread"
+                        aria-label="Leave a comment"
+                    >
+                        <i class="fa fa-comment"></i>
+                    </a>
+                </li>
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#table-of-contents" aria-label="Contents">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+        
+        
+            
+                <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+            
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2021 Suyan Kim. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2021/09/20/nodejs_wetube_4_pug/"
+                    data-tooltip="NodeJS with Pug 🐶"
+                    aria-label="PREVIOUS: NodeJS with Pug 🐶"
+                >
+                    
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                    </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2021/09/10/nodejs_wetube_2/"
+                    data-tooltip="NodeJS - middleware (feat.morgan)"
+                    aria-label="NEXT: NodeJS - middleware (feat.morgan)"
+                >
+                    
+                        <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a
+                class="post-action-btn btn btn--default btn-open-shareoptions"
+                href="#btn-open-shareoptions"
+                aria-label="Share this post"
+            >
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2021/09/15/nodejs_wetube_3_router/"
+                    title="Share on Facebook"
+                    aria-label="Share on Facebook"
+                >
+                    <i class="fab fa-facebook" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2021/09/15/nodejs_wetube_3_router/"
+                    title="Share on Twitter"
+                    aria-label="Share on Twitter"
+                >
+                    <i class="fab fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://plus.google.com/share?url=http://yoursite.com/2021/09/15/nodejs_wetube_3_router/"
+                    title="Share on Google+"
+                    aria-label="Share on Google+"
+                >
+                    <i class="fab fa-google-plus" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+                <li class="post-action">
+                    <a
+                        class="post-action-btn btn btn--default"
+                        href="#disqus_thread"
+                        aria-label="Leave a comment"
+                    >
+                        <i class="fa fa-comment"></i>
+                    </a>
+                </li>
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#table-of-contents" aria-label="Contents">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                
+    <div id="share-options-bar" class="share-options-bar" data-behavior="4">
+        <i id="btn-close-shareoptions" class="fa fa-times"></i>
+        <ul class="share-options">
+            
+                
+                
+                <li class="share-option">
+                    <a
+                        class="share-option-btn"
+                        target="new"
+                        href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2021/09/15/nodejs_wetube_3_router/"
+                        aria-label="Share on Facebook"
+                    >
+                        <i class="fab fa-facebook" aria-hidden="true"></i><span>Share on Facebook</span>
+                    </a>
+                </li>
+            
+                
+                
+                <li class="share-option">
+                    <a
+                        class="share-option-btn"
+                        target="new"
+                        href="https://twitter.com/intent/tweet?text=http://yoursite.com/2021/09/15/nodejs_wetube_3_router/"
+                        aria-label="Share on Twitter"
+                    >
+                        <i class="fab fa-twitter" aria-hidden="true"></i><span>Share on Twitter</span>
+                    </a>
+                </li>
+            
+                
+                
+                <li class="share-option">
+                    <a
+                        class="share-option-btn"
+                        target="new"
+                        href="https://plus.google.com/share?url=http://yoursite.com/2021/09/15/nodejs_wetube_3_router/"
+                        aria-label="Share on Google+"
+                    >
+                        <i class="fab fa-google-plus" aria-hidden="true"></i><span>Share on Google+</span>
+                    </a>
+                </li>
+            
+        </ul>
+    </div>
+
+
+            
+        </div>
+        
+
+
+    
+
+<div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-times"></i>
+        </div>
+        
+            <img id="about-card-picture" src="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=110" alt="Author&#39;s picture"/>
+        
+            <h4 id="about-card-name">Suyan Kim</h4>
+        <!--  -->
+            <!-- <div id="about-card-bio"><p>author.bio</p>
+</div> -->
+            <div id="about-card-bio">안녕하세요, 서버 백엔드 개발자 동글씨입니다.</div>
+        <!--  -->
+        <!--  -->
+            <div id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <!-- <p>Backend Developer</p>
+ -->
+                Backend Developer
+            </div>
+        <!--  -->
+        
+            <div id="about-card-location">
+                <i class="fa fa-map-marker-alt"></i>
+                <br/>
+                Korea
+            </div>
+        
+    </div>
+</div>
+
+        
+        
+<div id="cover" style="background-image:url('/assets/images/null');"></div>
+        <!--SCRIPTS-->
+
+<script src="/assets/js/tranquilpeak.js"></script>
+
+<!--SCRIPTS END-->
+
+
+    
+        <script>
+          var disqus_config = function() {
+            this.page.url = 'http://yoursite.com/2021/09/15/nodejs_wetube_3_router/';
+              
+            this.page.identifier = '2021/09/15/nodejs_wetube_3_router/';
+              
+          };
+          (function() {
+            var d = document, s = d.createElement('script');
+            var disqus_shortname = 'ksso730-github-io';
+            s.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+          })();
+        </script>
+    
+
+
+
+
+    </body>
+</html>

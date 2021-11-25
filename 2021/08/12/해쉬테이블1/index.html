@@ -1,0 +1,810 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="generator" content="동글씨">
+        <title>
+            ✌️ 해시 테이블.1 - 동글씨
+        </title>
+        <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+        <meta name="author" content="Suyan Kim">
+        
+                
+                        
+                            <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
+                            
+                                <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\n해시 테이블\nHash Table: 키(Key)에 데이터(Value)를 저장하는 데이터 구조\n\n특징\nKey를 통해 매핑된 데이터를 가져올 수 있기 때문에 속도가 매우 빨라진다.\n파이썬 딕셔너리(Dictionary) 타입이 해시 테이블의 예이다. (따라서 파이썬에서 별도로 해시를 구현할 필요는 없음)\n보통 배열로 사이즈만큼 생성해 둔 후에 사용한다. (공간과 탐색시간을 맞바꿈)\n\n용어\n해시(Hash): 임의 값을 고정 길이로 변환하는 것\n해시 테이블(Hash Table) : 키 값의 연산에 의에 직접 접근이 가능한 데이터 구조\n해시 함수(Hash Function): Key에 대해 산술 연산을 이용해 데이터의 위치를 찾을 수 있는 함수\n해시 값(Hash Value) or 해시 주소(Hash Address): Key를 해싱 함수로 연산하여, 해시 값을 알아낸다. 이를 기반으로 해시 테이블에서 Key에 대한 데이터 위치를 연관성 있게 찾을 수 있다.\n슬롯(Slot): 한 개의 데이터를 저장할 수 있는 해시 테이블 내의 공간\n\n\n특정 Key 값으로 해시함수를 이용하여 해시 테이블에서 해시 주소를 가져온다.저장할 데이터에 대해 Key를 추출할 수 있는 별도 함수도 존재할 수 있다.\n\n장단점\n장점\n데이터 저장/읽기 속도가 빠르다.\n해쉬는 키에 대한 데이터가 있는지 중복 확인이 쉽다.\n\n\n단점\n 일반적으로 저장공간이 더 많이 필요하다.\n여러 키에 해당하는 주소가 동일할 경우 충돌 해결을 위해 별도 자료구조가 필요하다.\n공간을 늘려 탐색 시간과 맞바꿈\n\n\n\n\n\n주요 용도\n검색이 많이 필요한 경우\n저장, 삭제, 읽기가 빈번한 경우\n캐쉬 구현시 (중복 확인이 쉬움)\n\n\n프로그래밍 연습해시 테이블 구현list comprehension 사용하여 공간 생성12hash_table= list([0 for i in range(10)])hash_table\n\n\n\n\n\n가장 이상적인 해시 함수\n가장 이상적인 해시 함수는 해시 테이블에 데이터가 고르게 분포되어 저장된다.\n\n초간단 해시 함수: Division 법\n해시 함수를 만드는 방법은 여러가지가 있지만, 그 중 Division법을 이용하여 구현해본다.\n\n12def hash_func(key):    return key % 5\n\n\n해시 테이블에 정의.\n데이터에 따라 필요시 key 생성 방법 정의가 필요\n\n\n\n1234567891011data1= &#x27;Andy&#x27;data2= &#x27;Dave&#x27;data3= &#x27;Trump&#x27;# ord(data[i]): 문자의 ASCII 코드를 리턴한다.# data1,2,3 각 문자의 첫문자를 ASCII 코드로 리턴한다.print(ord(data1[0]),ord(data2[0]),ord(data3[0]))# hash_func 이 어떻게 동작? data1[0] 값에 대해서 해시 key값은 0이 return 된다.print(ord(data1[0]),ord(data1[0])%5)print(ord(data1[0]),hash_func(ord(data1[0])))\n\nㄴ결과\n    65 68 84\n    65 0\n    65 0\n\n해시 함수를 이용해 해시 테이블에 값을 저장12345678910# 파이썬 dictionary 함수와 비슷def storage_data(data, val):    key = ord(data[0])    hash_addr = hash_func(key)    hasht[hash_addr] = val # slotdef get_data(data):    key = ord(data[0])    hash_addr = hash_func(key)    return hasht[hash_addr]\n\n1234# 해시테이블에 값을 넣어준다.storage_data(&#x27;Andy&#x27;,&#x27;01055553433&#x27;)storage_data(&#x27;Dave&#x27;,&#x27;01011113433&#x27;)storage_data(&#x27;Trump&#x27;,&#x27;01022223433&#x27;)\n\n\n\n\nAndy 를 Key 로 주고 값을 구하면 아래와 같이 해시 테이블에 매칭되는 결과를 얻을 수 있다.\n\n\n\n\n리스트 변수를 활용\n\n해시 함수: key % 8\n해시 키 생성 hash(data)\n\n\n123456789101112131415hash_table = list([0 for i in range(8)])def get_key(data):    return hash(data)def hash_func(key):    return key % 8def save_data(data, val):    addr = hash_func(get_key(data))    hash_table[addr] = valdef get_val(data):    addr = hash_func(get_key(data))    return hash_table[addr]\n\n\n\n","dateCreated":"2021-08-12T10:53:23+09:00","dateModified":"2021-09-10T11:14:11+09:00","datePublished":"2021-08-12T10:53:23+09:00","description":"해시 테이블의 구조와 용어, 장단점을 알아보고 직접 구현해본다.해시 함수 + 해시 주소 = 해시 테이블#hash_table","headline":"✌️ 해시 테이블.1","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2021/08/12/%ED%95%B4%EC%89%AC%ED%85%8C%EC%9D%B4%EB%B8%941/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2021/08/12/%ED%95%B4%EC%89%AC%ED%85%8C%EC%9D%B4%EB%B8%941/","keywords":"algorithm, hash_table"}</script>
+                                    <meta name="description" content="해시 테이블의 구조와 용어, 장단점을 알아보고 직접 구현해본다.해시 함수 + 해시 주소 &#x3D; 해시 테이블#hash_table">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="✌️ 해시 테이블.1">
+<meta property="og:url" content="http://yoursite.com/2021/08/12/%ED%95%B4%EC%89%AC%ED%85%8C%EC%9D%B4%EB%B8%941/index.html">
+<meta property="og:site_name" content="동글씨">
+<meta property="og:description" content="해시 테이블의 구조와 용어, 장단점을 알아보고 직접 구현해본다.해시 함수 + 해시 주소 &#x3D; 해시 테이블#hash_table">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://user-images.githubusercontent.com/28856435/129169817-82d8c385-69b4-4b8b-a929-4dff6555c215.png">
+<meta property="og:image" content="https://user-images.githubusercontent.com/28856435/129173913-23480086-06b9-4a66-acec-f4bedd0e6410.png">
+<meta property="og:image" content="https://user-images.githubusercontent.com/28856435/129570206-4567f871-bd58-4353-81f2-bf38ab21d709.png">
+<meta property="article:published_time" content="2021-08-12T01:53:23.000Z">
+<meta property="article:modified_time" content="2021-09-10T02:14:11.688Z">
+<meta property="article:author" content="Suyan Kim">
+<meta property="article:tag" content="algorithm">
+<meta property="article:tag" content="hash_table">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://user-images.githubusercontent.com/28856435/129169817-82d8c385-69b4-4b8b-a929-4dff6555c215.png">
+                                        
+                                                
+                                                    
+                                                            
+                                                                
+                                                                    <meta property="og:image" content="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=640" />
+                                                                    
+                                                                            
+                                                                                    
+                                                                                            
+                                                                                                            <!--STYLES-->
+                                                                                                            
+<link rel="stylesheet" href="/assets/css/tranquilpeak.css">
+
+                                                                                                            <!--STYLES END-->
+                                                                                                                
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-158530470-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-158530470-1');
+    </script>
+
+
+                                                                                                                    
+
+                                                                                                                        
+                                                                                                                            
+                                                                                                                                                
+    </head>
+    <body>
+        <div id="blog">
+            <!-- Define author's picture -->
+
+
+    
+        
+    
+
+<header id="header" data-behavior="4">
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js"></script>
+    <script src="https://kit.fontawesome.com/cfcae25ced.js" crossorigin="anonymous"></script>
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <div class="header-title">
+        <a
+            class="header-title-link"
+            href="/index.html"
+            aria-label=""
+        >
+            동글씨
+        </a>
+    </div>
+    
+        
+            <a
+                class="header-right-picture "
+                href="#about"
+                aria-label="Open the link: /#about"
+            >
+        
+        
+            <img class="header-picture" src="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=90" alt="Author&#39;s picture"/>
+        
+        </a>
+    
+</header>
+
+            <!-- function -->
+
+
+<!-- Define author's picture -->
+
+
+    
+
+<nav id="sidebar" data-behavior="4">
+    <div class="sidebar-container">
+        
+            <div class="sidebar-profile">
+                <a
+                    href="/#about"
+                    aria-label="Read more about the author"
+                >
+                    <img class="sidebar-profile-picture" src="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=800" alt="Author&#39;s picture"/>
+                </a>
+                <h4 class="sidebar-profile-name">Suyan Kim</h4>
+                
+                    <h5 class="sidebar-profile-bio"><p><strong><a target="_blank" rel="noopener" href="https://nice-spectrum-2aa.notion.site/Suyeon-Kim-09e271916a504e24a5307e9f67d7bc16">Click 👀 Resume</a></strong></p>
+</h5>
+                
+            </div>
+        
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="https://nice-spectrum-2aa.notion.site/Suyeon-Kim-09e271916a504e24a5307e9f67d7bc16" target="_blank" rel="noopener" title="resume 👀">
+                    
+                    <i class="sidebar-button-icon far fa-smile-wink" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">resume 👀</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="https://github.com/ksso730" target="_blank" rel="noopener" title="github">
+                    
+                    <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">github</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="home"href="/index.html"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-home" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">home</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="archives"href="/all-archives"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-archive" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">archives</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="categories"href="/all-categories"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-bookmark" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">categories</span>
+                        </a>
+                    <!-- add -->
+                    
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-AWS/">☁️ AWS (0)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (15)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Config/">☁️ Config (2)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-DataBase/">☁️ DataBase (1)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Django/">☁️ Django (1)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Git/">☁️ Git (4)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-JPA/">☁️ JPA (10)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Java/">☁️ Java (0)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Linux/">☁️ Linux (6)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Network/">☁️ Network (1)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-NodeJS/">☁️ NodeJS (8)</a></li>
+                            
+                        
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-OS/">☁️ OS (14)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Python/">☁️ Python (2)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-React/">☁️ React (3)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Spring/">☁️ Spring (2)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-TIL/">☁️ TIL (9)</a></li>
+                            
+                        
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="tags"href="/all-tags"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-tags" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">tags</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="https://www.instagram.com/syankkim/" target="_blank" rel="noopener" title="life">
+                    
+                    <i class="sidebar-button-icon fab fa-instagram" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">life</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+        </ul>
+        
+    </div>
+</nav>
+
+            
+            <div id="main" data-behavior="4"
+                 class="
+                        hasCoverMetaIn
+                        ">
+                
+<article class="post">
+    
+    
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title">
+            ✌️ 해시 테이블.1
+        </h1>
+    
+    
+        <div class="post-meta">
+    <time datetime="2021-08-12T10:53:23+09:00">
+	
+		    Aug 12, 2021
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm</a>
+
+
+    
+</div>
+
+    
+</div>
+
+    
+    <div class="post-content markdown">
+        <div class="main-content-wrap">
+            <!-- excerpt -->
+<h1 id="table-of-contents">Contents</h1><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%ED%95%B4%EC%8B%9C-%ED%85%8C%EC%9D%B4%EB%B8%94"><span class="toc-text">해시 테이블</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%ED%8A%B9%EC%A7%95"><span class="toc-text">특징</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%EC%9A%A9%EC%96%B4"><span class="toc-text">용어</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%EC%9E%A5%EB%8B%A8%EC%A0%90"><span class="toc-text">장단점</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%EC%A3%BC%EC%9A%94-%EC%9A%A9%EB%8F%84"><span class="toc-text">주요 용도</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D-%EC%97%B0%EC%8A%B5"><span class="toc-text">프로그래밍 연습</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%ED%95%B4%EC%8B%9C-%ED%85%8C%EC%9D%B4%EB%B8%94-%EA%B5%AC%ED%98%84"><span class="toc-text">해시 테이블 구현</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#list-comprehension-%EC%82%AC%EC%9A%A9%ED%95%98%EC%97%AC-%EA%B3%B5%EA%B0%84-%EC%83%9D%EC%84%B1"><span class="toc-text">list comprehension 사용하여 공간 생성</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%EA%B0%80%EC%9E%A5-%EC%9D%B4%EC%83%81%EC%A0%81%EC%9D%B8-%ED%95%B4%EC%8B%9C-%ED%95%A8%EC%88%98"><span class="toc-text">가장 이상적인 해시 함수</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%EC%B4%88%EA%B0%84%EB%8B%A8-%ED%95%B4%EC%8B%9C-%ED%95%A8%EC%88%98-Division-%EB%B2%95"><span class="toc-text">초간단 해시 함수: Division 법</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%ED%95%B4%EC%8B%9C-%ED%95%A8%EC%88%98%EB%A5%BC-%EC%9D%B4%EC%9A%A9%ED%95%B4-%ED%95%B4%EC%8B%9C-%ED%85%8C%EC%9D%B4%EB%B8%94%EC%97%90-%EA%B0%92%EC%9D%84-%EC%A0%80%EC%9E%A5"><span class="toc-text">해시 함수를 이용해 해시 테이블에 값을 저장</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%EB%A6%AC%EC%8A%A4%ED%8A%B8-%EB%B3%80%EC%88%98%EB%A5%BC-%ED%99%9C%EC%9A%A9"><span class="toc-text">리스트 변수를 활용</span></a></li></ol></li></ol>
+
+<hr>
+<h1 id="해시-테이블"><a href="#해시-테이블" class="headerlink" title="해시 테이블"></a>해시 테이블</h1><blockquote>
+<p>Hash Table: 키(Key)에 데이터(Value)를 저장하는 데이터 구조</p>
+</blockquote>
+<h2 id="특징"><a href="#특징" class="headerlink" title="특징"></a>특징</h2><ul>
+<li>Key를 통해 매핑된 데이터를 가져올 수 있기 때문에 속도가 매우 빨라진다.</li>
+<li>파이썬 <code>딕셔너리</code>(Dictionary) 타입이 해시 테이블의 예이다. (따라서 파이썬에서 별도로 해시를 구현할 필요는 없음)</li>
+<li>보통 배열로 사이즈만큼 생성해 둔 후에 사용한다. (공간과 탐색시간을 맞바꿈)</li>
+</ul>
+<h2 id="용어"><a href="#용어" class="headerlink" title="용어"></a>용어</h2><ul>
+<li><strong>해시(Hash)</strong>: 임의 값을 <code>고정 길이</code>로 변환하는 것</li>
+<li><strong>해시 테이블(Hash Table)</strong> : 키 값의 연산에 의에 직접 접근이 가능한 데이터 구조</li>
+<li><strong>해시 함수(Hash Function)</strong>: Key에 대해 산술 연산을 이용해 데이터의 위치를 찾을 수 있는 함수</li>
+<li><strong>해시 값(Hash Value) or 해시 주소(Hash Address)</strong>: Key를 해싱 함수로 연산하여, 해시 값을 알아낸다. 이를 기반으로 해시 테이블에서 Key에 대한 데이터 위치를 연관성 있게 찾을 수 있다.</li>
+<li><strong>슬롯(Slot)</strong>: 한 개의 데이터를 저장할 수 있는 해시 테이블 내의 공간</li>
+</ul>
+<blockquote>
+<p>특정 <code>Key</code> 값으로 <code>해시함수</code>를 이용하여 <code>해시 테이블</code>에서 <code>해시 주소</code>를 가져온다.<br>저장할 데이터에 대해 Key를 추출할 수 있는 별도 함수도 존재할 수 있다.</p>
+</blockquote>
+<h2 id="장단점"><a href="#장단점" class="headerlink" title="장단점"></a>장단점</h2><ul>
+<li>장점<ul>
+<li>데이터 저장/읽기 속도가 빠르다.</li>
+<li>해쉬는 키에 대한 데이터가 있는지 중복 확인이 쉽다.</li>
+</ul>
+</li>
+<li>단점<ul>
+<li> 일반적으로 저장공간이 더 많이 필요하다.</li>
+<li>여러 키에 해당하는 주소가 동일할 경우 충돌 해결을 위해 별도 자료구조가 필요하다.<ul>
+<li><em>공간을 늘려 탐색 시간과 맞바꿈</em></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="주요-용도"><a href="#주요-용도" class="headerlink" title="주요 용도"></a>주요 용도</h2><ul>
+<li>검색이 많이 필요한 경우</li>
+<li>저장, 삭제, 읽기가 빈번한 경우</li>
+<li>캐쉬 구현시 (중복 확인이 쉬움)</li>
+</ul>
+<hr>
+<h1 id="프로그래밍-연습"><a href="#프로그래밍-연습" class="headerlink" title="프로그래밍 연습"></a>프로그래밍 연습</h1><h2 id="해시-테이블-구현"><a href="#해시-테이블-구현" class="headerlink" title="해시 테이블 구현"></a>해시 테이블 구현</h2><h3 id="list-comprehension-사용하여-공간-생성"><a href="#list-comprehension-사용하여-공간-생성" class="headerlink" title="list comprehension 사용하여 공간 생성"></a>list comprehension 사용하여 공간 생성</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">hash_table= <span class="built_in">list</span>([<span class="number">0</span> <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">10</span>)])</span><br><span class="line">hash_table</span><br></pre></td></tr></table></figure>
+
+<img width="461" alt="1" src="https://user-images.githubusercontent.com/28856435/129169817-82d8c385-69b4-4b8b-a929-4dff6555c215.png" style="border: 1px solid #E3E3E3">
+
+<br>
+
+<h3 id="가장-이상적인-해시-함수"><a href="#가장-이상적인-해시-함수" class="headerlink" title="가장 이상적인 해시 함수"></a>가장 이상적인 해시 함수</h3><blockquote>
+<p>가장 <code>이상적인</code> 해시 함수는 해시 테이블에 데이터가 고르게 분포되어 저장된다.</p>
+</blockquote>
+<h3 id="초간단-해시-함수-Division-법"><a href="#초간단-해시-함수-Division-법" class="headerlink" title="초간단 해시 함수: Division 법"></a>초간단 해시 함수: Division 법</h3><ul>
+<li>해시 함수를 만드는 방법은 여러가지가 있지만, 그 중 Division법을 이용하여 구현해본다.</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">hash_func</span>(<span class="params">key</span>):</span></span><br><span class="line">    <span class="keyword">return</span> key % <span class="number">5</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>해시 테이블에 정의.<ul>
+<li>데이터에 따라 필요시 key 생성 방법 정의가 필요</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">data1= <span class="string">&#x27;Andy&#x27;</span></span><br><span class="line">data2= <span class="string">&#x27;Dave&#x27;</span></span><br><span class="line">data3= <span class="string">&#x27;Trump&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># ord(data[i]): 문자의 ASCII 코드를 리턴한다.</span></span><br><span class="line"><span class="comment"># data1,2,3 각 문자의 첫문자를 ASCII 코드로 리턴한다.</span></span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">ord</span>(data1[<span class="number">0</span>]),<span class="built_in">ord</span>(data2[<span class="number">0</span>]),<span class="built_in">ord</span>(data3[<span class="number">0</span>]))</span><br><span class="line"></span><br><span class="line"><span class="comment"># hash_func 이 어떻게 동작? data1[0] 값에 대해서 해시 key값은 0이 return 된다.</span></span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">ord</span>(data1[<span class="number">0</span>]),<span class="built_in">ord</span>(data1[<span class="number">0</span>])%<span class="number">5</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">ord</span>(data1[<span class="number">0</span>]),hash_func(<span class="built_in">ord</span>(data1[<span class="number">0</span>])))</span><br></pre></td></tr></table></figure>
+
+<p>ㄴ결과</p>
+<pre><code>    65 68 84
+    65 0
+    65 0
+</code></pre>
+<h3 id="해시-함수를-이용해-해시-테이블에-값을-저장"><a href="#해시-함수를-이용해-해시-테이블에-값을-저장" class="headerlink" title="해시 함수를 이용해 해시 테이블에 값을 저장"></a>해시 함수를 이용해 해시 테이블에 값을 저장</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 파이썬 dictionary 함수와 비슷</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">storage_data</span>(<span class="params">data, val</span>):</span></span><br><span class="line">    key = <span class="built_in">ord</span>(data[<span class="number">0</span>])</span><br><span class="line">    hash_addr = hash_func(key)</span><br><span class="line">    hasht[hash_addr] = val <span class="comment"># slot</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_data</span>(<span class="params">data</span>):</span></span><br><span class="line">    key = <span class="built_in">ord</span>(data[<span class="number">0</span>])</span><br><span class="line">    hash_addr = hash_func(key)</span><br><span class="line">    <span class="keyword">return</span> hasht[hash_addr]</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 해시테이블에 값을 넣어준다.</span></span><br><span class="line">storage_data(<span class="string">&#x27;Andy&#x27;</span>,<span class="string">&#x27;01055553433&#x27;</span>)</span><br><span class="line">storage_data(<span class="string">&#x27;Dave&#x27;</span>,<span class="string">&#x27;01011113433&#x27;</span>)</span><br><span class="line">storage_data(<span class="string">&#x27;Trump&#x27;</span>,<span class="string">&#x27;01022223433&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<ul>
+<li><code>Andy</code> 를 Key 로 주고 값을 구하면 아래와 같이 해시 테이블에 매칭되는 결과를 얻을 수 있다.</li>
+</ul>
+<img width="445" alt="2" src="https://user-images.githubusercontent.com/28856435/129173913-23480086-06b9-4a66-acec-f4bedd0e6410.png" style="border: 1px solid #E3E3E3">
+
+<hr>
+<h2 id="리스트-변수를-활용"><a href="#리스트-변수를-활용" class="headerlink" title="리스트 변수를 활용"></a>리스트 변수를 활용</h2><blockquote>
+<ul>
+<li>해시 함수: key % 8</li>
+<li>해시 키 생성 hash(data)</li>
+</ul>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">hash_table = <span class="built_in">list</span>([<span class="number">0</span> <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">8</span>)])</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_key</span>(<span class="params">data</span>):</span></span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">hash</span>(data)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">hash_func</span>(<span class="params">key</span>):</span></span><br><span class="line">    <span class="keyword">return</span> key % <span class="number">8</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">save_data</span>(<span class="params">data, val</span>):</span></span><br><span class="line">    addr = hash_func(get_key(data))</span><br><span class="line">    hash_table[addr] = val</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_val</span>(<span class="params">data</span>):</span></span><br><span class="line">    addr = hash_func(get_key(data))</span><br><span class="line">    <span class="keyword">return</span> hash_table[addr]</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<img width="770" alt="스크린샷 2021-08-16 오후 10 19 28" src="https://user-images.githubusercontent.com/28856435/129570206-4567f871-bd58-4353-81f2-bf38ab21d709.png" style="border: 1px solid #E3E3E3">
+            
+
+
+        </div>
+    </div>
+    <div id="post-footer" class="post-footer main-content-wrap">
+        
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">TAGGED IN</span><br/>
+                
+    <a class="tag tag--primary tag--small t-none-link" href="/tags/algorithm/" rel="tag">algorithm</a> <a class="tag tag--primary tag--small t-none-link" href="/tags/hash-table/" rel="tag">hash_table</a>
+
+            </div>
+        
+        
+            <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2021/08/16/%ED%95%B4%EC%89%AC%ED%85%8C%EC%9D%B4%EB%B8%942/"
+                    data-tooltip="✌️✌️ 해시 테이블.2 - 충돌 해결 알고리즘"
+                    aria-label="PREVIOUS: ✌️✌️ 해시 테이블.2 - 충돌 해결 알고리즘"
+                >
+                    
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                    </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2021/08/12/%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98_%EC%8B%9C%EA%B0%84%EB%B3%B5%EC%9E%A1%EB%8F%84/"
+                    data-tooltip="알고리즘 시간 복잡도"
+                    aria-label="NEXT: 알고리즘 시간 복잡도"
+                >
+                    
+                        <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a
+                class="post-action-btn btn btn--default btn-open-shareoptions"
+                href="#btn-open-shareoptions"
+                aria-label="Share this post"
+            >
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2021/08/12/%ED%95%B4%EC%89%AC%ED%85%8C%EC%9D%B4%EB%B8%941/"
+                    title="Share on Facebook"
+                    aria-label="Share on Facebook"
+                >
+                    <i class="fab fa-facebook" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2021/08/12/%ED%95%B4%EC%89%AC%ED%85%8C%EC%9D%B4%EB%B8%941/"
+                    title="Share on Twitter"
+                    aria-label="Share on Twitter"
+                >
+                    <i class="fab fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://plus.google.com/share?url=http://yoursite.com/2021/08/12/%ED%95%B4%EC%89%AC%ED%85%8C%EC%9D%B4%EB%B8%941/"
+                    title="Share on Google+"
+                    aria-label="Share on Google+"
+                >
+                    <i class="fab fa-google-plus" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+                <li class="post-action">
+                    <a
+                        class="post-action-btn btn btn--default"
+                        href="#disqus_thread"
+                        aria-label="Leave a comment"
+                    >
+                        <i class="fa fa-comment"></i>
+                    </a>
+                </li>
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#table-of-contents" aria-label="Contents">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+        
+        
+            
+                <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+            
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2021 Suyan Kim. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2021/08/16/%ED%95%B4%EC%89%AC%ED%85%8C%EC%9D%B4%EB%B8%942/"
+                    data-tooltip="✌️✌️ 해시 테이블.2 - 충돌 해결 알고리즘"
+                    aria-label="PREVIOUS: ✌️✌️ 해시 테이블.2 - 충돌 해결 알고리즘"
+                >
+                    
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                    </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2021/08/12/%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98_%EC%8B%9C%EA%B0%84%EB%B3%B5%EC%9E%A1%EB%8F%84/"
+                    data-tooltip="알고리즘 시간 복잡도"
+                    aria-label="NEXT: 알고리즘 시간 복잡도"
+                >
+                    
+                        <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a
+                class="post-action-btn btn btn--default btn-open-shareoptions"
+                href="#btn-open-shareoptions"
+                aria-label="Share this post"
+            >
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2021/08/12/%ED%95%B4%EC%89%AC%ED%85%8C%EC%9D%B4%EB%B8%941/"
+                    title="Share on Facebook"
+                    aria-label="Share on Facebook"
+                >
+                    <i class="fab fa-facebook" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2021/08/12/%ED%95%B4%EC%89%AC%ED%85%8C%EC%9D%B4%EB%B8%941/"
+                    title="Share on Twitter"
+                    aria-label="Share on Twitter"
+                >
+                    <i class="fab fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://plus.google.com/share?url=http://yoursite.com/2021/08/12/%ED%95%B4%EC%89%AC%ED%85%8C%EC%9D%B4%EB%B8%941/"
+                    title="Share on Google+"
+                    aria-label="Share on Google+"
+                >
+                    <i class="fab fa-google-plus" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+                <li class="post-action">
+                    <a
+                        class="post-action-btn btn btn--default"
+                        href="#disqus_thread"
+                        aria-label="Leave a comment"
+                    >
+                        <i class="fa fa-comment"></i>
+                    </a>
+                </li>
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#table-of-contents" aria-label="Contents">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                
+    <div id="share-options-bar" class="share-options-bar" data-behavior="4">
+        <i id="btn-close-shareoptions" class="fa fa-times"></i>
+        <ul class="share-options">
+            
+                
+                
+                <li class="share-option">
+                    <a
+                        class="share-option-btn"
+                        target="new"
+                        href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2021/08/12/%ED%95%B4%EC%89%AC%ED%85%8C%EC%9D%B4%EB%B8%941/"
+                        aria-label="Share on Facebook"
+                    >
+                        <i class="fab fa-facebook" aria-hidden="true"></i><span>Share on Facebook</span>
+                    </a>
+                </li>
+            
+                
+                
+                <li class="share-option">
+                    <a
+                        class="share-option-btn"
+                        target="new"
+                        href="https://twitter.com/intent/tweet?text=http://yoursite.com/2021/08/12/%ED%95%B4%EC%89%AC%ED%85%8C%EC%9D%B4%EB%B8%941/"
+                        aria-label="Share on Twitter"
+                    >
+                        <i class="fab fa-twitter" aria-hidden="true"></i><span>Share on Twitter</span>
+                    </a>
+                </li>
+            
+                
+                
+                <li class="share-option">
+                    <a
+                        class="share-option-btn"
+                        target="new"
+                        href="https://plus.google.com/share?url=http://yoursite.com/2021/08/12/%ED%95%B4%EC%89%AC%ED%85%8C%EC%9D%B4%EB%B8%941/"
+                        aria-label="Share on Google+"
+                    >
+                        <i class="fab fa-google-plus" aria-hidden="true"></i><span>Share on Google+</span>
+                    </a>
+                </li>
+            
+        </ul>
+    </div>
+
+
+            
+        </div>
+        
+
+
+    
+
+<div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-times"></i>
+        </div>
+        
+            <img id="about-card-picture" src="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=110" alt="Author&#39;s picture"/>
+        
+            <h4 id="about-card-name">Suyan Kim</h4>
+        <!--  -->
+            <!-- <div id="about-card-bio"><p>author.bio</p>
+</div> -->
+            <div id="about-card-bio">안녕하세요, 서버 백엔드 개발자 동글씨입니다.</div>
+        <!--  -->
+        <!--  -->
+            <div id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <!-- <p>Backend Developer</p>
+ -->
+                Backend Developer
+            </div>
+        <!--  -->
+        
+            <div id="about-card-location">
+                <i class="fa fa-map-marker-alt"></i>
+                <br/>
+                Korea
+            </div>
+        
+    </div>
+</div>
+
+        
+        
+<div id="cover" style="background-image:url('/assets/images/null');"></div>
+        <!--SCRIPTS-->
+
+<script src="/assets/js/tranquilpeak.js"></script>
+
+<!--SCRIPTS END-->
+
+
+    
+        <script>
+          var disqus_config = function() {
+            this.page.url = 'http://yoursite.com/2021/08/12/%ED%95%B4%EC%89%AC%ED%85%8C%EC%9D%B4%EB%B8%941/';
+              
+            this.page.identifier = '2021/08/12/해쉬테이블1/';
+              
+          };
+          (function() {
+            var d = document, s = d.createElement('script');
+            var disqus_shortname = 'ksso730-github-io';
+            s.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+          })();
+        </script>
+    
+
+
+
+
+    </body>
+</html>

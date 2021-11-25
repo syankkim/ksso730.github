@@ -4,11 +4,6 @@
     
 
     <head>
-        <script type="text/javascript" src="http://code.jquery.com/jquery-3.2.1.min.js"></script>
-        <script type="text/java script">
-            var $= jquery.noConflict();
-        </script>
-
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="generator" content="동글씨">
@@ -22,7 +17,7 @@
                         
                             <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
                             
-                                <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\npsycopg2 를 이용하여 Python Database 연동\nDatabase 정보 config.ini 설정\n\n\nconfig.ini123456[DB]host=172.23.174.55database=mydatabaseuser=mydbpassword=1234port=5432\n\n\nDB Load &amp; Connect\n\n\nmain.py123456789101112import psycopg2import configimport sys# Load DB =&gt; config.&#123;.ini파일&#125;(section=&#123;해당 DB 설정변수&#125;)db=config.config(section=&#x27;DB&#x27;)conn = Nonetry:    conn = psycopg2.connect(**db)    curs = conn.cursor()    curs.execute(query[&#x27;select&#x27;],(user_id, phone_num))\n\nPython Database API\nfatchone\nfatchall\nfatchmany(row개수)\n\n파일 데이터 처리읽기(r), 쓰기(w 혹은 x), 추가(a), 수정(+) 모드","dateCreated":"2021-06-23T13:36:02+09:00","dateModified":"2021-06-30T17:17:37+09:00","datePublished":"2021-06-23T13:36:02+09:00","description":"python postgresql 연동","headline":"python postgresql 연동","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2021/06/23/python-postgresql-%EC%97%B0%EB%8F%99/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2021/06/23/python-postgresql-%EC%97%B0%EB%8F%99/"}</script>
+                                <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\npsycopg2 를 이용하여 Python Database 연동\nDatabase 정보 config.ini 설정\n\n\nconfig.ini123456[DB]host=172.23.174.55database=mydatabaseuser=mydbpassword=1234port=5432\n\n\nDB Load &amp; Connect\n\n\nmain.py123456789101112import psycopg2import configimport sys# Load DB =&gt; config.&#123;.ini파일&#125;(section=&#123;해당 DB 설정변수&#125;)db=config.config(section=&#x27;DB&#x27;)conn = Nonetry:    conn = psycopg2.connect(**db)    curs = conn.cursor()    curs.execute(query[&#x27;select&#x27;],(user_id, phone_num))\n\nPython Database API\nfatchone\nfatchall\nfatchmany(row개수)\n\n파일 데이터 처리읽기(r), 쓰기(w 혹은 x), 추가(a), 수정(+) 모드","dateCreated":"2021-06-23T13:36:02+09:00","dateModified":"2021-06-30T17:17:37+09:00","datePublished":"2021-06-23T13:36:02+09:00","description":"python postgresql 연동","headline":"python postgresql 연동","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2021/06/23/python-postgresql-%EC%97%B0%EB%8F%99/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2021/06/23/python-postgresql-%EC%97%B0%EB%8F%99/"}</script>
                                     <meta name="description" content="python postgresql 연동">
 <meta property="og:type" content="blog">
 <meta property="og:title" content="python postgresql 연동">
@@ -76,6 +71,10 @@
     
 
 <header id="header" data-behavior="4">
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js"></script>
+    <script src="https://kit.fontawesome.com/cfcae25ced.js" crossorigin="anonymous"></script>
     <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
     <div class="header-title">
         <a
@@ -121,13 +120,35 @@
                 </a>
                 <h4 class="sidebar-profile-name">Suyan Kim</h4>
                 
-                    <h5 class="sidebar-profile-bio"><p>▲ Who Am I</p>
+                    <h5 class="sidebar-profile-bio"><p><strong><a target="_blank" rel="noopener" href="https://nice-spectrum-2aa.notion.site/Suyeon-Kim-09e271916a504e24a5307e9f67d7bc16">Click 👀 Resume</a></strong></p>
 </h5>
                 
             </div>
         
         
             <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="https://nice-spectrum-2aa.notion.site/Suyeon-Kim-09e271916a504e24a5307e9f67d7bc16" target="_blank" rel="noopener" title="resume 👀">
+                    
+                    <i class="sidebar-button-icon far fa-smile-wink" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">resume 👀</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="https://github.com/ksso730" target="_blank" rel="noopener" title="github">
+                    
+                    <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">github</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
             
                 <li class="sidebar-button">
                     
@@ -178,7 +199,7 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (10)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (15)</a></li>
                             
                         
                             
@@ -194,7 +215,7 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Git/">☁️ Git (3)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Git/">☁️ Git (4)</a></li>
                             
                         
                             
@@ -214,7 +235,9 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-NodeJS/">☁️ NodeJS (1)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-NodeJS/">☁️ NodeJS (8)</a></li>
+                            
+                        
                             
                         
                             
@@ -230,11 +253,11 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Spring/">☁️ Spring (1)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Spring/">☁️ Spring (2)</a></li>
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-TIL/">☁️ TIL (10)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-TIL/">☁️ TIL (9)</a></li>
                             
                         
                     
@@ -255,35 +278,9 @@
                     
                 </li>
             
-                <li class="sidebar-button">
-                    
-                        <a  class="sidebar-button-link "
-                             
-                                title="about"href="#about"
-                                
-                                >
-                    
-                    <i class="sidebar-button-icon fa fa-question" aria-hidden="true"></i>
-                    <span class="sidebar-button-desc">about</span>
-                        </a>
-                    <!-- add -->
-                    
-                </li>
-            
         </ul>
         
             <ul class="sidebar-buttons">
-            
-                <li class="sidebar-button">
-                    
-                        <a  class="sidebar-button-link " href="https://github.com/ksso730" target="_blank" rel="noopener" title="github">
-                    
-                    <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
-                    <span class="sidebar-button-desc">github</span>
-                        </a>
-                    <!-- add -->
-                    
-                </li>
             
                 <li class="sidebar-button">
                     
@@ -493,6 +490,7 @@
         Copyrights &copy; 2021 Suyan Kim. All Rights Reserved.
     </span>
 </footer>
+
             </div>
             
                 <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">

@@ -4,11 +4,6 @@
     
 
     <head>
-        <script type="text/javascript" src="http://code.jquery.com/jquery-3.2.1.min.js"></script>
-        <script type="text/java script">
-            var $= jquery.noConflict();
-        </script>
-
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="generator" content="동글씨">
@@ -22,7 +17,7 @@
                         
                             <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
                             
-                                <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\n\n💬 해당 강의는 fastcampus 에서 ‘컴공 전공자 따라잡기 온라인 완주반’ 강의를 들으며 스스로의 학습을 위해 작성한 포스팅입니다. 문제가 된다면 연락 부탁드립니다.\n\n\n응용프로그램이란?\n프로그램 = 소프트웨어\n소프트웨어 = 운영체제(시스템 소프트웨어), 응용프로그램 (엑셀, 파워포인트 등)\n응용 프로그램 = Application = App\n\n운영체제와 응용 프로그램간의 관계\n운영체제는 하드웨어 시스템 자원(System Reource)를 관리\n응용체제는 시스템 소프트웨어이다.\n사용자와 컴퓨터 간의 커뮤니케이션 지원\n운영체제는 응용 프로그램을 관리\n\n\n응용 프로그램을 실행시킨다.\n응용 프로그램간의 권한을 관리\n응용 프로그램을 사용하는 사용자 관리\n\n\n특정 응용프로그램이 하드웨어 자원을 독점하여 사용하는 것을 막는다.\n응용 프로그램은 누구나 만들 수 있다. 즉, 운영체제는 비정상적으로 작동하는 프로그램을 제어한다.\n\n\n응용프로그램에 무한 반복문을 넣을경우.\n응용 프로그램을 잘못 작성되어 프로그램 다운될 경우.\n모든 파일이 삭제되는 코드가 사용될 경우. (권한/사용자 관리)\n\n\n운영체제의 목표 ?사용자가 실행하는 응용프로그램이 적절하게 동작하도록 지원.응용프로그램이 요청하는 시스템 리소스를 효율적으로 분배하고 지원하는 소프트웨어.\n\n\n운영체제는 어디에 ?\n운영체제는 저장매체(SSD/HDD) 에 저장 된다.\n\n컴퓨터를 키면?\n폰노이만 구조 : 모든 프로그램은 Memory 에 올라가게 된다. 하나씩 CPU 에 전달되면서 실행된다.\n\n\n\n운영체제의 핵심 구조\n\n\n\n\n\nCPU Protection Rings\n\n\n\nCPU의 두 가지 권한모드\n사용자 모드 (user mode) : 응용 프로그램이 사용\n커널 모드 (kernel mode) : OS가 사용, 특권 명령어와 작업 수행을 위한 자원에 접근가능.\nRing 0 (Kernal) ~ Ring 3 (user)\n\n응용 프로그램과 운영체제\n우리가 만드는 프로그램은\n사용자 영역 에서 동작하기도하고 커널 영역(System Call 하위)에서 동작하기도 한다.즉, 운영체제의 특권을 가지고 명령 및 작업을 수행한다.\n\n시스템콜과 커널모드\n커널 모드에서만 실행가능한 기능들이 있다.\n커널모드로 가려면 반드시 시스템콜을 거쳐야함.\n시스템콜은 운영체제를 제공한다.\n\n사용자 모드와 커널모드\n응용프로그램이 전체 컴퓨터 시스템을 해지지 못함.\neg. 사용자모드(사용자) - 커널모드(은행)\n사용자가 은행에 계좌 생성을 요청하면, 은행의 특별한 권한으로 해당 사용자의 계좌를 만들어줌.\n\n응용 프로그래머 VS 시스템 프로그래머\n응용 프로그래머 : API (응용 프로그램) 사용자 프로그램\n시스템 프로그래머 : 운영체제 및 시스템 프로그램, 하드웨어\n\n마무리\n운영체제의 역할? 응용 프로그램 관리, 시스템 자원 효율적 분배.\n응용 프로그램이란? 소프트웨어 (운영체제, 응용 프로그램)\n운영체제는 시스템콜 제공\n프로그래밍 언어별로 OS 기능을 활용하기 위해 시스템콜을 기반으로 API 제공\n응용 프로그램이 필요로하는 자원을 제공하는 소프트웨어\n\n\n응용 프로그램이 실행되어 운영체제 기능이 필요하면 시스템콜을 호출 하여 커널모드로 변경되어 OS 내부에서 해당 명령이 수행되고, 다시 사용자모드, 응용프로그램으로 돌아간다.\n\n용어의미\nkernel (OS kernel : OS 본연의 기능)\n(견과류) 알맹이\n핵심\nshell\n(달걀, 견과류 등의) 껍데기\n고동 껍데기\n","dateCreated":"2021-05-04T23:37:51+09:00","dateModified":"2021-05-12T17:43:56+09:00","datePublished":"2021-05-04T23:37:51+09:00","description":"컴공 따라잡기 with fastCampus운영체제의 역할부터 사용자가 어떻게 요청할 수 있는것인지 간단한 구조까지.+커널모드와 사용자모드#kernal #CPU_protect_rings","headline":"🔅 운영체제의 역할 (2)","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2021/05/04/%EC%BB%B4%EA%B3%B5-%EB%94%B0%EB%9D%BC%EC%9E%A1%EA%B8%B0-%EC%9A%B4%EC%98%81%EC%B2%B4%EC%A0%9C-%EA%B5%AC%EC%A1%B0/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2021/05/04/%EC%BB%B4%EA%B3%B5-%EB%94%B0%EB%9D%BC%EC%9E%A1%EA%B8%B0-%EC%9A%B4%EC%98%81%EC%B2%B4%EC%A0%9C-%EA%B5%AC%EC%A1%B0/","keywords":"OS"}</script>
+                                <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\n\n💬 해당 강의는 fastcampus 에서 ‘컴공 전공자 따라잡기 온라인 완주반’ 강의를 들으며 스스로의 학습을 위해 작성한 포스팅입니다. 문제가 된다면 연락 부탁드립니다.\n\n\n응용프로그램이란?\n프로그램 = 소프트웨어\n소프트웨어 = 운영체제(시스템 소프트웨어), 응용프로그램 (엑셀, 파워포인트 등)\n응용 프로그램 = Application = App\n\n운영체제와 응용 프로그램간의 관계\n운영체제는 하드웨어 시스템 자원(System Reource)를 관리\n응용체제는 시스템 소프트웨어이다.\n사용자와 컴퓨터 간의 커뮤니케이션 지원\n운영체제는 응용 프로그램을 관리\n\n\n응용 프로그램을 실행시킨다.\n응용 프로그램간의 권한을 관리\n응용 프로그램을 사용하는 사용자 관리\n\n\n특정 응용프로그램이 하드웨어 자원을 독점하여 사용하는 것을 막는다.\n응용 프로그램은 누구나 만들 수 있다. 즉, 운영체제는 비정상적으로 작동하는 프로그램을 제어한다.\n\n\n응용프로그램에 무한 반복문을 넣을경우.\n응용 프로그램을 잘못 작성되어 프로그램 다운될 경우.\n모든 파일이 삭제되는 코드가 사용될 경우. (권한/사용자 관리)\n\n\n운영체제의 목표 ?사용자가 실행하는 응용프로그램이 적절하게 동작하도록 지원.응용프로그램이 요청하는 시스템 리소스를 효율적으로 분배하고 지원하는 소프트웨어.\n\n\n운영체제는 어디에 ?\n운영체제는 저장매체(SSD/HDD) 에 저장 된다.\n\n컴퓨터를 키면?\n폰노이만 구조 : 모든 프로그램은 Memory 에 올라가게 된다. 하나씩 CPU 에 전달되면서 실행된다.\n\n\n\n운영체제의 핵심 구조\n\n\n\n\n\nCPU Protection Rings\n\n\n\nCPU의 두 가지 권한모드\n사용자 모드 (user mode) : 응용 프로그램이 사용\n커널 모드 (kernel mode) : OS가 사용, 특권 명령어와 작업 수행을 위한 자원에 접근가능.\nRing 0 (Kernal) ~ Ring 3 (user)\n\n응용 프로그램과 운영체제\n우리가 만드는 프로그램은\n사용자 영역 에서 동작하기도하고 커널 영역(System Call 하위)에서 동작하기도 한다.즉, 운영체제의 특권을 가지고 명령 및 작업을 수행한다.\n\n시스템콜과 커널모드\n커널 모드에서만 실행가능한 기능들이 있다.\n커널모드로 가려면 반드시 시스템콜을 거쳐야함.\n시스템콜은 운영체제를 제공한다.\n\n사용자 모드와 커널모드\n응용프로그램이 전체 컴퓨터 시스템을 해지지 못함.\neg. 사용자모드(사용자) - 커널모드(은행)\n사용자가 은행에 계좌 생성을 요청하면, 은행의 특별한 권한으로 해당 사용자의 계좌를 만들어줌.\n\n응용 프로그래머 VS 시스템 프로그래머\n응용 프로그래머 : API (응용 프로그램) 사용자 프로그램\n시스템 프로그래머 : 운영체제 및 시스템 프로그램, 하드웨어\n\n마무리\n운영체제의 역할? 응용 프로그램 관리, 시스템 자원 효율적 분배.\n응용 프로그램이란? 소프트웨어 (운영체제, 응용 프로그램)\n운영체제는 시스템콜 제공\n프로그래밍 언어별로 OS 기능을 활용하기 위해 시스템콜을 기반으로 API 제공\n응용 프로그램이 필요로하는 자원을 제공하는 소프트웨어\n\n\n응용 프로그램이 실행되어 운영체제 기능이 필요하면 시스템콜을 호출 하여 커널모드로 변경되어 OS 내부에서 해당 명령이 수행되고, 다시 사용자모드, 응용프로그램으로 돌아간다.\n\n용어의미\nkernel (OS kernel : OS 본연의 기능)\n(견과류) 알맹이\n핵심\nshell\n(달걀, 견과류 등의) 껍데기\n고동 껍데기\n","dateCreated":"2021-05-04T23:37:51+09:00","dateModified":"2021-05-12T17:43:56+09:00","datePublished":"2021-05-04T23:37:51+09:00","description":"컴공 따라잡기 with fastCampus운영체제의 역할부터 사용자가 어떻게 요청할 수 있는것인지 간단한 구조까지.+커널모드와 사용자모드#kernal #CPU_protect_rings","headline":"🔅 운영체제의 역할 (2)","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2021/05/04/%EC%BB%B4%EA%B3%B5-%EB%94%B0%EB%9D%BC%EC%9E%A1%EA%B8%B0-%EC%9A%B4%EC%98%81%EC%B2%B4%EC%A0%9C-%EA%B5%AC%EC%A1%B0/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2021/05/04/%EC%BB%B4%EA%B3%B5-%EB%94%B0%EB%9D%BC%EC%9E%A1%EA%B8%B0-%EC%9A%B4%EC%98%81%EC%B2%B4%EC%A0%9C-%EA%B5%AC%EC%A1%B0/","keywords":"OS"}</script>
                                     <meta name="description" content="컴공 따라잡기 with fastCampus운영체제의 역할부터 사용자가 어떻게 요청할 수 있는것인지 간단한 구조까지.+커널모드와 사용자모드#kernal #CPU_protect_rings">
 <meta property="og:type" content="blog">
 <meta property="og:title" content="🔅 운영체제의 역할 (2)">
@@ -80,6 +75,10 @@
     
 
 <header id="header" data-behavior="4">
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js"></script>
+    <script src="https://kit.fontawesome.com/cfcae25ced.js" crossorigin="anonymous"></script>
     <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
     <div class="header-title">
         <a
@@ -125,13 +124,35 @@
                 </a>
                 <h4 class="sidebar-profile-name">Suyan Kim</h4>
                 
-                    <h5 class="sidebar-profile-bio"><p>▲ Who Am I</p>
+                    <h5 class="sidebar-profile-bio"><p><strong><a target="_blank" rel="noopener" href="https://nice-spectrum-2aa.notion.site/Suyeon-Kim-09e271916a504e24a5307e9f67d7bc16">Click 👀 Resume</a></strong></p>
 </h5>
                 
             </div>
         
         
             <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="https://nice-spectrum-2aa.notion.site/Suyeon-Kim-09e271916a504e24a5307e9f67d7bc16" target="_blank" rel="noopener" title="resume 👀">
+                    
+                    <i class="sidebar-button-icon far fa-smile-wink" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">resume 👀</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="https://github.com/ksso730" target="_blank" rel="noopener" title="github">
+                    
+                    <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">github</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
             
                 <li class="sidebar-button">
                     
@@ -182,7 +203,7 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (10)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (15)</a></li>
                             
                         
                             
@@ -198,7 +219,7 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Git/">☁️ Git (3)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Git/">☁️ Git (4)</a></li>
                             
                         
                             
@@ -218,7 +239,9 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-NodeJS/">☁️ NodeJS (1)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-NodeJS/">☁️ NodeJS (8)</a></li>
+                            
+                        
                             
                         
                             
@@ -234,11 +257,11 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Spring/">☁️ Spring (1)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Spring/">☁️ Spring (2)</a></li>
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-TIL/">☁️ TIL (10)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-TIL/">☁️ TIL (9)</a></li>
                             
                         
                     
@@ -259,35 +282,9 @@
                     
                 </li>
             
-                <li class="sidebar-button">
-                    
-                        <a  class="sidebar-button-link "
-                             
-                                title="about"href="#about"
-                                
-                                >
-                    
-                    <i class="sidebar-button-icon fa fa-question" aria-hidden="true"></i>
-                    <span class="sidebar-button-desc">about</span>
-                        </a>
-                    <!-- add -->
-                    
-                </li>
-            
         </ul>
         
             <ul class="sidebar-buttons">
-            
-                <li class="sidebar-button">
-                    
-                        <a  class="sidebar-button-link " href="https://github.com/ksso730" target="_blank" rel="noopener" title="github">
-                    
-                    <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
-                    <span class="sidebar-button-desc">github</span>
-                        </a>
-                    <!-- add -->
-                    
-                </li>
             
                 <li class="sidebar-button">
                     
@@ -578,6 +575,7 @@
         Copyrights &copy; 2021 Suyan Kim. All Rights Reserved.
     </span>
 </footer>
+
             </div>
             
                 <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">

@@ -4,11 +4,6 @@
     
 
     <head>
-        <script type="text/javascript" src="http://code.jquery.com/jquery-3.2.1.min.js"></script>
-        <script type="text/java script">
-            var $= jquery.noConflict();
-        </script>
-
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="generator" content="동글씨">
@@ -22,7 +17,7 @@
                         
                             <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
                             
-                                <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\nIPC 기법파이프\n부모 프로세스와 자식 프로세스가 같은 kernel 공간을 공유한다. 즉, 같은 물리주소를 바라보고 있다.\n단방향 통신이다. 부모프로세스 -&gt; 자식프로세스\n\n파이프 예제\n부모프로세스가 write 한 msg를 pipe를 통해 자식프로세스가 read 한다.\n\n\npipe.c\n\n1234567891011121314151617181920212223242526272829303132333435363738#include&lt;stdio.h&gt;#include&lt;stdlib.h&gt;#include&lt;unistd.h&gt;#define MSGSIZE 255char* msg=&quot;Hello Child Process&quot;;int main()&#123;        char buf[255];        int fd[2], pid, nbytes;        // 파이프 생성: pipe(fd)= -1이면 pipe가 생성되지 않은것.        if(pipe(fd)&lt;0)                exit(1); // 종료        // 부모-자식 프로세스 생성        pid= fork();        printf(&quot;after fork pid : %d\\n&quot;, pid);        if(pid&gt;0)&#123; // 부모 프로세스                printf(&quot;[1] Parent: %d, Child: %d\\n&quot;, getpid(), pid);                // 부모 프로세스가 fd[1] 에 쓴다.                write(fd[1], msg, MSGSIZE);                exit(0);        &#125;else&#123;                //자식 프로세스에는 pid값이 0                 printf(&quot;[2] Parent: %d, Child: %d\\n&quot;, getpid(), pid);                 nbytes = read(fd[0], buf, MSGSIZE);                 printf(&quot;nbytes: %d , msg: %s\\n&quot;, nbytes, buf);                 exit(0);        &#125;        return 0;&#125;\n\n파이프 실행 결과\npid=0 일 때 자식 프로세스이며, 아래와 같이 부모 프로세스가 저장한 msg 를 읽어오는 것을 확인할 수 있다.\n\n1234$ ./_ipc[1] Parent: 21768, Child: 21769$ [2] Parent: 21769, Child: 0nbytes: 255 , msg: Hello Child Process\n\n메시지 큐\nkernel 공간의 메모리를 사용한다.\n양방향 통신이 가능하다.\n먼저 들어간 메시지부터 읽는다.\n\n메시지 큐 예시\n msgrcv(int msgid, void *msgp, size_t msgsz, long msgtype, int msgflag)\n\nmsgtype: 0일때 첫번째 데이터부터 읽고 그 이상이라면 그 type에 일치하는 데이터부터 읽는다.\n\nmsgflag: 0: 블록모드, IPC_NOWAIT: 비블록모드\n\n보내는 프로세스 msgSnd.c, 받는 프로세스 msgRcv.c 를 따로 만들어 수행한다.\n\n\n\nmsgSnd.c\n\n1234567891011121314151617181920212223242526272829303132#include&lt;stdio.h&gt;#include&lt;stdlib.h&gt;#include&lt;string.h&gt;#include&lt;sys/msg.h&gt;typedef struct msgbuf &#123;        long type;        char text[50];&#125; MsgBuf;int main(void)&#123;        int msgid, len;        MsgBuf msg;        key_t key = 1234;        // IPC_CREAT: 새로운 키는 식별자 생성(접근권한)        msgid= msgget(key, IPC_CREAT|0644); // =&gt; rw‑r‑‑r‑‑        if(msgid == -1)&#123;                perror(&quot;msgget&quot;);                exit(1);        &#125;        msg.type = 1;        // 아래 메시지 전송        strcpy(msg.text, &quot;Message Queue is Executed\\n&quot;);        if(msgsnd(msgid, (void *)&amp;msg, 50, IPC_NOWAIT) == -1)&#123;                 perror(&quot;msgsnd&quot;);                exit(1);        &#125;        return 0;&#125;\n\n\nmsgRcv.c\n\n1234567891011121314151617181920212223242526#include&lt;stdio.h&gt;#include&lt;stdlib.h&gt;#include&lt;unistd.h&gt;#include&lt;string.h&gt;#include&lt;sys/msg.h&gt;typedef struct msgbuf &#123;        long type;        char text[50];&#125; MsgBuf;int main(void)&#123;        int msgid, len;        MsgBuf msg;        key_t key = 1234;        // IPC_CREAT: 새로운 키는 식별자 생성(접근권한)        msgid= msgget(key, IPC_CREAT|0644); // =&gt; rw‑r‑‑r‑‑        if(msgid == -1)&#123;                perror(&quot;msgget&quot;);                exit(1);        &#125;        len= msgrcv(msgid, &amp;msg, 50, 0, 0);        printf(&quot;Got a Message ! =&gt; %s [%d] \\n&quot;, msg.text, len);        return 0;&#125;\n\n메시지큐 실행 결과\nmsgSnd - 보내고 , msgRcv - 받는다.\n\n123456ubuntu@ip-172-31-42-223:~$ gcc msgRcv.c -o msgRcvubuntu@ip-172-31-42-223:~$ gcc msgSnd.c -o msgSndubuntu@ip-172-31-42-223:~$ ./msgSndubuntu@ip-172-31-42-223:~$ ./msgRcvGot a Message ! =&gt; Message Queue is Executed [50]\n\n\n\n\nftok() - 키 생성을 위한 함수\n\npath 경로명의 inode 값과 숫자값(id)을 기반으로 생성된다.\n경로 삭제 후 재생성시 inode값이 달라지므로 기존과 다른 값을 리턴한다.123456#include&lt;sys/ipc.h&gt;key_t ftok(const char *path, int id);// 예시key = ftok(&quot;keyfile&quot;, 1); // 메시지큐를 통해서 부모-자식 프로세스 간 공유id = msgget(key, IPC_CREAT|0640);\n\n","dateCreated":"2021-05-26T23:13:08+09:00","dateModified":"2021-05-31T09:52:37+09:00","datePublished":"2021-05-26T23:13:08+09:00","description":"IPC 기법을 직접 실습해본다.","headline":"프로세스 IPC 기법","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2021/05/26/%ED%94%84%EB%A1%9C%EC%84%B8%EC%8A%A4-IPC-%EA%B8%B0%EB%B2%95/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2021/05/26/%ED%94%84%EB%A1%9C%EC%84%B8%EC%8A%A4-IPC-%EA%B8%B0%EB%B2%95/","keywords":"ipc"}</script>
+                                <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\nIPC 기법파이프\n부모 프로세스와 자식 프로세스가 같은 kernel 공간을 공유한다. 즉, 같은 물리주소를 바라보고 있다.\n단방향 통신이다. 부모프로세스 -&gt; 자식프로세스\n\n파이프 예제\n부모프로세스가 write 한 msg를 pipe를 통해 자식프로세스가 read 한다.\n\n\npipe.c\n\n1234567891011121314151617181920212223242526272829303132333435363738#include&lt;stdio.h&gt;#include&lt;stdlib.h&gt;#include&lt;unistd.h&gt;#define MSGSIZE 255char* msg=&quot;Hello Child Process&quot;;int main()&#123;        char buf[255];        int fd[2], pid, nbytes;        // 파이프 생성: pipe(fd)= -1이면 pipe가 생성되지 않은것.        if(pipe(fd)&lt;0)                exit(1); // 종료        // 부모-자식 프로세스 생성        pid= fork();        printf(&quot;after fork pid : %d\\n&quot;, pid);        if(pid&gt;0)&#123; // 부모 프로세스                printf(&quot;[1] Parent: %d, Child: %d\\n&quot;, getpid(), pid);                // 부모 프로세스가 fd[1] 에 쓴다.                write(fd[1], msg, MSGSIZE);                exit(0);        &#125;else&#123;                //자식 프로세스에는 pid값이 0                 printf(&quot;[2] Parent: %d, Child: %d\\n&quot;, getpid(), pid);                 nbytes = read(fd[0], buf, MSGSIZE);                 printf(&quot;nbytes: %d , msg: %s\\n&quot;, nbytes, buf);                 exit(0);        &#125;        return 0;&#125;\n\n파이프 실행 결과\npid=0 일 때 자식 프로세스이며, 아래와 같이 부모 프로세스가 저장한 msg 를 읽어오는 것을 확인할 수 있다.\n\n1234$ ./_ipc[1] Parent: 21768, Child: 21769$ [2] Parent: 21769, Child: 0nbytes: 255 , msg: Hello Child Process\n\n메시지 큐\nkernel 공간의 메모리를 사용한다.\n양방향 통신이 가능하다.\n먼저 들어간 메시지부터 읽는다.\n\n메시지 큐 예시\n msgrcv(int msgid, void *msgp, size_t msgsz, long msgtype, int msgflag)\n\nmsgtype: 0일때 첫번째 데이터부터 읽고 그 이상이라면 그 type에 일치하는 데이터부터 읽는다.\n\nmsgflag: 0: 블록모드, IPC_NOWAIT: 비블록모드\n\n보내는 프로세스 msgSnd.c, 받는 프로세스 msgRcv.c 를 따로 만들어 수행한다.\n\n\n\nmsgSnd.c\n\n1234567891011121314151617181920212223242526272829303132#include&lt;stdio.h&gt;#include&lt;stdlib.h&gt;#include&lt;string.h&gt;#include&lt;sys/msg.h&gt;typedef struct msgbuf &#123;        long type;        char text[50];&#125; MsgBuf;int main(void)&#123;        int msgid, len;        MsgBuf msg;        key_t key = 1234;        // IPC_CREAT: 새로운 키는 식별자 생성(접근권한)        msgid= msgget(key, IPC_CREAT|0644); // =&gt; rw‑r‑‑r‑‑        if(msgid == -1)&#123;                perror(&quot;msgget&quot;);                exit(1);        &#125;        msg.type = 1;        // 아래 메시지 전송        strcpy(msg.text, &quot;Message Queue is Executed\\n&quot;);        if(msgsnd(msgid, (void *)&amp;msg, 50, IPC_NOWAIT) == -1)&#123;                 perror(&quot;msgsnd&quot;);                exit(1);        &#125;        return 0;&#125;\n\n\nmsgRcv.c\n\n1234567891011121314151617181920212223242526#include&lt;stdio.h&gt;#include&lt;stdlib.h&gt;#include&lt;unistd.h&gt;#include&lt;string.h&gt;#include&lt;sys/msg.h&gt;typedef struct msgbuf &#123;        long type;        char text[50];&#125; MsgBuf;int main(void)&#123;        int msgid, len;        MsgBuf msg;        key_t key = 1234;        // IPC_CREAT: 새로운 키는 식별자 생성(접근권한)        msgid= msgget(key, IPC_CREAT|0644); // =&gt; rw‑r‑‑r‑‑        if(msgid == -1)&#123;                perror(&quot;msgget&quot;);                exit(1);        &#125;        len= msgrcv(msgid, &amp;msg, 50, 0, 0);        printf(&quot;Got a Message ! =&gt; %s [%d] \\n&quot;, msg.text, len);        return 0;&#125;\n\n메시지큐 실행 결과\nmsgSnd - 보내고 , msgRcv - 받는다.\n\n123456ubuntu@ip-172-31-42-223:~$ gcc msgRcv.c -o msgRcvubuntu@ip-172-31-42-223:~$ gcc msgSnd.c -o msgSndubuntu@ip-172-31-42-223:~$ ./msgSndubuntu@ip-172-31-42-223:~$ ./msgRcvGot a Message ! =&gt; Message Queue is Executed [50]\n\n\n\n\nftok() - 키 생성을 위한 함수\n\npath 경로명의 inode 값과 숫자값(id)을 기반으로 생성된다.\n경로 삭제 후 재생성시 inode값이 달라지므로 기존과 다른 값을 리턴한다.123456#include&lt;sys/ipc.h&gt;key_t ftok(const char *path, int id);// 예시key = ftok(&quot;keyfile&quot;, 1); // 메시지큐를 통해서 부모-자식 프로세스 간 공유id = msgget(key, IPC_CREAT|0640);\n\n","dateCreated":"2021-05-26T23:13:08+09:00","dateModified":"2021-05-31T09:52:37+09:00","datePublished":"2021-05-26T23:13:08+09:00","description":"IPC 기법을 직접 실습해본다.","headline":"프로세스 IPC 기법","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2021/05/26/%ED%94%84%EB%A1%9C%EC%84%B8%EC%8A%A4-IPC-%EA%B8%B0%EB%B2%95/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2021/05/26/%ED%94%84%EB%A1%9C%EC%84%B8%EC%8A%A4-IPC-%EA%B8%B0%EB%B2%95/","keywords":"ipc"}</script>
                                     <meta name="description" content="IPC 기법을 직접 실습해본다.">
 <meta property="og:type" content="blog">
 <meta property="og:title" content="프로세스 IPC 기법">
@@ -77,6 +72,10 @@
     
 
 <header id="header" data-behavior="4">
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js"></script>
+    <script src="https://kit.fontawesome.com/cfcae25ced.js" crossorigin="anonymous"></script>
     <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
     <div class="header-title">
         <a
@@ -122,13 +121,35 @@
                 </a>
                 <h4 class="sidebar-profile-name">Suyan Kim</h4>
                 
-                    <h5 class="sidebar-profile-bio"><p>▲ Who Am I</p>
+                    <h5 class="sidebar-profile-bio"><p><strong><a target="_blank" rel="noopener" href="https://nice-spectrum-2aa.notion.site/Suyeon-Kim-09e271916a504e24a5307e9f67d7bc16">Click 👀 Resume</a></strong></p>
 </h5>
                 
             </div>
         
         
             <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="https://nice-spectrum-2aa.notion.site/Suyeon-Kim-09e271916a504e24a5307e9f67d7bc16" target="_blank" rel="noopener" title="resume 👀">
+                    
+                    <i class="sidebar-button-icon far fa-smile-wink" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">resume 👀</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="https://github.com/ksso730" target="_blank" rel="noopener" title="github">
+                    
+                    <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">github</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
             
                 <li class="sidebar-button">
                     
@@ -179,7 +200,7 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (10)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (15)</a></li>
                             
                         
                             
@@ -195,7 +216,7 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Git/">☁️ Git (3)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Git/">☁️ Git (4)</a></li>
                             
                         
                             
@@ -215,7 +236,9 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-NodeJS/">☁️ NodeJS (1)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-NodeJS/">☁️ NodeJS (8)</a></li>
+                            
+                        
                             
                         
                             
@@ -231,11 +254,11 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Spring/">☁️ Spring (1)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Spring/">☁️ Spring (2)</a></li>
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-TIL/">☁️ TIL (10)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-TIL/">☁️ TIL (9)</a></li>
                             
                         
                     
@@ -256,35 +279,9 @@
                     
                 </li>
             
-                <li class="sidebar-button">
-                    
-                        <a  class="sidebar-button-link "
-                             
-                                title="about"href="#about"
-                                
-                                >
-                    
-                    <i class="sidebar-button-icon fa fa-question" aria-hidden="true"></i>
-                    <span class="sidebar-button-desc">about</span>
-                        </a>
-                    <!-- add -->
-                    
-                </li>
-            
         </ul>
         
             <ul class="sidebar-buttons">
-            
-                <li class="sidebar-button">
-                    
-                        <a  class="sidebar-button-link " href="https://github.com/ksso730" target="_blank" rel="noopener" title="github">
-                    
-                    <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
-                    <span class="sidebar-button-desc">github</span>
-                        </a>
-                    <!-- add -->
-                    
-                </li>
             
                 <li class="sidebar-button">
                     
@@ -539,6 +536,7 @@
         Copyrights &copy; 2021 Suyan Kim. All Rights Reserved.
     </span>
 </footer>
+
             </div>
             
                 <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">

@@ -1,0 +1,776 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="generator" content="동글씨">
+        <title>
+            NodeJS password 저장과 static function - 동글씨
+        </title>
+        <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+        <meta name="author" content="Suyan Kim">
+        
+                
+                        
+                            <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
+                            
+                                <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\nOwn static function\nhashtag 값을 저장할 때 Video.js(model)에 아래와 같이 save하기 전에 실행되는 middleware를 추가했었다.\n\n1234// save 이전의 middleawarevideoSchema.pre(&#x27;save&#x27;, async function ()&#123;    this.hashtags = this.hashtags[0].split(&quot;,&quot;).map((word)=&gt; (word.startwith(&quot;#&quot;)? word:`#$&#123;word&#125;`));&#125;);\n\n\n\n\n하지만, save 이외의 query들은 pre middleware를 제공하지 않는다. 그렇기 때문에 따로 static function 을 만들어 사용할 수 있다.\n\n\nYou cannot access the document being updated in pre(‘updateOne’) or pre(‘findOneAndUpdate’) query middleware. If you need to access the document that will be updated, you need to execute an explicit query for the document.\n\n123videoSchema.static(&#x27;formatHashtags&#x27;, function (hashtags)&#123;    return hashtags.split(&quot;,&quot;).map((word)=&gt; (word.startsWith(&quot;#&quot;)? word:`#$&#123;word&#125;`))&#125;);\n\nregex 연산자(operator) 사용하기mongoose 의 연산자를 사용하여 원하는 검색결과를 얻을 수 있다.우리가 사용한 연산자는 regex 이지만, 사이트에 더 많은 방법이 존재한다.\n\nRegExp: Search with Regular Expression\n\n12345678910111213export const search = async(req, res) =&gt; &#123;    // form 에 넘겨준 파라미터를 가지고 온다.    const &#123;keyword&#125; = req.query;    let videos= [];    if(keyword)&#123;        videos = await Video.find(&#123;            title: &#123;                $regex: new RegExp(`$&#123;keyword&#125;$`, &quot;ig&quot;),            &#125;        &#125;);    &#125;    return res.render(&quot;search&quot;, &#123; pageTitle: &quot;Search&quot;, videos &#125;);&#125;;\n\n\n\n비밀번호 저장: Hashingbcrypt (hash function)\nhash function: rainbow table 공격을 막아준다.\nhash 함수 중 하나인 bcrypt 함수를 이용하여 비밀번호를 DB에 저장 할것이다.\nhash는 deterministic 하기 때문에 동일한 input에 대해서 동일한 output을 갖는다.\n\n👉🏼 npmjs/bcrypt 공식사이트공식 사이트에 아래와 같은 내용이 나와있다.\n\nTo hash a password:Technique 1 (generate a salt and hash on separate function calls):\n\n\nTechnique 1\n\n12345bcrypt.genSalt(saltRounds, function(err, salt) &#123;    bcrypt.hash(myPlaintextPassword, salt, function(err, hash) &#123;        // Store hash in your password DB.    &#125;);&#125;);\n\nTechnique 2 (auto-gen a salt and hash):(saltRounds: 몇번 hash 할것인가?)\n\n123bcrypt.hash(myPlaintextPassword, saltRounds, function(err, hash) &#123;    // Store hash in your password DB.&#125;);\n\n\n\nTechnique 2 (auto-gen a salt and hash) 사용\nUser.js(model)에서 db에 저장되기 이전, 비밀번호 값에 hashing을 적용한다.\n\n1234userSchema.pre(&#x27;save&#x27;, async function()&#123;    // 비밀번호 hashing    this.password = await bcrypt.hash(this.password, 5);&#125;);\n\n\n\n\n적용 전과 적용 후 db 조회시 비밀번호가 알수없는 hash값으로 저장된다는것을 확인할 수 있다.\n\n12345 db.users.find()&#123; &quot;_id&quot; : ObjectId(&quot;615480ae204f405b9d35478a&quot;), &quot;email&quot; : &quot;suyans730@naver.com &quot;, &quot;username&quot; : &quot;sy&quot;, &quot;password&quot; : &quot;1234&quot;, &quot;name&quot; : &quot;Suyeon Kim&quot;, &quot;__v&quot; : 0 &#125;&gt; db.users.find()&#123; &quot;_id&quot; : ObjectId(&quot;615480ae204f405b9d35478a&quot;), &quot;email&quot; : &quot;suyans730@naver.com &quot;, &quot;username&quot; : &quot;sy&quot;, &quot;password&quot; : &quot;1234&quot;, &quot;name&quot; : &quot;Suyeon Kim&quot;, &quot;__v&quot; : 0 &#125;&#123; &quot;_id&quot; : ObjectId(&quot;6154853ff5a58157c6953ef3&quot;), &quot;email&quot; : &quot;aa@naver.com &quot;, &quot;username&quot; : &quot;ay&quot;, &quot;password&quot; : &quot;$2b$05$EaF71tKmlQBcByXqFFLtBO6wADBkdC/AmlPOGSCbtZO44N8z5GO/u&quot;, &quot;name&quot; : &quot;Amy&quot;, &quot;__v&quot; : 0 &#125;\n\n로그인에 적용하기\nhashing은 one-way이다. 즉, input에서 output은 가능하지만, output으로 input값을 다시 구할 수는 없다.\n그래서 bcrypt는 compare를 제공한다. 이 함수를 사용하여 기존 비밀번호와 같은지 비교할 수 있다.\n\n12345678const ok = await bcrypt.compare(password, user.password);    if (!ok) &#123;        return res            .status(400).render(&quot;login&quot;, &#123;                pageTitle: &quot;Login&quot;,                errorMessage: &quot;Wrong password&quot;,            &#125;);    &#125;;","dateCreated":"2021-10-04T22:08:20+09:00","dateModified":"2021-11-04T10:14:49+09:00","datePublished":"2021-10-04T22:08:20+09:00","description":"mongoose 를 예시로, callback과 promise 함수를 알아본다.#hashing #login #bcrypt","headline":"NodeJS password 저장과 static function","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2021/10/04/nodejs_wetube_6_%EB%A1%9C%EA%B7%B8%EC%9D%B8/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2021/10/04/nodejs_wetube_6_%EB%A1%9C%EA%B7%B8%EC%9D%B8/","keywords":"nodejs"}</script>
+                                    <meta name="description" content="mongoose 를 예시로, callback과 promise 함수를 알아본다.#hashing #login #bcrypt">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="NodeJS password 저장과 static function">
+<meta property="og:url" content="http://yoursite.com/2021/10/04/nodejs_wetube_6_%EB%A1%9C%EA%B7%B8%EC%9D%B8/index.html">
+<meta property="og:site_name" content="동글씨">
+<meta property="og:description" content="mongoose 를 예시로, callback과 promise 함수를 알아본다.#hashing #login #bcrypt">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2021-10-04T13:08:20.000Z">
+<meta property="article:modified_time" content="2021-11-04T01:14:49.634Z">
+<meta property="article:author" content="Suyan Kim">
+<meta property="article:tag" content="nodejs">
+<meta name="twitter:card" content="summary">
+                                        
+                                                
+                                                    
+                                                            
+                                                                
+                                                                    <meta property="og:image" content="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=640" />
+                                                                    
+                                                                            
+                                                                                    
+                                                                                            
+                                                                                                            <!--STYLES-->
+                                                                                                            
+<link rel="stylesheet" href="/assets/css/tranquilpeak.css">
+
+                                                                                                            <!--STYLES END-->
+                                                                                                                
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-158530470-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-158530470-1');
+    </script>
+
+
+                                                                                                                    
+
+                                                                                                                        
+                                                                                                                            
+                                                                                                                                                
+    </head>
+    <body>
+        <div id="blog">
+            <!-- Define author's picture -->
+
+
+    
+        
+    
+
+<header id="header" data-behavior="4">
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js"></script>
+    <script src="https://kit.fontawesome.com/cfcae25ced.js" crossorigin="anonymous"></script>
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <div class="header-title">
+        <a
+            class="header-title-link"
+            href="/index.html"
+            aria-label=""
+        >
+            동글씨
+        </a>
+    </div>
+    
+        
+            <a
+                class="header-right-picture "
+                href="#about"
+                aria-label="Open the link: /#about"
+            >
+        
+        
+            <img class="header-picture" src="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=90" alt="Author&#39;s picture"/>
+        
+        </a>
+    
+</header>
+
+            <!-- function -->
+
+
+<!-- Define author's picture -->
+
+
+    
+
+<nav id="sidebar" data-behavior="4">
+    <div class="sidebar-container">
+        
+            <div class="sidebar-profile">
+                <a
+                    href="/#about"
+                    aria-label="Read more about the author"
+                >
+                    <img class="sidebar-profile-picture" src="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=800" alt="Author&#39;s picture"/>
+                </a>
+                <h4 class="sidebar-profile-name">Suyan Kim</h4>
+                
+                    <h5 class="sidebar-profile-bio"><p><strong><a target="_blank" rel="noopener" href="https://nice-spectrum-2aa.notion.site/Suyeon-Kim-09e271916a504e24a5307e9f67d7bc16">Click 👀 Resume</a></strong></p>
+</h5>
+                
+            </div>
+        
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="https://nice-spectrum-2aa.notion.site/Suyeon-Kim-09e271916a504e24a5307e9f67d7bc16" target="_blank" rel="noopener" title="resume 👀">
+                    
+                    <i class="sidebar-button-icon far fa-smile-wink" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">resume 👀</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="https://github.com/ksso730" target="_blank" rel="noopener" title="github">
+                    
+                    <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">github</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="home"href="/index.html"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-home" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">home</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="archives"href="/all-archives"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-archive" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">archives</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="categories"href="/all-categories"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-bookmark" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">categories</span>
+                        </a>
+                    <!-- add -->
+                    
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-AWS/">☁️ AWS (0)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (15)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Config/">☁️ Config (2)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-DataBase/">☁️ DataBase (1)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Django/">☁️ Django (1)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Git/">☁️ Git (4)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-JPA/">☁️ JPA (10)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Java/">☁️ Java (0)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Linux/">☁️ Linux (6)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Network/">☁️ Network (1)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-NodeJS/">☁️ NodeJS (8)</a></li>
+                            
+                        
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-OS/">☁️ OS (14)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Python/">☁️ Python (2)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-React/">☁️ React (3)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Spring/">☁️ Spring (2)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-TIL/">☁️ TIL (9)</a></li>
+                            
+                        
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="tags"href="/all-tags"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-tags" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">tags</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="https://www.instagram.com/syankkim/" target="_blank" rel="noopener" title="life">
+                    
+                    <i class="sidebar-button-icon fab fa-instagram" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">life</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+        </ul>
+        
+    </div>
+</nav>
+
+            
+            <div id="main" data-behavior="4"
+                 class="
+                        hasCoverMetaIn
+                        ">
+                
+<article class="post">
+    
+    
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title">
+            NodeJS password 저장과 static function
+        </h1>
+    
+    
+        <div class="post-meta">
+    <time datetime="2021-10-04T22:08:20+09:00">
+	
+		    Oct 04, 2021
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/%E2%98%81%EF%B8%8F-NodeJS/">☁️ NodeJS</a>
+
+
+    
+</div>
+
+    
+</div>
+
+    
+    <div class="post-content markdown">
+        <div class="main-content-wrap">
+            <!-- excerpt -->
+<h1 id="table-of-contents">Contents</h1><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Own-static-function"><span class="toc-text">Own static function</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#regex-%EC%97%B0%EC%82%B0%EC%9E%90-operator-%EC%82%AC%EC%9A%A9%ED%95%98%EA%B8%B0"><span class="toc-text">regex 연산자(operator) 사용하기</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%EB%B9%84%EB%B0%80%EB%B2%88%ED%98%B8-%EC%A0%80%EC%9E%A5-Hashing"><span class="toc-text">비밀번호 저장: Hashing</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#bcrypt-hash-function"><span class="toc-text">bcrypt (hash function)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Technique-2-auto-gen-a-salt-and-hash-%EC%82%AC%EC%9A%A9"><span class="toc-text">Technique 2 (auto-gen a salt and hash) 사용</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%EB%A1%9C%EA%B7%B8%EC%9D%B8%EC%97%90-%EC%A0%81%EC%9A%A9%ED%95%98%EA%B8%B0"><span class="toc-text">로그인에 적용하기</span></a></li></ol></li></ol>
+
+<hr>
+<h1 id="Own-static-function"><a href="#Own-static-function" class="headerlink" title="Own static function"></a>Own static function</h1><ul>
+<li>hashtag 값을 저장할 때 Video.js(model)에 아래와 같이 save하기 전에 실행되는 middleware를 추가했었다.</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// save 이전의 middleaware</span></span><br><span class="line">videoSchema.pre(<span class="string">&#x27;save&#x27;</span>, <span class="keyword">async</span> <span class="function"><span class="keyword">function</span> (<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="built_in">this</span>.hashtags = <span class="built_in">this</span>.hashtags[<span class="number">0</span>].split(<span class="string">&quot;,&quot;</span>).map(<span class="function">(<span class="params">word</span>)=&gt;</span> (word.startwith(<span class="string">&quot;#&quot;</span>)? word:<span class="string">`#<span class="subst">$&#123;word&#125;</span>`</span>));</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<ul>
+<li>하지만, save 이외의 query들은 pre middleware를 제공하지 않는다. 그렇기 때문에 따로 <code>static function</code> 을 만들어 사용할 수 있다.</li>
+</ul>
+<blockquote>
+<p>You cannot access the document being updated in pre(‘updateOne’) or pre(‘findOneAndUpdate’) query middleware. If you need to access the document that will be updated, you need to execute an explicit query for the document.</p>
+</blockquote>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">videoSchema.static(<span class="string">&#x27;formatHashtags&#x27;</span>, <span class="function"><span class="keyword">function</span> (<span class="params">hashtags</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">return</span> hashtags.split(<span class="string">&quot;,&quot;</span>).map(<span class="function">(<span class="params">word</span>)=&gt;</span> (word.startsWith(<span class="string">&quot;#&quot;</span>)? word:<span class="string">`#<span class="subst">$&#123;word&#125;</span>`</span>))</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<h2 id="regex-연산자-operator-사용하기"><a href="#regex-연산자-operator-사용하기" class="headerlink" title="regex 연산자(operator) 사용하기"></a>regex 연산자(operator) 사용하기</h2><p>mongoose 의 연산자를 사용하여 원하는 검색결과를 얻을 수 있다.<br>우리가 사용한 연산자는 regex 이지만, 사이트에 더 많은 방법이 존재한다.</p>
+<ul>
+<li>RegExp: Search with Regular Expression</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> search = <span class="keyword">async</span>(req, res) =&gt; &#123;</span><br><span class="line">    <span class="comment">// form 에 넘겨준 파라미터를 가지고 온다.</span></span><br><span class="line">    <span class="keyword">const</span> &#123;keyword&#125; = req.query;</span><br><span class="line">    <span class="keyword">let</span> videos= [];</span><br><span class="line">    <span class="keyword">if</span>(keyword)&#123;</span><br><span class="line">        videos = <span class="keyword">await</span> Video.find(&#123;</span><br><span class="line">            <span class="attr">title</span>: &#123;</span><br><span class="line">                <span class="attr">$regex</span>: <span class="keyword">new</span> <span class="built_in">RegExp</span>(<span class="string">`<span class="subst">$&#123;keyword&#125;</span>$`</span>, <span class="string">&quot;ig&quot;</span>),</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> res.render(<span class="string">&quot;search&quot;</span>, &#123; <span class="attr">pageTitle</span>: <span class="string">&quot;Search&quot;</span>, videos &#125;);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+
+<hr>
+<h1 id="비밀번호-저장-Hashing"><a href="#비밀번호-저장-Hashing" class="headerlink" title="비밀번호 저장: Hashing"></a>비밀번호 저장: Hashing</h1><h2 id="bcrypt-hash-function"><a href="#bcrypt-hash-function" class="headerlink" title="bcrypt (hash function)"></a>bcrypt (hash function)</h2><ul>
+<li>hash function: rainbow table 공격을 막아준다.</li>
+<li>hash 함수 중 하나인 <code>bcrypt</code> 함수를 이용하여 비밀번호를 DB에 저장 할것이다.</li>
+<li>hash는 <code>deterministic</code> 하기 때문에 동일한 input에 대해서 동일한 output을 갖는다.</li>
+</ul>
+<p>👉🏼 <a target="_blank" rel="noopener" href="https://www.npmjs.com/package/bcrypt">npmjs/bcrypt 공식사이트</a><br>공식 사이트에 아래와 같은 내용이 나와있다.</p>
+<blockquote>
+<p>To hash a password:<br>Technique 1 (generate a salt and hash on separate function calls):</p>
+</blockquote>
+<ul>
+<li>Technique 1</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">bcrypt.genSalt(saltRounds, <span class="function"><span class="keyword">function</span>(<span class="params">err, salt</span>) </span>&#123;</span><br><span class="line">    bcrypt.hash(myPlaintextPassword, salt, <span class="function"><span class="keyword">function</span>(<span class="params">err, hash</span>) </span>&#123;</span><br><span class="line">        <span class="comment">// Store hash in your password DB.</span></span><br><span class="line">    &#125;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<ul>
+<li>Technique 2 (auto-gen a salt and hash):<br>(saltRounds: 몇번 hash 할것인가?)</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">bcrypt.hash(myPlaintextPassword, saltRounds, <span class="function"><span class="keyword">function</span>(<span class="params">err, hash</span>) </span>&#123;</span><br><span class="line">    <span class="comment">// Store hash in your password DB.</span></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<h2 id="Technique-2-auto-gen-a-salt-and-hash-사용"><a href="#Technique-2-auto-gen-a-salt-and-hash-사용" class="headerlink" title="Technique 2 (auto-gen a salt and hash) 사용"></a>Technique 2 (auto-gen a salt and hash) 사용</h2><ul>
+<li>User.js(model)에서 db에 저장되기 이전, 비밀번호 값에 hashing을 적용한다.</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">userSchema.pre(<span class="string">&#x27;save&#x27;</span>, <span class="keyword">async</span> <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="comment">// 비밀번호 hashing</span></span><br><span class="line">    <span class="built_in">this</span>.password = <span class="keyword">await</span> bcrypt.hash(<span class="built_in">this</span>.password, <span class="number">5</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<ul>
+<li>적용 전과 적용 후 db 조회시 비밀번호가 알수없는 hash값으로 저장된다는것을 확인할 수 있다.</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"> db.users.find()</span><br><span class="line">&#123; &quot;_id&quot; : ObjectId(&quot;615480ae204f405b9d35478a&quot;), &quot;email&quot; : &quot;suyans730@naver.com &quot;, &quot;username&quot; : &quot;sy&quot;, &quot;password&quot; : &quot;1234&quot;, &quot;name&quot; : &quot;Suyeon Kim&quot;, &quot;__v&quot; : 0 &#125;</span><br><span class="line">&gt; db.users.find()</span><br><span class="line">&#123; &quot;_id&quot; : ObjectId(&quot;615480ae204f405b9d35478a&quot;), &quot;email&quot; : &quot;suyans730@naver.com &quot;, &quot;username&quot; : &quot;sy&quot;, &quot;password&quot; : &quot;1234&quot;, &quot;name&quot; : &quot;Suyeon Kim&quot;, &quot;__v&quot; : 0 &#125;</span><br><span class="line">&#123; &quot;_id&quot; : ObjectId(&quot;6154853ff5a58157c6953ef3&quot;), &quot;email&quot; : &quot;aa@naver.com &quot;, &quot;username&quot; : &quot;ay&quot;, &quot;password&quot; : &quot;$2b$05$EaF71tKmlQBcByXqFFLtBO6wADBkdC/AmlPOGSCbtZO44N8z5GO/u&quot;, &quot;name&quot; : &quot;Amy&quot;, &quot;__v&quot; : 0 &#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="로그인에-적용하기"><a href="#로그인에-적용하기" class="headerlink" title="로그인에 적용하기"></a>로그인에 적용하기</h2><ul>
+<li>hashing은 one-way이다. 즉, input에서 output은 가능하지만, output으로 input값을 다시 구할 수는 없다.</li>
+<li>그래서 bcrypt는 compare를 제공한다. 이 함수를 사용하여 기존 비밀번호와 같은지 비교할 수 있다.</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> ok = <span class="keyword">await</span> bcrypt.compare(password, user.password);</span><br><span class="line">    <span class="keyword">if</span> (!ok) &#123;</span><br><span class="line">        <span class="keyword">return</span> res</span><br><span class="line">            .status(<span class="number">400</span>).render(<span class="string">&quot;login&quot;</span>, &#123;</span><br><span class="line">                <span class="attr">pageTitle</span>: <span class="string">&quot;Login&quot;</span>,</span><br><span class="line">                <span class="attr">errorMessage</span>: <span class="string">&quot;Wrong password&quot;</span>,</span><br><span class="line">            &#125;);</span><br><span class="line">    &#125;;</span><br></pre></td></tr></table></figure>
+            
+
+
+        </div>
+    </div>
+    <div id="post-footer" class="post-footer main-content-wrap">
+        
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">TAGGED IN</span><br/>
+                
+    <a class="tag tag--primary tag--small t-none-link" href="/tags/nodejs/" rel="tag">nodejs</a>
+
+            </div>
+        
+        
+            <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2021/10/04/nodejs_wetube_7_session/"
+                    data-tooltip="🍪 NodeJS session/cookie &amp; session store"
+                    aria-label="PREVIOUS: 🍪 NodeJS session/cookie &amp; session store"
+                >
+                    
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                    </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2021/09/25/nodejs_wetube_5_%EC%BD%9C%EB%B0%B1-%ED%94%84%EB%A1%9C%EB%AF%B8%EC%8A%A4/"
+                    data-tooltip="JS callback &amp; promise"
+                    aria-label="NEXT: JS callback &amp; promise"
+                >
+                    
+                        <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a
+                class="post-action-btn btn btn--default btn-open-shareoptions"
+                href="#btn-open-shareoptions"
+                aria-label="Share this post"
+            >
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2021/10/04/nodejs_wetube_6_%EB%A1%9C%EA%B7%B8%EC%9D%B8/"
+                    title="Share on Facebook"
+                    aria-label="Share on Facebook"
+                >
+                    <i class="fab fa-facebook" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2021/10/04/nodejs_wetube_6_%EB%A1%9C%EA%B7%B8%EC%9D%B8/"
+                    title="Share on Twitter"
+                    aria-label="Share on Twitter"
+                >
+                    <i class="fab fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://plus.google.com/share?url=http://yoursite.com/2021/10/04/nodejs_wetube_6_%EB%A1%9C%EA%B7%B8%EC%9D%B8/"
+                    title="Share on Google+"
+                    aria-label="Share on Google+"
+                >
+                    <i class="fab fa-google-plus" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+                <li class="post-action">
+                    <a
+                        class="post-action-btn btn btn--default"
+                        href="#disqus_thread"
+                        aria-label="Leave a comment"
+                    >
+                        <i class="fa fa-comment"></i>
+                    </a>
+                </li>
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#table-of-contents" aria-label="Contents">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+        
+        
+            
+                <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+            
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2021 Suyan Kim. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2021/10/04/nodejs_wetube_7_session/"
+                    data-tooltip="🍪 NodeJS session/cookie &amp; session store"
+                    aria-label="PREVIOUS: 🍪 NodeJS session/cookie &amp; session store"
+                >
+                    
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                    </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2021/09/25/nodejs_wetube_5_%EC%BD%9C%EB%B0%B1-%ED%94%84%EB%A1%9C%EB%AF%B8%EC%8A%A4/"
+                    data-tooltip="JS callback &amp; promise"
+                    aria-label="NEXT: JS callback &amp; promise"
+                >
+                    
+                        <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a
+                class="post-action-btn btn btn--default btn-open-shareoptions"
+                href="#btn-open-shareoptions"
+                aria-label="Share this post"
+            >
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2021/10/04/nodejs_wetube_6_%EB%A1%9C%EA%B7%B8%EC%9D%B8/"
+                    title="Share on Facebook"
+                    aria-label="Share on Facebook"
+                >
+                    <i class="fab fa-facebook" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2021/10/04/nodejs_wetube_6_%EB%A1%9C%EA%B7%B8%EC%9D%B8/"
+                    title="Share on Twitter"
+                    aria-label="Share on Twitter"
+                >
+                    <i class="fab fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://plus.google.com/share?url=http://yoursite.com/2021/10/04/nodejs_wetube_6_%EB%A1%9C%EA%B7%B8%EC%9D%B8/"
+                    title="Share on Google+"
+                    aria-label="Share on Google+"
+                >
+                    <i class="fab fa-google-plus" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+                <li class="post-action">
+                    <a
+                        class="post-action-btn btn btn--default"
+                        href="#disqus_thread"
+                        aria-label="Leave a comment"
+                    >
+                        <i class="fa fa-comment"></i>
+                    </a>
+                </li>
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#table-of-contents" aria-label="Contents">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                
+    <div id="share-options-bar" class="share-options-bar" data-behavior="4">
+        <i id="btn-close-shareoptions" class="fa fa-times"></i>
+        <ul class="share-options">
+            
+                
+                
+                <li class="share-option">
+                    <a
+                        class="share-option-btn"
+                        target="new"
+                        href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2021/10/04/nodejs_wetube_6_%EB%A1%9C%EA%B7%B8%EC%9D%B8/"
+                        aria-label="Share on Facebook"
+                    >
+                        <i class="fab fa-facebook" aria-hidden="true"></i><span>Share on Facebook</span>
+                    </a>
+                </li>
+            
+                
+                
+                <li class="share-option">
+                    <a
+                        class="share-option-btn"
+                        target="new"
+                        href="https://twitter.com/intent/tweet?text=http://yoursite.com/2021/10/04/nodejs_wetube_6_%EB%A1%9C%EA%B7%B8%EC%9D%B8/"
+                        aria-label="Share on Twitter"
+                    >
+                        <i class="fab fa-twitter" aria-hidden="true"></i><span>Share on Twitter</span>
+                    </a>
+                </li>
+            
+                
+                
+                <li class="share-option">
+                    <a
+                        class="share-option-btn"
+                        target="new"
+                        href="https://plus.google.com/share?url=http://yoursite.com/2021/10/04/nodejs_wetube_6_%EB%A1%9C%EA%B7%B8%EC%9D%B8/"
+                        aria-label="Share on Google+"
+                    >
+                        <i class="fab fa-google-plus" aria-hidden="true"></i><span>Share on Google+</span>
+                    </a>
+                </li>
+            
+        </ul>
+    </div>
+
+
+            
+        </div>
+        
+
+
+    
+
+<div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-times"></i>
+        </div>
+        
+            <img id="about-card-picture" src="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=110" alt="Author&#39;s picture"/>
+        
+            <h4 id="about-card-name">Suyan Kim</h4>
+        <!--  -->
+            <!-- <div id="about-card-bio"><p>author.bio</p>
+</div> -->
+            <div id="about-card-bio">안녕하세요, 서버 백엔드 개발자 동글씨입니다.</div>
+        <!--  -->
+        <!--  -->
+            <div id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <!-- <p>Backend Developer</p>
+ -->
+                Backend Developer
+            </div>
+        <!--  -->
+        
+            <div id="about-card-location">
+                <i class="fa fa-map-marker-alt"></i>
+                <br/>
+                Korea
+            </div>
+        
+    </div>
+</div>
+
+        
+        
+<div id="cover" style="background-image:url('/assets/images/null');"></div>
+        <!--SCRIPTS-->
+
+<script src="/assets/js/tranquilpeak.js"></script>
+
+<!--SCRIPTS END-->
+
+
+    
+        <script>
+          var disqus_config = function() {
+            this.page.url = 'http://yoursite.com/2021/10/04/nodejs_wetube_6_%EB%A1%9C%EA%B7%B8%EC%9D%B8/';
+              
+            this.page.identifier = '2021/10/04/nodejs_wetube_6_로그인/';
+              
+          };
+          (function() {
+            var d = document, s = d.createElement('script');
+            var disqus_shortname = 'ksso730-github-io';
+            s.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+          })();
+        </script>
+    
+
+
+
+
+    </body>
+</html>

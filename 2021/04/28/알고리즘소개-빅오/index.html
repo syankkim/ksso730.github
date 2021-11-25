@@ -4,11 +4,6 @@
     
 
     <head>
-        <script type="text/javascript" src="http://code.jquery.com/jquery-3.2.1.min.js"></script>
-        <script type="text/java script">
-            var $= jquery.noConflict();
-        </script>
-
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="generator" content="동글씨">
@@ -22,7 +17,7 @@
                         
                             <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
                             
-                                <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\n\n\n많이 사용되는 빅오 실행시간아래 가장 기본적이고 흔한 실행시간이다. 몇 알고리즘은 빅오 표기법으로 표시할 수 없는 경우도 있다고 한다.\n\nO(log n) 로그시간 : 이진탐색\nO(n) 선형시간 : 단순탐색\nO(n * log n) : 퀵 정렬과 같이 빠른 알고리즘\nO(n2) : 선택 정렬과 같이 느린 알고리즘\nO(n!) : 정~말 느린 알고리즘 (외판원 문제)\n\n\n빠름 | 　 O(log n) - O(n) - O(n * log n) - O(n2) - O(n!) 　 | 느림\n\n\n\n알고리즘 기억해야할 사항\n알고리즘의 속도는 연산횟수가 어떻게 증가하는지!? 로 측정. 시간이 아님.\n연산횟수 의 증감으로 데이터의 크기가 늘어날 때 알고리즘의 실행속도가 얼마나 즘감하는지 알 수 있다.\n즉, O(log n)는 O(n) 보다 빠르며, 찾으려는 데이터 수가 늘어나면 상대적으로 더 빨라진다.\n\nQuiz\n128 개의 이름이 정렬되어있는 리스트가 있습니다. 이진탐색으로 찾을 때 필요한 최대 추측 횟수는? 　: O(log n128) = 7위 리스트의 크기가 두배가 된다면 최대 추측 횟수는? 　: O(log n256) = 8 　+크기가 두배가 된다고 횟수도 두배가 되는것이 아니다.\n","dateCreated":"2021-04-28T00:54:31+09:00","dateModified":"2021-05-12T17:42:55+09:00","datePublished":"2021-04-28T00:54:31+09:00","description":"정확히 다시 짚고가는 알고리즘, 빅오 표기법까지.#Big-O #알고리즘","headline":"알고리즘 & 빅오 표기법","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2021/04/28/%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98%EC%86%8C%EA%B0%9C-%EB%B9%85%EC%98%A4/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2021/04/28/%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98%EC%86%8C%EA%B0%9C-%EB%B9%85%EC%98%A4/","keywords":"algorithm, bigO"}</script>
+                                <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\n\n\n많이 사용되는 빅오 실행시간아래 가장 기본적이고 흔한 실행시간이다. 몇 알고리즘은 빅오 표기법으로 표시할 수 없는 경우도 있다고 한다.\n\nO(log n) 로그시간 : 이진탐색\nO(n) 선형시간 : 단순탐색\nO(n * log n) : 퀵 정렬과 같이 빠른 알고리즘\nO(n2) : 선택 정렬과 같이 느린 알고리즘\nO(n!) : 정~말 느린 알고리즘 (외판원 문제)\n\n\n빠름 | 　 O(log n) - O(n) - O(n * log n) - O(n2) - O(n!) 　 | 느림\n\n\n\n알고리즘 기억해야할 사항\n알고리즘의 속도는 연산횟수가 어떻게 증가하는지!? 로 측정. 시간이 아님.\n연산횟수 의 증감으로 데이터의 크기가 늘어날 때 알고리즘의 실행속도가 얼마나 즘감하는지 알 수 있다.\n즉, O(log n)는 O(n) 보다 빠르며, 찾으려는 데이터 수가 늘어나면 상대적으로 더 빨라진다.\n\nQuiz\n128 개의 이름이 정렬되어있는 리스트가 있습니다. 이진탐색으로 찾을 때 필요한 최대 추측 횟수는? 　: O(log n128) = 7위 리스트의 크기가 두배가 된다면 최대 추측 횟수는? 　: O(log n256) = 8 　+크기가 두배가 된다고 횟수도 두배가 되는것이 아니다.\n","dateCreated":"2021-04-28T00:54:31+09:00","dateModified":"2021-09-10T11:14:11+09:00","datePublished":"2021-04-28T00:54:31+09:00","description":"정확히 다시 짚고가는 알고리즘, 빅오 표기법까지.#Big-O #알고리즘","headline":"알고리즘 & 빅오 표기법","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2021/04/28/%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98%EC%86%8C%EA%B0%9C-%EB%B9%85%EC%98%A4/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2021/04/28/%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98%EC%86%8C%EA%B0%9C-%EB%B9%85%EC%98%A4/","keywords":"algorithm, bigO"}</script>
                                     <meta name="description" content="정확히 다시 짚고가는 알고리즘, 빅오 표기법까지.#Big-O #알고리즘">
 <meta property="og:type" content="blog">
 <meta property="og:title" content="알고리즘 &amp; 빅오 표기법">
@@ -31,7 +26,7 @@
 <meta property="og:description" content="정확히 다시 짚고가는 알고리즘, 빅오 표기법까지.#Big-O #알고리즘">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2021-04-27T15:54:31.000Z">
-<meta property="article:modified_time" content="2021-05-12T08:42:55.259Z">
+<meta property="article:modified_time" content="2021-09-10T02:14:11.684Z">
 <meta property="article:author" content="Suyan Kim">
 <meta property="article:tag" content="algorithm">
 <meta property="article:tag" content="bigO">
@@ -78,6 +73,10 @@
     
 
 <header id="header" data-behavior="4">
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js"></script>
+    <script src="https://kit.fontawesome.com/cfcae25ced.js" crossorigin="anonymous"></script>
     <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
     <div class="header-title">
         <a
@@ -123,13 +122,35 @@
                 </a>
                 <h4 class="sidebar-profile-name">Suyan Kim</h4>
                 
-                    <h5 class="sidebar-profile-bio"><p>▲ Who Am I</p>
+                    <h5 class="sidebar-profile-bio"><p><strong><a target="_blank" rel="noopener" href="https://nice-spectrum-2aa.notion.site/Suyeon-Kim-09e271916a504e24a5307e9f67d7bc16">Click 👀 Resume</a></strong></p>
 </h5>
                 
             </div>
         
         
             <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="https://nice-spectrum-2aa.notion.site/Suyeon-Kim-09e271916a504e24a5307e9f67d7bc16" target="_blank" rel="noopener" title="resume 👀">
+                    
+                    <i class="sidebar-button-icon far fa-smile-wink" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">resume 👀</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="https://github.com/ksso730" target="_blank" rel="noopener" title="github">
+                    
+                    <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">github</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
             
                 <li class="sidebar-button">
                     
@@ -180,7 +201,7 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (10)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (15)</a></li>
                             
                         
                             
@@ -196,7 +217,7 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Git/">☁️ Git (3)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Git/">☁️ Git (4)</a></li>
                             
                         
                             
@@ -216,7 +237,9 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-NodeJS/">☁️ NodeJS (1)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-NodeJS/">☁️ NodeJS (8)</a></li>
+                            
+                        
                             
                         
                             
@@ -232,11 +255,11 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Spring/">☁️ Spring (1)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Spring/">☁️ Spring (2)</a></li>
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-TIL/">☁️ TIL (10)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-TIL/">☁️ TIL (9)</a></li>
                             
                         
                     
@@ -257,35 +280,9 @@
                     
                 </li>
             
-                <li class="sidebar-button">
-                    
-                        <a  class="sidebar-button-link "
-                             
-                                title="about"href="#about"
-                                
-                                >
-                    
-                    <i class="sidebar-button-icon fa fa-question" aria-hidden="true"></i>
-                    <span class="sidebar-button-desc">about</span>
-                        </a>
-                    <!-- add -->
-                    
-                </li>
-            
         </ul>
         
             <ul class="sidebar-buttons">
-            
-                <li class="sidebar-button">
-                    
-                        <a  class="sidebar-button-link " href="https://github.com/ksso730" target="_blank" rel="noopener" title="github">
-                    
-                    <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
-                    <span class="sidebar-button-desc">github</span>
-                        </a>
-                    <!-- add -->
-                    
-                </li>
             
                 <li class="sidebar-button">
                     
@@ -507,6 +504,7 @@
         Copyrights &copy; 2021 Suyan Kim. All Rights Reserved.
     </span>
 </footer>
+
             </div>
             
                 <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">

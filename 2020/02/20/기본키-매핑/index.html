@@ -4,11 +4,6 @@
     
 
     <head>
-        <script type="text/javascript" src="http://code.jquery.com/jquery-3.2.1.min.js"></script>
-        <script type="text/java script">
-            var $= jquery.noConflict();
-        </script>
-
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="generator" content="동글씨">
@@ -22,7 +17,7 @@
                         
                             <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
                             
-                                <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\n기본키 매핑직접할당\n@Id 만 사용한다.\n\n\n자동생성 (@GeneratedValue)IDENTITY 전략\nIDENTITY : 데이터베이스에 위임한다.\n\nMember.java\n123456@Id@GeneratedValue(strategy = GenerationType.AUTO)private String id;@Column(name =&quot;name&quot;)private String username;\nJpaMain.java\n1234Member member= new Member();member.setUsername(&quot;C&quot;);em.persist(member);\n를 두 번 실행하면 아래와 같이 순차적으로 name 에 “C” 가 입력된다.\n\n\nIDENTITY 전략 특징identity 전략은 1차 캐시에 있는 값을 모른다.트랜젝션 COMMIT 이 아닌em.persist 호출하는 시점에 INSERT 쿼리가 수행된다.(원래는 COMMIT 할 때 DB 에 수행됨.)\nSEQUENCE 시퀀스 전략123456@Entity@SequenceGenerator(name = &quot;member_seq_gen&quot;, sequenceName = &quot;member_seq&quot;)public class Member &#123;    @Id    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = &quot;member_seq_gen&quot;)    private Long id;\n\n다음과 같이 테이블이 생성된다.Hibernate: create sequence member_seq start with 1 increment by 50\n12345678Hibernate: create sequence member_seq start with 1 increment by 50Hibernate:         create table Member (       id bigint not null,        name varchar(255),        primary key (id)    )\n\nSEQUENCE 전략 특징\nallocationSize 는 시퀀스를 미리 가져와 확보해준다.두번 째 INSERT 시에는 MEMBER_SEQ 테이블 조회가 아닌, MEMORY 에 있는 값을 사용하여,성능이 증가된다.\n\n__Member.java\n123456789@Entity@SequenceGenerator(        name = &quot;MEMBER_SEQ_GEN&quot;,        sequenceName = &quot;MEMBER_SEQ&quot;,        initialValue = 1, allocationSize = 50)public class Member &#123;    @Id    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = &quot;MEMBER_SEQ_GEN&quot;)    private Long id;\n\nMEMBER_SEQ 조회\n\n\n\n실행 순서\nSEQ\n\n\n\n1\n1\n\n\n2\n51\n\n\nJpaMain.java\n1234567891011Member member1= new Member();            member1.setUsername(&quot;A&quot;);            Member member2= new Member();            member2.setUsername(&quot;B&quot;);            Member member3= new Member();            member3.setUsername(&quot;C&quot;);            //DB SEQ = 1   |1            //DB SEQ = 51  |2            em.persist(member1); //1, 51 까지 확보            em.persist(member2); //MEMORY            em.persist(member3); // MEMORY\n\n실행하면, MEMBER_SEQ start with 1 increment by 50 구문을 확인할 수 있다.\n12345678Hibernate: create sequence MEMBER_SEQ start with 1 increment by 50Hibernate:         create table Member (       id bigint not null,        name varchar(255),        primary key (id)    )\n\nH2 DB\nTABLE 전략123456789@Entity@TableGenerator(        name = &quot;MEMBER_SEQ_GEN&quot;,        table = &quot;MY_SEQ&quot;,        pkColumnName=&quot;MEMBER_SEQ&quot;, allocationSize = 1)public class Member &#123;    @Id    @GeneratedValue(strategy = GenerationType.TABLE, generator = &quot;MEMBER_SEQ_GEN&quot;)    private Long id;\n\n다음과 같이 MY_SEQ 라는 시퀀스 테이블이 생성된다.\n12345678    create table MY_SEQ (       MEMBER_SEQ varchar(255) not null,        next_val bigint,        primary key (MEMBER_SEQ)    )Hibernate:         insert into MY_SEQ(MEMBER_SEQ, next_val) values (&#x27;Member&#x27;,0)\n\n\n기본키 제약조건\n\nnull 이 아니어야한다.\n유일해야 한다.\n변하면 안된다.\n\n\nLong 형 + 대체키 + 키 생성 전략 사용 이 권장된다고 한다.","dateCreated":"2020-02-20T22:08:15+09:00","dateModified":"2020-04-28T10:36:01+09:00","datePublished":"2020-02-20T22:08:15+09:00","description":"기본키의 strategy;전략들의 타입들을 알아보고타입별 데이터베이스에 수행되는 원리를 알아봅니다.","headline":"JPA 기본키 매핑","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2020/02/20/%EA%B8%B0%EB%B3%B8%ED%82%A4-%EB%A7%A4%ED%95%91/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2020/02/20/%EA%B8%B0%EB%B3%B8%ED%82%A4-%EB%A7%A4%ED%95%91/","keywords":"JPA, H2"}</script>
+                                <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\n기본키 매핑직접할당\n@Id 만 사용한다.\n\n\n자동생성 (@GeneratedValue)IDENTITY 전략\nIDENTITY : 데이터베이스에 위임한다.\n\nMember.java\n123456@Id@GeneratedValue(strategy = GenerationType.AUTO)private String id;@Column(name =&quot;name&quot;)private String username;\nJpaMain.java\n1234Member member= new Member();member.setUsername(&quot;C&quot;);em.persist(member);\n를 두 번 실행하면 아래와 같이 순차적으로 name 에 “C” 가 입력된다.\n\n\nIDENTITY 전략 특징identity 전략은 1차 캐시에 있는 값을 모른다.트랜젝션 COMMIT 이 아닌em.persist 호출하는 시점에 INSERT 쿼리가 수행된다.(원래는 COMMIT 할 때 DB 에 수행됨.)\nSEQUENCE 시퀀스 전략123456@Entity@SequenceGenerator(name = &quot;member_seq_gen&quot;, sequenceName = &quot;member_seq&quot;)public class Member &#123;    @Id    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = &quot;member_seq_gen&quot;)    private Long id;\n\n다음과 같이 테이블이 생성된다.Hibernate: create sequence member_seq start with 1 increment by 50\n12345678Hibernate: create sequence member_seq start with 1 increment by 50Hibernate:         create table Member (       id bigint not null,        name varchar(255),        primary key (id)    )\n\nSEQUENCE 전략 특징\nallocationSize 는 시퀀스를 미리 가져와 확보해준다.두번 째 INSERT 시에는 MEMBER_SEQ 테이블 조회가 아닌, MEMORY 에 있는 값을 사용하여,성능이 증가된다.\n\n__Member.java\n123456789@Entity@SequenceGenerator(        name = &quot;MEMBER_SEQ_GEN&quot;,        sequenceName = &quot;MEMBER_SEQ&quot;,        initialValue = 1, allocationSize = 50)public class Member &#123;    @Id    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = &quot;MEMBER_SEQ_GEN&quot;)    private Long id;\n\nMEMBER_SEQ 조회\n\n\n\n실행 순서\nSEQ\n\n\n\n1\n1\n\n\n2\n51\n\n\nJpaMain.java\n1234567891011Member member1= new Member();            member1.setUsername(&quot;A&quot;);            Member member2= new Member();            member2.setUsername(&quot;B&quot;);            Member member3= new Member();            member3.setUsername(&quot;C&quot;);            //DB SEQ = 1   |1            //DB SEQ = 51  |2            em.persist(member1); //1, 51 까지 확보            em.persist(member2); //MEMORY            em.persist(member3); // MEMORY\n\n실행하면, MEMBER_SEQ start with 1 increment by 50 구문을 확인할 수 있다.\n12345678Hibernate: create sequence MEMBER_SEQ start with 1 increment by 50Hibernate:         create table Member (       id bigint not null,        name varchar(255),        primary key (id)    )\n\nH2 DB\nTABLE 전략123456789@Entity@TableGenerator(        name = &quot;MEMBER_SEQ_GEN&quot;,        table = &quot;MY_SEQ&quot;,        pkColumnName=&quot;MEMBER_SEQ&quot;, allocationSize = 1)public class Member &#123;    @Id    @GeneratedValue(strategy = GenerationType.TABLE, generator = &quot;MEMBER_SEQ_GEN&quot;)    private Long id;\n\n다음과 같이 MY_SEQ 라는 시퀀스 테이블이 생성된다.\n12345678    create table MY_SEQ (       MEMBER_SEQ varchar(255) not null,        next_val bigint,        primary key (MEMBER_SEQ)    )Hibernate:         insert into MY_SEQ(MEMBER_SEQ, next_val) values (&#x27;Member&#x27;,0)\n\n\n기본키 제약조건\n\nnull 이 아니어야한다.\n유일해야 한다.\n변하면 안된다.\n\n\nLong 형 + 대체키 + 키 생성 전략 사용 이 권장된다고 한다.","dateCreated":"2020-02-20T22:08:15+09:00","dateModified":"2020-04-28T10:36:01+09:00","datePublished":"2020-02-20T22:08:15+09:00","description":"기본키의 strategy;전략들의 타입들을 알아보고타입별 데이터베이스에 수행되는 원리를 알아봅니다.","headline":"JPA 기본키 매핑","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2020/02/20/%EA%B8%B0%EB%B3%B8%ED%82%A4-%EB%A7%A4%ED%95%91/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2020/02/20/%EA%B8%B0%EB%B3%B8%ED%82%A4-%EB%A7%A4%ED%95%91/","keywords":"JPA, H2"}</script>
                                     <meta name="description" content="기본키의 strategy;전략들의 타입들을 알아보고타입별 데이터베이스에 수행되는 원리를 알아봅니다.">
 <meta property="og:type" content="blog">
 <meta property="og:title" content="JPA 기본키 매핑">
@@ -82,6 +77,10 @@
     
 
 <header id="header" data-behavior="4">
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js"></script>
+    <script src="https://kit.fontawesome.com/cfcae25ced.js" crossorigin="anonymous"></script>
     <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
     <div class="header-title">
         <a
@@ -127,13 +126,35 @@
                 </a>
                 <h4 class="sidebar-profile-name">Suyan Kim</h4>
                 
-                    <h5 class="sidebar-profile-bio"><p>▲ Who Am I</p>
+                    <h5 class="sidebar-profile-bio"><p><strong><a target="_blank" rel="noopener" href="https://nice-spectrum-2aa.notion.site/Suyeon-Kim-09e271916a504e24a5307e9f67d7bc16">Click 👀 Resume</a></strong></p>
 </h5>
                 
             </div>
         
         
             <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="https://nice-spectrum-2aa.notion.site/Suyeon-Kim-09e271916a504e24a5307e9f67d7bc16" target="_blank" rel="noopener" title="resume 👀">
+                    
+                    <i class="sidebar-button-icon far fa-smile-wink" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">resume 👀</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="https://github.com/ksso730" target="_blank" rel="noopener" title="github">
+                    
+                    <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">github</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
             
                 <li class="sidebar-button">
                     
@@ -184,7 +205,7 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (10)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (15)</a></li>
                             
                         
                             
@@ -200,7 +221,7 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Git/">☁️ Git (3)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Git/">☁️ Git (4)</a></li>
                             
                         
                             
@@ -220,7 +241,9 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-NodeJS/">☁️ NodeJS (1)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-NodeJS/">☁️ NodeJS (8)</a></li>
+                            
+                        
                             
                         
                             
@@ -236,11 +259,11 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Spring/">☁️ Spring (1)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Spring/">☁️ Spring (2)</a></li>
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-TIL/">☁️ TIL (10)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-TIL/">☁️ TIL (9)</a></li>
                             
                         
                     
@@ -261,35 +284,9 @@
                     
                 </li>
             
-                <li class="sidebar-button">
-                    
-                        <a  class="sidebar-button-link "
-                             
-                                title="about"href="#about"
-                                
-                                >
-                    
-                    <i class="sidebar-button-icon fa fa-question" aria-hidden="true"></i>
-                    <span class="sidebar-button-desc">about</span>
-                        </a>
-                    <!-- add -->
-                    
-                </li>
-            
         </ul>
         
             <ul class="sidebar-buttons">
-            
-                <li class="sidebar-button">
-                    
-                        <a  class="sidebar-button-link " href="https://github.com/ksso730" target="_blank" rel="noopener" title="github">
-                    
-                    <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
-                    <span class="sidebar-button-desc">github</span>
-                        </a>
-                    <!-- add -->
-                    
-                </li>
             
                 <li class="sidebar-button">
                     
@@ -449,9 +446,9 @@
                     
                 <a
                     class="post-action-btn btn btn--default tooltip--top"
-                    href="/2020/02/20/Node-%EB%A1%9C-%EC%84%9C%EB%B2%84-%EC%83%9D%EC%84%B1%ED%95%98%EA%B8%B0/"
-                    data-tooltip="Node 로 서버 생성하기"
-                    aria-label="NEXT: Node 로 서버 생성하기"
+                    href="/2020/02/18/Maven-501-HTTPS-Required-%EC%97%90%EB%9F%AC/"
+                    data-tooltip="Maven 501 HTTPS Required , protocol_version Error"
+                    aria-label="NEXT: Maven 501 HTTPS Required , protocol_version Error"
                 >
                     
                         <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
@@ -552,6 +549,7 @@
         Copyrights &copy; 2021 Suyan Kim. All Rights Reserved.
     </span>
 </footer>
+
             </div>
             
                 <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">
@@ -577,9 +575,9 @@
                     
                 <a
                     class="post-action-btn btn btn--default tooltip--top"
-                    href="/2020/02/20/Node-%EB%A1%9C-%EC%84%9C%EB%B2%84-%EC%83%9D%EC%84%B1%ED%95%98%EA%B8%B0/"
-                    data-tooltip="Node 로 서버 생성하기"
-                    aria-label="NEXT: Node 로 서버 생성하기"
+                    href="/2020/02/18/Maven-501-HTTPS-Required-%EC%97%90%EB%9F%AC/"
+                    data-tooltip="Maven 501 HTTPS Required , protocol_version Error"
+                    aria-label="NEXT: Maven 501 HTTPS Required , protocol_version Error"
                 >
                     
                         <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>

@@ -4,11 +4,6 @@
     
 
     <head>
-        <script type="text/javascript" src="http://code.jquery.com/jquery-3.2.1.min.js"></script>
-        <script type="text/java script">
-            var $= jquery.noConflict();
-        </script>
-
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="generator" content="동글씨">
@@ -22,7 +17,7 @@
                         
                             <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
                             
-                                <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n작년에 jekill 로 git 블로그 생성을 시도하다 실패였고,네이버 블로그, 티스토리로도 블로그를 시작하려 해봤지만 의지박약으로 실패 ..\n내가 공부했던 로그나 일한것들을 올릴 수 있는 나만의 페이지를 갖고싶기도 하였고,내 github activity 에도 실적을 남길 수 있다는 일석이조의 장점이 동기부여를 심어주지 않을까 하여node.js 가 좀 생소한 언어이지만 공부하는 김에,블로그 생성과 커스텀에 대한 설명이 좀더 많은 hexo를 택하기로 마음 먹었습니다.\n시작이 반이라 하였으니,일단 hexo 로 블로그를 구축하며 겪은 과정들을 포스팅을 하기로 !\n\n\n\n\n\nGithub repository 생성부터 hexo 로컬서버로 올리기까지.@ID/gibhub.io 로 repository 를 생성\ngit과 node.js 설치 후 확인git 설치 Gitnode.js 설치 Node.js\n12$ node -v$ npm -v\n\nhexo 설치 후 확인12$ npm i hexo -cli -g$ hexo -v\n\nhexo 새 프로젝트 만들기, 시작12345678910111213141516C:\\Users\\Suyeon Kim&gt;node -vv12.14.1C:\\Users\\Suyeon Kim&gt;npm -v6.13.4C:\\Users\\Suyeon Kim&gt;npm i hexo-cli -g...+ hexo-cli@3.1.0added 82 packages from 356 contributors in 7.839sC:\\Users\\Suyeon Kim&gt;hexo -vhexo-cli: 3.1.0...C:\\Users\\Suyeon Kim&gt;hexo init blog... Thank you for installing EJS: built with the Jake JavaScript build tool (https://jakejs.com/) found 0 vulnerabilitiesINFO  Start blogging with Hexo!\n\n\n\n\n프로젝트 폴더 위치에서 hexo 서버 실행12345C:\\Users\\Suyeon Kim&gt;cd blog C:\\Users\\Suyeon Kim\\blog&gt;hexo serverINFO  Start processingINFO  Hexo is running at http://localhost:4000 . Press Ctrl+C to stop.\n\n\n\n\n브라우저에서 http://localhost:4000 접속하여 확인\n\nGit blog 에 hexo theme 적용grunt 란?Github 에서 말하는 Grunt\n“Grunt is a task-based command line build tool for JavaScript projects.”grunt 는 JavaScript Task Runner, JavaScript 자동화 툴이다.\n\nGrunt 사용grunt 사용은 npm 을 통해 이루어진다. Node.js 가 설치되었다는 전제에 grunt를 설치한다.설치는 프로젝트의 root 경로에서 진행한다.\ngrunt-cli  설치 (grunt Command Line Interface)–save-dev  이 옵션은 package.json 파일과 연동시켜주며 파일 내부 “devDependencies” 항목에 설치대상을 자동으로 추가해준다. 아래 이미지를 보면 “grunt” 가 추가된것을 확인할 수 있다.\n12$ npm install -g grunt-cli $ npm install grunt --save-dev\n\n\n\nhexo 배포123$ hexo clean$ hexo g$ hexo d // 또는 $ hexo g -d : generate 와 deploy 를 한번에 수행.\n\nhexo 테마설정theme &amp; git repository 연동 (_config.yml)myblog/_config.yml 파일에 theme 항목이 있다. 적용하고자 하는 테마를 이곳에 넣어준다.\n\n\n\n다시 hexo s 를 실행하여 localhost 에서 확인을 해보면 테마가 적용된것을 확인할 수 있다.","dateCreated":"2020-01-18T01:19:04+09:00","dateModified":"2020-04-28T10:36:01+09:00","datePublished":"2020-01-18T01:19:04+09:00","description":"✔️ Hexo 를 이용해 Git Blog 를 생성합니다.   연동 전 기본 setting 부터 git repo 연동과 배포까지.","headline":"Git 블로그 생성 with hexo","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2020/01/18/Git-%EB%B8%94%EB%A1%9C%EA%B7%B8-%EC%83%9D%EC%84%B1-with-hexo/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2020/01/18/Git-%EB%B8%94%EB%A1%9C%EA%B7%B8-%EC%83%9D%EC%84%B1-with-hexo/","keywords":"git, hexo, blog"}</script>
+                                <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n작년에 jekill 로 git 블로그 생성을 시도하다 실패였고,네이버 블로그, 티스토리로도 블로그를 시작하려 해봤지만 의지박약으로 실패 ..\n내가 공부했던 로그나 일한것들을 올릴 수 있는 나만의 페이지를 갖고싶기도 하였고,내 github activity 에도 실적을 남길 수 있다는 일석이조의 장점이 동기부여를 심어주지 않을까 하여node.js 가 좀 생소한 언어이지만 공부하는 김에,블로그 생성과 커스텀에 대한 설명이 좀더 많은 hexo를 택하기로 마음 먹었습니다.\n시작이 반이라 하였으니,일단 hexo 로 블로그를 구축하며 겪은 과정들을 포스팅을 하기로 !\n\n\n\n\n\nGithub repository 생성부터 hexo 로컬서버로 올리기까지.@ID/gibhub.io 로 repository 를 생성\ngit과 node.js 설치 후 확인git 설치 Gitnode.js 설치 Node.js\n12$ node -v$ npm -v\n\nhexo 설치 후 확인12$ npm i hexo -cli -g$ hexo -v\n\nhexo 새 프로젝트 만들기, 시작12345678910111213141516C:\\Users\\Suyeon Kim&gt;node -vv12.14.1C:\\Users\\Suyeon Kim&gt;npm -v6.13.4C:\\Users\\Suyeon Kim&gt;npm i hexo-cli -g...+ hexo-cli@3.1.0added 82 packages from 356 contributors in 7.839sC:\\Users\\Suyeon Kim&gt;hexo -vhexo-cli: 3.1.0...C:\\Users\\Suyeon Kim&gt;hexo init blog... Thank you for installing EJS: built with the Jake JavaScript build tool (https://jakejs.com/) found 0 vulnerabilitiesINFO  Start blogging with Hexo!\n\n\n\n\n프로젝트 폴더 위치에서 hexo 서버 실행12345C:\\Users\\Suyeon Kim&gt;cd blog C:\\Users\\Suyeon Kim\\blog&gt;hexo serverINFO  Start processingINFO  Hexo is running at http://localhost:4000 . Press Ctrl+C to stop.\n\n\n\n\n브라우저에서 http://localhost:4000 접속하여 확인\n\nGit blog 에 hexo theme 적용grunt 란?Github 에서 말하는 Grunt\n“Grunt is a task-based command line build tool for JavaScript projects.”grunt 는 JavaScript Task Runner, JavaScript 자동화 툴이다.\n\nGrunt 사용grunt 사용은 npm 을 통해 이루어진다. Node.js 가 설치되었다는 전제에 grunt를 설치한다.설치는 프로젝트의 root 경로에서 진행한다.\ngrunt-cli  설치 (grunt Command Line Interface)–save-dev  이 옵션은 package.json 파일과 연동시켜주며 파일 내부 “devDependencies” 항목에 설치대상을 자동으로 추가해준다. 아래 이미지를 보면 “grunt” 가 추가된것을 확인할 수 있다.\n12$ npm install -g grunt-cli $ npm install grunt --save-dev\n\n\n\nhexo 배포123$ hexo clean$ hexo g$ hexo d // 또는 $ hexo g -d : generate 와 deploy 를 한번에 수행.\n\nhexo 테마설정theme &amp; git repository 연동 (_config.yml)myblog/_config.yml 파일에 theme 항목이 있다. 적용하고자 하는 테마를 이곳에 넣어준다.\n\n\n\n다시 hexo s 를 실행하여 localhost 에서 확인을 해보면 테마가 적용된것을 확인할 수 있다.","dateCreated":"2020-01-18T01:19:04+09:00","dateModified":"2020-04-28T10:36:01+09:00","datePublished":"2020-01-18T01:19:04+09:00","description":"✔️ Hexo 를 이용해 Git Blog 를 생성합니다.   연동 전 기본 setting 부터 git repo 연동과 배포까지.","headline":"Git 블로그 생성 with hexo","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2020/01/18/Git-%EB%B8%94%EB%A1%9C%EA%B7%B8-%EC%83%9D%EC%84%B1-with-hexo/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2020/01/18/Git-%EB%B8%94%EB%A1%9C%EA%B7%B8-%EC%83%9D%EC%84%B1-with-hexo/","keywords":"git, hexo, blog"}</script>
                                     <meta name="description" content="✔️ Hexo 를 이용해 Git Blog 를 생성합니다.   연동 전 기본 setting 부터 git repo 연동과 배포까지.">
 <meta property="og:type" content="blog">
 <meta property="og:title" content="Git 블로그 생성 with hexo">
@@ -84,6 +79,10 @@
     
 
 <header id="header" data-behavior="4">
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js"></script>
+    <script src="https://kit.fontawesome.com/cfcae25ced.js" crossorigin="anonymous"></script>
     <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
     <div class="header-title">
         <a
@@ -129,13 +128,35 @@
                 </a>
                 <h4 class="sidebar-profile-name">Suyan Kim</h4>
                 
-                    <h5 class="sidebar-profile-bio"><p>▲ Who Am I</p>
+                    <h5 class="sidebar-profile-bio"><p><strong><a target="_blank" rel="noopener" href="https://nice-spectrum-2aa.notion.site/Suyeon-Kim-09e271916a504e24a5307e9f67d7bc16">Click 👀 Resume</a></strong></p>
 </h5>
                 
             </div>
         
         
             <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="https://nice-spectrum-2aa.notion.site/Suyeon-Kim-09e271916a504e24a5307e9f67d7bc16" target="_blank" rel="noopener" title="resume 👀">
+                    
+                    <i class="sidebar-button-icon far fa-smile-wink" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">resume 👀</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="https://github.com/ksso730" target="_blank" rel="noopener" title="github">
+                    
+                    <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">github</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
             
                 <li class="sidebar-button">
                     
@@ -186,7 +207,7 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (10)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (15)</a></li>
                             
                         
                             
@@ -202,7 +223,7 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Git/">☁️ Git (3)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Git/">☁️ Git (4)</a></li>
                             
                         
                             
@@ -222,7 +243,9 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-NodeJS/">☁️ NodeJS (1)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-NodeJS/">☁️ NodeJS (8)</a></li>
+                            
+                        
                             
                         
                             
@@ -238,11 +261,11 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Spring/">☁️ Spring (1)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Spring/">☁️ Spring (2)</a></li>
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-TIL/">☁️ TIL (10)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-TIL/">☁️ TIL (9)</a></li>
                             
                         
                     
@@ -263,35 +286,9 @@
                     
                 </li>
             
-                <li class="sidebar-button">
-                    
-                        <a  class="sidebar-button-link "
-                             
-                                title="about"href="#about"
-                                
-                                >
-                    
-                    <i class="sidebar-button-icon fa fa-question" aria-hidden="true"></i>
-                    <span class="sidebar-button-desc">about</span>
-                        </a>
-                    <!-- add -->
-                    
-                </li>
-            
         </ul>
         
             <ul class="sidebar-buttons">
-            
-                <li class="sidebar-button">
-                    
-                        <a  class="sidebar-button-link " href="https://github.com/ksso730" target="_blank" rel="noopener" title="github">
-                    
-                    <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
-                    <span class="sidebar-button-desc">github</span>
-                        </a>
-                    <!-- add -->
-                    
-                </li>
             
                 <li class="sidebar-button">
                     
@@ -527,6 +524,7 @@
         Copyrights &copy; 2021 Suyan Kim. All Rights Reserved.
     </span>
 </footer>
+
             </div>
             
                 <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">

@@ -4,11 +4,6 @@
     
 
     <head>
-        <script type="text/javascript" src="http://code.jquery.com/jquery-3.2.1.min.js"></script>
-        <script type="text/java script">
-            var $= jquery.noConflict();
-        </script>
-
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="generator" content="동글씨">
@@ -22,7 +17,7 @@
                         
                             <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
                             
-                                <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\nHooks ?\n클래스에서 사용했던 기능을 함수에서도 사용할 수 있도록 해줌.\n\nuseState\n const [변수명, 메소드]= useState(“[]”)\n\n\nEX1const [music, setMusic] = useState([]);\n\nuseEffect\nReact의 class  방식의 componentDidMount 생명주기를 흉내낼 수 있다.useEffect(fn, [])\n\n\n클래스 방식\n123componentDidMount()&#123;    this.setstate(&#123;music:&#125;) &#125;\n함수 방식 : useState 에서 정의해주었던 music 변수를 저장하고 있는 setMusic state를 사용.\n12345678useEffect(() =&gt; &#123;        axios.get(&quot;http://localhost:3000/music.json&quot;)            .then((res) =&gt; &#123;   // res에 데이터 불러옴                setMusic(res.data);                console.log(res.data);            &#125;)    &#125;,[]);\n그런데 [] 는 뭔가요? deps 란?\n\n\n\nmount 할때마다 실행. =&gt; componentDidMount, componentDidUpdate시작하자마자 한번만 읽어로려면, 즉 didMount 에만 함수를 적용하고 싶다면,함수의 2번째 인자로 [] deps 를 줘야함.내용 갱신 시에는 deps 를 쓰지 않는다.\n\n\n\n잠깐 문법1234567891011// 이렇게 하면 forEach 가능한데props.music.forEach((m)=&gt;&#123;         ...       &#125;)// html 에서 스크립트를 만들 때는 forEach 적용이 안됨.const html = music.map((m)=&gt;        &lt;tr&gt;            &lt;td&gt;&#123;m.rank&#125;&lt;/td&gt;        &lt;/tr&gt;)\n\n\n검색 이벤트 등록\n사용 함수AppMain() : main 함수이다.SearchBar()MusicTable()\n\nhandleUserInput 라는 이벤트 등록함수를 만들어 준다.\n\n이렇게 이벤트를 넘겨주는 방식은 callByReference 방식이다.callByReference 는 주소값을 넘겨준다. javaScript 는 pointer 로 이루어져 있어 주소값으로 넘겨준다면 이 값은 변할 수 있다.\n\n변수 str 을 넘겨주는 방식은 callByValue 방식이다.복사라고 생각하면 된다. 가지고 있는 걸 사용하는 것이 아닌, 새로 똑같은 값을 만들어준다.\n\n\nAppMain()\n123456789101112131415161718192021222324252627function App3() &#123;\t// 변수 설정    const [music, setMusic] = useState([]);    // 변수 초기값    const [str, setStr]= useState(&quot;&quot;);    useEffect(()=&gt;&#123;        axios.get(&quot;http://localhost:3000/music.json&quot;)            .then((res)=&gt;&#123;                setMusic(res.data);            &#125;)    &#125;,[])  // mount 할때마다 실행. =&gt; componentDidMount, componentDidUpdate    // 이벤트 등록    const handleUserInput= (str)=&gt;&#123;        setStr(str);    &#125;     return(        &lt;div className=&#123;&quot;row&quot;&#125;&gt;            &lt;H/&gt;            &lt;SearchBar str=&#123;str&#125; onUserInput=&#123;handleUserInput&#125;/&gt;            &lt;div style=&#123;&#123;&quot;height&quot;:&quot;30px&quot;&#125;&#125;&gt;&lt;/div&gt;            &lt;MusicTable music=&#123;music&#125; str=&#123;str&#125;/&gt;        &lt;/div&gt;    )&#125;    \n\n\nonUserInput 이벤트를 연결한다. 이벤트가 발생한 곳의 값(input 태그의 값)을 가져와 onUserInput에 값을 넣어준다.SearchBar(str)\n\n1234567891011121314151617function SearchBar(props) &#123;    // useCallBack    const onChange=(e)=&gt;&#123;        props.onUserInput(e.target.value);    &#125;    return(        &lt;table className=&#123;&quot;table&quot;&#125;&gt;            &lt;tr&gt;                &lt;td&gt;                    &lt;input type=&#123;&quot;text&quot;&#125; size=&#123;&quot;25&quot;&#125; className=&#123;&quot;input-sm&quot;&#125;                        placeholder=&#123;&quot;search&quot;&#125; onChange=&#123;onChange&#125; value=&#123;props.str&#125;/&gt;                &lt;/td&gt;            &lt;/tr&gt;        &lt;/table&gt;    )&#125;\n\nCallBack : useCallBack()\n\nhooks 의 기능중 useCallBack() 함수를 사용한다. :함수의 주소를 기억하고 있다. Paging 에서 많이 사용된다.Memory 누수가 안됨.\n\n\n\n2번 째 인자로 deps :[str] 을 준다. : 검색내용이 변경 될 때에만 함수가 handleUserInput 호출되도록 변경해준다.123const handleUserInput= useCallback((str)=&gt;&#123;  setStr(str);&#125;, [str]) // str 이 변경될 때에만 호출된다.\n\n\n실제로 데이터를 출력해주는 함수MusicTable()1234567891011121314151617181920212223242526function MusicTable(props) &#123;    let row=[];    props.music.forEach((m)=&gt;&#123;        if(m.title.indexOf(props.str)==-1)&#123;            return;        &#125;        // 배열에 추가        row.push(&lt;MusicRow music=&#123;m&#125;/&gt;);    &#125;)    return(        &lt;table className=&#123;&quot;table&quot;&#125;&gt;            &lt;thead&gt;                &lt;tr className=&#123;&quot;danger&quot;&#125;&gt;                    &lt;th&gt;순위&lt;/th&gt;                    &lt;th&gt;&lt;/th&gt;                    &lt;th&gt;노래명&lt;/th&gt;                    &lt;th&gt;가수&lt;/th&gt;                &lt;/tr&gt;            &lt;/thead&gt;            &lt;tbody&gt;            &#123;row&#125;            &lt;/tbody&gt;        &lt;/table&gt;    )&#125;\n\nReact.memo\n\nReact 는 컴포넌트를 렌더링 한 뒤, 이전 렌더링 된 결과와 비교하여 DOM 업데이트를 결정한다. 이전 렌더링 결과와 비교하는 과정은 충분히 빠르지만 이 과정에서 속도를 줄일 수 있다.\n\n\n\nReact.memo 로 매핑될 때, React 는 컴퍼넌트를 렌더링 후 그 결과를 메모이징(Memoizing) 한다. 그 다음 렌더링 시 props 가 같다면 메모이징 했던 내용을 재사용한다.[출처] https://ui.toast.com/weekly-pick/ko_20190731/\n\n위에서 진행했던 예제로 계속 설명을 한다면,\n\nSearchBar 에  입력할 때마다 즉, onUserInput 이벤트가 발생할 때마다  MusicTable 을 재렌더링 한다.그 때마다 H1 태그는 글자 색상을 랜덤으로 가져온다. Math.random()*5\n\n즉, input 창에 뭔가를 적을 때마다 반짝반짝 하며 타이틀 색상이 수시로 바뀌게 되는 …뭔가 고쳐주고 싶은 현상을 발견한다.\n\n이 때 사용하는것이 바로 memo\n\nReact.memo 적용전\n123456789const H=()=&gt;&#123;    // memo : 호출한것 기억.    const color = [&#x27;red&#x27;,&#x27;blue&#x27;,&#x27;green&#x27;,&#x27;yellow&#x27;,&#x27;pink&#x27;];    const no = parseInt(Math.random()*5);   // 배열 인덱스 5개중 랜덤수 선택    return(        &lt;h1 className=&#123;&quot;text-center&quot;&#125; style=&#123;&#123;&quot;color&quot;:color[no]&#125;&#125;&gt;Music Top 50&lt;/h1&gt;    )&#125;\nReact.memo 적용 후: searchBar 에 입력해도 변하지 않음.\n123456789const H=React.memo(()=&gt;&#123;    // memo : 호출한것 기억.    const color = [&#x27;red&#x27;,&#x27;blue&#x27;,&#x27;green&#x27;,&#x27;yellow&#x27;,&#x27;pink&#x27;];    const no = parseInt(Math.random()*5);   // 배열 인덱스 5개중 랜덤수 선택    return(        &lt;h1 className=&#123;&quot;text-center&quot;&#125; style=&#123;&#123;&quot;color&quot;:color[no]&#125;&#125;&gt;Music Top 50&lt;/h1&gt;    )&#125;)\n","dateCreated":"2020-05-29T09:38:23+09:00","dateModified":"2020-06-01T15:08:38+09:00","datePublished":"2020-05-29T09:38:23+09:00","description":"클래스에서 사용했던 기능을 함수에서도 사용할 수 있도록 해주는 HOOKS 를 사용해봅니다.useState useEffect useMemo, useCallBack","headline":"Hooks 로 함수형 코딩을 해보자","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2020/05/29/Hooks/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2020/05/29/Hooks/","keywords":"Hooks, react"}</script>
+                                <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\nHooks ?\n클래스에서 사용했던 기능을 함수에서도 사용할 수 있도록 해줌.\n\nuseState\n const [변수명, 메소드]= useState(“[]”)\n\n\nEX1const [music, setMusic] = useState([]);\n\nuseEffect\nReact의 class  방식의 componentDidMount 생명주기를 흉내낼 수 있다.useEffect(fn, [])\n\n\n클래스 방식\n123componentDidMount()&#123;    this.setstate(&#123;music:&#125;) &#125;\n함수 방식 : useState 에서 정의해주었던 music 변수를 저장하고 있는 setMusic state를 사용.\n12345678useEffect(() =&gt; &#123;        axios.get(&quot;http://localhost:3000/music.json&quot;)            .then((res) =&gt; &#123;   // res에 데이터 불러옴                setMusic(res.data);                console.log(res.data);            &#125;)    &#125;,[]);\n그런데 [] 는 뭔가요? deps 란?\n\n\n\nmount 할때마다 실행. =&gt; componentDidMount, componentDidUpdate시작하자마자 한번만 읽어로려면, 즉 didMount 에만 함수를 적용하고 싶다면,함수의 2번째 인자로 [] deps 를 줘야함.내용 갱신 시에는 deps 를 쓰지 않는다.\n\n\n\n잠깐 문법1234567891011// 이렇게 하면 forEach 가능한데props.music.forEach((m)=&gt;&#123;         ...       &#125;)// html 에서 스크립트를 만들 때는 forEach 적용이 안됨.const html = music.map((m)=&gt;        &lt;tr&gt;            &lt;td&gt;&#123;m.rank&#125;&lt;/td&gt;        &lt;/tr&gt;)\n\n\n검색 이벤트 등록\n사용 함수AppMain() : main 함수이다.SearchBar()MusicTable()\n\nhandleUserInput 라는 이벤트 등록함수를 만들어 준다.\n\n이렇게 이벤트를 넘겨주는 방식은 callByReference 방식이다.callByReference 는 주소값을 넘겨준다. javaScript 는 pointer 로 이루어져 있어 주소값으로 넘겨준다면 이 값은 변할 수 있다.\n\n변수 str 을 넘겨주는 방식은 callByValue 방식이다.복사라고 생각하면 된다. 가지고 있는 걸 사용하는 것이 아닌, 새로 똑같은 값을 만들어준다.\n\n\nAppMain()\n123456789101112131415161718192021222324252627function App3() &#123;\t// 변수 설정    const [music, setMusic] = useState([]);    // 변수 초기값    const [str, setStr]= useState(&quot;&quot;);    useEffect(()=&gt;&#123;        axios.get(&quot;http://localhost:3000/music.json&quot;)            .then((res)=&gt;&#123;                setMusic(res.data);            &#125;)    &#125;,[])  // mount 할때마다 실행. =&gt; componentDidMount, componentDidUpdate    // 이벤트 등록    const handleUserInput= (str)=&gt;&#123;        setStr(str);    &#125;     return(        &lt;div className=&#123;&quot;row&quot;&#125;&gt;            &lt;H/&gt;            &lt;SearchBar str=&#123;str&#125; onUserInput=&#123;handleUserInput&#125;/&gt;            &lt;div style=&#123;&#123;&quot;height&quot;:&quot;30px&quot;&#125;&#125;&gt;&lt;/div&gt;            &lt;MusicTable music=&#123;music&#125; str=&#123;str&#125;/&gt;        &lt;/div&gt;    )&#125;    \n\n\nonUserInput 이벤트를 연결한다. 이벤트가 발생한 곳의 값(input 태그의 값)을 가져와 onUserInput에 값을 넣어준다.SearchBar(str)\n\n1234567891011121314151617function SearchBar(props) &#123;    // useCallBack    const onChange=(e)=&gt;&#123;        props.onUserInput(e.target.value);    &#125;    return(        &lt;table className=&#123;&quot;table&quot;&#125;&gt;            &lt;tr&gt;                &lt;td&gt;                    &lt;input type=&#123;&quot;text&quot;&#125; size=&#123;&quot;25&quot;&#125; className=&#123;&quot;input-sm&quot;&#125;                        placeholder=&#123;&quot;search&quot;&#125; onChange=&#123;onChange&#125; value=&#123;props.str&#125;/&gt;                &lt;/td&gt;            &lt;/tr&gt;        &lt;/table&gt;    )&#125;\n\nCallBack : useCallBack()\n\nhooks 의 기능중 useCallBack() 함수를 사용한다. :함수의 주소를 기억하고 있다. Paging 에서 많이 사용된다.Memory 누수가 안됨.\n\n\n\n2번 째 인자로 deps :[str] 을 준다. : 검색내용이 변경 될 때에만 함수가 handleUserInput 호출되도록 변경해준다.123const handleUserInput= useCallback((str)=&gt;&#123;  setStr(str);&#125;, [str]) // str 이 변경될 때에만 호출된다.\n\n\n실제로 데이터를 출력해주는 함수MusicTable()1234567891011121314151617181920212223242526function MusicTable(props) &#123;    let row=[];    props.music.forEach((m)=&gt;&#123;        if(m.title.indexOf(props.str)==-1)&#123;            return;        &#125;        // 배열에 추가        row.push(&lt;MusicRow music=&#123;m&#125;/&gt;);    &#125;)    return(        &lt;table className=&#123;&quot;table&quot;&#125;&gt;            &lt;thead&gt;                &lt;tr className=&#123;&quot;danger&quot;&#125;&gt;                    &lt;th&gt;순위&lt;/th&gt;                    &lt;th&gt;&lt;/th&gt;                    &lt;th&gt;노래명&lt;/th&gt;                    &lt;th&gt;가수&lt;/th&gt;                &lt;/tr&gt;            &lt;/thead&gt;            &lt;tbody&gt;            &#123;row&#125;            &lt;/tbody&gt;        &lt;/table&gt;    )&#125;\n\nReact.memo\n\nReact 는 컴포넌트를 렌더링 한 뒤, 이전 렌더링 된 결과와 비교하여 DOM 업데이트를 결정한다. 이전 렌더링 결과와 비교하는 과정은 충분히 빠르지만 이 과정에서 속도를 줄일 수 있다.\n\n\n\nReact.memo 로 매핑될 때, React 는 컴퍼넌트를 렌더링 후 그 결과를 메모이징(Memoizing) 한다. 그 다음 렌더링 시 props 가 같다면 메모이징 했던 내용을 재사용한다.[출처] https://ui.toast.com/weekly-pick/ko_20190731/\n\n위에서 진행했던 예제로 계속 설명을 한다면,\n\nSearchBar 에  입력할 때마다 즉, onUserInput 이벤트가 발생할 때마다  MusicTable 을 재렌더링 한다.그 때마다 H1 태그는 글자 색상을 랜덤으로 가져온다. Math.random()*5\n\n즉, input 창에 뭔가를 적을 때마다 반짝반짝 하며 타이틀 색상이 수시로 바뀌게 되는 …뭔가 고쳐주고 싶은 현상을 발견한다.\n\n이 때 사용하는것이 바로 memo\n\nReact.memo 적용전\n123456789const H=()=&gt;&#123;    // memo : 호출한것 기억.    const color = [&#x27;red&#x27;,&#x27;blue&#x27;,&#x27;green&#x27;,&#x27;yellow&#x27;,&#x27;pink&#x27;];    const no = parseInt(Math.random()*5);   // 배열 인덱스 5개중 랜덤수 선택    return(        &lt;h1 className=&#123;&quot;text-center&quot;&#125; style=&#123;&#123;&quot;color&quot;:color[no]&#125;&#125;&gt;Music Top 50&lt;/h1&gt;    )&#125;\nReact.memo 적용 후: searchBar 에 입력해도 변하지 않음.\n123456789const H=React.memo(()=&gt;&#123;    // memo : 호출한것 기억.    const color = [&#x27;red&#x27;,&#x27;blue&#x27;,&#x27;green&#x27;,&#x27;yellow&#x27;,&#x27;pink&#x27;];    const no = parseInt(Math.random()*5);   // 배열 인덱스 5개중 랜덤수 선택    return(        &lt;h1 className=&#123;&quot;text-center&quot;&#125; style=&#123;&#123;&quot;color&quot;:color[no]&#125;&#125;&gt;Music Top 50&lt;/h1&gt;    )&#125;)\n","dateCreated":"2020-05-29T09:38:23+09:00","dateModified":"2020-06-01T15:08:38+09:00","datePublished":"2020-05-29T09:38:23+09:00","description":"클래스에서 사용했던 기능을 함수에서도 사용할 수 있도록 해주는 HOOKS 를 사용해봅니다.useState useEffect useMemo, useCallBack","headline":"Hooks 로 함수형 코딩을 해보자","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2020/05/29/Hooks/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2020/05/29/Hooks/","keywords":"Hooks, react"}</script>
                                     <meta name="description" content="클래스에서 사용했던 기능을 함수에서도 사용할 수 있도록 해주는 HOOKS 를 사용해봅니다.useState useEffect useMemo, useCallBack">
 <meta property="og:type" content="blog">
 <meta property="og:title" content="Hooks 로 함수형 코딩을 해보자">
@@ -78,6 +73,10 @@
     
 
 <header id="header" data-behavior="4">
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js"></script>
+    <script src="https://kit.fontawesome.com/cfcae25ced.js" crossorigin="anonymous"></script>
     <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
     <div class="header-title">
         <a
@@ -123,13 +122,35 @@
                 </a>
                 <h4 class="sidebar-profile-name">Suyan Kim</h4>
                 
-                    <h5 class="sidebar-profile-bio"><p>▲ Who Am I</p>
+                    <h5 class="sidebar-profile-bio"><p><strong><a target="_blank" rel="noopener" href="https://nice-spectrum-2aa.notion.site/Suyeon-Kim-09e271916a504e24a5307e9f67d7bc16">Click 👀 Resume</a></strong></p>
 </h5>
                 
             </div>
         
         
             <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="https://nice-spectrum-2aa.notion.site/Suyeon-Kim-09e271916a504e24a5307e9f67d7bc16" target="_blank" rel="noopener" title="resume 👀">
+                    
+                    <i class="sidebar-button-icon far fa-smile-wink" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">resume 👀</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="https://github.com/ksso730" target="_blank" rel="noopener" title="github">
+                    
+                    <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">github</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
             
                 <li class="sidebar-button">
                     
@@ -180,7 +201,7 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (10)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (15)</a></li>
                             
                         
                             
@@ -196,7 +217,7 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Git/">☁️ Git (3)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Git/">☁️ Git (4)</a></li>
                             
                         
                             
@@ -216,7 +237,9 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-NodeJS/">☁️ NodeJS (1)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-NodeJS/">☁️ NodeJS (8)</a></li>
+                            
+                        
                             
                         
                             
@@ -232,11 +255,11 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Spring/">☁️ Spring (1)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Spring/">☁️ Spring (2)</a></li>
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-TIL/">☁️ TIL (10)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-TIL/">☁️ TIL (9)</a></li>
                             
                         
                     
@@ -257,35 +280,9 @@
                     
                 </li>
             
-                <li class="sidebar-button">
-                    
-                        <a  class="sidebar-button-link "
-                             
-                                title="about"href="#about"
-                                
-                                >
-                    
-                    <i class="sidebar-button-icon fa fa-question" aria-hidden="true"></i>
-                    <span class="sidebar-button-desc">about</span>
-                        </a>
-                    <!-- add -->
-                    
-                </li>
-            
         </ul>
         
             <ul class="sidebar-buttons">
-            
-                <li class="sidebar-button">
-                    
-                        <a  class="sidebar-button-link " href="https://github.com/ksso730" target="_blank" rel="noopener" title="github">
-                    
-                    <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
-                    <span class="sidebar-button-desc">github</span>
-                        </a>
-                    <!-- add -->
-                    
-                </li>
             
                 <li class="sidebar-button">
                     
@@ -562,6 +559,7 @@
         Copyrights &copy; 2021 Suyan Kim. All Rights Reserved.
     </span>
 </footer>
+
             </div>
             
                 <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">

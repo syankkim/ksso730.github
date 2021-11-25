@@ -1,0 +1,768 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="generator" content="동글씨">
+        <title>
+            ↔️ Linked List 구현 - Double Linked - 동글씨
+        </title>
+        <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+        <meta name="author" content="Suyan Kim">
+        
+                
+                        
+                            <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
+                            
+                                <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\nDoubley linked list\n이중 연결 리스트\n양방향 연결로, 노드 탐색이 양방향으로 가능하다.\n\n\n기본적으로 만들었던 링크드 리스트는 next 값만 존재했지만, Doubly linked list 에서는 prev를 추가하여 해당 Node의 이전 값도 연결해준다.\n\nprev를 추가한 linked list1234567891011121314151617181920212223242526272829303132class Node:     def __init__(self, val, prev=None, next=None):        self.prev = prev        self.val = val        self.next = next    class NodeMgt:    def __init__(self, val):        self.head = Node(val)        self.tail = self.head        # 노드 추가    def insert(self, val):        if self.head == None:            self.head = Node(val)            self.tail = self.head        else:            node = self.head            while node.next:                node = node.next            # new 라는 노드가 추가 되면 prev, next의 노드와 모두 연결해주어야 한다.            new = Node(val)            node.next = new            new.prev = node            self.tail = new        # 전체 리스트 출력    def desc(self):        node = self.head        while node:            print(node.val, end=&#x27; &#x27;)            node = node.next\n\n\n\n\n0 - 10 까지의 수를 저장한 링크드 리스트를 생성한다.\n\n\n\n\n\n\n특정 값을 갖는 노드 찾기 from head? tail?\nprev, 노드의 이전값이 존재하기 때문에 tail, 리스트의 끝에서부터 탐색이 가능하다.\nhead, 노드의 처음과 tail, 끝에서 특정 값을 갖는 노드을 찾는 함수를 추가 구현한다.\n\n12345678910111213141516171819202122 # 리스트의 처음부터 탐색def sch_from_head(self, val):     if self.head == None:         return False     node = self.head     while node:         if node.val == val:             return node         else:             node = node.next     return False  # 리스트의 끝 부분부터 탐색 def sch_from_tail(self, val):     if self.tail == None:         return False     node = self.tail     while node.val!=val:         node = node.prev     if node == None:         return False     return node\n\n\n\n\n특정 값을 갖는 노드를 탐색한다. 찾는 수가 없다면 False를 리턴한다.\n\n\n\n\n원하는 위치에 값을 추가\n위에서 구현했던 특정 값을 갖는 노드 위치를 찾는다.\n그 노드의 이전에 추가하려는 값을 넣는다.\n\n12345678910111213141516171819def insert_before(self, val, targetVal):     if self.head == None:         self.head = Node(val)         return True     else:         node = self.tail         while node.val != targetVal:             # tail 부터 탐색한다면 다음 탐색할 값은 node.prev             node = node.prev         if node == None:             return False         # 위치를 찾고 나면 추가하려는 값으로 new node를 생성한다.         new = Node(val)         # node 끼리 연결         node_prev = node.prev         node_prev.next = new         new.next = node         node.prev = new         return True\n\n\n\n\n5라는 값의 위치 이전에 224 값을 넣어본다.\n\n\n\n\n\n전체 코드123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585960616263646566676869class Node:     def __init__(self, val, prev=None, next=None):        self.prev = prev        self.val = val        self.next = next    class NodeMgt:        def __init__(self, val):        self.head = Node(val)        self.tail = self.head        def insert(self, val):        if self.head == None:            self.head = Node(val)            self.tail = self.head        else:            node = self.head            while node.next:                node = node.next            new = Node(val)            node.next = new            new.prev = node            self.tail = new        def desc(self):        node = self.head        while node:            print(node.val, end=&#x27; &#x27;)            node = node.next        def sch_from_head(self, val):        if self.head == None:            return False        node = self.head        while node:            if node.val == val:                return node            else:                node = node.next        return False        def sch_from_tail(self, val):        if self.tail == None:            return False        node = self.tail        while node.val!=val:            node = node.prev        if node == None:            return False        return node                                    def insert_before(self, val, targetVal):        if self.head == None:            self.head = Node(val)            return True        else:            node = self.tail            while node.val != targetVal:                node = node.prev            if node == None:                return False            new = Node(val)            node_prev = node.prev            node_prev.next = new            new.next = node            node.prev = new            return True","dateCreated":"2021-08-10T09:27:23+09:00","dateModified":"2021-08-12T10:03:53+09:00","datePublished":"2021-08-10T09:27:23+09:00","description":"Linked List with Python이중 연결 리스트를 구현하여, 특정 값을 추가해본다.","headline":"↔️ Linked List 구현 - Double Linked","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2021/08/10/%EB%A7%81%ED%81%AC%EB%93%9C%EB%A6%AC%EC%8A%A4%ED%8A%B8-%EA%B5%AC%ED%98%84-double%20linked/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2021/08/10/%EB%A7%81%ED%81%AC%EB%93%9C%EB%A6%AC%EC%8A%A4%ED%8A%B8-%EA%B5%AC%ED%98%84-double%20linked/","keywords":"linked_list"}</script>
+                                    <meta name="description" content="Linked List with Python이중 연결 리스트를 구현하여, 특정 값을 추가해본다.">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="↔️ Linked List 구현 - Double Linked">
+<meta property="og:url" content="http://yoursite.com/2021/08/10/%EB%A7%81%ED%81%AC%EB%93%9C%EB%A6%AC%EC%8A%A4%ED%8A%B8-%EA%B5%AC%ED%98%84-double%20linked/index.html">
+<meta property="og:site_name" content="동글씨">
+<meta property="og:description" content="Linked List with Python이중 연결 리스트를 구현하여, 특정 값을 추가해본다.">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://user-images.githubusercontent.com/28856435/129001021-e7a258eb-7c7a-4fec-9455-64a2c5889e72.png">
+<meta property="og:image" content="https://user-images.githubusercontent.com/28856435/129002492-da7c1a19-2d33-4391-8cac-cc504812ffaf.png">
+<meta property="og:image" content="https://user-images.githubusercontent.com/28856435/129003843-51628435-aa75-4af6-9669-aaf8fcd5898e.png">
+<meta property="article:published_time" content="2021-08-10T00:27:23.000Z">
+<meta property="article:modified_time" content="2021-08-12T01:03:53.795Z">
+<meta property="article:author" content="Suyan Kim">
+<meta property="article:tag" content="linked_list">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://user-images.githubusercontent.com/28856435/129001021-e7a258eb-7c7a-4fec-9455-64a2c5889e72.png">
+                                        
+                                                
+                                                    
+                                                            
+                                                                
+                                                                    <meta property="og:image" content="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=640" />
+                                                                    
+                                                                            
+                                                                                    
+                                                                                            
+                                                                                                            <!--STYLES-->
+                                                                                                            
+<link rel="stylesheet" href="/assets/css/tranquilpeak.css">
+
+                                                                                                            <!--STYLES END-->
+                                                                                                                
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-158530470-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-158530470-1');
+    </script>
+
+
+                                                                                                                    
+
+                                                                                                                        
+                                                                                                                            
+                                                                                                                                                
+    </head>
+    <body>
+        <div id="blog">
+            <!-- Define author's picture -->
+
+
+    
+        
+    
+
+<header id="header" data-behavior="4">
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js"></script>
+    <script src="https://kit.fontawesome.com/cfcae25ced.js" crossorigin="anonymous"></script>
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <div class="header-title">
+        <a
+            class="header-title-link"
+            href="/index.html"
+            aria-label=""
+        >
+            동글씨
+        </a>
+    </div>
+    
+        
+            <a
+                class="header-right-picture "
+                href="#about"
+                aria-label="Open the link: /#about"
+            >
+        
+        
+            <img class="header-picture" src="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=90" alt="Author&#39;s picture"/>
+        
+        </a>
+    
+</header>
+
+            <!-- function -->
+
+
+<!-- Define author's picture -->
+
+
+    
+
+<nav id="sidebar" data-behavior="4">
+    <div class="sidebar-container">
+        
+            <div class="sidebar-profile">
+                <a
+                    href="/#about"
+                    aria-label="Read more about the author"
+                >
+                    <img class="sidebar-profile-picture" src="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=800" alt="Author&#39;s picture"/>
+                </a>
+                <h4 class="sidebar-profile-name">Suyan Kim</h4>
+                
+                    <h5 class="sidebar-profile-bio"><p><strong><a target="_blank" rel="noopener" href="https://nice-spectrum-2aa.notion.site/Suyeon-Kim-09e271916a504e24a5307e9f67d7bc16">Click 👀 Resume</a></strong></p>
+</h5>
+                
+            </div>
+        
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="https://nice-spectrum-2aa.notion.site/Suyeon-Kim-09e271916a504e24a5307e9f67d7bc16" target="_blank" rel="noopener" title="resume 👀">
+                    
+                    <i class="sidebar-button-icon far fa-smile-wink" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">resume 👀</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="https://github.com/ksso730" target="_blank" rel="noopener" title="github">
+                    
+                    <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">github</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="home"href="/index.html"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-home" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">home</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="archives"href="/all-archives"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-archive" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">archives</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="categories"href="/all-categories"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-bookmark" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">categories</span>
+                        </a>
+                    <!-- add -->
+                    
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-AWS/">☁️ AWS (0)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (15)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Config/">☁️ Config (2)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-DataBase/">☁️ DataBase (1)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Django/">☁️ Django (1)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Git/">☁️ Git (4)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-JPA/">☁️ JPA (10)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Java/">☁️ Java (0)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Linux/">☁️ Linux (6)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Network/">☁️ Network (1)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-NodeJS/">☁️ NodeJS (8)</a></li>
+                            
+                        
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-OS/">☁️ OS (14)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Python/">☁️ Python (2)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-React/">☁️ React (3)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Spring/">☁️ Spring (2)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-TIL/">☁️ TIL (9)</a></li>
+                            
+                        
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="tags"href="/all-tags"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-tags" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">tags</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="https://www.instagram.com/syankkim/" target="_blank" rel="noopener" title="life">
+                    
+                    <i class="sidebar-button-icon fab fa-instagram" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">life</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+        </ul>
+        
+    </div>
+</nav>
+
+            
+            <div id="main" data-behavior="4"
+                 class="
+                        hasCoverMetaIn
+                        ">
+                
+<article class="post">
+    
+    
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title">
+            ↔️ Linked List 구현 - Double Linked
+        </h1>
+    
+    
+        <div class="post-meta">
+    <time datetime="2021-08-10T09:27:23+09:00">
+	
+		    Aug 10, 2021
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm</a>
+
+
+    
+</div>
+
+    
+</div>
+
+    
+    <div class="post-content markdown">
+        <div class="main-content-wrap">
+            <!-- excerpt -->
+<h1 id="table-of-contents">Contents</h1><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Doubley-linked-list"><span class="toc-text">Doubley linked list</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#prev%EB%A5%BC-%EC%B6%94%EA%B0%80%ED%95%9C-linked-list"><span class="toc-text">prev를 추가한 linked list</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%ED%8A%B9%EC%A0%95-%EA%B0%92%EC%9D%84-%EA%B0%96%EB%8A%94-%EB%85%B8%EB%93%9C-%EC%B0%BE%EA%B8%B0-from-head-tail"><span class="toc-text">특정 값을 갖는 노드 찾기 from head? tail?</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%EC%9B%90%ED%95%98%EB%8A%94-%EC%9C%84%EC%B9%98%EC%97%90-%EA%B0%92%EC%9D%84-%EC%B6%94%EA%B0%80"><span class="toc-text">원하는 위치에 값을 추가</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%EC%A0%84%EC%B2%B4-%EC%BD%94%EB%93%9C"><span class="toc-text">전체 코드</span></a></li></ol></li></ol>
+
+<h1 id="Doubley-linked-list"><a href="#Doubley-linked-list" class="headerlink" title="Doubley linked list"></a>Doubley linked list</h1><ul>
+<li>이중 연결 리스트</li>
+<li>양방향 연결로, 노드 탐색이 양방향으로 가능하다.</li>
+</ul>
+<blockquote>
+<p>기본적으로 만들었던 링크드 리스트는 next 값만 존재했지만, Doubly linked list 에서는 prev를 추가하여 해당 Node의 이전 값도 연결해준다.</p>
+</blockquote>
+<h2 id="prev를-추가한-linked-list"><a href="#prev를-추가한-linked-list" class="headerlink" title="prev를 추가한 linked list"></a>prev를 추가한 linked list</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Node</span>:</span> </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, val, prev=<span class="literal">None</span>, <span class="built_in">next</span>=<span class="literal">None</span></span>):</span></span><br><span class="line">        self.prev = prev</span><br><span class="line">        self.val = val</span><br><span class="line">        self.<span class="built_in">next</span> = <span class="built_in">next</span></span><br><span class="line">    </span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">NodeMgt</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, val</span>):</span></span><br><span class="line">        self.head = Node(val)</span><br><span class="line">        self.tail = self.head</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 노드 추가</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">insert</span>(<span class="params">self, val</span>):</span></span><br><span class="line">        <span class="keyword">if</span> self.head == <span class="literal">None</span>:</span><br><span class="line">            self.head = Node(val)</span><br><span class="line">            self.tail = self.head</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            node = self.head</span><br><span class="line">            <span class="keyword">while</span> node.<span class="built_in">next</span>:</span><br><span class="line">                node = node.<span class="built_in">next</span></span><br><span class="line">            <span class="comment"># new 라는 노드가 추가 되면 prev, next의 노드와 모두 연결해주어야 한다.</span></span><br><span class="line">            new = Node(val)</span><br><span class="line">            node.<span class="built_in">next</span> = new</span><br><span class="line">            new.prev = node</span><br><span class="line">            self.tail = new</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 전체 리스트 출력</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">desc</span>(<span class="params">self</span>):</span></span><br><span class="line">        node = self.head</span><br><span class="line">        <span class="keyword">while</span> node:</span><br><span class="line">            <span class="built_in">print</span>(node.val, end=<span class="string">&#x27; &#x27;</span>)</span><br><span class="line">            node = node.<span class="built_in">next</span></span><br></pre></td></tr></table></figure>
+
+<br>
+
+<ul>
+<li>0 - 10 까지의 수를 저장한 링크드 리스트를 생성한다.</li>
+</ul>
+<img width="744" alt="스크린샷 2021-08-11 오후 6 00 05" src="https://user-images.githubusercontent.com/28856435/129001021-e7a258eb-7c7a-4fec-9455-64a2c5889e72.png">
+
+<br>
+
+
+<h2 id="특정-값을-갖는-노드-찾기-from-head-tail"><a href="#특정-값을-갖는-노드-찾기-from-head-tail" class="headerlink" title="특정 값을 갖는 노드 찾기 from head? tail?"></a>특정 값을 갖는 노드 찾기 from head? tail?</h2><ul>
+<li>prev, 노드의 이전값이 존재하기 때문에 tail, 리스트의 끝에서부터 탐색이 가능하다.</li>
+<li>head, 노드의 처음과 tail, 끝에서 특정 값을 갖는 노드을 찾는 함수를 추가 구현한다.</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"> <span class="comment"># 리스트의 처음부터 탐색</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sch_from_head</span>(<span class="params">self, val</span>):</span></span><br><span class="line">     <span class="keyword">if</span> self.head == <span class="literal">None</span>:</span><br><span class="line">         <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">     node = self.head</span><br><span class="line">     <span class="keyword">while</span> node:</span><br><span class="line">         <span class="keyword">if</span> node.val == val:</span><br><span class="line">             <span class="keyword">return</span> node</span><br><span class="line">         <span class="keyword">else</span>:</span><br><span class="line">             node = node.<span class="built_in">next</span></span><br><span class="line">     <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line"> </span><br><span class="line"> <span class="comment"># 리스트의 끝 부분부터 탐색</span></span><br><span class="line"> <span class="function"><span class="keyword">def</span> <span class="title">sch_from_tail</span>(<span class="params">self, val</span>):</span></span><br><span class="line">     <span class="keyword">if</span> self.tail == <span class="literal">None</span>:</span><br><span class="line">         <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">     node = self.tail</span><br><span class="line">     <span class="keyword">while</span> node.val!=val:</span><br><span class="line">         node = node.prev</span><br><span class="line">     <span class="keyword">if</span> node == <span class="literal">None</span>:</span><br><span class="line">         <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">     <span class="keyword">return</span> node</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<ul>
+<li>특정 값을 갖는 노드를 탐색한다. 찾는 수가 없다면 False를 리턴한다.</li>
+</ul>
+<img width="909" alt="스크린샷 2021-08-11 오후 6 10 33" src="https://user-images.githubusercontent.com/28856435/129002492-da7c1a19-2d33-4391-8cac-cc504812ffaf.png">
+
+
+<h2 id="원하는-위치에-값을-추가"><a href="#원하는-위치에-값을-추가" class="headerlink" title="원하는 위치에 값을 추가"></a>원하는 위치에 값을 추가</h2><ul>
+<li>위에서 구현했던 특정 값을 갖는 노드 위치를 찾는다.</li>
+<li>그 노드의 이전에 추가하려는 값을 넣는다.</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">insert_before</span>(<span class="params">self, val, targetVal</span>):</span></span><br><span class="line">     <span class="keyword">if</span> self.head == <span class="literal">None</span>:</span><br><span class="line">         self.head = Node(val)</span><br><span class="line">         <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">     <span class="keyword">else</span>:</span><br><span class="line">         node = self.tail</span><br><span class="line">         <span class="keyword">while</span> node.val != targetVal:</span><br><span class="line">             <span class="comment"># tail 부터 탐색한다면 다음 탐색할 값은 node.prev</span></span><br><span class="line">             node = node.prev</span><br><span class="line">         <span class="keyword">if</span> node == <span class="literal">None</span>:</span><br><span class="line">             <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">         <span class="comment"># 위치를 찾고 나면 추가하려는 값으로 new node를 생성한다.</span></span><br><span class="line">         new = Node(val)</span><br><span class="line">         <span class="comment"># node 끼리 연결</span></span><br><span class="line">         node_prev = node.prev</span><br><span class="line">         node_prev.<span class="built_in">next</span> = new</span><br><span class="line">         new.<span class="built_in">next</span> = node</span><br><span class="line">         node.prev = new</span><br><span class="line">         <span class="keyword">return</span> <span class="literal">True</span></span><br></pre></td></tr></table></figure>
+
+<br>
+
+<ul>
+<li>5라는 값의 위치 이전에 224 값을 넣어본다.</li>
+</ul>
+<img width="810" alt="스크린샷 2021-08-11 오후 6 19 38" src="https://user-images.githubusercontent.com/28856435/129003843-51628435-aa75-4af6-9669-aaf8fcd5898e.png">
+
+<br>
+
+<h2 id="전체-코드"><a href="#전체-코드" class="headerlink" title="전체 코드"></a>전체 코드</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Node</span>:</span> </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, val, prev=<span class="literal">None</span>, <span class="built_in">next</span>=<span class="literal">None</span></span>):</span></span><br><span class="line">        self.prev = prev</span><br><span class="line">        self.val = val</span><br><span class="line">        self.<span class="built_in">next</span> = <span class="built_in">next</span></span><br><span class="line">    </span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">NodeMgt</span>:</span></span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, val</span>):</span></span><br><span class="line">        self.head = Node(val)</span><br><span class="line">        self.tail = self.head</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">insert</span>(<span class="params">self, val</span>):</span></span><br><span class="line">        <span class="keyword">if</span> self.head == <span class="literal">None</span>:</span><br><span class="line">            self.head = Node(val)</span><br><span class="line">            self.tail = self.head</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            node = self.head</span><br><span class="line">            <span class="keyword">while</span> node.<span class="built_in">next</span>:</span><br><span class="line">                node = node.<span class="built_in">next</span></span><br><span class="line">            new = Node(val)</span><br><span class="line">            node.<span class="built_in">next</span> = new</span><br><span class="line">            new.prev = node</span><br><span class="line">            self.tail = new</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">desc</span>(<span class="params">self</span>):</span></span><br><span class="line">        node = self.head</span><br><span class="line">        <span class="keyword">while</span> node:</span><br><span class="line">            <span class="built_in">print</span>(node.val, end=<span class="string">&#x27; &#x27;</span>)</span><br><span class="line">            node = node.<span class="built_in">next</span></span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">sch_from_head</span>(<span class="params">self, val</span>):</span></span><br><span class="line">        <span class="keyword">if</span> self.head == <span class="literal">None</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">        node = self.head</span><br><span class="line">        <span class="keyword">while</span> node:</span><br><span class="line">            <span class="keyword">if</span> node.val == val:</span><br><span class="line">                <span class="keyword">return</span> node</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                node = node.<span class="built_in">next</span></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">sch_from_tail</span>(<span class="params">self, val</span>):</span></span><br><span class="line">        <span class="keyword">if</span> self.tail == <span class="literal">None</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">        node = self.tail</span><br><span class="line">        <span class="keyword">while</span> node.val!=val:</span><br><span class="line">            node = node.prev</span><br><span class="line">        <span class="keyword">if</span> node == <span class="literal">None</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">        <span class="keyword">return</span> node</span><br><span class="line">                </span><br><span class="line">                </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">insert_before</span>(<span class="params">self, val, targetVal</span>):</span></span><br><span class="line">        <span class="keyword">if</span> self.head == <span class="literal">None</span>:</span><br><span class="line">            self.head = Node(val)</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            node = self.tail</span><br><span class="line">            <span class="keyword">while</span> node.val != targetVal:</span><br><span class="line">                node = node.prev</span><br><span class="line">            <span class="keyword">if</span> node == <span class="literal">None</span>:</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">            new = Node(val)</span><br><span class="line">            node_prev = node.prev</span><br><span class="line">            node_prev.<span class="built_in">next</span> = new</span><br><span class="line">            new.<span class="built_in">next</span> = node</span><br><span class="line">            node.prev = new</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">True</span></span><br></pre></td></tr></table></figure>
+            
+
+
+        </div>
+    </div>
+    <div id="post-footer" class="post-footer main-content-wrap">
+        
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">TAGGED IN</span><br/>
+                
+    <a class="tag tag--primary tag--small t-none-link" href="/tags/linked-list/" rel="tag">linked_list</a>
+
+            </div>
+        
+        
+            <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2021/08/12/%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98_%EC%8B%9C%EA%B0%84%EB%B3%B5%EC%9E%A1%EB%8F%84/"
+                    data-tooltip="알고리즘 시간 복잡도"
+                    aria-label="PREVIOUS: 알고리즘 시간 복잡도"
+                >
+                    
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                    </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2021/07/23/Django-api%EC%84%9C%EB%B2%84-%EA%B5%AC%ED%98%84/"
+                    data-tooltip="🚀 Django API 서버 생성"
+                    aria-label="NEXT: 🚀 Django API 서버 생성"
+                >
+                    
+                        <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a
+                class="post-action-btn btn btn--default btn-open-shareoptions"
+                href="#btn-open-shareoptions"
+                aria-label="Share this post"
+            >
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2021/08/10/%EB%A7%81%ED%81%AC%EB%93%9C%EB%A6%AC%EC%8A%A4%ED%8A%B8-%EA%B5%AC%ED%98%84-double%20linked/"
+                    title="Share on Facebook"
+                    aria-label="Share on Facebook"
+                >
+                    <i class="fab fa-facebook" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2021/08/10/%EB%A7%81%ED%81%AC%EB%93%9C%EB%A6%AC%EC%8A%A4%ED%8A%B8-%EA%B5%AC%ED%98%84-double%20linked/"
+                    title="Share on Twitter"
+                    aria-label="Share on Twitter"
+                >
+                    <i class="fab fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://plus.google.com/share?url=http://yoursite.com/2021/08/10/%EB%A7%81%ED%81%AC%EB%93%9C%EB%A6%AC%EC%8A%A4%ED%8A%B8-%EA%B5%AC%ED%98%84-double%20linked/"
+                    title="Share on Google+"
+                    aria-label="Share on Google+"
+                >
+                    <i class="fab fa-google-plus" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+                <li class="post-action">
+                    <a
+                        class="post-action-btn btn btn--default"
+                        href="#disqus_thread"
+                        aria-label="Leave a comment"
+                    >
+                        <i class="fa fa-comment"></i>
+                    </a>
+                </li>
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#table-of-contents" aria-label="Contents">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+        
+        
+            
+                <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+            
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2021 Suyan Kim. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2021/08/12/%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98_%EC%8B%9C%EA%B0%84%EB%B3%B5%EC%9E%A1%EB%8F%84/"
+                    data-tooltip="알고리즘 시간 복잡도"
+                    aria-label="PREVIOUS: 알고리즘 시간 복잡도"
+                >
+                    
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                    </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2021/07/23/Django-api%EC%84%9C%EB%B2%84-%EA%B5%AC%ED%98%84/"
+                    data-tooltip="🚀 Django API 서버 생성"
+                    aria-label="NEXT: 🚀 Django API 서버 생성"
+                >
+                    
+                        <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a
+                class="post-action-btn btn btn--default btn-open-shareoptions"
+                href="#btn-open-shareoptions"
+                aria-label="Share this post"
+            >
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2021/08/10/%EB%A7%81%ED%81%AC%EB%93%9C%EB%A6%AC%EC%8A%A4%ED%8A%B8-%EA%B5%AC%ED%98%84-double%20linked/"
+                    title="Share on Facebook"
+                    aria-label="Share on Facebook"
+                >
+                    <i class="fab fa-facebook" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2021/08/10/%EB%A7%81%ED%81%AC%EB%93%9C%EB%A6%AC%EC%8A%A4%ED%8A%B8-%EA%B5%AC%ED%98%84-double%20linked/"
+                    title="Share on Twitter"
+                    aria-label="Share on Twitter"
+                >
+                    <i class="fab fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://plus.google.com/share?url=http://yoursite.com/2021/08/10/%EB%A7%81%ED%81%AC%EB%93%9C%EB%A6%AC%EC%8A%A4%ED%8A%B8-%EA%B5%AC%ED%98%84-double%20linked/"
+                    title="Share on Google+"
+                    aria-label="Share on Google+"
+                >
+                    <i class="fab fa-google-plus" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+                <li class="post-action">
+                    <a
+                        class="post-action-btn btn btn--default"
+                        href="#disqus_thread"
+                        aria-label="Leave a comment"
+                    >
+                        <i class="fa fa-comment"></i>
+                    </a>
+                </li>
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#table-of-contents" aria-label="Contents">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                
+    <div id="share-options-bar" class="share-options-bar" data-behavior="4">
+        <i id="btn-close-shareoptions" class="fa fa-times"></i>
+        <ul class="share-options">
+            
+                
+                
+                <li class="share-option">
+                    <a
+                        class="share-option-btn"
+                        target="new"
+                        href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2021/08/10/%EB%A7%81%ED%81%AC%EB%93%9C%EB%A6%AC%EC%8A%A4%ED%8A%B8-%EA%B5%AC%ED%98%84-double%20linked/"
+                        aria-label="Share on Facebook"
+                    >
+                        <i class="fab fa-facebook" aria-hidden="true"></i><span>Share on Facebook</span>
+                    </a>
+                </li>
+            
+                
+                
+                <li class="share-option">
+                    <a
+                        class="share-option-btn"
+                        target="new"
+                        href="https://twitter.com/intent/tweet?text=http://yoursite.com/2021/08/10/%EB%A7%81%ED%81%AC%EB%93%9C%EB%A6%AC%EC%8A%A4%ED%8A%B8-%EA%B5%AC%ED%98%84-double%20linked/"
+                        aria-label="Share on Twitter"
+                    >
+                        <i class="fab fa-twitter" aria-hidden="true"></i><span>Share on Twitter</span>
+                    </a>
+                </li>
+            
+                
+                
+                <li class="share-option">
+                    <a
+                        class="share-option-btn"
+                        target="new"
+                        href="https://plus.google.com/share?url=http://yoursite.com/2021/08/10/%EB%A7%81%ED%81%AC%EB%93%9C%EB%A6%AC%EC%8A%A4%ED%8A%B8-%EA%B5%AC%ED%98%84-double%20linked/"
+                        aria-label="Share on Google+"
+                    >
+                        <i class="fab fa-google-plus" aria-hidden="true"></i><span>Share on Google+</span>
+                    </a>
+                </li>
+            
+        </ul>
+    </div>
+
+
+            
+        </div>
+        
+
+
+    
+
+<div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-times"></i>
+        </div>
+        
+            <img id="about-card-picture" src="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=110" alt="Author&#39;s picture"/>
+        
+            <h4 id="about-card-name">Suyan Kim</h4>
+        <!--  -->
+            <!-- <div id="about-card-bio"><p>author.bio</p>
+</div> -->
+            <div id="about-card-bio">안녕하세요, 서버 백엔드 개발자 동글씨입니다.</div>
+        <!--  -->
+        <!--  -->
+            <div id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <!-- <p>Backend Developer</p>
+ -->
+                Backend Developer
+            </div>
+        <!--  -->
+        
+            <div id="about-card-location">
+                <i class="fa fa-map-marker-alt"></i>
+                <br/>
+                Korea
+            </div>
+        
+    </div>
+</div>
+
+        
+        
+<div id="cover" style="background-image:url('/assets/images/null');"></div>
+        <!--SCRIPTS-->
+
+<script src="/assets/js/tranquilpeak.js"></script>
+
+<!--SCRIPTS END-->
+
+
+    
+        <script>
+          var disqus_config = function() {
+            this.page.url = 'http://yoursite.com/2021/08/10/%EB%A7%81%ED%81%AC%EB%93%9C%EB%A6%AC%EC%8A%A4%ED%8A%B8-%EA%B5%AC%ED%98%84-double%20linked/';
+              
+            this.page.identifier = '2021/08/10/링크드리스트-구현-double linked/';
+              
+          };
+          (function() {
+            var d = document, s = d.createElement('script');
+            var disqus_shortname = 'ksso730-github-io';
+            s.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+          })();
+        </script>
+    
+
+
+
+
+    </body>
+</html>

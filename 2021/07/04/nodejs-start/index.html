@@ -4,11 +4,6 @@
     
 
     <head>
-        <script type="text/javascript" src="http://code.jquery.com/jquery-3.2.1.min.js"></script>
-        <script type="text/java script">
-            var $= jquery.noConflict();
-        </script>
-
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="generator" content="동글씨">
@@ -22,7 +17,7 @@
                         
                             <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
                             
-                                <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n💡 NodeJS 시작하기시작하기\n다음 설치환경이 선행되어 있음\nnvm 버전관리 모듈 설치\nnpm 12.14.1 버전 사용\n\n\n\n\n프로젝트 폴더에서 npm 초기화\n\n1&gt; npm init y\n\n\n아래 npm 모듈을 설치해본다.\n\n12&gt; npm install parcel-bundler -D&gt; npm install lodash\n\n\n📌  Parcel?\n\n꾸러미 라는 뜻을 가졌다. 짐을 싸듯이 객체를 싸는 클래스이다.\n쉽고 빠른 웹/앱 bundler.  (bundler: 여라 파일들을 하나의 파일로 묶어주어 네트워크의 응답속도를 빠르게 도와주고 파일 간의 병목현상을 줄여, 유지보수의 효율성 증가)\nParcel 은 파일 변화를 자동으로 감지하여 다시 빌드하고, 빠른 모듈 교체를 지원하는 내장 개발용 서버를 보유하고 있어, 신속한 개발을 가능하게 한다.\n\n\n\n📌  lodash?\n\n유틸리티 라이브러리로 array, collection, date, number, object등이 있으며, 데이터를 쉽게 다룰 수 있도록 도와준다.\n특히 자바스크립트 배열 내부의 객체들을 핸들링할 때 유용하다.\n자주 사용하는 기능 : filter, map, uniqBy etc…\n\n\npackage.json ?\npackage.json : 패키지 모듈 직접 관리\npackage-lock.json : 인스톨한 패키지들을 내부에서 자동으로 관리\n\n옵션 -D, –save-dev\n옵션 -D, –save-dev : devDependencies 에 설치됨\n개발할 때만 필요. 웹브라우저에서는 직접적으로 동작하지 않는다.\n\n\n\n브라우저에서 index.html 띄우기\ndev: index.html 을 기준으로 개발용으로만 활용\nbuild: index.html 을 기준으로 웹브라우저에서 동작시키는 용도\n\n1234&quot;scripts&quot;: &#123;   &quot;dev&quot;: &quot;parcel index.html&quot;,   &quot;build&quot;: &quot;parcel build index.html&quot; &#125;,\n\n\n터미널에서 명령어 사용, localhost:1234 접속\n\n1&gt; npm run dev\n\nlodash 모듈 사용\n아래 코드를 입력하고\n\n12345import _ from &#x27;lodash&#x27;;console.log(&#x27;hellow&#x27;);// lodash 모듈을 사용console.log(_.camelCase(&#x27;hello suyeon&#x27;));\n\n npm run dev 실행후 브라우저에서 접속하면 console에서 아래와 같이 적용된다.\n\n\n\n\n💡 유의적 버전 (Semantic Versioning) ;버전규칙\n^Major.Minor.Patch\n\n^ : Major 버전 안에서 가장 최신 버전으로 업데이트 가능\n해당 기호를 지우면 npm update 사용하여 업데이트 불가하다\n\n\nMajor : 기존 버전과 호환되지 않는 새로운 버전\nMinor : 기존 버전과 호환되는 새로운 기능이 추가된 버전\nPatch : 기존 버전과 호환되는 버그 및 오타 등이 수정된 버전\n\n\n버전 정보 확인\n\n\n1npm info lodash\n\n버전을 낮춰서 설치하기1npm install lodash@4.17.20\n\n💡 프로젝트 버전 관리 NPM패키지 재설치 (package.json)\nnode_mudule 폴더를 지우더라도 npm -i 를 통해서 다시 설치 가능 (.cache, dist도 마찬가지)\n\n.gitignore 생성하여 버전관리 제외\n버전관리가 불필요한 파일들을 .gitignore 에 추가하여 제외할 수 있다.\n\n123.cache/distnode_modules/\n\n\ngit status 명령어로 확인, .gitignore 에 추가한 파일은 올라가지 않는다.\n\n","dateCreated":"2021-07-04T17:51:11+09:00","dateModified":"2021-07-19T09:39:14+09:00","datePublished":"2021-07-04T17:51:11+09:00","description":"parcel bundler를 이용하여 웹에 index.html을 띄워본다.버전관리, package.json 등의 의미#nvm #npm #parcel","headline":"Node JS 기본, 시작해보기","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2021/07/04/nodejs-start/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2021/07/04/nodejs-start/","keywords":"nodejs"}</script>
+                                <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n💡 NodeJS 시작하기시작하기\n다음 설치환경이 선행되어 있음\nnvm 버전관리 모듈 설치\nnpm 12.14.1 버전 사용\n\n\n\n\n프로젝트 폴더에서 npm 초기화\n\n1&gt; npm init y\n\n\n아래 npm 모듈을 설치해본다.\n\n12&gt; npm install parcel-bundler -D&gt; npm install lodash\n\n\n📌  Parcel?\n\n꾸러미 라는 뜻을 가졌다. 짐을 싸듯이 객체를 싸는 클래스이다.\n쉽고 빠른 웹/앱 bundler.  (bundler: 여라 파일들을 하나의 파일로 묶어주어 네트워크의 응답속도를 빠르게 도와주고 파일 간의 병목현상을 줄여, 유지보수의 효율성 증가)\nParcel 은 파일 변화를 자동으로 감지하여 다시 빌드하고, 빠른 모듈 교체를 지원하는 내장 개발용 서버를 보유하고 있어, 신속한 개발을 가능하게 한다.\n\n\n\n📌  lodash?\n\n유틸리티 라이브러리로 array, collection, date, number, object등이 있으며, 데이터를 쉽게 다룰 수 있도록 도와준다.\n특히 자바스크립트 배열 내부의 객체들을 핸들링할 때 유용하다.\n자주 사용하는 기능 : filter, map, uniqBy etc…\n\n\npackage.json ?\npackage.json : 패키지 모듈 직접 관리\npackage-lock.json : 인스톨한 패키지들을 내부에서 자동으로 관리\n\n옵션 -D, –save-dev\n옵션 -D, –save-dev : devDependencies 에 설치됨\n개발할 때만 필요. 웹브라우저에서는 직접적으로 동작하지 않는다.\n\n\n\n브라우저에서 index.html 띄우기\ndev: index.html 을 기준으로 개발용으로만 활용\nbuild: index.html 을 기준으로 웹브라우저에서 동작시키는 용도\n\n1234&quot;scripts&quot;: &#123;   &quot;dev&quot;: &quot;parcel index.html&quot;,   &quot;build&quot;: &quot;parcel build index.html&quot; &#125;,\n\n\n터미널에서 명령어 사용, localhost:1234 접속\n\n1&gt; npm run dev\n\nlodash 모듈 사용\n아래 코드를 입력하고\n\n12345import _ from &#x27;lodash&#x27;;console.log(&#x27;hellow&#x27;);// lodash 모듈을 사용console.log(_.camelCase(&#x27;hello suyeon&#x27;));\n\n npm run dev 실행후 브라우저에서 접속하면 console에서 아래와 같이 적용된다.\n\n\n\n\n💡 유의적 버전 (Semantic Versioning) ;버전규칙\n^Major.Minor.Patch\n\n^ : Major 버전 안에서 가장 최신 버전으로 업데이트 가능\n해당 기호를 지우면 npm update 사용하여 업데이트 불가하다\n\n\nMajor : 기존 버전과 호환되지 않는 새로운 버전\nMinor : 기존 버전과 호환되는 새로운 기능이 추가된 버전\nPatch : 기존 버전과 호환되는 버그 및 오타 등이 수정된 버전\n\n\n버전 정보 확인\n\n\n1npm info lodash\n\n버전을 낮춰서 설치하기1npm install lodash@4.17.20\n\n💡 프로젝트 버전 관리 NPM패키지 재설치 (package.json)\nnode_mudule 폴더를 지우더라도 npm -i 를 통해서 다시 설치 가능 (.cache, dist도 마찬가지)\n\n.gitignore 생성하여 버전관리 제외\n버전관리가 불필요한 파일들을 .gitignore 에 추가하여 제외할 수 있다.\n\n123.cache/distnode_modules/\n\n\ngit status 명령어로 확인, .gitignore 에 추가한 파일은 올라가지 않는다.\n\n","dateCreated":"2021-07-04T17:51:11+09:00","dateModified":"2021-07-19T09:39:14+09:00","datePublished":"2021-07-04T17:51:11+09:00","description":"parcel bundler를 이용하여 웹에 index.html을 띄워본다.버전관리, package.json 등의 의미#nvm #npm #parcel","headline":"Node JS 기본, 시작해보기","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2021/07/04/nodejs-start/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2021/07/04/nodejs-start/","keywords":"nodejs"}</script>
                                     <meta name="description" content="parcel bundler를 이용하여 웹에 index.html을 띄워본다.버전관리, package.json 등의 의미#nvm #npm #parcel">
 <meta property="og:type" content="blog">
 <meta property="og:title" content="Node JS 기본, 시작해보기">
@@ -80,6 +75,10 @@
     
 
 <header id="header" data-behavior="4">
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js"></script>
+    <script src="https://kit.fontawesome.com/cfcae25ced.js" crossorigin="anonymous"></script>
     <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
     <div class="header-title">
         <a
@@ -125,13 +124,35 @@
                 </a>
                 <h4 class="sidebar-profile-name">Suyan Kim</h4>
                 
-                    <h5 class="sidebar-profile-bio"><p>▲ Who Am I</p>
+                    <h5 class="sidebar-profile-bio"><p><strong><a target="_blank" rel="noopener" href="https://nice-spectrum-2aa.notion.site/Suyeon-Kim-09e271916a504e24a5307e9f67d7bc16">Click 👀 Resume</a></strong></p>
 </h5>
                 
             </div>
         
         
             <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="https://nice-spectrum-2aa.notion.site/Suyeon-Kim-09e271916a504e24a5307e9f67d7bc16" target="_blank" rel="noopener" title="resume 👀">
+                    
+                    <i class="sidebar-button-icon far fa-smile-wink" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">resume 👀</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="https://github.com/ksso730" target="_blank" rel="noopener" title="github">
+                    
+                    <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">github</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
             
                 <li class="sidebar-button">
                     
@@ -182,7 +203,7 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (10)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (15)</a></li>
                             
                         
                             
@@ -198,7 +219,7 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Git/">☁️ Git (3)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Git/">☁️ Git (4)</a></li>
                             
                         
                             
@@ -218,7 +239,9 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-NodeJS/">☁️ NodeJS (1)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-NodeJS/">☁️ NodeJS (8)</a></li>
+                            
+                        
                             
                         
                             
@@ -234,11 +257,11 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Spring/">☁️ Spring (1)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Spring/">☁️ Spring (2)</a></li>
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-TIL/">☁️ TIL (10)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-TIL/">☁️ TIL (9)</a></li>
                             
                         
                     
@@ -259,35 +282,9 @@
                     
                 </li>
             
-                <li class="sidebar-button">
-                    
-                        <a  class="sidebar-button-link "
-                             
-                                title="about"href="#about"
-                                
-                                >
-                    
-                    <i class="sidebar-button-icon fa fa-question" aria-hidden="true"></i>
-                    <span class="sidebar-button-desc">about</span>
-                        </a>
-                    <!-- add -->
-                    
-                </li>
-            
         </ul>
         
             <ul class="sidebar-buttons">
-            
-                <li class="sidebar-button">
-                    
-                        <a  class="sidebar-button-link " href="https://github.com/ksso730" target="_blank" rel="noopener" title="github">
-                    
-                    <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
-                    <span class="sidebar-button-desc">github</span>
-                        </a>
-                    <!-- add -->
-                    
-                </li>
             
                 <li class="sidebar-button">
                     
@@ -580,6 +577,7 @@
         Copyrights &copy; 2021 Suyan Kim. All Rights Reserved.
     </span>
 </footer>
+
             </div>
             
                 <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">

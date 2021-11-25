@@ -4,11 +4,6 @@
     
 
     <head>
-        <script type="text/javascript" src="http://code.jquery.com/jquery-3.2.1.min.js"></script>
-        <script type="text/java script">
-            var $= jquery.noConflict();
-        </script>
-
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="generator" content="동글씨">
@@ -22,7 +17,7 @@
                         
                             <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
                             
-                                <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\n\nEntity Manager (엔티티 매니저)\nEntity Manager : Persistence Context = 1 : 1\n\nPersistence Context (영속성 컨텍스트)\n엔티티를 영구 저장하는 환경.엔티티 매니저를 통해서 영속성 컨텍스트에 접근한다. 영속성 컨텍스트는 직접적으로 눈에 보이지 않는다.EntityManager.persist(entity);\n\n영속, 비영속, 준영속, 삭제비영속 상태\n1234// 객체를 생성한 상태(비영속)Member member = new Member();member.setId(&quot;member&quot;);member.setUsername(&quot;회원1&quot;);\n\n영속 상태\n12345678910// 객체를 생성한 상태(비영속)Member member = new Member();member.setId(&quot;member&quot;);member.setUsername(&quot;회원1&quot;);// EntityManager -&gt; Persistence Context 영속em.persist// 커밋하는 순간 데이터베이스에 수행됨.tx.commit();\n\n준영속, 삭제 상태\n1234em.persist// 준영속em.detach(member);tx.commit();\n\n1234em.persist// 준영속em.detach(member);tx.commit();\n\nem.persist(member) 를 넣으면 무슨일이 일어날까?여기서 영속성 컨텍스트의 이점을 알 수 있다.\n\n영속성 컨텍스트의 이점1234567Member member1 = new Member(150L, &quot;A&quot;);Member member2 = new Member(160L, &quot;B&quot;);em.persist(member1);em.persist(member2);tx.commit();\nem.persist(member) -&gt; 1차 캐시에들어간다.\ntx.commit() -&gt; UPDATE 변경이 반영됨.\n1차캐시 테이블\n\n\n\n@id\nEntity\n\n\n\n“member1”\nmember1\n\n\n“member2”\nmember2\n\n\n사실, 1차 캐시는 데이터베이스의 하나의 트랜젝션 안에서만 의미가 있다.\n123Member findMember1 = em.find(Member.class, 1L);// 1L 1차캐시에 영속성을 넣어둠.Member findMember2 = em.find(Member.class, 1L);\n\n아래와 같이 이미 1차 캐시에 존재하기 때문에 select 를 한번만 실행.\n12345678Hibernate:     select        member0_.id as id1_0_0_,        member0_.name as name2_0_0_     from        Member member0_     where        member0_.id=?\n\n\n엔티티 수정 -변경감지 (Dirty Checking)아래와 같이 Member 테이블이 있다고 하자.\n\n\n\nID\nNAME\n\n\n\n150\nA\n\n\n160\nB\n\n\n12345Member findMember1 = em.find(Member.class, 150L);findMember1.setName(&quot;ZZZZZ&quot;);// em.persist() ~~?? 안해도 된다.tx.commit();\n\n가져온 obj 에 setName 만 해주니 UPDATE 가 되었다. 어떻게 가능한걸까 ?변경 transaction 이 commit 되는 시점에서 JPA 가 1차 캐시 내부의 @id, Entity, 스냅샷을 모두 비교한다.Dirty Checking 의 과정은 아래와 같다.\n\n\n\nDrirty Checking Flow\nflush() -&gt; 영속성 컨텍스트(entityManager):: findMember1.setName(“ZZZZZ”);\n\n엔티티와 스냅샷 비교\n\n\n\n\n\n@id\nEntity\n스냅샷\n\n\n\n“member1”\nmember1\nmember1스냅샷\n\n\n“member2”\nmember2\nmember2스냅샷\n\n\n\nupdate SQL 생성 -&gt; 쓰기지연 SQL 저장소\n\nflush -&gt; SQL update 적용\n\ncommit() -&gt; DB\n\n\n엔티티 삭제12Member memberA = em.find(Member.class, &quot;memberA&quot;);em.remove(memberA);","dateCreated":"2020-02-15T12:19:04+09:00","dateModified":"2020-04-28T10:36:01+09:00","datePublished":"2020-02-15T12:19:04+09:00","description":"JPA 를 이해하는데 가장 중요한 용어.엔티티 매니저와 영속성 컨텍스트를 알아봅니다.","headline":"JPA 영속성 컨텍스트","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2020/02/15/JPA-%EC%98%81%EC%86%8D%EC%84%B1-%EC%BB%A8%ED%85%8D%EC%8A%A4%ED%8A%B8/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2020/02/15/JPA-%EC%98%81%EC%86%8D%EC%84%B1-%EC%BB%A8%ED%85%8D%EC%8A%A4%ED%8A%B8/","keywords":"JPA"}</script>
+                                <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\n\nEntity Manager (엔티티 매니저)\nEntity Manager : Persistence Context = 1 : 1\n\nPersistence Context (영속성 컨텍스트)\n엔티티를 영구 저장하는 환경.엔티티 매니저를 통해서 영속성 컨텍스트에 접근한다. 영속성 컨텍스트는 직접적으로 눈에 보이지 않는다.EntityManager.persist(entity);\n\n영속, 비영속, 준영속, 삭제비영속 상태\n1234// 객체를 생성한 상태(비영속)Member member = new Member();member.setId(&quot;member&quot;);member.setUsername(&quot;회원1&quot;);\n\n영속 상태\n12345678910// 객체를 생성한 상태(비영속)Member member = new Member();member.setId(&quot;member&quot;);member.setUsername(&quot;회원1&quot;);// EntityManager -&gt; Persistence Context 영속em.persist// 커밋하는 순간 데이터베이스에 수행됨.tx.commit();\n\n준영속, 삭제 상태\n1234em.persist// 준영속em.detach(member);tx.commit();\n\n1234em.persist// 준영속em.detach(member);tx.commit();\n\nem.persist(member) 를 넣으면 무슨일이 일어날까?여기서 영속성 컨텍스트의 이점을 알 수 있다.\n\n영속성 컨텍스트의 이점1234567Member member1 = new Member(150L, &quot;A&quot;);Member member2 = new Member(160L, &quot;B&quot;);em.persist(member1);em.persist(member2);tx.commit();\nem.persist(member) -&gt; 1차 캐시에들어간다.\ntx.commit() -&gt; UPDATE 변경이 반영됨.\n1차캐시 테이블\n\n\n\n@id\nEntity\n\n\n\n“member1”\nmember1\n\n\n“member2”\nmember2\n\n\n사실, 1차 캐시는 데이터베이스의 하나의 트랜젝션 안에서만 의미가 있다.\n123Member findMember1 = em.find(Member.class, 1L);// 1L 1차캐시에 영속성을 넣어둠.Member findMember2 = em.find(Member.class, 1L);\n\n아래와 같이 이미 1차 캐시에 존재하기 때문에 select 를 한번만 실행.\n12345678Hibernate:     select        member0_.id as id1_0_0_,        member0_.name as name2_0_0_     from        Member member0_     where        member0_.id=?\n\n\n엔티티 수정 -변경감지 (Dirty Checking)아래와 같이 Member 테이블이 있다고 하자.\n\n\n\nID\nNAME\n\n\n\n150\nA\n\n\n160\nB\n\n\n12345Member findMember1 = em.find(Member.class, 150L);findMember1.setName(&quot;ZZZZZ&quot;);// em.persist() ~~?? 안해도 된다.tx.commit();\n\n가져온 obj 에 setName 만 해주니 UPDATE 가 되었다. 어떻게 가능한걸까 ?변경 transaction 이 commit 되는 시점에서 JPA 가 1차 캐시 내부의 @id, Entity, 스냅샷을 모두 비교한다.Dirty Checking 의 과정은 아래와 같다.\n\n\n\nDrirty Checking Flow\nflush() -&gt; 영속성 컨텍스트(entityManager):: findMember1.setName(“ZZZZZ”);\n\n엔티티와 스냅샷 비교\n\n\n\n\n\n@id\nEntity\n스냅샷\n\n\n\n“member1”\nmember1\nmember1스냅샷\n\n\n“member2”\nmember2\nmember2스냅샷\n\n\n\nupdate SQL 생성 -&gt; 쓰기지연 SQL 저장소\n\nflush -&gt; SQL update 적용\n\ncommit() -&gt; DB\n\n\n엔티티 삭제12Member memberA = em.find(Member.class, &quot;memberA&quot;);em.remove(memberA);","dateCreated":"2020-02-15T12:19:04+09:00","dateModified":"2020-04-28T10:36:01+09:00","datePublished":"2020-02-15T12:19:04+09:00","description":"JPA 를 이해하는데 가장 중요한 용어.엔티티 매니저와 영속성 컨텍스트를 알아봅니다.","headline":"JPA 영속성 컨텍스트","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2020/02/15/JPA-%EC%98%81%EC%86%8D%EC%84%B1-%EC%BB%A8%ED%85%8D%EC%8A%A4%ED%8A%B8/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2020/02/15/JPA-%EC%98%81%EC%86%8D%EC%84%B1-%EC%BB%A8%ED%85%8D%EC%8A%A4%ED%8A%B8/","keywords":"JPA"}</script>
                                     <meta name="description" content="JPA 를 이해하는데 가장 중요한 용어.엔티티 매니저와 영속성 컨텍스트를 알아봅니다.">
 <meta property="og:type" content="blog">
 <meta property="og:title" content="JPA 영속성 컨텍스트">
@@ -77,6 +72,10 @@
     
 
 <header id="header" data-behavior="4">
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js"></script>
+    <script src="https://kit.fontawesome.com/cfcae25ced.js" crossorigin="anonymous"></script>
     <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
     <div class="header-title">
         <a
@@ -122,13 +121,35 @@
                 </a>
                 <h4 class="sidebar-profile-name">Suyan Kim</h4>
                 
-                    <h5 class="sidebar-profile-bio"><p>▲ Who Am I</p>
+                    <h5 class="sidebar-profile-bio"><p><strong><a target="_blank" rel="noopener" href="https://nice-spectrum-2aa.notion.site/Suyeon-Kim-09e271916a504e24a5307e9f67d7bc16">Click 👀 Resume</a></strong></p>
 </h5>
                 
             </div>
         
         
             <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="https://nice-spectrum-2aa.notion.site/Suyeon-Kim-09e271916a504e24a5307e9f67d7bc16" target="_blank" rel="noopener" title="resume 👀">
+                    
+                    <i class="sidebar-button-icon far fa-smile-wink" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">resume 👀</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="https://github.com/ksso730" target="_blank" rel="noopener" title="github">
+                    
+                    <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">github</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
             
                 <li class="sidebar-button">
                     
@@ -179,7 +200,7 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (10)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (15)</a></li>
                             
                         
                             
@@ -195,7 +216,7 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Git/">☁️ Git (3)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Git/">☁️ Git (4)</a></li>
                             
                         
                             
@@ -215,7 +236,9 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-NodeJS/">☁️ NodeJS (1)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-NodeJS/">☁️ NodeJS (8)</a></li>
+                            
+                        
                             
                         
                             
@@ -231,11 +254,11 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Spring/">☁️ Spring (1)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Spring/">☁️ Spring (2)</a></li>
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-TIL/">☁️ TIL (10)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-TIL/">☁️ TIL (9)</a></li>
                             
                         
                     
@@ -256,35 +279,9 @@
                     
                 </li>
             
-                <li class="sidebar-button">
-                    
-                        <a  class="sidebar-button-link "
-                             
-                                title="about"href="#about"
-                                
-                                >
-                    
-                    <i class="sidebar-button-icon fa fa-question" aria-hidden="true"></i>
-                    <span class="sidebar-button-desc">about</span>
-                        </a>
-                    <!-- add -->
-                    
-                </li>
-            
         </ul>
         
             <ul class="sidebar-buttons">
-            
-                <li class="sidebar-button">
-                    
-                        <a  class="sidebar-button-link " href="https://github.com/ksso730" target="_blank" rel="noopener" title="github">
-                    
-                    <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
-                    <span class="sidebar-button-desc">github</span>
-                        </a>
-                    <!-- add -->
-                    
-                </li>
             
                 <li class="sidebar-button">
                     
@@ -587,6 +584,7 @@
         Copyrights &copy; 2021 Suyan Kim. All Rights Reserved.
     </span>
 </footer>
+
             </div>
             
                 <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">

@@ -4,11 +4,6 @@
     
 
     <head>
-        <script type="text/javascript" src="http://code.jquery.com/jquery-3.2.1.min.js"></script>
-        <script type="text/java script">
-            var $= jquery.noConflict();
-        </script>
-
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="generator" content="동글씨">
@@ -22,7 +17,7 @@
                         
                             <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
                             
-                                <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\n스레드pthread\nPOSIX 스레드 또는 Pthread 라고 부른다.\n저수준 API로 100 여개의 함수 제공\n복잡하지만 유닉스 시스템 핵심 스레딩 라이브러리\n다른 스레딩 솔루션도 결국 Pthread 를 기반으로 구현되어 있으므로 익혀둘 가치가 있다.\n기본 라이브러리 (glibc) 와 분리된 libpthread 라이브러리에 pthread 구현되어 있으므로컴파일시 명시적으로 pthread 옵션이 필요하다.\npthread API는 Semaphore를 포함하지 않는다.\n\nPthread 라이브러리\n&lt;pthread.h&gt; 헤더 파일에서 정의한다.\n모든함수는 pthread_ 로 시작한다.\n\n스레드 생성\n스레드 생성\nthread_inst(): 9까지 출력\nmain 함수: thread_inst 스레드 생성후, 4까지 출력\n\n\n\n123456789101112131415161718192021222324252627282930#include&lt;pthread.h&gt;#include&lt;stdio.h&gt;#include&lt;unistd.h&gt;#include&lt;stdlib.h&gt;void * thread_inst(void *arg)&#123;    pthread_t tid;    tid = pthread_self();    int i=0;    while(i&lt;10)&#123;        printf(&quot;[%lx] new thread: %d\\n&quot;, tid, i);        i++;        sleep(1);    &#125;&#125;int main()&#123;    pthread_t thread;    pthread_create(&amp;thread, NULL, thread_inst, NULL);    pthread_t tid= pthread_self();    int i=0;    while(i&lt;5)&#123;        printf(&quot;[%lx] main thread: %d\\n&quot;, tid, i);        i++;        sleep(1);    &#125;&#125;\n\n\n스레드 실행결과\n아래처럼 9까지 출력되어야 할 new thread 는 main 함수가 끝나니 함께 끝나버렸다.\n다음 예제의 pthread_join 추가가 필요하다.123456789101112ubuntu@ip-172-31-33-123:~$ gcc pthread.c -pthread -o pthreadubuntu@ip-172-31-33-123:~$ ./pthread[7f93eb31c740] main thread: 0[7f93eaaee700] new thread: 0[7f93eb31c740] main thread: 1[7f93eaaee700] new thread: 1[7f93eb31c740] main thread: 2[7f93eaaee700] new thread: 2[7f93eb31c740] main thread: 3[7f93eaaee700] new thread: 3[7f93eb31c740] main thread: 4[7f93eaaee700] new thread: 4\n\n\n\n스레드 관리\n리소스\n\n\npthread_join\n\n\n메인 스레드에서 해당 스레드가 종료되면, 상태값을 보고 메인스레드에서 추가처리를 할 수 있다.\n\n\npthread_detach(thread1)\n\n\n관련 리소스를 즉시 해제한다.\n\n\n실행\n\n\npthread_join\n\n\n스레드 1이 종료될때까지 다음코드를 수행하지 않고 기다린다.\n\n\npthread_detach\n\n\n스레드 1이 종료될때까지 기다리지 않는다.\n\nPthread 뮤텍스 - 상호배제 기법\n","dateCreated":"2021-05-27T23:50:54+09:00","dateModified":"2021-06-03T18:31:07+09:00","datePublished":"2021-05-27T23:50:54+09:00","description":"POSIX thread와 그 사용법 익혀보기.#Pthread #pthread_join #pthread_detach","headline":"스레드 pthread 구현","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2021/05/27/%EC%8A%A4%EB%A0%88%EB%93%9C-pthread-%EA%B5%AC%ED%98%84/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2021/05/27/%EC%8A%A4%EB%A0%88%EB%93%9C-pthread-%EA%B5%AC%ED%98%84/","keywords":"thread"}</script>
+                                <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\n스레드pthread\nPOSIX 스레드 또는 Pthread 라고 부른다.\n저수준 API로 100 여개의 함수 제공\n복잡하지만 유닉스 시스템 핵심 스레딩 라이브러리\n다른 스레딩 솔루션도 결국 Pthread 를 기반으로 구현되어 있으므로 익혀둘 가치가 있다.\n기본 라이브러리 (glibc) 와 분리된 libpthread 라이브러리에 pthread 구현되어 있으므로컴파일시 명시적으로 pthread 옵션이 필요하다.\npthread API는 Semaphore를 포함하지 않는다.\n\nPthread 라이브러리\n&lt;pthread.h&gt; 헤더 파일에서 정의한다.\n모든함수는 pthread_ 로 시작한다.\n\n스레드 생성\n스레드 생성\nthread_inst(): 9까지 출력\nmain 함수: thread_inst 스레드 생성후, 4까지 출력\n\n\n\n123456789101112131415161718192021222324252627282930#include&lt;pthread.h&gt;#include&lt;stdio.h&gt;#include&lt;unistd.h&gt;#include&lt;stdlib.h&gt;void * thread_inst(void *arg)&#123;    pthread_t tid;    tid = pthread_self();    int i=0;    while(i&lt;10)&#123;        printf(&quot;[%lx] new thread: %d\\n&quot;, tid, i);        i++;        sleep(1);    &#125;&#125;int main()&#123;    pthread_t thread;    pthread_create(&amp;thread, NULL, thread_inst, NULL);    pthread_t tid= pthread_self();    int i=0;    while(i&lt;5)&#123;        printf(&quot;[%lx] main thread: %d\\n&quot;, tid, i);        i++;        sleep(1);    &#125;&#125;\n\n\n스레드 실행결과\n아래처럼 9까지 출력되어야 할 new thread 는 main 함수가 끝나니 함께 끝나버렸다.\n다음 예제의 pthread_join 추가가 필요하다.123456789101112ubuntu@ip-172-31-33-123:~$ gcc pthread.c -pthread -o pthreadubuntu@ip-172-31-33-123:~$ ./pthread[7f93eb31c740] main thread: 0[7f93eaaee700] new thread: 0[7f93eb31c740] main thread: 1[7f93eaaee700] new thread: 1[7f93eb31c740] main thread: 2[7f93eaaee700] new thread: 2[7f93eb31c740] main thread: 3[7f93eaaee700] new thread: 3[7f93eb31c740] main thread: 4[7f93eaaee700] new thread: 4\n\n\n\n스레드 관리\n리소스\n\n\npthread_join\n\n\n메인 스레드에서 해당 스레드가 종료되면, 상태값을 보고 메인스레드에서 추가처리를 할 수 있다.\n\n\npthread_detach(thread1)\n\n\n관련 리소스를 즉시 해제한다.\n\n\n실행\n\n\npthread_join\n\n\n스레드 1이 종료될때까지 다음코드를 수행하지 않고 기다린다.\n\n\npthread_detach\n\n\n스레드 1이 종료될때까지 기다리지 않는다.\n\nPthread 뮤텍스 - 상호배제 기법\n","dateCreated":"2021-05-27T23:50:54+09:00","dateModified":"2021-06-03T18:31:07+09:00","datePublished":"2021-05-27T23:50:54+09:00","description":"POSIX thread와 그 사용법 익혀보기.#Pthread #pthread_join #pthread_detach","headline":"스레드 pthread 구현","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2021/05/27/%EC%8A%A4%EB%A0%88%EB%93%9C-pthread-%EA%B5%AC%ED%98%84/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2021/05/27/%EC%8A%A4%EB%A0%88%EB%93%9C-pthread-%EA%B5%AC%ED%98%84/","keywords":"thread"}</script>
                                     <meta name="description" content="POSIX thread와 그 사용법 익혀보기.#Pthread #pthread_join #pthread_detach">
 <meta property="og:type" content="blog">
 <meta property="og:title" content="스레드 pthread 구현">
@@ -77,6 +72,10 @@
     
 
 <header id="header" data-behavior="4">
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js"></script>
+    <script src="https://kit.fontawesome.com/cfcae25ced.js" crossorigin="anonymous"></script>
     <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
     <div class="header-title">
         <a
@@ -122,13 +121,35 @@
                 </a>
                 <h4 class="sidebar-profile-name">Suyan Kim</h4>
                 
-                    <h5 class="sidebar-profile-bio"><p>▲ Who Am I</p>
+                    <h5 class="sidebar-profile-bio"><p><strong><a target="_blank" rel="noopener" href="https://nice-spectrum-2aa.notion.site/Suyeon-Kim-09e271916a504e24a5307e9f67d7bc16">Click 👀 Resume</a></strong></p>
 </h5>
                 
             </div>
         
         
             <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="https://nice-spectrum-2aa.notion.site/Suyeon-Kim-09e271916a504e24a5307e9f67d7bc16" target="_blank" rel="noopener" title="resume 👀">
+                    
+                    <i class="sidebar-button-icon far fa-smile-wink" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">resume 👀</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="https://github.com/ksso730" target="_blank" rel="noopener" title="github">
+                    
+                    <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">github</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
             
                 <li class="sidebar-button">
                     
@@ -179,7 +200,7 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (10)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (15)</a></li>
                             
                         
                             
@@ -195,7 +216,7 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Git/">☁️ Git (3)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Git/">☁️ Git (4)</a></li>
                             
                         
                             
@@ -215,7 +236,9 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-NodeJS/">☁️ NodeJS (1)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-NodeJS/">☁️ NodeJS (8)</a></li>
+                            
+                        
                             
                         
                             
@@ -231,11 +254,11 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Spring/">☁️ Spring (1)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Spring/">☁️ Spring (2)</a></li>
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-TIL/">☁️ TIL (10)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-TIL/">☁️ TIL (9)</a></li>
                             
                         
                     
@@ -256,35 +279,9 @@
                     
                 </li>
             
-                <li class="sidebar-button">
-                    
-                        <a  class="sidebar-button-link "
-                             
-                                title="about"href="#about"
-                                
-                                >
-                    
-                    <i class="sidebar-button-icon fa fa-question" aria-hidden="true"></i>
-                    <span class="sidebar-button-desc">about</span>
-                        </a>
-                    <!-- add -->
-                    
-                </li>
-            
         </ul>
         
             <ul class="sidebar-buttons">
-            
-                <li class="sidebar-button">
-                    
-                        <a  class="sidebar-button-link " href="https://github.com/ksso730" target="_blank" rel="noopener" title="github">
-                    
-                    <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
-                    <span class="sidebar-button-desc">github</span>
-                        </a>
-                    <!-- add -->
-                    
-                </li>
             
                 <li class="sidebar-button">
                     
@@ -543,6 +540,7 @@
         Copyrights &copy; 2021 Suyan Kim. All Rights Reserved.
     </span>
 </footer>
+
             </div>
             
                 <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">

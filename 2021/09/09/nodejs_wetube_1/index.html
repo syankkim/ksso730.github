@@ -1,0 +1,829 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="generator" content="동글씨">
+        <title>
+            NodeJS란? 프로젝트 시작. - 동글씨
+        </title>
+        <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+        <meta name="author" content="Suyan Kim">
+        
+                
+                        
+                            <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
+                            
+                                <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\n\nJavaScript is FREE\n📌 NodeJS?? 브라우저 밖에서 돌아가는 자바스크립트History\n\n자바스크립트는 브라우저에서만 사용되었다.\n브라우저를 가진 모든 컴퓨터는 자바스크립트가 설치되어 있다.\n창시자인 Ryan이 자바스크립트를 브라우저에 분리하여 NodeJS를 만든것이다.\n\n\n즉, JS를 다른 프로그래밍 언어처럼 사용할 수 있게 되었다.\n예를 들면, console.log() 를 브라우저에서만 확인할 수 있었지만, nodeJS 를 설치했다면 터미널에서도 console.log() 가능!!\n\n\n\n\nNPM\nNodeJS Package Manager\n\n\nnodeJS와 같이 설치된다.\n누군가 이미 만들어 놓은 패키지를 가져다 쓰고, 개발을 쉽게 할 수 있다.\n그 중 하나가 express이다. 오래된만큼 안정적인 패키지이다.\nnpm i express\n\n\n\nNodeJS 프로젝트 생성기본적이 프로젝트를 진행하기 위해서 아래와 같은 순서로 환경을 구축한다.\n\n프로젝트 디렉토리 생성\ngit repository와 연동\nexpress 설치\nbabel 설치, 관련 패키지 설치\n\n프로젝트 디렉토리 생성\n프로젝트를 시작할 빈 디렉토리에서 npm init 이 명령어 한 줄이면 쉽게 생성 가능하다.\n아래와 같은 프로세스대로 질문이 뜨고 질문에 답하면 package.json 파일이 생성된다.\n\n12345678910111213141516171819202122232425262728293031323334353637383940414243(base) ➜  wetube git:(master) npm initThis utility will walk you through creating a package.json file.It only covers the most common items, and tries to guess sensible defaults.See `npm help init` for definitive documentation on these fieldsand exactly what they do.Use `npm install &lt;pkg&gt;` afterwards to install a package andsave it as a dependency in the package.json file.Press ^C at any time to quit.package name: (wetube) version: (1.0.0) description: The best way to watch videos.entry point: (index.js) test command: git repository: (https://github.com/ksso730/wetube-prj.git) keywords: author: Suynlicense: (ISC) About to write to /Users/mac/Documents/wetube/package.json:&#123;  &quot;name&quot;: &quot;wetube&quot;,  &quot;version&quot;: &quot;1.0.0&quot;,  &quot;description&quot;: &quot;The best way to watch videos.&quot;,  &quot;main&quot;: &quot;index.js&quot;,  &quot;scripts&quot;: &#123;    &quot;test&quot;: &quot;echo \\&quot;Error: no test specified\\&quot; &amp;&amp; exit 1&quot;  &#125;,  &quot;repository&quot;: &#123;    &quot;type&quot;: &quot;git&quot;,    &quot;url&quot;: &quot;git+https://github.com/ksso730/wetube-prj.git&quot;  &#125;,  &quot;author&quot;: &quot;Suyn&quot;,  &quot;license&quot;: &quot;ISC&quot;,  &quot;bugs&quot;: &#123;    &quot;url&quot;: &quot;https://github.com/ksso730/wetube-prj/issues&quot;  &#125;,  &quot;homepage&quot;: &quot;https://github.com/ksso730/wetube-prj#readme&quot;&#125;Is this OK? (yes) yes\n\npackage.json12345678910111213141516171819&#123;  &quot;name&quot;: &quot;wetube&quot;,  &quot;version&quot;: &quot;1.0.0&quot;,  &quot;description&quot;: &quot;The best way to watch videos.&quot;,  &quot;main&quot;: &quot;index.js&quot;,  &quot;repository&quot;: &#123;    &quot;type&quot;: &quot;git&quot;,    &quot;url&quot;: &quot;git+https://github.com/ksso730/wetube-prj.git&quot;  &#125;,   &quot;scripts&quot;:&#123;    &quot;win&quot;: &quot;node index.js&quot;  &#125;,  &quot;author&quot;: &quot;Suyn&quot;,  &quot;license&quot;: &quot;ISC&quot;,  &quot;bugs&quot;: &#123;    &quot;url&quot;: &quot;https://github.com/ksso730/wetube-prj/issues&quot;  &#125;,  &quot;homepage&quot;: &quot;https://github.com/ksso730/wetube-prj#readme&quot;&#125;\n\nmain 은 다른 사람들이 우리가 만들고 배포한 패키지를 설치하면 main을 사용할 수 있다.\n프로젝트에서 필요 없다면 지워준다.\n\n\nscript 에 사용할 명령어를 정의하고 아래와 같이 사용할 수 있다.\n\n123456(base) ➜  wetube git:(master) ✗ npm run win&gt; wetube@1.0.0 win /Users/mac/Documents/wetube&gt; node index.jshello node\n\nExpress 설치1234(base) ➜  wetube git:(master) ✗ npm i expressnpm notice created a lockfile as package-lock.json. You should commit this file.+ express@4.17.1added 50 packages from 37 contributors and audited 50 packages in 2.245s\n\npackage-lock\n패키지를 안전하게 관리해주며, 수정여부를 해시값으로 체크해준다. \n\n\nnode_modules\nnpm으로 설치한 모든 패키지가 저장된다.\n\n\npackage.json 에 dependencies가 추가 된다.\n이렇게 dependencies에 추가된 패키지들은 node_modules폴더가 삭제되더라도 npm install 만 실행해주면 다시 생성된다.\n\n\n\n123&quot;dependencies&quot;: &#123;    &quot;express&quot;: &quot;^4.17.1&quot;  &#125;\n\nBabel 설치, 관련 패키지 설치\n📌 Babel is JavaScript compiler\n\n\n아직 nodeJS가 이해하지 못하는 코드가 있다. babel은 우리가 작성한 최신 자바스크립트를 컴파일 해준다. 최신 문법으로 작성하기 위해 개발자용으로 설치한다.\n\n1npm install --save-dev @babel/core\n\n\n\npackage.json\n\n123&quot;devDependencies&quot;: &#123;  &quot;@babel/core&quot;: &quot;^7.15.5&quot;&#125;\n\n\ndependencies : 프로젝트를 실행하기 위해 필요한 것.devDependencies : 개발자를 위해 필요한 것.\n\nBabel연동 (babel.config.json 생성)\npreset-env 를 사용한다.\npreset: babel을 위한 거대한 플러그인\n“preset-env” is a smart preset that allows you to use the latest JavaScript without needing to~”\n\n\n\n\nbabel.config.json에 아래와 같이 추가해준다.\n\n123&#123;    &quot;presets&quot;:[&quot;@babel/preset-env&quot;]&#125;\n\n\nbabel을 사용하기 위해 다음 패키지 설치npm i @babel/preset-env --save-devnpm i @babel/node --save-dev\n\n12345&quot;devDependencies&quot;: &#123;   &quot;@babel/core&quot;: &quot;^7.15.5&quot;,   &quot;@babel/node&quot;: &quot;^7.15.4&quot;,   &quot;@babel/preset-env&quot;: &quot;^7.15.4&quot; &#125;\n\nBabel의 nodemon\n📌 파일 수정을 감시해주는 패키지로, 파일이 수정되면 nodemon이 자동으로 재실행해준다.(관련 패키지는 @babel/node”)\n\n\nnpm run dev 수행을 위한 명령\n\n123&quot;scripts&quot;: &#123;   &quot;dev&quot;: &quot;nodemon --exec babel-node index.js&quot; &#125;\n\n\n아래처럼 메시지를 바꿔서 저장할때마다 새로 수행된다.\n\n123456789101112131415161718&gt; nodemon --exec babel-node index.js[nodemon] 2.0.12[nodemon] to restart at any time, enter `rs`[nodemon] watching path(s): *.*[nodemon] watching extensions: js,mjs,json[nodemon] starting `babel-node index.js`hi![nodemon] clean exit - waiting for changes before restart[nodemon] restarting due to changes...[nodemon] starting `babel-node index.js`how are you?[nodemon] clean exit - waiting for changes before restart[nodemon] restarting due to changes...[nodemon] starting `babel-node index.js`I&#x27;m good![nodemon] clean exit - waiting for changes before restart","dateCreated":"2021-09-09T14:42:47+09:00","dateModified":"2021-09-10T16:31:21+09:00","datePublished":"2021-09-09T14:42:47+09:00","description":"빈 파일부터 시작하는 NodeJS 프로젝트 첫 단추 끼우기.babel로 최신 JavaScript를 사용하자.#express #nodemon #babel","headline":"NodeJS란? 프로젝트 시작.","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2021/09/09/nodejs_wetube_1/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2021/09/09/nodejs_wetube_1/","keywords":"nodejs, babel"}</script>
+                                    <meta name="description" content="빈 파일부터 시작하는 NodeJS 프로젝트 첫 단추 끼우기.babel로 최신 JavaScript를 사용하자.#express #nodemon #babel">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="NodeJS란? 프로젝트 시작.">
+<meta property="og:url" content="http://yoursite.com/2021/09/09/nodejs_wetube_1/index.html">
+<meta property="og:site_name" content="동글씨">
+<meta property="og:description" content="빈 파일부터 시작하는 NodeJS 프로젝트 첫 단추 끼우기.babel로 최신 JavaScript를 사용하자.#express #nodemon #babel">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2021-09-09T05:42:47.000Z">
+<meta property="article:modified_time" content="2021-09-10T07:31:21.460Z">
+<meta property="article:author" content="Suyan Kim">
+<meta property="article:tag" content="nodejs">
+<meta property="article:tag" content="babel">
+<meta name="twitter:card" content="summary">
+                                        
+                                                
+                                                    
+                                                            
+                                                                
+                                                                    <meta property="og:image" content="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=640" />
+                                                                    
+                                                                            
+                                                                                    
+                                                                                            
+                                                                                                            <!--STYLES-->
+                                                                                                            
+<link rel="stylesheet" href="/assets/css/tranquilpeak.css">
+
+                                                                                                            <!--STYLES END-->
+                                                                                                                
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-158530470-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-158530470-1');
+    </script>
+
+
+                                                                                                                    
+
+                                                                                                                        
+                                                                                                                            
+                                                                                                                                                
+    </head>
+    <body>
+        <div id="blog">
+            <!-- Define author's picture -->
+
+
+    
+        
+    
+
+<header id="header" data-behavior="4">
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js"></script>
+    <script src="https://kit.fontawesome.com/cfcae25ced.js" crossorigin="anonymous"></script>
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <div class="header-title">
+        <a
+            class="header-title-link"
+            href="/index.html"
+            aria-label=""
+        >
+            동글씨
+        </a>
+    </div>
+    
+        
+            <a
+                class="header-right-picture "
+                href="#about"
+                aria-label="Open the link: /#about"
+            >
+        
+        
+            <img class="header-picture" src="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=90" alt="Author&#39;s picture"/>
+        
+        </a>
+    
+</header>
+
+            <!-- function -->
+
+
+<!-- Define author's picture -->
+
+
+    
+
+<nav id="sidebar" data-behavior="4">
+    <div class="sidebar-container">
+        
+            <div class="sidebar-profile">
+                <a
+                    href="/#about"
+                    aria-label="Read more about the author"
+                >
+                    <img class="sidebar-profile-picture" src="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=800" alt="Author&#39;s picture"/>
+                </a>
+                <h4 class="sidebar-profile-name">Suyan Kim</h4>
+                
+                    <h5 class="sidebar-profile-bio"><p><strong><a target="_blank" rel="noopener" href="https://nice-spectrum-2aa.notion.site/Suyeon-Kim-09e271916a504e24a5307e9f67d7bc16">Click 👀 Resume</a></strong></p>
+</h5>
+                
+            </div>
+        
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="https://nice-spectrum-2aa.notion.site/Suyeon-Kim-09e271916a504e24a5307e9f67d7bc16" target="_blank" rel="noopener" title="resume 👀">
+                    
+                    <i class="sidebar-button-icon far fa-smile-wink" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">resume 👀</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="https://github.com/ksso730" target="_blank" rel="noopener" title="github">
+                    
+                    <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">github</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="home"href="/index.html"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-home" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">home</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="archives"href="/all-archives"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-archive" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">archives</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="categories"href="/all-categories"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-bookmark" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">categories</span>
+                        </a>
+                    <!-- add -->
+                    
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-AWS/">☁️ AWS (0)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (15)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Config/">☁️ Config (2)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-DataBase/">☁️ DataBase (1)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Django/">☁️ Django (1)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Git/">☁️ Git (4)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-JPA/">☁️ JPA (10)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Java/">☁️ Java (0)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Linux/">☁️ Linux (6)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Network/">☁️ Network (1)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-NodeJS/">☁️ NodeJS (8)</a></li>
+                            
+                        
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-OS/">☁️ OS (14)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Python/">☁️ Python (2)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-React/">☁️ React (3)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Spring/">☁️ Spring (2)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-TIL/">☁️ TIL (9)</a></li>
+                            
+                        
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="tags"href="/all-tags"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-tags" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">tags</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="https://www.instagram.com/syankkim/" target="_blank" rel="noopener" title="life">
+                    
+                    <i class="sidebar-button-icon fab fa-instagram" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">life</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+        </ul>
+        
+    </div>
+</nav>
+
+            
+            <div id="main" data-behavior="4"
+                 class="
+                        hasCoverMetaIn
+                        ">
+                
+<article class="post">
+    
+    
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title">
+            NodeJS란? 프로젝트 시작.
+        </h1>
+    
+    
+        <div class="post-meta">
+    <time datetime="2021-09-09T14:42:47+09:00">
+	
+		    Sep 09, 2021
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/%E2%98%81%EF%B8%8F-NodeJS/">☁️ NodeJS</a>
+
+
+    
+</div>
+
+    
+</div>
+
+    
+    <div class="post-content markdown">
+        <div class="main-content-wrap">
+            <!-- excerpt -->
+
+<h1 id="table-of-contents">Contents</h1><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#JavaScript-is-FREE"><span class="toc-text">JavaScript is FREE</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#NPM"><span class="toc-text">NPM</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#NodeJS-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-%EC%83%9D%EC%84%B1"><span class="toc-text">NodeJS 프로젝트 생성</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-%EB%94%94%EB%A0%89%ED%86%A0%EB%A6%AC-%EC%83%9D%EC%84%B1"><span class="toc-text">프로젝트 디렉토리 생성</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#package-json"><span class="toc-text">package.json</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Express-%EC%84%A4%EC%B9%98"><span class="toc-text">Express 설치</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Babel-%EC%84%A4%EC%B9%98-%EA%B4%80%EB%A0%A8-%ED%8C%A8%ED%82%A4%EC%A7%80-%EC%84%A4%EC%B9%98"><span class="toc-text">Babel 설치, 관련 패키지 설치</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Babel%EC%97%B0%EB%8F%99-babel-config-json-%EC%83%9D%EC%84%B1"><span class="toc-text">Babel연동 (babel.config.json 생성)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Babel%EC%9D%98-nodemon"><span class="toc-text">Babel의 nodemon</span></a></li></ol></li></ol></li></ol>
+
+<hr>
+<h1 id="JavaScript-is-FREE"><a href="#JavaScript-is-FREE" class="headerlink" title="JavaScript is FREE"></a>JavaScript is FREE</h1><blockquote>
+<p>📌 NodeJS?? 브라우저 밖에서 돌아가는 자바스크립트<br><code>History</code></p>
+<ul>
+<li>자바스크립트는 브라우저에서만 사용되었다.<ul>
+<li>브라우저를 가진 모든 컴퓨터는 자바스크립트가 설치되어 있다.</li>
+<li>창시자인 Ryan이 자바스크립트를 브라우저에 분리하여 NodeJS를 만든것이다.</li>
+</ul>
+</li>
+<li>즉, JS를 다른 프로그래밍 언어처럼 사용할 수 있게 되었다.<ul>
+<li>예를 들면, console.log() 를 브라우저에서만 확인할 수 있었지만, nodeJS 를 설치했다면 터미널에서도 console.log() 가능!!</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<h1 id="NPM"><a href="#NPM" class="headerlink" title="NPM"></a>NPM</h1><blockquote>
+<p>NodeJS Package Manager</p>
+</blockquote>
+<ul>
+<li>nodeJS와 같이 설치된다.</li>
+<li>누군가 이미 만들어 놓은 패키지를 가져다 쓰고, 개발을 쉽게 할 수 있다.<ul>
+<li>그 중 하나가 express이다. 오래된만큼 안정적인 패키지이다.</li>
+<li><code>npm i express</code></li>
+</ul>
+</li>
+</ul>
+<h1 id="NodeJS-프로젝트-생성"><a href="#NodeJS-프로젝트-생성" class="headerlink" title="NodeJS 프로젝트 생성"></a>NodeJS 프로젝트 생성</h1><p>기본적이 프로젝트를 진행하기 위해서 아래와 같은 순서로 환경을 구축한다.</p>
+<ol>
+<li>프로젝트 디렉토리 생성</li>
+<li>git repository와 연동</li>
+<li>express 설치</li>
+<li>babel 설치, 관련 패키지 설치</li>
+</ol>
+<h2 id="프로젝트-디렉토리-생성"><a href="#프로젝트-디렉토리-생성" class="headerlink" title="프로젝트 디렉토리 생성"></a>프로젝트 디렉토리 생성</h2><ul>
+<li>프로젝트를 시작할 빈 디렉토리에서 <code>npm init</code> 이 명령어 한 줄이면 쉽게 생성 가능하다.</li>
+<li>아래와 같은 프로세스대로 질문이 뜨고 질문에 답하면 package.json 파일이 생성된다.</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">(base) ➜  wetube git:(master) npm init</span><br><span class="line">This utility will walk you through creating a package.json file.</span><br><span class="line">It only covers the most common items, and tries to guess sensible defaults.</span><br><span class="line"></span><br><span class="line">See `npm <span class="built_in">help</span> init` <span class="keyword">for</span> definitive documentation on these fields</span><br><span class="line">and exactly what they <span class="keyword">do</span>.</span><br><span class="line"></span><br><span class="line">Use `npm install &lt;pkg&gt;` afterwards to install a package and</span><br><span class="line">save it as a dependency <span class="keyword">in</span> the package.json file.</span><br><span class="line"></span><br><span class="line">Press ^C at any time to quit.</span><br><span class="line">package name: (wetube) </span><br><span class="line">version: (1.0.0) </span><br><span class="line">description: The best way to watch videos.</span><br><span class="line">entry point: (index.js) </span><br><span class="line"><span class="built_in">test</span> <span class="built_in">command</span>: </span><br><span class="line">git repository: (https://github.com/ksso730/wetube-prj.git) </span><br><span class="line">keywords: </span><br><span class="line">author: Suyn</span><br><span class="line">license: (ISC) </span><br><span class="line">About to write to /Users/mac/Documents/wetube/package.json:</span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line">  <span class="string">&quot;name&quot;</span>: <span class="string">&quot;wetube&quot;</span>,</span><br><span class="line">  <span class="string">&quot;version&quot;</span>: <span class="string">&quot;1.0.0&quot;</span>,</span><br><span class="line">  <span class="string">&quot;description&quot;</span>: <span class="string">&quot;The best way to watch videos.&quot;</span>,</span><br><span class="line">  <span class="string">&quot;main&quot;</span>: <span class="string">&quot;index.js&quot;</span>,</span><br><span class="line">  <span class="string">&quot;scripts&quot;</span>: &#123;</span><br><span class="line">    <span class="string">&quot;test&quot;</span>: <span class="string">&quot;echo \&quot;Error: no test specified\&quot; &amp;&amp; exit 1&quot;</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="string">&quot;repository&quot;</span>: &#123;</span><br><span class="line">    <span class="string">&quot;type&quot;</span>: <span class="string">&quot;git&quot;</span>,</span><br><span class="line">    <span class="string">&quot;url&quot;</span>: <span class="string">&quot;git+https://github.com/ksso730/wetube-prj.git&quot;</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="string">&quot;author&quot;</span>: <span class="string">&quot;Suyn&quot;</span>,</span><br><span class="line">  <span class="string">&quot;license&quot;</span>: <span class="string">&quot;ISC&quot;</span>,</span><br><span class="line">  <span class="string">&quot;bugs&quot;</span>: &#123;</span><br><span class="line">    <span class="string">&quot;url&quot;</span>: <span class="string">&quot;https://github.com/ksso730/wetube-prj/issues&quot;</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="string">&quot;homepage&quot;</span>: <span class="string">&quot;https://github.com/ksso730/wetube-prj#readme&quot;</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Is this OK? (yes) yes</span><br></pre></td></tr></table></figure>
+
+<h2 id="package-json"><a href="#package-json" class="headerlink" title="package.json"></a>package.json</h2><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">&quot;name&quot;</span>: <span class="string">&quot;wetube&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;version&quot;</span>: <span class="string">&quot;1.0.0&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;description&quot;</span>: <span class="string">&quot;The best way to watch videos.&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;main&quot;</span>: <span class="string">&quot;index.js&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;repository&quot;</span>: &#123;</span><br><span class="line">    <span class="attr">&quot;type&quot;</span>: <span class="string">&quot;git&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;url&quot;</span>: <span class="string">&quot;git+https://github.com/ksso730/wetube-prj.git&quot;</span></span><br><span class="line">  &#125;,</span><br><span class="line">   <span class="attr">&quot;scripts&quot;</span>:&#123;</span><br><span class="line">    <span class="attr">&quot;win&quot;</span>: <span class="string">&quot;node index.js&quot;</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">&quot;author&quot;</span>: <span class="string">&quot;Suyn&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;license&quot;</span>: <span class="string">&quot;ISC&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;bugs&quot;</span>: &#123;</span><br><span class="line">    <span class="attr">&quot;url&quot;</span>: <span class="string">&quot;https://github.com/ksso730/wetube-prj/issues&quot;</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">&quot;homepage&quot;</span>: <span class="string">&quot;https://github.com/ksso730/wetube-prj#readme&quot;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>main</code> 은 다른 사람들이 우리가 만들고 배포한 패키지를 설치하면 main을 사용할 수 있다.<ul>
+<li>프로젝트에서 필요 없다면 지워준다.</li>
+</ul>
+</li>
+<li><code>script</code> 에 사용할 명령어를 정의하고 아래와 같이 사용할 수 있다.</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">(base) ➜  wetube git:(master) ✗ npm run win</span><br><span class="line"></span><br><span class="line">&gt; wetube@1.0.0 win /Users/mac/Documents/wetube</span><br><span class="line">&gt; node index.js</span><br><span class="line"></span><br><span class="line">hello node</span><br></pre></td></tr></table></figure>
+
+<h2 id="Express-설치"><a href="#Express-설치" class="headerlink" title="Express 설치"></a>Express 설치</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">(base) ➜  wetube git:(master) ✗ npm i express</span><br><span class="line">npm notice created a lockfile as package-lock.json. You should commit this file.</span><br><span class="line">+ express@4.17.1</span><br><span class="line">added 50 packages from 37 contributors and audited 50 packages <span class="keyword">in</span> 2.245s</span><br></pre></td></tr></table></figure>
+<ul>
+<li><strong>package-lock</strong><ul>
+<li>패키지를 안전하게 관리해주며, 수정여부를 해시값으로 체크해준다. </li>
+</ul>
+</li>
+<li><strong>node_modules</strong><ul>
+<li>npm으로 설치한 모든 패키지가 저장된다.</li>
+</ul>
+</li>
+<li><strong>package.json</strong> 에 dependencies가 추가 된다.<ul>
+<li>이렇게 dependencies에 추가된 패키지들은 node_modules폴더가 삭제되더라도 <code>npm install</code> 만 실행해주면 다시 생성된다.</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&quot;dependencies&quot;</span>: &#123;</span><br><span class="line">    <span class="attr">&quot;express&quot;</span>: <span class="string">&quot;^4.17.1&quot;</span></span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="Babel-설치-관련-패키지-설치"><a href="#Babel-설치-관련-패키지-설치" class="headerlink" title="Babel 설치, 관련 패키지 설치"></a>Babel 설치, 관련 패키지 설치</h2><blockquote>
+<p>📌 Babel is JavaScript compiler</p>
+</blockquote>
+<ul>
+<li>아직 nodeJS가 이해하지 못하는 코드가 있다. babel은 우리가 작성한 최신 자바스크립트를 컴파일 해준다. 최신 문법으로 작성하기 위해 <code>개발자용</code>으로 설치한다.</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install --save-dev @babel/core</span><br></pre></td></tr></table></figure>
+<br>
+
+<ul>
+<li>package.json</li>
+</ul>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&quot;devDependencies&quot;</span>: &#123;</span><br><span class="line">  <span class="attr">&quot;@babel/core&quot;</span>: <span class="string">&quot;^7.15.5&quot;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><strong>dependencies</strong> : 프로젝트를 실행하기 위해 필요한 것.<br><strong>devDependencies</strong> : 개발자를 위해 필요한 것.</p>
+</blockquote>
+<h3 id="Babel연동-babel-config-json-생성"><a href="#Babel연동-babel-config-json-생성" class="headerlink" title="Babel연동 (babel.config.json 생성)"></a>Babel연동 (babel.config.json 생성)</h3><ul>
+<li>preset-env 를 사용한다.</li>
+<li>preset: babel을 위한 거대한 <strong>플러그인</strong><ul>
+<li>“preset-env” is a smart preset that allows you to use the latest JavaScript without needing to~”</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>babel.config.json에 아래와 같이 추가해준다.</li>
+</ul>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">&quot;presets&quot;</span>:[<span class="string">&quot;@babel/preset-env&quot;</span>]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>babel을 사용하기 위해 다음 패키지 설치<br><code>npm i @babel/preset-env --save-dev</code><br><code>npm i @babel/node --save-dev</code></li>
+</ul>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&quot;devDependencies&quot;</span>: &#123;</span><br><span class="line">   <span class="attr">&quot;@babel/core&quot;</span>: <span class="string">&quot;^7.15.5&quot;</span>,</span><br><span class="line">   <span class="attr">&quot;@babel/node&quot;</span>: <span class="string">&quot;^7.15.4&quot;</span>,</span><br><span class="line">   <span class="attr">&quot;@babel/preset-env&quot;</span>: <span class="string">&quot;^7.15.4&quot;</span></span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Babel의-nodemon"><a href="#Babel의-nodemon" class="headerlink" title="Babel의 nodemon"></a>Babel의 nodemon</h3><blockquote>
+<p>📌 파일 수정을 감시해주는 패키지로, 파일이 수정되면 nodemon이 자동으로 재실행해준다.<br>(관련 패키지는 @babel/node”)</p>
+</blockquote>
+<ul>
+<li><code>npm run dev</code> 수행을 위한 명령</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&quot;scripts&quot;: &#123;</span><br><span class="line">   &quot;dev&quot;: &quot;nodemon --exec babel-node index.js&quot;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>아래처럼 메시지를 바꿔서 저장할때마다 새로 수행된다.</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">&gt; nodemon --<span class="built_in">exec</span> babel-node index.js</span><br><span class="line"></span><br><span class="line">[nodemon] 2.0.12</span><br><span class="line">[nodemon] to restart at any time, enter `rs`</span><br><span class="line">[nodemon] watching path(s): *.*</span><br><span class="line">[nodemon] watching extensions: js,mjs,json</span><br><span class="line">[nodemon] starting `babel-node index.js`</span><br><span class="line">hi!</span><br><span class="line">[nodemon] clean <span class="built_in">exit</span> - waiting <span class="keyword">for</span> changes before restart</span><br><span class="line">[nodemon] restarting due to changes...</span><br><span class="line">[nodemon] starting `babel-node index.js`</span><br><span class="line">how are you?</span><br><span class="line">[nodemon] clean <span class="built_in">exit</span> - waiting <span class="keyword">for</span> changes before restart</span><br><span class="line">[nodemon] restarting due to changes...</span><br><span class="line">[nodemon] starting `babel-node index.js`</span><br><span class="line">I<span class="string">&#x27;m good!</span></span><br><span class="line"><span class="string">[nodemon] clean exit - waiting for changes before restart</span></span><br><span class="line"><span class="string"></span></span><br></pre></td></tr></table></figure>
+            
+
+
+        </div>
+    </div>
+    <div id="post-footer" class="post-footer main-content-wrap">
+        
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">TAGGED IN</span><br/>
+                
+    <a class="tag tag--primary tag--small t-none-link" href="/tags/babel/" rel="tag">babel</a> <a class="tag tag--primary tag--small t-none-link" href="/tags/nodejs/" rel="tag">nodejs</a>
+
+            </div>
+        
+        
+            <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2021/09/10/nodejs_wetube_2/"
+                    data-tooltip="NodeJS - middleware (feat.morgan)"
+                    aria-label="PREVIOUS: NodeJS - middleware (feat.morgan)"
+                >
+                    
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                    </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2021/08/18/%ED%8A%B8%EB%A6%AC%EA%B5%AC%EC%A1%B01/"
+                    data-tooltip="🌳 알고리즘 - 트리 구조"
+                    aria-label="NEXT: 🌳 알고리즘 - 트리 구조"
+                >
+                    
+                        <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a
+                class="post-action-btn btn btn--default btn-open-shareoptions"
+                href="#btn-open-shareoptions"
+                aria-label="Share this post"
+            >
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2021/09/09/nodejs_wetube_1/"
+                    title="Share on Facebook"
+                    aria-label="Share on Facebook"
+                >
+                    <i class="fab fa-facebook" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2021/09/09/nodejs_wetube_1/"
+                    title="Share on Twitter"
+                    aria-label="Share on Twitter"
+                >
+                    <i class="fab fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://plus.google.com/share?url=http://yoursite.com/2021/09/09/nodejs_wetube_1/"
+                    title="Share on Google+"
+                    aria-label="Share on Google+"
+                >
+                    <i class="fab fa-google-plus" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+                <li class="post-action">
+                    <a
+                        class="post-action-btn btn btn--default"
+                        href="#disqus_thread"
+                        aria-label="Leave a comment"
+                    >
+                        <i class="fa fa-comment"></i>
+                    </a>
+                </li>
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#table-of-contents" aria-label="Contents">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+        
+        
+            
+                <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+            
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2021 Suyan Kim. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2021/09/10/nodejs_wetube_2/"
+                    data-tooltip="NodeJS - middleware (feat.morgan)"
+                    aria-label="PREVIOUS: NodeJS - middleware (feat.morgan)"
+                >
+                    
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                    </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2021/08/18/%ED%8A%B8%EB%A6%AC%EA%B5%AC%EC%A1%B01/"
+                    data-tooltip="🌳 알고리즘 - 트리 구조"
+                    aria-label="NEXT: 🌳 알고리즘 - 트리 구조"
+                >
+                    
+                        <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a
+                class="post-action-btn btn btn--default btn-open-shareoptions"
+                href="#btn-open-shareoptions"
+                aria-label="Share this post"
+            >
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2021/09/09/nodejs_wetube_1/"
+                    title="Share on Facebook"
+                    aria-label="Share on Facebook"
+                >
+                    <i class="fab fa-facebook" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2021/09/09/nodejs_wetube_1/"
+                    title="Share on Twitter"
+                    aria-label="Share on Twitter"
+                >
+                    <i class="fab fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://plus.google.com/share?url=http://yoursite.com/2021/09/09/nodejs_wetube_1/"
+                    title="Share on Google+"
+                    aria-label="Share on Google+"
+                >
+                    <i class="fab fa-google-plus" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+                <li class="post-action">
+                    <a
+                        class="post-action-btn btn btn--default"
+                        href="#disqus_thread"
+                        aria-label="Leave a comment"
+                    >
+                        <i class="fa fa-comment"></i>
+                    </a>
+                </li>
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#table-of-contents" aria-label="Contents">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                
+    <div id="share-options-bar" class="share-options-bar" data-behavior="4">
+        <i id="btn-close-shareoptions" class="fa fa-times"></i>
+        <ul class="share-options">
+            
+                
+                
+                <li class="share-option">
+                    <a
+                        class="share-option-btn"
+                        target="new"
+                        href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2021/09/09/nodejs_wetube_1/"
+                        aria-label="Share on Facebook"
+                    >
+                        <i class="fab fa-facebook" aria-hidden="true"></i><span>Share on Facebook</span>
+                    </a>
+                </li>
+            
+                
+                
+                <li class="share-option">
+                    <a
+                        class="share-option-btn"
+                        target="new"
+                        href="https://twitter.com/intent/tweet?text=http://yoursite.com/2021/09/09/nodejs_wetube_1/"
+                        aria-label="Share on Twitter"
+                    >
+                        <i class="fab fa-twitter" aria-hidden="true"></i><span>Share on Twitter</span>
+                    </a>
+                </li>
+            
+                
+                
+                <li class="share-option">
+                    <a
+                        class="share-option-btn"
+                        target="new"
+                        href="https://plus.google.com/share?url=http://yoursite.com/2021/09/09/nodejs_wetube_1/"
+                        aria-label="Share on Google+"
+                    >
+                        <i class="fab fa-google-plus" aria-hidden="true"></i><span>Share on Google+</span>
+                    </a>
+                </li>
+            
+        </ul>
+    </div>
+
+
+            
+        </div>
+        
+
+
+    
+
+<div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-times"></i>
+        </div>
+        
+            <img id="about-card-picture" src="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=110" alt="Author&#39;s picture"/>
+        
+            <h4 id="about-card-name">Suyan Kim</h4>
+        <!--  -->
+            <!-- <div id="about-card-bio"><p>author.bio</p>
+</div> -->
+            <div id="about-card-bio">안녕하세요, 서버 백엔드 개발자 동글씨입니다.</div>
+        <!--  -->
+        <!--  -->
+            <div id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <!-- <p>Backend Developer</p>
+ -->
+                Backend Developer
+            </div>
+        <!--  -->
+        
+            <div id="about-card-location">
+                <i class="fa fa-map-marker-alt"></i>
+                <br/>
+                Korea
+            </div>
+        
+    </div>
+</div>
+
+        
+        
+<div id="cover" style="background-image:url('/assets/images/null');"></div>
+        <!--SCRIPTS-->
+
+<script src="/assets/js/tranquilpeak.js"></script>
+
+<!--SCRIPTS END-->
+
+
+    
+        <script>
+          var disqus_config = function() {
+            this.page.url = 'http://yoursite.com/2021/09/09/nodejs_wetube_1/';
+              
+            this.page.identifier = '2021/09/09/nodejs_wetube_1/';
+              
+          };
+          (function() {
+            var d = document, s = d.createElement('script');
+            var disqus_shortname = 'ksso730-github-io';
+            s.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+          })();
+        </script>
+    
+
+
+
+
+    </body>
+</html>

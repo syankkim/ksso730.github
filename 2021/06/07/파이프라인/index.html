@@ -4,11 +4,6 @@
     
 
     <head>
-        <script type="text/javascript" src="http://code.jquery.com/jquery-3.2.1.min.js"></script>
-        <script type="text/java script">
-            var $= jquery.noConflict();
-        </script>
-
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="generator" content="동글씨">
@@ -22,7 +17,7 @@
                         
                             <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
                             
-                                <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\n병렬처리\n컴퓨터 시스템의 계산 속도의 향상을 목적으로 동시 데이터 처리기능을 제공하는 광범위한 개념의 기술.\n\n다중 기능장치를 가진 레지스터\n실행 장치를 동시에 동작되는 8개의 기능장치로 나눔\n\n\n병렬처리 구조 분류방법 by M.J Flynn\nSISD : 단일 명령어, 단일 데이터\nSIMD : 단일 명령어, 다중 데이터\nMISD : 다중 명령어, 단일 데이터\nMIMD : - 다중 명령어, 다중 데이터\n여러 프로그램 동시수행 능력\n대부분의 다중 프로세서와 다중 컴퓨터 시스템\n\n\n\n\n파이프 라인파이프라인 구조 성능\n파이프 라인의 동작은 공간, 시간표에 의해 설명되는데, 이것은 시간에 대한 함수로서 세그먼트의 사용현황 을 나타낸다.\n동일한 복잡도의 부연산들로 이루어지는 연산동작도 구현가능하다.\n매번 다른 집합을 동일한 태스크에 적용해, 반복적인 일에 효과적이다.\n그러나, 각 레지스터 Ri 에 분리되는 작업들의 업무강도가 비슷해야 한다. 업무강도가 가장 높은 작업에 비중을 둘 수 밖에 없어서 유휴시간이 생긴다.\n\n\n파이프라인의 이론적 최대속도 증가율은 세그먼트 수와 같다.\n\n그렇다면, 세그먼트가 많을 수록 효과적일까?\n\n\n클럭 사이클시간\n\n\n\n\n위와 같은 파이프라인의 클럭 사이클시간을 구하는 공식은 아래와 같다.k + (n-1)(= k개의 세그먼트 파이프라인에서 n개의 데스크를 수행)즉 위의 식에 대입하면 4 + (6-1)= 9:: 9개의 클럭사이클을 수행한다.\n\n파이프라인 구현\n하나의 프로세스를 서로 다른 기능을 가진 서브프로세스로 나누어 각 프로세스가 동시에 서로 다른 데이터를 취급하도록 하는 기법\n\n각 세그먼트에서 수행된 연산결과는 다음 세그먼트로 연속적으로 넘어간다.\n\n마지막 세그먼트를 통과하게되면 최종 연산결과를 얻는다.\n하나의 프로세스를 다양한 연산으로 중복시킬 수 있는 근간은 세그먼트마다의 레지스터이다.\n\n\n곱셈과 덧셈이 섞인 다항식 연산Ai X Bi + Ci (i= 1,2,3 …7)\n\nR1 ~ R5 레지스터와 조합논리회로 (Adder, Multiplier) 구성\n\n\n\n\n\n\n\n수도코드\n\n\n수도코드\n설명\n\n\n\nR1 &lt;- Ai, R2 &lt;- Bi\nAi와 Bi의 입력\n\n\nR1 &lt;- R1 X R2, R4 &lt;- Ci\n곱셈과 Ci의 입력\n\n\nR1 &lt;- R3 + R4\n곱셈 결과와 Ci의 덧셈\n\n\n\n\n\n\n\n\n세번의 clock pulse이후부터 R5의 첫번째 결과획득 및 파이프 라인상에서 데이터 이동시작\n\n\n\n\n파이프라인 데이터 처리\n\n예시\n각 세그먼트에서 부연산 수행 소요시간: tp= 20ns\n파이프 라인은 k=4 세그먼트\n태스크의 수: n=100\n\n\n\n\n파이프라인 구조를 활용한 경우 총 소요시간\n\n(k+ n-1)tp = (4+100-1) X 20 = 2060ns\n\n비파이프라인 시스템\n\n각 태스크 완료시간: tn= ktp = 4 X 20 = 80ns\n전체 태스크 완료시간: nktp = 100 X 80 = 8000ns\n\n:: 속도 증가율을 확인할 수 있다.\n\n8000/2060 = 3.88 ~= 4\n\n\n현실적인 파이프라인파이프라인 VS 병렬 다중기능 장치\n파이프라인\n실제 파이프라인 구조는 이론적인 최대속도 구현 불가\n각 세그먼트들이 부연산을 수행하는 시간이 다르기 때문이다.\n\n\n최대 전파시간을 갖는 세그먼트의 지연시간에 맞춰야한다.\n\n\n병렬 다중기능 장치\n그래서, 병렬적인 다중기능장치를 고려 할 수 있다.\n순차적 처리가 아닌, 데이터를 동시입력 받아 태스크를 동시에 처리한다. (SIMD구조)\n\n\n\n파이프라인 구조산술 파이프라인\n산술 연산들을 부연산으로 나누어 파이프라인의 세그먼트에서 수행\n\n불필요한 작업을 줄일 수 있다.\neg. 부동 소수점 연산, 과학계산 등\n\n\n부동 소수점 덧셈/뺄셈을 위한 파이프라인\n\n초기값이 아래와 같은 X, Y 의 ADD 연산을 산술파이프라인을 사용한다면, 표와같이 나타난다.X = 0.2345 X 103Y = 0.1200 X 102\n\n\n\n\n\n\nsegment\nresult\n\n\n\nSegment 1\n값이 큰 지수에 맞춘다:3\n\n\nSegment 2\nX = 0.2345 X 103 Y = 0.0120 X 103\n\n\nSegment 1\nZ = 0.24653\n\n\nSegment 1\n정규화(항상 0으로 표현): Z = 0.024654\n\n\n명령어 파이프라인\n명령어 사이클의 fetch, 디코드, 실행단계를 중첩사켜 명령어 흐름에 동시에 동작\n\n\n취약점 \n\n하지만 현재 파이프라인은 모두 비워져 있어야한다.\n분기명령(Branch) 이후의 명령어는 무시된다.\n세그먼트 수행시간이 서로다르다.\n\n\n효율적인 명령어 파이프라인?\n\n명령어 fetch장치\nFIFO 에 의한 큐로 구성하여 queuing 기법으로, 메모리를 참조 하도록 하여 접근시간을 줄인다.\n\n\n두개 이상의 세그먼트에 의해 주소참조 충돌이 일어날 수 있다.\n우선권을 주는 로직 필요\n\n\n\n\n\n\n파이프라인 CPU파이프라인 분기예측\n명령어 파이프라인이 비정상적인 동작을 하는 요인\n\n1) 자원충돌 \n명령어 메모리와 데이터 메모리를 분리하여 해결\n\n\n2) 데이터 의존성: 아직 준비되지 않은 데이터를 기다림\n하드웨어 인터락\n피연산자가 먼저 앞선 명령어의 목적지와 일치하는지 검사\n피연산자가 준비되지 않았다면 충돌을 충분히 피할만큼의 클럭사이클을 둔다.\n\n\n오퍼랜드 포워딩 : 충돌시 특별한 통로를 통해서 직접 세그먼트에 전달.\n\n\n3) 주소 의존성: 간접모드를 사용하는 명령어는 주소를 참조할 경우 메모리로부터 바로 fetch 되지 못한다.\n4) 분기 곤란: 분기 명령어같이 PC값을 바꾸려는 명령어에 의해 발생\n\n\n분기 명령어 처리\n\n조건,무조건 분기는 파이프라인의 정상적인 프로그램 순서를 바꿔버린다.\n컴퓨터 성능 저하\n\n\n분기 목표 버퍼 (branch target buffer, BTB)\nfetch 세그먼트에 속해있는 associative memory(주소가 아닌 내용에 의해 검색가능한 장치)\n일종의 레지스터로, 이전에 실행된 분기 명령어와 목표 명령어를 저장하여 활용한다. (loop buffer)\n\n\n\n\n\nRISC Processor\n실행 명령어 수는 증가, 작업 처리시간 감소 가능명령어당 실행 클록수와 클록주기를 파이프라인 구조로 감소 가능\n\n\nRISC Processor 구조적 특징\n명령어 1사이클 실행을 위한 온칩 캐쉬\n간단한 명령코드, 주소지정 모드\n신속한 오퍼랜드 참조/문맥 전환을 위한 레지스터 집합\n\n\n\n결론\n파이프라인의 이론적 최대속도 증가율은 세그먼트 수와 같다.\n\n그렇다면 세그먼트가 많을 수록 효과적일까?실제 상황은 그렇지 않다.\n\n\n\n모든 명령어는 동일한 처리 과정으로 처리되어야 한다.\n파이프라인을 구성하는 각 단계의 처리시간이 일정해야한다.\n모든 명령어는 순차적으로 실행되어야 한다.\n각 명령어 사이에는 의존성이 없어야 한다.\n명령어들 처리시 공유자원의 충돌이 없어야 한다.\n","dateCreated":"2021-06-07T10:50:54+09:00","dateModified":"2021-06-16T09:47:39+09:00","datePublished":"2021-06-07T10:50:54+09:00","description":"파이프라인은 무조건 성능이 좋을까?세그먼트 수가 많을 수록 효과적인걸까?#segment #RISC_Processor","headline":"⛓ 컴퓨터구조-파이프라인","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2021/06/07/%ED%8C%8C%EC%9D%B4%ED%94%84%EB%9D%BC%EC%9D%B8/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2021/06/07/%ED%8C%8C%EC%9D%B4%ED%94%84%EB%9D%BC%EC%9D%B8/","keywords":"computer_science"}</script>
+                                <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\n병렬처리\n컴퓨터 시스템의 계산 속도의 향상을 목적으로 동시 데이터 처리기능을 제공하는 광범위한 개념의 기술.\n\n다중 기능장치를 가진 레지스터\n실행 장치를 동시에 동작되는 8개의 기능장치로 나눔\n\n\n병렬처리 구조 분류방법 by M.J Flynn\nSISD : 단일 명령어, 단일 데이터\nSIMD : 단일 명령어, 다중 데이터\nMISD : 다중 명령어, 단일 데이터\nMIMD : - 다중 명령어, 다중 데이터\n여러 프로그램 동시수행 능력\n대부분의 다중 프로세서와 다중 컴퓨터 시스템\n\n\n\n\n파이프 라인파이프라인 구조 성능\n파이프 라인의 동작은 공간, 시간표에 의해 설명되는데, 이것은 시간에 대한 함수로서 세그먼트의 사용현황 을 나타낸다.\n동일한 복잡도의 부연산들로 이루어지는 연산동작도 구현가능하다.\n매번 다른 집합을 동일한 태스크에 적용해, 반복적인 일에 효과적이다.\n그러나, 각 레지스터 Ri 에 분리되는 작업들의 업무강도가 비슷해야 한다. 업무강도가 가장 높은 작업에 비중을 둘 수 밖에 없어서 유휴시간이 생긴다.\n\n\n파이프라인의 이론적 최대속도 증가율은 세그먼트 수와 같다.\n\n그렇다면, 세그먼트가 많을 수록 효과적일까?\n\n\n클럭 사이클시간\n\n\n\n\n위와 같은 파이프라인의 클럭 사이클시간을 구하는 공식은 아래와 같다.k + (n-1)(= k개의 세그먼트 파이프라인에서 n개의 데스크를 수행)즉 위의 식에 대입하면 4 + (6-1)= 9:: 9개의 클럭사이클을 수행한다.\n\n파이프라인 구현\n하나의 프로세스를 서로 다른 기능을 가진 서브프로세스로 나누어 각 프로세스가 동시에 서로 다른 데이터를 취급하도록 하는 기법\n\n각 세그먼트에서 수행된 연산결과는 다음 세그먼트로 연속적으로 넘어간다.\n\n마지막 세그먼트를 통과하게되면 최종 연산결과를 얻는다.\n하나의 프로세스를 다양한 연산으로 중복시킬 수 있는 근간은 세그먼트마다의 레지스터이다.\n\n\n곱셈과 덧셈이 섞인 다항식 연산Ai X Bi + Ci (i= 1,2,3 …7)\n\nR1 ~ R5 레지스터와 조합논리회로 (Adder, Multiplier) 구성\n\n\n\n\n\n\n\n수도코드\n\n\n수도코드\n설명\n\n\n\nR1 &lt;- Ai, R2 &lt;- Bi\nAi와 Bi의 입력\n\n\nR1 &lt;- R1 X R2, R4 &lt;- Ci\n곱셈과 Ci의 입력\n\n\nR1 &lt;- R3 + R4\n곱셈 결과와 Ci의 덧셈\n\n\n\n\n\n\n\n\n세번의 clock pulse이후부터 R5의 첫번째 결과획득 및 파이프 라인상에서 데이터 이동시작\n\n\n\n\n파이프라인 데이터 처리\n\n예시\n각 세그먼트에서 부연산 수행 소요시간: tp= 20ns\n파이프 라인은 k=4 세그먼트\n태스크의 수: n=100\n\n\n\n\n파이프라인 구조를 활용한 경우 총 소요시간\n\n(k+ n-1)tp = (4+100-1) X 20 = 2060ns\n\n비파이프라인 시스템\n\n각 태스크 완료시간: tn= ktp = 4 X 20 = 80ns\n전체 태스크 완료시간: nktp = 100 X 80 = 8000ns\n\n:: 속도 증가율을 확인할 수 있다.\n\n8000/2060 = 3.88 ~= 4\n\n\n현실적인 파이프라인파이프라인 VS 병렬 다중기능 장치\n파이프라인\n실제 파이프라인 구조는 이론적인 최대속도 구현 불가\n각 세그먼트들이 부연산을 수행하는 시간이 다르기 때문이다.\n\n\n최대 전파시간을 갖는 세그먼트의 지연시간에 맞춰야한다.\n\n\n병렬 다중기능 장치\n그래서, 병렬적인 다중기능장치를 고려 할 수 있다.\n순차적 처리가 아닌, 데이터를 동시입력 받아 태스크를 동시에 처리한다. (SIMD구조)\n\n\n\n파이프라인 구조산술 파이프라인\n산술 연산들을 부연산으로 나누어 파이프라인의 세그먼트에서 수행\n\n불필요한 작업을 줄일 수 있다.\neg. 부동 소수점 연산, 과학계산 등\n\n\n부동 소수점 덧셈/뺄셈을 위한 파이프라인\n\n초기값이 아래와 같은 X, Y 의 ADD 연산을 산술파이프라인을 사용한다면, 표와같이 나타난다.X = 0.2345 X 103Y = 0.1200 X 102\n\n\n\n\n\n\nsegment\nresult\n\n\n\nSegment 1\n값이 큰 지수에 맞춘다:3\n\n\nSegment 2\nX = 0.2345 X 103 Y = 0.0120 X 103\n\n\nSegment 1\nZ = 0.24653\n\n\nSegment 1\n정규화(항상 0으로 표현): Z = 0.024654\n\n\n명령어 파이프라인\n명령어 사이클의 fetch, 디코드, 실행단계를 중첩사켜 명령어 흐름에 동시에 동작\n\n\n취약점 \n\n하지만 현재 파이프라인은 모두 비워져 있어야한다.\n분기명령(Branch) 이후의 명령어는 무시된다.\n세그먼트 수행시간이 서로다르다.\n\n\n효율적인 명령어 파이프라인?\n\n명령어 fetch장치\nFIFO 에 의한 큐로 구성하여 queuing 기법으로, 메모리를 참조 하도록 하여 접근시간을 줄인다.\n\n\n두개 이상의 세그먼트에 의해 주소참조 충돌이 일어날 수 있다.\n우선권을 주는 로직 필요\n\n\n\n\n\n\n파이프라인 CPU파이프라인 분기예측\n명령어 파이프라인이 비정상적인 동작을 하는 요인\n\n1) 자원충돌 \n명령어 메모리와 데이터 메모리를 분리하여 해결\n\n\n2) 데이터 의존성: 아직 준비되지 않은 데이터를 기다림\n하드웨어 인터락\n피연산자가 먼저 앞선 명령어의 목적지와 일치하는지 검사\n피연산자가 준비되지 않았다면 충돌을 충분히 피할만큼의 클럭사이클을 둔다.\n\n\n오퍼랜드 포워딩 : 충돌시 특별한 통로를 통해서 직접 세그먼트에 전달.\n\n\n3) 주소 의존성: 간접모드를 사용하는 명령어는 주소를 참조할 경우 메모리로부터 바로 fetch 되지 못한다.\n4) 분기 곤란: 분기 명령어같이 PC값을 바꾸려는 명령어에 의해 발생\n\n\n분기 명령어 처리\n\n조건,무조건 분기는 파이프라인의 정상적인 프로그램 순서를 바꿔버린다.\n컴퓨터 성능 저하\n\n\n분기 목표 버퍼 (branch target buffer, BTB)\nfetch 세그먼트에 속해있는 associative memory(주소가 아닌 내용에 의해 검색가능한 장치)\n일종의 레지스터로, 이전에 실행된 분기 명령어와 목표 명령어를 저장하여 활용한다. (loop buffer)\n\n\n\n\n\nRISC Processor\n실행 명령어 수는 증가, 작업 처리시간 감소 가능명령어당 실행 클록수와 클록주기를 파이프라인 구조로 감소 가능\n\n\nRISC Processor 구조적 특징\n명령어 1사이클 실행을 위한 온칩 캐쉬\n간단한 명령코드, 주소지정 모드\n신속한 오퍼랜드 참조/문맥 전환을 위한 레지스터 집합\n\n\n\n결론\n파이프라인의 이론적 최대속도 증가율은 세그먼트 수와 같다.\n\n그렇다면 세그먼트가 많을 수록 효과적일까?실제 상황은 그렇지 않다.\n\n\n\n모든 명령어는 동일한 처리 과정으로 처리되어야 한다.\n파이프라인을 구성하는 각 단계의 처리시간이 일정해야한다.\n모든 명령어는 순차적으로 실행되어야 한다.\n각 명령어 사이에는 의존성이 없어야 한다.\n명령어들 처리시 공유자원의 충돌이 없어야 한다.\n","dateCreated":"2021-06-07T10:50:54+09:00","dateModified":"2021-06-16T09:47:39+09:00","datePublished":"2021-06-07T10:50:54+09:00","description":"파이프라인은 무조건 성능이 좋을까?세그먼트 수가 많을 수록 효과적인걸까?#segment #RISC_Processor","headline":"⛓ 컴퓨터구조-파이프라인","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2021/06/07/%ED%8C%8C%EC%9D%B4%ED%94%84%EB%9D%BC%EC%9D%B8/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2021/06/07/%ED%8C%8C%EC%9D%B4%ED%94%84%EB%9D%BC%EC%9D%B8/","keywords":"computer_science"}</script>
                                     <meta name="description" content="파이프라인은 무조건 성능이 좋을까?세그먼트 수가 많을 수록 효과적인걸까?#segment #RISC_Processor">
 <meta property="og:type" content="blog">
 <meta property="og:title" content="⛓ 컴퓨터구조-파이프라인">
@@ -81,6 +76,10 @@
     
 
 <header id="header" data-behavior="4">
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js"></script>
+    <script src="https://kit.fontawesome.com/cfcae25ced.js" crossorigin="anonymous"></script>
     <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
     <div class="header-title">
         <a
@@ -126,13 +125,35 @@
                 </a>
                 <h4 class="sidebar-profile-name">Suyan Kim</h4>
                 
-                    <h5 class="sidebar-profile-bio"><p>▲ Who Am I</p>
+                    <h5 class="sidebar-profile-bio"><p><strong><a target="_blank" rel="noopener" href="https://nice-spectrum-2aa.notion.site/Suyeon-Kim-09e271916a504e24a5307e9f67d7bc16">Click 👀 Resume</a></strong></p>
 </h5>
                 
             </div>
         
         
             <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="https://nice-spectrum-2aa.notion.site/Suyeon-Kim-09e271916a504e24a5307e9f67d7bc16" target="_blank" rel="noopener" title="resume 👀">
+                    
+                    <i class="sidebar-button-icon far fa-smile-wink" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">resume 👀</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="https://github.com/ksso730" target="_blank" rel="noopener" title="github">
+                    
+                    <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">github</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
             
                 <li class="sidebar-button">
                     
@@ -183,7 +204,7 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (10)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (15)</a></li>
                             
                         
                             
@@ -199,7 +220,7 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Git/">☁️ Git (3)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Git/">☁️ Git (4)</a></li>
                             
                         
                             
@@ -219,7 +240,9 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-NodeJS/">☁️ NodeJS (1)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-NodeJS/">☁️ NodeJS (8)</a></li>
+                            
+                        
                             
                         
                             
@@ -235,11 +258,11 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Spring/">☁️ Spring (1)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Spring/">☁️ Spring (2)</a></li>
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-TIL/">☁️ TIL (10)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-TIL/">☁️ TIL (9)</a></li>
                             
                         
                     
@@ -260,35 +283,9 @@
                     
                 </li>
             
-                <li class="sidebar-button">
-                    
-                        <a  class="sidebar-button-link "
-                             
-                                title="about"href="#about"
-                                
-                                >
-                    
-                    <i class="sidebar-button-icon fa fa-question" aria-hidden="true"></i>
-                    <span class="sidebar-button-desc">about</span>
-                        </a>
-                    <!-- add -->
-                    
-                </li>
-            
         </ul>
         
             <ul class="sidebar-buttons">
-            
-                <li class="sidebar-button">
-                    
-                        <a  class="sidebar-button-link " href="https://github.com/ksso730" target="_blank" rel="noopener" title="github">
-                    
-                    <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
-                    <span class="sidebar-button-desc">github</span>
-                        </a>
-                    <!-- add -->
-                    
-                </li>
             
                 <li class="sidebar-button">
                     
@@ -733,6 +730,7 @@
         Copyrights &copy; 2021 Suyan Kim. All Rights Reserved.
     </span>
 </footer>
+
             </div>
             
                 <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">

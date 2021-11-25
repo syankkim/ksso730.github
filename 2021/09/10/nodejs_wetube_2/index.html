@@ -1,0 +1,793 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="generator" content="동글씨">
+        <title>
+            NodeJS - middleware (feat.morgan) - 동글씨
+        </title>
+        <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+        <meta name="author" content="Suyan Kim">
+        
+                
+                        
+                            <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
+                            
+                                <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\n\nmiddleware ?\n작업을 다음 함수에게 넘기는 함수.const handleEvnt = (req, res, next) =&gt; { next(); };\n\n\n모든 controller는 middleware가 될 수 있고, 모든 middleware는 middleware가 될 수 있다.\n연결이 중단되면 middleware가 아니다.\nnext() 함수를 사용하면 다음 get method 가 작동된다.\n어떤 조건에 따라 send() 혹은 next() 를 호출 할 수 있다.\napp.use() 를 사용한다.\n\n\nget() 요청 시, middleware 실행\n\n1234567891011const middlewr = (req, res, next) =&gt; &#123;    console.log(&quot;middle here&quot;);    next();&#125;;const handleEvnt = (req, res) =&gt; &#123;    console.log(&quot;handleEvnt here&quot;);    return res.send(&quot;&lt;h1&gt;ByeBye&lt;/h1&gt;&quot;);&#125;;app.get(&quot;/&quot;, middlewr, handleEvnt);\n\n\n실행결과\n\n123✅ Server listening on port http://localhost:4001middle herehandleEvnt here\n\n모든 route에 적용\nmiddleware 를 가장 상위에 두면 어떤 url을 접속해도 선행된다.\n\n\nrequest method 와 url을 찍는 logger 라는 middleware 를 생성\n\n12345678910// logger middlewareconst logger = (req, res, next) =&gt; &#123;    console.log(`$&#123;req.method&#125; $&#123;req.url&#125;`);    next();&#125;;// middlewareapp.use(logger)// Homeapp.get(&quot;/&quot;, handleEvnt);\n\n\n\n\n실행결과\n\n\n\n\n\n\n\nroot가 아닌 다른 페이지를 호출해도, middleware가 수행됨을 확인\n\n\n\n\n특정 url을 확인하는 middleware\n어떤 조건에 따라 send() 혹은 next() 를 호출 할 수 있다.\n\n\nurl이 /protected 라면, 허용하지 않는다는 메시지를 send 한다.\n\n12345678910111213141516171819202122232425262728293031323334import express from &quot;express&quot;;const app = express();// logger middlewareconst logger = (req, res, next) =&gt; &#123;    console.log(`$&#123;req.method&#125; $&#123;req.url&#125;`);    next();&#125;;// private middlewareconst privateMiddlewr = (req, res, next) =&gt; &#123;    const url = req.url;    if(url===&quot;/protected&quot;)&#123;        return res.send(&quot;&lt;h1&gt;Not Allowed&lt;/h1&gt;&quot;)    &#125;    console.log(&quot;allowed, you may continue.&quot;);    next();&#125;;const handleEvnt = (req, res) =&gt; &#123;    console.log(&quot;handleEvnt here&quot;);    return res.send(&quot;&lt;h1&gt;Home&lt;/h1&gt;&quot;);&#125;;const handleProtected = (req, res) =&gt; &#123;    return res.send(&quot;This site is private.&quot;)&#125;;// app.use 에 넣은 middleware는 get 요청 이전에 수행된다.app.use(logger)app.use(privateMiddlewr);app.get(&quot;/&quot;, handleEvnt);app.get(&quot;/protected&quot;, handleProtected);\n\n\n\n\n\n\n\nmorgan\nnode.js용 request logger middleware 이다.설치하고 사용해보자. npm i morgan\n\n\n이전 코드에 logger로 만들었던 middleware 대신에 margan 을 사용한 logger를 추가해준다.\n\n1234import margan from &quot;morgan&quot;;const logger = morgan(&quot;dev&quot;);app.use(logger);\n\n\n\nmorgan 은 GET, path, status code 모든 정보를 가지고 있다.\n\n1234567✅ Server listening on port http://localhost:4001allowed, you may continue.handleEvnt hereGET / 200 4.390 ms - 13allowed, you may continue.GET /favicon.ico 404 2.161 ms - 150GET /protected 304 0.395 ms - -","dateCreated":"2021-09-10T16:42:47+09:00","dateModified":"2021-11-04T10:14:49+09:00","datePublished":"2021-09-10T16:42:47+09:00","description":"express의 다양한 application을 사용한 서버와 통신, middleware#express #request #middleware #next() #morgan","headline":"NodeJS - middleware (feat.morgan)","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2021/09/10/nodejs_wetube_2/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2021/09/10/nodejs_wetube_2/","keywords":"nodejs, express"}</script>
+                                    <meta name="description" content="express의 다양한 application을 사용한 서버와 통신, middleware#express #request #middleware #next() #morgan">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="NodeJS - middleware (feat.morgan)">
+<meta property="og:url" content="http://yoursite.com/2021/09/10/nodejs_wetube_2/index.html">
+<meta property="og:site_name" content="동글씨">
+<meta property="og:description" content="express의 다양한 application을 사용한 서버와 통신, middleware#express #request #middleware #next() #morgan">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://user-images.githubusercontent.com/28856435/132984228-4a8fb556-e06c-45a9-adce-9f4ef3fa394e.png">
+<meta property="og:image" content="https://user-images.githubusercontent.com/28856435/132984190-b76d253f-ecf2-4d7a-9278-02bb40a3a67e.png">
+<meta property="og:image" content="https://user-images.githubusercontent.com/28856435/132984243-2d717221-025c-4f98-a043-65cb2029fb85.png">
+<meta property="article:published_time" content="2021-09-10T07:42:47.000Z">
+<meta property="article:modified_time" content="2021-11-04T01:14:49.630Z">
+<meta property="article:author" content="Suyan Kim">
+<meta property="article:tag" content="nodejs">
+<meta property="article:tag" content="express">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://user-images.githubusercontent.com/28856435/132984228-4a8fb556-e06c-45a9-adce-9f4ef3fa394e.png">
+                                        
+                                                
+                                                    
+                                                            
+                                                                
+                                                                    <meta property="og:image" content="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=640" />
+                                                                    
+                                                                            
+                                                                                    
+                                                                                            
+                                                                                                            <!--STYLES-->
+                                                                                                            
+<link rel="stylesheet" href="/assets/css/tranquilpeak.css">
+
+                                                                                                            <!--STYLES END-->
+                                                                                                                
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-158530470-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-158530470-1');
+    </script>
+
+
+                                                                                                                    
+
+                                                                                                                        
+                                                                                                                            
+                                                                                                                                                
+    </head>
+    <body>
+        <div id="blog">
+            <!-- Define author's picture -->
+
+
+    
+        
+    
+
+<header id="header" data-behavior="4">
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js"></script>
+    <script src="https://kit.fontawesome.com/cfcae25ced.js" crossorigin="anonymous"></script>
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <div class="header-title">
+        <a
+            class="header-title-link"
+            href="/index.html"
+            aria-label=""
+        >
+            동글씨
+        </a>
+    </div>
+    
+        
+            <a
+                class="header-right-picture "
+                href="#about"
+                aria-label="Open the link: /#about"
+            >
+        
+        
+            <img class="header-picture" src="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=90" alt="Author&#39;s picture"/>
+        
+        </a>
+    
+</header>
+
+            <!-- function -->
+
+
+<!-- Define author's picture -->
+
+
+    
+
+<nav id="sidebar" data-behavior="4">
+    <div class="sidebar-container">
+        
+            <div class="sidebar-profile">
+                <a
+                    href="/#about"
+                    aria-label="Read more about the author"
+                >
+                    <img class="sidebar-profile-picture" src="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=800" alt="Author&#39;s picture"/>
+                </a>
+                <h4 class="sidebar-profile-name">Suyan Kim</h4>
+                
+                    <h5 class="sidebar-profile-bio"><p><strong><a target="_blank" rel="noopener" href="https://nice-spectrum-2aa.notion.site/Suyeon-Kim-09e271916a504e24a5307e9f67d7bc16">Click 👀 Resume</a></strong></p>
+</h5>
+                
+            </div>
+        
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="https://nice-spectrum-2aa.notion.site/Suyeon-Kim-09e271916a504e24a5307e9f67d7bc16" target="_blank" rel="noopener" title="resume 👀">
+                    
+                    <i class="sidebar-button-icon far fa-smile-wink" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">resume 👀</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="https://github.com/ksso730" target="_blank" rel="noopener" title="github">
+                    
+                    <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">github</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="home"href="/index.html"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-home" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">home</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="archives"href="/all-archives"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-archive" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">archives</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="categories"href="/all-categories"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-bookmark" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">categories</span>
+                        </a>
+                    <!-- add -->
+                    
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-AWS/">☁️ AWS (0)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (15)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Config/">☁️ Config (2)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-DataBase/">☁️ DataBase (1)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Django/">☁️ Django (1)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Git/">☁️ Git (4)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-JPA/">☁️ JPA (10)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Java/">☁️ Java (0)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Linux/">☁️ Linux (6)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Network/">☁️ Network (1)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-NodeJS/">☁️ NodeJS (8)</a></li>
+                            
+                        
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-OS/">☁️ OS (14)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Python/">☁️ Python (2)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-React/">☁️ React (3)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Spring/">☁️ Spring (2)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-TIL/">☁️ TIL (9)</a></li>
+                            
+                        
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="tags"href="/all-tags"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-tags" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">tags</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="https://www.instagram.com/syankkim/" target="_blank" rel="noopener" title="life">
+                    
+                    <i class="sidebar-button-icon fab fa-instagram" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">life</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+        </ul>
+        
+    </div>
+</nav>
+
+            
+            <div id="main" data-behavior="4"
+                 class="
+                        hasCoverMetaIn
+                        ">
+                
+<article class="post">
+    
+    
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title">
+            NodeJS - middleware (feat.morgan)
+        </h1>
+    
+    
+        <div class="post-meta">
+    <time datetime="2021-09-10T16:42:47+09:00">
+	
+		    Sep 10, 2021
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/%E2%98%81%EF%B8%8F-NodeJS/">☁️ NodeJS</a>
+
+
+    
+</div>
+
+    
+</div>
+
+    
+    <div class="post-content markdown">
+        <div class="main-content-wrap">
+            <!-- excerpt -->
+
+<h1 id="table-of-contents">Contents</h1><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#middleware"><span class="toc-text">middleware ?</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%EB%AA%A8%EB%93%A0-route%EC%97%90-%EC%A0%81%EC%9A%A9"><span class="toc-text">모든 route에 적용</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%ED%8A%B9%EC%A0%95-url%EC%9D%84-%ED%99%95%EC%9D%B8%ED%95%98%EB%8A%94-middleware"><span class="toc-text">특정 url을 확인하는 middleware</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#morgan"><span class="toc-text">morgan</span></a></li></ol>
+
+<hr>
+<h1 id="middleware"><a href="#middleware" class="headerlink" title="middleware ?"></a>middleware ?</h1><blockquote>
+<p>작업을 다음 함수에게 넘기는 함수.<br>const handleEvnt = (req, res, next) =&gt; { next(); };</p>
+</blockquote>
+<ul>
+<li>모든 controller는 middleware가 될 수 있고, 모든 middleware는 middleware가 될 수 있다.</li>
+<li>연결이 중단되면 middleware가 아니다.</li>
+<li><code>next()</code> 함수를 사용하면 다음 get method 가 작동된다.</li>
+<li>어떤 조건에 따라 <code>send() 혹은 next()</code> 를 호출 할 수 있다.</li>
+<li><code>app.use()</code> 를 사용한다.</li>
+</ul>
+<ul>
+<li>get() 요청 시, middleware 실행</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> middlewr = <span class="function">(<span class="params">req, res, next</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">&quot;middle here&quot;</span>);</span><br><span class="line">    next();</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> handleEvnt = <span class="function">(<span class="params">req, res</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">&quot;handleEvnt here&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span> res.send(<span class="string">&quot;&lt;h1&gt;ByeBye&lt;/h1&gt;&quot;</span>);</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">app.get(<span class="string">&quot;/&quot;</span>, middlewr, handleEvnt);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>실행결과</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">✅ Server listening on port http://localhost:4001</span><br><span class="line">middle here</span><br><span class="line">handleEvnt here</span><br></pre></td></tr></table></figure>
+
+<h2 id="모든-route에-적용"><a href="#모든-route에-적용" class="headerlink" title="모든 route에 적용"></a>모든 route에 적용</h2><blockquote>
+<p>middleware 를 가장 상위에 두면 어떤 url을 접속해도 선행된다.</p>
+</blockquote>
+<ul>
+<li>request method 와 url을 찍는 logger 라는 middleware 를 생성</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// logger middleware</span></span><br><span class="line"><span class="keyword">const</span> logger = <span class="function">(<span class="params">req, res, next</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">`<span class="subst">$&#123;req.method&#125;</span> <span class="subst">$&#123;req.url&#125;</span>`</span>);</span><br><span class="line">    next();</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// middleware</span></span><br><span class="line">app.use(logger)</span><br><span class="line"><span class="comment">// Home</span></span><br><span class="line">app.get(<span class="string">&quot;/&quot;</span>, handleEvnt);</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<ul>
+<li>실행결과</li>
+</ul>
+<img width="712" alt="스크린샷 2021-09-12 오후 7 17 09" src="https://user-images.githubusercontent.com/28856435/132984228-4a8fb556-e06c-45a9-adce-9f4ef3fa394e.png">
+
+<br>
+<br>
+
+<ul>
+<li>root가 아닌 다른 페이지를 호출해도, middleware가 수행됨을 확인</li>
+</ul>
+<img width="698" alt="스크린샷 2021-09-12 오후 7 08 31" src="https://user-images.githubusercontent.com/28856435/132984190-b76d253f-ecf2-4d7a-9278-02bb40a3a67e.png">
+
+
+<h2 id="특정-url을-확인하는-middleware"><a href="#특정-url을-확인하는-middleware" class="headerlink" title="특정 url을 확인하는 middleware"></a>특정 url을 확인하는 middleware</h2><blockquote>
+<p>어떤 조건에 따라 send() 혹은 next() 를 호출 할 수 있다.</p>
+</blockquote>
+<ul>
+<li>url이 <code>/protected</code> 라면, 허용하지 않는다는 메시지를 <code>send</code> 한다.</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> express <span class="keyword">from</span> <span class="string">&quot;express&quot;</span>;</span><br><span class="line"><span class="keyword">const</span> app = express();</span><br><span class="line"></span><br><span class="line"><span class="comment">// logger middleware</span></span><br><span class="line"><span class="keyword">const</span> logger = <span class="function">(<span class="params">req, res, next</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">`<span class="subst">$&#123;req.method&#125;</span> <span class="subst">$&#123;req.url&#125;</span>`</span>);</span><br><span class="line">    next();</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// private middleware</span></span><br><span class="line"><span class="keyword">const</span> privateMiddlewr = <span class="function">(<span class="params">req, res, next</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> url = req.url;</span><br><span class="line">    <span class="keyword">if</span>(url===<span class="string">&quot;/protected&quot;</span>)&#123;</span><br><span class="line">        <span class="keyword">return</span> res.send(<span class="string">&quot;&lt;h1&gt;Not Allowed&lt;/h1&gt;&quot;</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">&quot;allowed, you may continue.&quot;</span>);</span><br><span class="line">    next();</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> handleEvnt = <span class="function">(<span class="params">req, res</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">&quot;handleEvnt here&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span> res.send(<span class="string">&quot;&lt;h1&gt;Home&lt;/h1&gt;&quot;</span>);</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> handleProtected = <span class="function">(<span class="params">req, res</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> res.send(<span class="string">&quot;This site is private.&quot;</span>)</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// app.use 에 넣은 middleware는 get 요청 이전에 수행된다.</span></span><br><span class="line">app.use(logger)</span><br><span class="line">app.use(privateMiddlewr);</span><br><span class="line">app.get(<span class="string">&quot;/&quot;</span>, handleEvnt);</span><br><span class="line">app.get(<span class="string">&quot;/protected&quot;</span>, handleProtected);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<br>
+
+<img width="702" alt="스크린샷 2021-09-12 오후 7 18 27" src="https://user-images.githubusercontent.com/28856435/132984243-2d717221-025c-4f98-a043-65cb2029fb85.png">
+
+<br>
+
+<h1 id="morgan"><a href="#morgan" class="headerlink" title="morgan"></a>morgan</h1><blockquote>
+<p>node.js용 request logger middleware 이다.<br>설치하고 사용해보자. <code>npm i morgan</code></p>
+</blockquote>
+<ul>
+<li>이전 코드에 logger로 만들었던 middleware 대신에 <code>margan</code> 을 사용한 logger를 추가해준다.</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> margan <span class="keyword">from</span> <span class="string">&quot;morgan&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> logger = morgan(<span class="string">&quot;dev&quot;</span>);</span><br><span class="line">app.use(logger);</span><br></pre></td></tr></table></figure>
+<br>
+
+<ul>
+<li>morgan 은 GET, path, status code 모든 정보를 가지고 있다.</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">✅ Server listening on port http://localhost:4001</span><br><span class="line">allowed, you may <span class="built_in">continue</span>.</span><br><span class="line">handleEvnt here</span><br><span class="line">GET / 200 4.390 ms - 13</span><br><span class="line">allowed, you may <span class="built_in">continue</span>.</span><br><span class="line">GET /favicon.ico 404 2.161 ms - 150</span><br><span class="line">GET /protected 304 0.395 ms - -</span><br></pre></td></tr></table></figure>
+            
+
+
+        </div>
+    </div>
+    <div id="post-footer" class="post-footer main-content-wrap">
+        
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">TAGGED IN</span><br/>
+                
+    <a class="tag tag--primary tag--small t-none-link" href="/tags/express/" rel="tag">express</a> <a class="tag tag--primary tag--small t-none-link" href="/tags/nodejs/" rel="tag">nodejs</a>
+
+            </div>
+        
+        
+            <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2021/09/15/nodejs_wetube_3_router/"
+                    data-tooltip="NodeJS - Router"
+                    aria-label="PREVIOUS: NodeJS - Router"
+                >
+                    
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                    </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2021/09/09/nodejs_wetube_1/"
+                    data-tooltip="NodeJS란? 프로젝트 시작."
+                    aria-label="NEXT: NodeJS란? 프로젝트 시작."
+                >
+                    
+                        <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a
+                class="post-action-btn btn btn--default btn-open-shareoptions"
+                href="#btn-open-shareoptions"
+                aria-label="Share this post"
+            >
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2021/09/10/nodejs_wetube_2/"
+                    title="Share on Facebook"
+                    aria-label="Share on Facebook"
+                >
+                    <i class="fab fa-facebook" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2021/09/10/nodejs_wetube_2/"
+                    title="Share on Twitter"
+                    aria-label="Share on Twitter"
+                >
+                    <i class="fab fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://plus.google.com/share?url=http://yoursite.com/2021/09/10/nodejs_wetube_2/"
+                    title="Share on Google+"
+                    aria-label="Share on Google+"
+                >
+                    <i class="fab fa-google-plus" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+                <li class="post-action">
+                    <a
+                        class="post-action-btn btn btn--default"
+                        href="#disqus_thread"
+                        aria-label="Leave a comment"
+                    >
+                        <i class="fa fa-comment"></i>
+                    </a>
+                </li>
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#table-of-contents" aria-label="Contents">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+        
+        
+            
+                <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+            
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2021 Suyan Kim. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2021/09/15/nodejs_wetube_3_router/"
+                    data-tooltip="NodeJS - Router"
+                    aria-label="PREVIOUS: NodeJS - Router"
+                >
+                    
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                    </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2021/09/09/nodejs_wetube_1/"
+                    data-tooltip="NodeJS란? 프로젝트 시작."
+                    aria-label="NEXT: NodeJS란? 프로젝트 시작."
+                >
+                    
+                        <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a
+                class="post-action-btn btn btn--default btn-open-shareoptions"
+                href="#btn-open-shareoptions"
+                aria-label="Share this post"
+            >
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2021/09/10/nodejs_wetube_2/"
+                    title="Share on Facebook"
+                    aria-label="Share on Facebook"
+                >
+                    <i class="fab fa-facebook" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2021/09/10/nodejs_wetube_2/"
+                    title="Share on Twitter"
+                    aria-label="Share on Twitter"
+                >
+                    <i class="fab fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://plus.google.com/share?url=http://yoursite.com/2021/09/10/nodejs_wetube_2/"
+                    title="Share on Google+"
+                    aria-label="Share on Google+"
+                >
+                    <i class="fab fa-google-plus" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+                <li class="post-action">
+                    <a
+                        class="post-action-btn btn btn--default"
+                        href="#disqus_thread"
+                        aria-label="Leave a comment"
+                    >
+                        <i class="fa fa-comment"></i>
+                    </a>
+                </li>
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#table-of-contents" aria-label="Contents">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                
+    <div id="share-options-bar" class="share-options-bar" data-behavior="4">
+        <i id="btn-close-shareoptions" class="fa fa-times"></i>
+        <ul class="share-options">
+            
+                
+                
+                <li class="share-option">
+                    <a
+                        class="share-option-btn"
+                        target="new"
+                        href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2021/09/10/nodejs_wetube_2/"
+                        aria-label="Share on Facebook"
+                    >
+                        <i class="fab fa-facebook" aria-hidden="true"></i><span>Share on Facebook</span>
+                    </a>
+                </li>
+            
+                
+                
+                <li class="share-option">
+                    <a
+                        class="share-option-btn"
+                        target="new"
+                        href="https://twitter.com/intent/tweet?text=http://yoursite.com/2021/09/10/nodejs_wetube_2/"
+                        aria-label="Share on Twitter"
+                    >
+                        <i class="fab fa-twitter" aria-hidden="true"></i><span>Share on Twitter</span>
+                    </a>
+                </li>
+            
+                
+                
+                <li class="share-option">
+                    <a
+                        class="share-option-btn"
+                        target="new"
+                        href="https://plus.google.com/share?url=http://yoursite.com/2021/09/10/nodejs_wetube_2/"
+                        aria-label="Share on Google+"
+                    >
+                        <i class="fab fa-google-plus" aria-hidden="true"></i><span>Share on Google+</span>
+                    </a>
+                </li>
+            
+        </ul>
+    </div>
+
+
+            
+        </div>
+        
+
+
+    
+
+<div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-times"></i>
+        </div>
+        
+            <img id="about-card-picture" src="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=110" alt="Author&#39;s picture"/>
+        
+            <h4 id="about-card-name">Suyan Kim</h4>
+        <!--  -->
+            <!-- <div id="about-card-bio"><p>author.bio</p>
+</div> -->
+            <div id="about-card-bio">안녕하세요, 서버 백엔드 개발자 동글씨입니다.</div>
+        <!--  -->
+        <!--  -->
+            <div id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <!-- <p>Backend Developer</p>
+ -->
+                Backend Developer
+            </div>
+        <!--  -->
+        
+            <div id="about-card-location">
+                <i class="fa fa-map-marker-alt"></i>
+                <br/>
+                Korea
+            </div>
+        
+    </div>
+</div>
+
+        
+        
+<div id="cover" style="background-image:url('/assets/images/null');"></div>
+        <!--SCRIPTS-->
+
+<script src="/assets/js/tranquilpeak.js"></script>
+
+<!--SCRIPTS END-->
+
+
+    
+        <script>
+          var disqus_config = function() {
+            this.page.url = 'http://yoursite.com/2021/09/10/nodejs_wetube_2/';
+              
+            this.page.identifier = '2021/09/10/nodejs_wetube_2/';
+              
+          };
+          (function() {
+            var d = document, s = d.createElement('script');
+            var disqus_shortname = 'ksso730-github-io';
+            s.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+          })();
+        </script>
+    
+
+
+
+
+    </body>
+</html>

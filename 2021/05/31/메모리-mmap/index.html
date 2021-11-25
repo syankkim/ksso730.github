@@ -4,11 +4,6 @@
     
 
     <head>
-        <script type="text/javascript" src="http://code.jquery.com/jquery-3.2.1.min.js"></script>
-        <script type="text/java script">
-            var $= jquery.noConflict();
-        </script>
-
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="generator" content="동글씨">
@@ -22,7 +17,7 @@
                         
                             <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
                             
-                                <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n메모리 &amp; mmapmmap 함수 사용12#include &lt;sys/mman.h&gt;void *mmap(void *addr, size_t len, int prot, int flags, int fildes, off_t off);\n\naddr: 매핑할 메모리 주소\nlen: 메모리 공간의 크기\nprot: 보호 모드\nflags: 매핑된 데이터의 처리 방법을 지정하는 상수\nfildes: 파일 기술자\noff: 파일 오프셋\n\n문제\n\n기존에 파일 - 프로세스 에 접근할경우,\n프로세스에서는 시스템콜, 스케줄러, 인터럽트 등의 기법을 사용하기 위해 OS가 처리할일이 많아서 \n파일을 가지고 있는 CPU에서는 DMA 나 SystemBus 를 사용해야 한다.\n즉, 성능이 떨어질 수 밖에 없다.\n\n해결\n\n파일 - 메모리 - 프로세스 : 중간에 메모리를 두어, 파일의 특정공간을 미리 메모리 영역에 매핑해둔다.\n자주 엑세스할 파일이 있다면, 프로세스는 메모리 영역에 접근하여 빠르게 읽어올 수 있다.\nmmap는 프로세스의 주소공간을 파일에 대응시킨다. 파일은 운영체제 전역적인 자원이므로 당연히 어렵잖게 다른 프로세스와 공유해서 사용할 수 있을 것이다.\n\nmmap 동작\nmmap 실행시, 가상 메모리 주소에 file 주소를 매핑한다. (페이지 디렉토리)\n해당 메모리 접근시(요구페이징, lazy allocation)\n\n\n페이지폴트 인터럽트 발생\nOS에서 file data 를 복사해서 물리메모리 페이지에 넣어준다.\n\n\n메모리 read: 해당 물리 페이지 데이터를 읽음\n메모리 write: 해당 물리 페이지 데이터 수정후, 페이지 상태 flag 중 dirty bit를 1로 수정\n파일 close: 물리 페이지 데이터가 file에 업데이트됨. (dirty bit 가 1인곳)\n\n파일, 메모리 가상메모리\n장점\nread(), write 시에 반복적인 파일접근을 방지하여 성능을 개선한다.\nmapping 된 영역은 파일 처리를 위한 lseek() file-&gt;data주소 찾아가는 함수를 사용하지 않고 간단한 포인터 조작으로 탐색.\n\n단점\n\nmmap은 내부적으로 가상메모리와 연관되어 페이지 사이즈 단위로 매핑된다. 그런데 고정된 페이지 사이즈 단위보다 클 경우 추가공간이 필요하고, 적을 경우 공간낭비(0으로 채움)가 일어난다.\n\n파일처리 성능개선 munmap\n*addr 에 mapping 된 물리 메모리 주소를 해제한다.\nlenght: mapping된 메모리크기 (mmap과 동일값)\n\n맵핑된 메모리 영역을 동기화 하는 방법\nMS_ASYNC: 비동기 방식으로 결과에 관계 없이 프로그램 속행\nMS_SYNC: 동기 방식으로 결과를 확인 후 프로그램 속행\nMS_ALERT: 동기화 후 시그널을 통해 알림.\nMS_INVALIDATE: 현제 메모리 맵을 무효화함.\n\n\ninode 방식 파일시스템\ninode의 메타데이터에는 아래와 같은 정보들이 포함된다.\n\n\nMode: 파일종류/권한\nOwner Info: 소유자,소울그룹\nSize: 파일사이즈\nTimestamps: 생성, 수정시간\nDirect blocks (12개): 직접적으로 주소가리킴\nSingle inderect, Double inderect, Triple inderect: 간접적 주소가리킴\n\n\n이러한 inode 메타데이터를 모두 가져오는 함수가 있다. stat 함수\n\nstat 함수\n사용 문법int stat(const char *path, struct stat *buf);*buf : 구조체 변수\n\n\nstat: 파일을 filepath 로 지정한다.\nfstat: 파일을 fd 넘버로 지정한다.\nlstat: 파일을 filepath 로 지정하되 지정된 파일이 심볼릭 링크 파일이면 링크파일 자체에 대한 정보를 얻는다.\n\n123456789101112131415struct stat &#123; dev_t     st_dev;  // ID of device containing file                          // :: 가상파일 시스템 file-system interface 를 사용하여 하단부에 있는 실제    디바이스의  종류는 달리할 수 있다. `추상화` `UNIX 모든것은 파일` ino_t     st_ino;  // inode number mode_t    st_mode;  // 파일 종류 및 접근권한 nlink_t   st_nlink;  // hardlink 의 횟수 uid_t     st_uid;  // 파일 owner gid_t     st_gid;  // group ID of owner off_t     st_size;  // 파일크기 blksize_t st_blksize; // blocksize for file system I/O blkcnt_t  st_blocks;  // number of 512B blocks allocated time_t    st_atime;  // time if last access time_t    st_mtime;  // time if last modification time_t    st_ctime;  // time if last status change&#125;\n\nstat-test.c 실습\n실제로 hello.txt 라는 파일의 메타데이터를 출력해보는 stat-test.c\n\n123456789101112131415#include&lt;stdio.h&gt;#include&lt;sys/stat.h&gt;int main()&#123;  int ret= 0;  struct stat buf;  ret= stat(&quot;hello.txt&quot;, &amp;buf);  if(ret &lt; 0)&#123;    printf(&quot;ERROR\\n&quot;);    return 0;  &#125;  printf(&quot;deviceId:%ld, inode:%ld, hardLinkCount:%ld, filesize: %ld, blockSize:%ld, blockCount:%ld \\n&quot;, buf.st_dev, buf.st_ino, buf.st_nlink, buf.st_size, buf.st_blksize, buf.st_blocks);  return 0;&#125;\n\n\n출력 결과\n\n12~$ ./stat-testdeviceId:51713, inode:256331, hardLinkCount:1, filesize: 7, blockSize:4096, blockCount:8\n\nStandard Stream 표준 입출력 스트림\n모든 스트림은 일반적인 plain text로 console에 출력된다.\n표준 입력 스트림(Standard Input Stream): stdid\n표준 입력 스트림(Standard Ouput Stream): stdout\n표준 입력 스트림(Standard Error Stream): stderr\n\nstd-test.c 실습\n아래 프로그램을 실행하면, 터미널에 입력할 때마다 stdin 에 들어가고, stdout 으로 출력되는 것을 확인할 수 있다.\n\n12345678910111213141516171819202122232425#include&lt;stdio.h&gt;#include&lt;string.h&gt;#include&lt;stdlib.h&gt;int main(int argc, char** argv)&#123;        char buf[255];  FILE* fp; // 파일 디스크립터  if(argc == 2)&#123;  // 인자가 들어오면,    fp= fopen(argv[1], &quot;r&quot;); // 읽기오픈    if(fp == NULL)&#123;      fputs(&quot;file open error&quot;, stderr);      exit(0);    &#125;  &#125;else&#123;      fp= stdin; // 터미널에 입력된 데이터가 표준입력(stdin)에 들어간다.  &#125;  while(fgets(buf, 255, fp) != NULL)&#123;    fputs(buf, stdout); // 파일 표준출력(stdout)  &#125;&#125;\n\n\n실행 결과\n\n12345~$ ./std-testhello // stdinhello // stdout입력  // stdin입력  // stdout","dateCreated":"2021-05-31T17:44:06+09:00","dateModified":"2021-06-02T11:10:14+09:00","datePublished":"2021-05-31T17:44:06+09:00","description":"메모리와 관련된 mmap 함수의 사용법을 알아본다.stat 함수 사용으로 inode 메타데이터를 출력해본다.#mmap #stat #inode","headline":"🛢 메모리_mmap","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2021/05/31/%EB%A9%94%EB%AA%A8%EB%A6%AC-mmap/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2021/05/31/%EB%A9%94%EB%AA%A8%EB%A6%AC-mmap/"}</script>
+                                <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n메모리 &amp; mmapmmap 함수 사용12#include &lt;sys/mman.h&gt;void *mmap(void *addr, size_t len, int prot, int flags, int fildes, off_t off);\n\naddr: 매핑할 메모리 주소\nlen: 메모리 공간의 크기\nprot: 보호 모드\nflags: 매핑된 데이터의 처리 방법을 지정하는 상수\nfildes: 파일 기술자\noff: 파일 오프셋\n\n문제\n\n기존에 파일 - 프로세스 에 접근할경우,\n프로세스에서는 시스템콜, 스케줄러, 인터럽트 등의 기법을 사용하기 위해 OS가 처리할일이 많아서 \n파일을 가지고 있는 CPU에서는 DMA 나 SystemBus 를 사용해야 한다.\n즉, 성능이 떨어질 수 밖에 없다.\n\n해결\n\n파일 - 메모리 - 프로세스 : 중간에 메모리를 두어, 파일의 특정공간을 미리 메모리 영역에 매핑해둔다.\n자주 엑세스할 파일이 있다면, 프로세스는 메모리 영역에 접근하여 빠르게 읽어올 수 있다.\nmmap는 프로세스의 주소공간을 파일에 대응시킨다. 파일은 운영체제 전역적인 자원이므로 당연히 어렵잖게 다른 프로세스와 공유해서 사용할 수 있을 것이다.\n\nmmap 동작\nmmap 실행시, 가상 메모리 주소에 file 주소를 매핑한다. (페이지 디렉토리)\n해당 메모리 접근시(요구페이징, lazy allocation)\n\n\n페이지폴트 인터럽트 발생\nOS에서 file data 를 복사해서 물리메모리 페이지에 넣어준다.\n\n\n메모리 read: 해당 물리 페이지 데이터를 읽음\n메모리 write: 해당 물리 페이지 데이터 수정후, 페이지 상태 flag 중 dirty bit를 1로 수정\n파일 close: 물리 페이지 데이터가 file에 업데이트됨. (dirty bit 가 1인곳)\n\n파일, 메모리 가상메모리\n장점\nread(), write 시에 반복적인 파일접근을 방지하여 성능을 개선한다.\nmapping 된 영역은 파일 처리를 위한 lseek() file-&gt;data주소 찾아가는 함수를 사용하지 않고 간단한 포인터 조작으로 탐색.\n\n단점\n\nmmap은 내부적으로 가상메모리와 연관되어 페이지 사이즈 단위로 매핑된다. 그런데 고정된 페이지 사이즈 단위보다 클 경우 추가공간이 필요하고, 적을 경우 공간낭비(0으로 채움)가 일어난다.\n\n파일처리 성능개선 munmap\n*addr 에 mapping 된 물리 메모리 주소를 해제한다.\nlenght: mapping된 메모리크기 (mmap과 동일값)\n\n맵핑된 메모리 영역을 동기화 하는 방법\nMS_ASYNC: 비동기 방식으로 결과에 관계 없이 프로그램 속행\nMS_SYNC: 동기 방식으로 결과를 확인 후 프로그램 속행\nMS_ALERT: 동기화 후 시그널을 통해 알림.\nMS_INVALIDATE: 현제 메모리 맵을 무효화함.\n\n\ninode 방식 파일시스템\ninode의 메타데이터에는 아래와 같은 정보들이 포함된다.\n\n\nMode: 파일종류/권한\nOwner Info: 소유자,소울그룹\nSize: 파일사이즈\nTimestamps: 생성, 수정시간\nDirect blocks (12개): 직접적으로 주소가리킴\nSingle inderect, Double inderect, Triple inderect: 간접적 주소가리킴\n\n\n이러한 inode 메타데이터를 모두 가져오는 함수가 있다. stat 함수\n\nstat 함수\n사용 문법int stat(const char *path, struct stat *buf);*buf : 구조체 변수\n\n\nstat: 파일을 filepath 로 지정한다.\nfstat: 파일을 fd 넘버로 지정한다.\nlstat: 파일을 filepath 로 지정하되 지정된 파일이 심볼릭 링크 파일이면 링크파일 자체에 대한 정보를 얻는다.\n\n123456789101112131415struct stat &#123; dev_t     st_dev;  // ID of device containing file                          // :: 가상파일 시스템 file-system interface 를 사용하여 하단부에 있는 실제    디바이스의  종류는 달리할 수 있다. `추상화` `UNIX 모든것은 파일` ino_t     st_ino;  // inode number mode_t    st_mode;  // 파일 종류 및 접근권한 nlink_t   st_nlink;  // hardlink 의 횟수 uid_t     st_uid;  // 파일 owner gid_t     st_gid;  // group ID of owner off_t     st_size;  // 파일크기 blksize_t st_blksize; // blocksize for file system I/O blkcnt_t  st_blocks;  // number of 512B blocks allocated time_t    st_atime;  // time if last access time_t    st_mtime;  // time if last modification time_t    st_ctime;  // time if last status change&#125;\n\nstat-test.c 실습\n실제로 hello.txt 라는 파일의 메타데이터를 출력해보는 stat-test.c\n\n123456789101112131415#include&lt;stdio.h&gt;#include&lt;sys/stat.h&gt;int main()&#123;  int ret= 0;  struct stat buf;  ret= stat(&quot;hello.txt&quot;, &amp;buf);  if(ret &lt; 0)&#123;    printf(&quot;ERROR\\n&quot;);    return 0;  &#125;  printf(&quot;deviceId:%ld, inode:%ld, hardLinkCount:%ld, filesize: %ld, blockSize:%ld, blockCount:%ld \\n&quot;, buf.st_dev, buf.st_ino, buf.st_nlink, buf.st_size, buf.st_blksize, buf.st_blocks);  return 0;&#125;\n\n\n출력 결과\n\n12~$ ./stat-testdeviceId:51713, inode:256331, hardLinkCount:1, filesize: 7, blockSize:4096, blockCount:8\n\nStandard Stream 표준 입출력 스트림\n모든 스트림은 일반적인 plain text로 console에 출력된다.\n표준 입력 스트림(Standard Input Stream): stdid\n표준 입력 스트림(Standard Ouput Stream): stdout\n표준 입력 스트림(Standard Error Stream): stderr\n\nstd-test.c 실습\n아래 프로그램을 실행하면, 터미널에 입력할 때마다 stdin 에 들어가고, stdout 으로 출력되는 것을 확인할 수 있다.\n\n12345678910111213141516171819202122232425#include&lt;stdio.h&gt;#include&lt;string.h&gt;#include&lt;stdlib.h&gt;int main(int argc, char** argv)&#123;        char buf[255];  FILE* fp; // 파일 디스크립터  if(argc == 2)&#123;  // 인자가 들어오면,    fp= fopen(argv[1], &quot;r&quot;); // 읽기오픈    if(fp == NULL)&#123;      fputs(&quot;file open error&quot;, stderr);      exit(0);    &#125;  &#125;else&#123;      fp= stdin; // 터미널에 입력된 데이터가 표준입력(stdin)에 들어간다.  &#125;  while(fgets(buf, 255, fp) != NULL)&#123;    fputs(buf, stdout); // 파일 표준출력(stdout)  &#125;&#125;\n\n\n실행 결과\n\n12345~$ ./std-testhello // stdinhello // stdout입력  // stdin입력  // stdout","dateCreated":"2021-05-31T17:44:06+09:00","dateModified":"2021-06-02T11:10:14+09:00","datePublished":"2021-05-31T17:44:06+09:00","description":"메모리와 관련된 mmap 함수의 사용법을 알아본다.stat 함수 사용으로 inode 메타데이터를 출력해본다.#mmap #stat #inode","headline":"🛢 메모리_mmap","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2021/05/31/%EB%A9%94%EB%AA%A8%EB%A6%AC-mmap/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2021/05/31/%EB%A9%94%EB%AA%A8%EB%A6%AC-mmap/"}</script>
                                     <meta name="description" content="메모리와 관련된 mmap 함수의 사용법을 알아본다.stat 함수 사용으로 inode 메타데이터를 출력해본다.#mmap #stat #inode">
 <meta property="og:type" content="blog">
 <meta property="og:title" content="🛢 메모리_mmap">
@@ -76,6 +71,10 @@
     
 
 <header id="header" data-behavior="4">
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js"></script>
+    <script src="https://kit.fontawesome.com/cfcae25ced.js" crossorigin="anonymous"></script>
     <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
     <div class="header-title">
         <a
@@ -121,13 +120,35 @@
                 </a>
                 <h4 class="sidebar-profile-name">Suyan Kim</h4>
                 
-                    <h5 class="sidebar-profile-bio"><p>▲ Who Am I</p>
+                    <h5 class="sidebar-profile-bio"><p><strong><a target="_blank" rel="noopener" href="https://nice-spectrum-2aa.notion.site/Suyeon-Kim-09e271916a504e24a5307e9f67d7bc16">Click 👀 Resume</a></strong></p>
 </h5>
                 
             </div>
         
         
             <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="https://nice-spectrum-2aa.notion.site/Suyeon-Kim-09e271916a504e24a5307e9f67d7bc16" target="_blank" rel="noopener" title="resume 👀">
+                    
+                    <i class="sidebar-button-icon far fa-smile-wink" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">resume 👀</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="https://github.com/ksso730" target="_blank" rel="noopener" title="github">
+                    
+                    <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">github</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
             
                 <li class="sidebar-button">
                     
@@ -178,7 +199,7 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (10)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (15)</a></li>
                             
                         
                             
@@ -194,7 +215,7 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Git/">☁️ Git (3)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Git/">☁️ Git (4)</a></li>
                             
                         
                             
@@ -214,7 +235,9 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-NodeJS/">☁️ NodeJS (1)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-NodeJS/">☁️ NodeJS (8)</a></li>
+                            
+                        
                             
                         
                             
@@ -230,11 +253,11 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Spring/">☁️ Spring (1)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Spring/">☁️ Spring (2)</a></li>
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-TIL/">☁️ TIL (10)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-TIL/">☁️ TIL (9)</a></li>
                             
                         
                     
@@ -255,35 +278,9 @@
                     
                 </li>
             
-                <li class="sidebar-button">
-                    
-                        <a  class="sidebar-button-link "
-                             
-                                title="about"href="#about"
-                                
-                                >
-                    
-                    <i class="sidebar-button-icon fa fa-question" aria-hidden="true"></i>
-                    <span class="sidebar-button-desc">about</span>
-                        </a>
-                    <!-- add -->
-                    
-                </li>
-            
         </ul>
         
             <ul class="sidebar-buttons">
-            
-                <li class="sidebar-button">
-                    
-                        <a  class="sidebar-button-link " href="https://github.com/ksso730" target="_blank" rel="noopener" title="github">
-                    
-                    <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
-                    <span class="sidebar-button-desc">github</span>
-                        </a>
-                    <!-- add -->
-                    
-                </li>
             
                 <li class="sidebar-button">
                     
@@ -578,6 +575,7 @@
         Copyrights &copy; 2021 Suyan Kim. All Rights Reserved.
     </span>
 </footer>
+
             </div>
             
                 <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">

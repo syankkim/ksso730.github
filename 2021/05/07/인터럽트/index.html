@@ -4,11 +4,6 @@
     
 
     <head>
-        <script type="text/javascript" src="http://code.jquery.com/jquery-3.2.1.min.js"></script>
-        <script type="text/java script">
-            var $= jquery.noConflict();
-        </script>
-
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="generator" content="동글씨">
@@ -22,7 +17,7 @@
                         
                             <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
                             
-                                <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\n인터럽트란?\nCPU 에서 프로그램 실행중에 입출력 이벤트나 프로그래밍 오류 등, 예기지 못한 상황이 발생했을 경우 CPU 에게 실행중인 작업을 중단시키고 그 상황을 먼저 처리하도록 하는 기술이다.\n\n내부/외부 인터럽트\n내부 인터럽트 : 프로그램 내부에서 발생. (=소프트웨어 인터럽트)\n\n\n프로그램 내부에서 잘못된 데이터 사용이나, 명령어 실행오류\n권한을 위배한 엑세스 (사용자 모드에서 운영체제의 명령이나 공간에 접근)\nDivide by zero\nOverflow/Underflow\n\n\n외부 인터럽트 : 프로그램 외부에서 발생. (=하드웨어 인터럽트)\n\n\n기기문제나 전원이상\n입출력 인터럽트\n타이머 인터럽트\n\n타이머 인터럽트\n선점형 스케줄러에 필요\n하드웨어로부터 일정시간마다 타이머 인터럽트를 CPU 에게 알려주면, context switching 을 수행한다.\ncontext switching : 수행중인 프로세스를 중단하고 다른 프로세스를 수행하는 것.\n타이머 인터럽트를 발생시키는 칩이 컴퓨터에 별도로 존재한다.\n\n입출력 인터럽트\n프린터, 키보드, 마우스, 저장매체(SSD) 등\n\n인터럽트 예시 (divide by zero)\nzero.c123456789include &lt;studio.h&gt;int main()&#123;  printf(&quot;hello&quot;);  int data;  int divider =0;  data = 1 /divider; // 0 으로 나눌 수 없음.  return 0;&#125;\ncmd123./zerohelloFloating pont exception (core dumped)\nFloating pont exception (core dumped) : 운영체제가 발생시킨 인터럽트\n\n인터럽트 처리\nCPU 가 프로그램을 실행하고 있을때, 소프트웨어 혹은 하드웨어 인터럽트가 발생한다.\n운영체제는 실행중이던 프로세스를 중단하고 인터럽트 처리 함수를 먼저 실행한다.\n인터럽트 처리가 끝나면 운영체제에게 알린다.\n중단되었던 프로세스가 재실행된다.\n\nIDT (Interrupt Descriptor Table)\nIDT 는 인터럽트 번호마다 각 시스템콜함수 주소가 있는 테이블이다.\n리눅스는 인터럽트 처리를 위해 IDT 를 사용한다.\n\n\n\n\n시스템콜 인터럽트\n시스템콜 실행을 위해서는 강제로 코드에 인터럽트 명령을 넣어, CPU 가 수행할 수 있도록 해야한다.\n시스템콜 인터럽트는 아래와 같이 어셈블리어 3줄로 표현된다.\n\n[Assembly Code]\n123mov eax, 1mov ebx, 0int 0x80\n\neax (Exended Accumaltor Register) : Arithmetic Logic Operation 수행 및 함수의 반환값이 저장.\nsystemcall number 저장됨.\nebx (Extended Base Register) : 메모리 주소를 저장하기 위함.\nsystemcall argument 주소가 저장됨.\nint 0X80 : 시스템콜의 Interurrpt Number,  는 OP code.\n\n시스템콜 인터럽트 처리\n시스템콜 인터럽트 호출 (int 0X80)\nUser Mode =&gt; Kernel Mode 전환\nIDT 참조, 0X80 에 매핑된 system_call() 주소로 이동.\n\n\ninterrupt\nexcution Code\n\n\n\n0X0\ndevice_error()\n\n\n…\n…\n\n\n0X80\nsystem_cala()\n\n\n\n\n\n\n\nsystemCall 테이블 참조\n\n\n%eax\nname\nsource\n%ebx\n\n\n\n1\nsys_exit\nkernel/exit.c\nint\n\n\n2\nsys_fork\narch/i386/kernel/process.c\nstruct_pt_regs\n\n\n3\nsys_read\nfs/read_write.c\nunsigned int\n\n\n4\nsys_write\nfs/read_write.c\nunsigned int\n\n\n5\nsys_open\nfs/open.c\nconst char*\n\n\n6\nsys_close\nfs/close.c\nunsigned int\n\n\n\n\n\n\n\nKernel Mode =&gt; User Mode 전환\n프로세스 재진행\n\n\nIDT vs IVT ?\n\n프로세서에서 인터럽트가 걸렸을 때, 그 인터럽트를 처리할 수 있는 서비스 루틴들의 주소-인터럽트 핸들러 주소가 저장되어 있는 IVT (interrupt vector) 인터럽트 벡터 테이블을 보고 결정한다.\nIVT는 real mode에서, IDT는 protected mode에서 사용된다.\n\n\nreal mode 부팅 직후 작동되는 모드로 물리 메모리를 그대로 사용합니다.\nprotected mode는 가상 메모리를 지원하는 모드입니다.\n\n\n최근 OS는 모두 protected mode를 기반으로 실행되어 IDT를 사용합니다.\nIDT interrupt descriptor table 는 IVT interrupt vector table 을 구현하기 위해 X86 아키텍처에서 사용되는 데이터 구조체이다.\n\n","dateCreated":"2021-05-07T01:21:24+09:00","dateModified":"2021-05-11T10:52:08+09:00","datePublished":"2021-05-07T01:21:24+09:00","description":"인터럽트는 무엇이고 어떻게 처리될까?#interrupt #IDT","headline":"⏸ 인터럽트","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2021/05/07/%EC%9D%B8%ED%84%B0%EB%9F%BD%ED%8A%B8/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2021/05/07/%EC%9D%B8%ED%84%B0%EB%9F%BD%ED%8A%B8/"}</script>
+                                <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\n인터럽트란?\nCPU 에서 프로그램 실행중에 입출력 이벤트나 프로그래밍 오류 등, 예기지 못한 상황이 발생했을 경우 CPU 에게 실행중인 작업을 중단시키고 그 상황을 먼저 처리하도록 하는 기술이다.\n\n내부/외부 인터럽트\n내부 인터럽트 : 프로그램 내부에서 발생. (=소프트웨어 인터럽트)\n\n\n프로그램 내부에서 잘못된 데이터 사용이나, 명령어 실행오류\n권한을 위배한 엑세스 (사용자 모드에서 운영체제의 명령이나 공간에 접근)\nDivide by zero\nOverflow/Underflow\n\n\n외부 인터럽트 : 프로그램 외부에서 발생. (=하드웨어 인터럽트)\n\n\n기기문제나 전원이상\n입출력 인터럽트\n타이머 인터럽트\n\n타이머 인터럽트\n선점형 스케줄러에 필요\n하드웨어로부터 일정시간마다 타이머 인터럽트를 CPU 에게 알려주면, context switching 을 수행한다.\ncontext switching : 수행중인 프로세스를 중단하고 다른 프로세스를 수행하는 것.\n타이머 인터럽트를 발생시키는 칩이 컴퓨터에 별도로 존재한다.\n\n입출력 인터럽트\n프린터, 키보드, 마우스, 저장매체(SSD) 등\n\n인터럽트 예시 (divide by zero)\nzero.c123456789include &lt;studio.h&gt;int main()&#123;  printf(&quot;hello&quot;);  int data;  int divider =0;  data = 1 /divider; // 0 으로 나눌 수 없음.  return 0;&#125;\ncmd123./zerohelloFloating pont exception (core dumped)\nFloating pont exception (core dumped) : 운영체제가 발생시킨 인터럽트\n\n인터럽트 처리\nCPU 가 프로그램을 실행하고 있을때, 소프트웨어 혹은 하드웨어 인터럽트가 발생한다.\n운영체제는 실행중이던 프로세스를 중단하고 인터럽트 처리 함수를 먼저 실행한다.\n인터럽트 처리가 끝나면 운영체제에게 알린다.\n중단되었던 프로세스가 재실행된다.\n\nIDT (Interrupt Descriptor Table)\nIDT 는 인터럽트 번호마다 각 시스템콜함수 주소가 있는 테이블이다.\n리눅스는 인터럽트 처리를 위해 IDT 를 사용한다.\n\n\n\n\n시스템콜 인터럽트\n시스템콜 실행을 위해서는 강제로 코드에 인터럽트 명령을 넣어, CPU 가 수행할 수 있도록 해야한다.\n시스템콜 인터럽트는 아래와 같이 어셈블리어 3줄로 표현된다.\n\n[Assembly Code]\n123mov eax, 1mov ebx, 0int 0x80\n\neax (Exended Accumaltor Register) : Arithmetic Logic Operation 수행 및 함수의 반환값이 저장.\nsystemcall number 저장됨.\nebx (Extended Base Register) : 메모리 주소를 저장하기 위함.\nsystemcall argument 주소가 저장됨.\nint 0X80 : 시스템콜의 Interurrpt Number,  는 OP code.\n\n시스템콜 인터럽트 처리\n시스템콜 인터럽트 호출 (int 0X80)\nUser Mode =&gt; Kernel Mode 전환\nIDT 참조, 0X80 에 매핑된 system_call() 주소로 이동.\n\n\ninterrupt\nexcution Code\n\n\n\n0X0\ndevice_error()\n\n\n…\n…\n\n\n0X80\nsystem_cala()\n\n\n\n\n\n\n\nsystemCall 테이블 참조\n\n\n%eax\nname\nsource\n%ebx\n\n\n\n1\nsys_exit\nkernel/exit.c\nint\n\n\n2\nsys_fork\narch/i386/kernel/process.c\nstruct_pt_regs\n\n\n3\nsys_read\nfs/read_write.c\nunsigned int\n\n\n4\nsys_write\nfs/read_write.c\nunsigned int\n\n\n5\nsys_open\nfs/open.c\nconst char*\n\n\n6\nsys_close\nfs/close.c\nunsigned int\n\n\n\n\n\n\n\nKernel Mode =&gt; User Mode 전환\n프로세스 재진행\n\n\nIDT vs IVT ?\n\n프로세서에서 인터럽트가 걸렸을 때, 그 인터럽트를 처리할 수 있는 서비스 루틴들의 주소-인터럽트 핸들러 주소가 저장되어 있는 IVT (interrupt vector) 인터럽트 벡터 테이블을 보고 결정한다.\nIVT는 real mode에서, IDT는 protected mode에서 사용된다.\n\n\nreal mode 부팅 직후 작동되는 모드로 물리 메모리를 그대로 사용합니다.\nprotected mode는 가상 메모리를 지원하는 모드입니다.\n\n\n최근 OS는 모두 protected mode를 기반으로 실행되어 IDT를 사용합니다.\nIDT interrupt descriptor table 는 IVT interrupt vector table 을 구현하기 위해 X86 아키텍처에서 사용되는 데이터 구조체이다.\n\n","dateCreated":"2021-05-07T01:21:24+09:00","dateModified":"2021-05-11T10:52:08+09:00","datePublished":"2021-05-07T01:21:24+09:00","description":"인터럽트는 무엇이고 어떻게 처리될까?#interrupt #IDT","headline":"⏸ 인터럽트","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2021/05/07/%EC%9D%B8%ED%84%B0%EB%9F%BD%ED%8A%B8/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2021/05/07/%EC%9D%B8%ED%84%B0%EB%9F%BD%ED%8A%B8/"}</script>
                                     <meta name="description" content="인터럽트는 무엇이고 어떻게 처리될까?#interrupt #IDT">
 <meta property="og:type" content="blog">
 <meta property="og:title" content="⏸ 인터럽트">
@@ -78,6 +73,10 @@
     
 
 <header id="header" data-behavior="4">
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js"></script>
+    <script src="https://kit.fontawesome.com/cfcae25ced.js" crossorigin="anonymous"></script>
     <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
     <div class="header-title">
         <a
@@ -123,13 +122,35 @@
                 </a>
                 <h4 class="sidebar-profile-name">Suyan Kim</h4>
                 
-                    <h5 class="sidebar-profile-bio"><p>▲ Who Am I</p>
+                    <h5 class="sidebar-profile-bio"><p><strong><a target="_blank" rel="noopener" href="https://nice-spectrum-2aa.notion.site/Suyeon-Kim-09e271916a504e24a5307e9f67d7bc16">Click 👀 Resume</a></strong></p>
 </h5>
                 
             </div>
         
         
             <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="https://nice-spectrum-2aa.notion.site/Suyeon-Kim-09e271916a504e24a5307e9f67d7bc16" target="_blank" rel="noopener" title="resume 👀">
+                    
+                    <i class="sidebar-button-icon far fa-smile-wink" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">resume 👀</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="https://github.com/ksso730" target="_blank" rel="noopener" title="github">
+                    
+                    <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">github</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
             
                 <li class="sidebar-button">
                     
@@ -180,7 +201,7 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (10)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (15)</a></li>
                             
                         
                             
@@ -196,7 +217,7 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Git/">☁️ Git (3)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Git/">☁️ Git (4)</a></li>
                             
                         
                             
@@ -216,7 +237,9 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-NodeJS/">☁️ NodeJS (1)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-NodeJS/">☁️ NodeJS (8)</a></li>
+                            
+                        
                             
                         
                             
@@ -232,11 +255,11 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Spring/">☁️ Spring (1)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Spring/">☁️ Spring (2)</a></li>
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-TIL/">☁️ TIL (10)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-TIL/">☁️ TIL (9)</a></li>
                             
                         
                     
@@ -257,35 +280,9 @@
                     
                 </li>
             
-                <li class="sidebar-button">
-                    
-                        <a  class="sidebar-button-link "
-                             
-                                title="about"href="#about"
-                                
-                                >
-                    
-                    <i class="sidebar-button-icon fa fa-question" aria-hidden="true"></i>
-                    <span class="sidebar-button-desc">about</span>
-                        </a>
-                    <!-- add -->
-                    
-                </li>
-            
         </ul>
         
             <ul class="sidebar-buttons">
-            
-                <li class="sidebar-button">
-                    
-                        <a  class="sidebar-button-link " href="https://github.com/ksso730" target="_blank" rel="noopener" title="github">
-                    
-                    <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
-                    <span class="sidebar-button-desc">github</span>
-                        </a>
-                    <!-- add -->
-                    
-                </li>
             
                 <li class="sidebar-button">
                     
@@ -634,6 +631,7 @@
         Copyrights &copy; 2021 Suyan Kim. All Rights Reserved.
     </span>
 </footer>
+
             </div>
             
                 <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">

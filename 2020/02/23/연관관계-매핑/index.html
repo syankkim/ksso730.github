@@ -4,11 +4,6 @@
     
 
     <head>
-        <script type="text/javascript" src="http://code.jquery.com/jquery-3.2.1.min.js"></script>
-        <script type="text/java script">
-            var $= jquery.noConflict();
-        </script>
-
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="generator" content="동글씨">
@@ -22,7 +17,7 @@
                         
                             <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
                             
-                                <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n연관관계 매핑\n단방향, 양방향 매핑이 있다. 항상 기본이 되는것은 단방향 매핑이고,여기에 양방향으로 조회를 가능토록 해준다면 양방향.여기서는 양방향에 단방향이 포함되므로 양방향을 기록하도록 하겠다.\n\n우선 기본 설계를 구두화하자면,MEMBER, ORDERS, ORDERITEM, ITEM 테이블이 존재한다.\n각 테이블의 연관관계는 아래와 같다.\n\n\n\nTABLES\nRELATION\ntable(FK)\n\n\n\nMEMBER : ORDERS\n1 : N\nORDERS(MEMBER_ID)\n\n\nORDERS : ORDERITEM\n1 : N\nORDERITEM(ORDER_ID)\n\n\nORDERITEM : ITEM\nN : 1\nORDERITEM(ITEM_ID)\n\n\n\n\n\n\n\n@ManyToOne\n1:N 관계에서 N 인쪽 객체에 설정해준다.아래는 Order.java 객체 일부이다.위 연관관계를 기준으로 MEMBER 는 여러 ORDER 를 생성할 수 있다.\n\n@ManyToOne 을 MEMBER_ID 에 설정해 주었는데,Order 객체가 MEMBER_ID 를 FK 로 갖는다는 의미이다.그리고 member 의 타입은 MEMBER 객체를 가져와 사용한다.\nOrder.java\n12345678910@Entity@Table(name=&quot;ORDERS&quot;)public class Order &#123;    @ManyToOne    @JoinColumn(&quot;MEMBER_ID&quot;)    private Member member;    ...&#125;\n\n@OneToMany위에서 @ManyToOne 을 MEMBER_ID 에 설정해 주었다면,그 MEMBER_ID 가 있는 MEMBER 객체에ORDER 객체로 orderList 를 생성해준다.\n연관관계 주인여기서 연관관계 주인이 결정된다.@OneToMany(mappedBy = &quot;&quot;) mappedBy 속성에 연관관계 주인을 넣어준다.여기서 연관관계 주인은 Order.java 에서 @ManyToOne 으로 설정해준 Member 객체의 member 변수 이다.\n\n연관관계 주인은 FK 에 설정해준다.\n\n아래와 같이 Member 객체 내에 orderList 리스트 객체가 만들어진다.\nMember.java\n1234567891011@Entitypublic class Member &#123;    @Id    @GeneratedValue    @Column(name = &quot;MEMBER_ID&quot;)    private Long id;        // mappedBy -&gt; Order.java 의 member 변수    @OneToMany(mappedBy = &quot;member&quot;)    private List&lt;Order&gt; orderList = new ArrayList&lt;Order&gt;();&#125;\n\nOrderItem.java 도 마찬가지로 ORDER_ID 와 ITEM_ID 가 FK 이므로@ManyToOne 을 설정해주고 객체타입을 각 Order, Item 객체로.\n123456789101112131415161718@Entity@Table(name = &quot;ORDER_ITEM&quot;)public class OrderItem &#123;    @Id    @GeneratedValue    @Column(name = &quot;ORDER_ITEM_ID&quot;)    private Long orderItemId;    @ManyToOne    @JoinColumn(name = &quot;ORDER_ID&quot;)    private Order order;    @ManyToOne    @JoinColumn(name = &quot;ITEM_ID&quot;)    private Item item;\n\nOrder 객체에는@OneToMany 를 추가해준다.Order 는 OderItem 리스트를 갖는다.\nOrder.java\n12345678910111213@Entity@Table(name=&quot;ORDERS&quot;)public class Order &#123;    @ManyToOne    @Column(&quot;MEMBER_ID&quot;)    private Member member;    @OneToMany(mappedBy=&quot;order&quot;)    List&lt;OrderItem&gt; orderItemList = new ArrayList()&lt;&gt;;    ...&#125;\n\nItem 에서는 조회할 필요없으니 원래대로 기본키만 지정.\nItem.java\n12345678@Entitypublic class Item &#123;    @Id @GeneratedValue    @Column(name = &quot;ITEM_ID&quot;)    private Long itemId;    ...&#125;\n\n위의 방식대로 매핑을 마치면 터미널에서 아래와 같이객체를 기준으로 한 테이블이 생성되는걸 확인할 수 있다.\n1234567891011121314151617181920212223242526272829303132333435   create table ITEM (       ITEM_ID bigint not null,        name varchar(255),        price integer not null,        stockQuantity integer not null,        primary key (ITEM_ID)    )Hibernate:         create table Member (       MEMBER_ID bigint not null,        city varchar(255),        name varchar(255),        street varchar(255),        zipcode varchar(255),        primary key (MEMBER_ID)    )Hibernate:         create table ORDER_ITEM (       ORDER_ITEM_ID bigint not null,        count integer not null,        orderPrice integer not null,        ITEM_ID bigint,        ORDER_ID bigint,        primary key (ORDER_ITEM_ID)    )Hibernate:         create table ORDERS (       id bigint not null,        status varchar(255),        MEMBER_ID bigint,        primary key (id)    )","dateCreated":"2020-02-23T23:32:55+09:00","dateModified":"2020-04-28T10:36:01+09:00","datePublished":"2020-02-23T23:32:55+09:00","description":"연관관계 매핑에서의 @ManyToOne, @OneToMany 사용법과연관관계 주인을 지정해본다.","headline":"JPA-연관관계 매핑","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2020/02/23/%EC%97%B0%EA%B4%80%EA%B4%80%EA%B3%84-%EB%A7%A4%ED%95%91/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2020/02/23/%EC%97%B0%EA%B4%80%EA%B4%80%EA%B3%84-%EB%A7%A4%ED%95%91/","keywords":"JPA"}</script>
+                                <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n연관관계 매핑\n단방향, 양방향 매핑이 있다. 항상 기본이 되는것은 단방향 매핑이고, 여기에 양방향으로 조회를 가능토록 해준다면 양방향이다.여기서는 양방향에 단방향이 포함되므로 양방향을 설명한다.\n\n\n테이블 데이터\nMEMBER, ORDERS, ORDERITEM, ITEM 테이블이 존재한다\n각 테이블의 연관관계는 아래와 같다.\n\n\n\n\n\n\nTABLES\nRELATION\ntable(FK)\n\n\n\nMEMBER : ORDERS\n1 : N\nORDERS(MEMBER_ID)\n\n\nORDERS : ORDERITEM\n1 : N\nORDERITEM(ORDER_ID)\n\n\nORDERITEM : ITEM\nN : 1\nORDERITEM(ITEM_ID)\n\n\n\n\n@ManyToOne\n1:N 관계에서 N 인쪽 객체에 설정해준다.아래는 Order.java 객체 일부이다.위 연관관계를 기준으로 MEMBER 는 여러 ORDER 를 생성할 수 있다.\n\n@ManyToOne 을 MEMBER_ID 에 설정해 주었는데,Order 객체가 MEMBER_ID 를 FK 로 갖는다는 의미이다.그리고 member 의 타입은 MEMBER 객체를 가져와 사용한다.\nOrder.java\n12345678910@Entity@Table(name=&quot;ORDERS&quot;)public class Order &#123;    @ManyToOne    @JoinColumn(&quot;MEMBER_ID&quot;)    private Member member;    ...&#125;\n\n@OneToMany위에서 @ManyToOne 을 MEMBER_ID 에 설정해 주었다면,그 MEMBER_ID 가 있는 MEMBER 객체에ORDER 객체로 orderList 를 생성해준다.\n연관관계 주인여기서 연관관계 주인이 결정된다.@OneToMany(mappedBy = &quot;&quot;) mappedBy 속성에 연관관계 주인을 넣어준다.여기서 연관관계 주인은 Order.java 에서 @ManyToOne 으로 설정해준 Member 객체의 member 변수 이다.\n\n연관관계 주인은 FK 에 설정해준다.\n\n\nMember.java\nMember 객체 내에 orderList 리스트 객체가 만들어진다.\n\n\n\n1234567891011@Entitypublic class Member &#123;    @Id    @GeneratedValue    @Column(name = &quot;MEMBER_ID&quot;)    private Long id;        // mappedBy -&gt; Order.java 의 member 변수    @OneToMany(mappedBy = &quot;member&quot;)    private List&lt;Order&gt; orderList = new ArrayList&lt;Order&gt;();&#125;\n\n\n\nOrderItem.java \n마찬가지로 ORDER_ID 와 ITEM_ID 가 FK 이므로 @ManyToOne 을 설정해주고 객체타입을 각 Order, Item 객체로.\n\n\n\n123456789101112131415161718@Entity@Table(name = &quot;ORDER_ITEM&quot;)public class OrderItem &#123;    @Id    @GeneratedValue    @Column(name = &quot;ORDER_ITEM_ID&quot;)    private Long orderItemId;    @ManyToOne    @JoinColumn(name = &quot;ORDER_ID&quot;)    private Order order;    @ManyToOne    @JoinColumn(name = &quot;ITEM_ID&quot;)    private Item item;\n\n\n\n\n\nOrder.java\nOrder 객체에는 @OneToMany 를 추가해준다.\nOrder 는 OderItem 리스트를 갖는다.\n\n\n\n12345678910111213@Entity@Table(name=&quot;ORDERS&quot;)public class Order &#123;    @ManyToOne    @Column(&quot;MEMBER_ID&quot;)    private Member member;    @OneToMany(mappedBy=&quot;order&quot;)    List&lt;OrderItem&gt; orderItemList = new ArrayList()&lt;&gt;;    ...&#125;\n\n\n\n\nItem.java\nItem 에서는 조회할 필요없으니 원래대로 기본키만 지정.\n\n\n\n12345678@Entitypublic class Item &#123;    @Id @GeneratedValue    @Column(name = &quot;ITEM_ID&quot;)    private Long itemId;    ...&#125;\n\n\n\n\n위의 방식대로 매핑을 마치면 터미널에서 아래와 같이 객체를 기준으로 한 테이블이 생성되는걸 확인할 수 있다.\n\n1234567891011121314151617181920212223242526272829303132333435   create table ITEM (       ITEM_ID bigint not null,        name varchar(255),        price integer not null,        stockQuantity integer not null,        primary key (ITEM_ID)    )Hibernate:         create table Member (       MEMBER_ID bigint not null,        city varchar(255),        name varchar(255),        street varchar(255),        zipcode varchar(255),        primary key (MEMBER_ID)    )Hibernate:         create table ORDER_ITEM (       ORDER_ITEM_ID bigint not null,        count integer not null,        orderPrice integer not null,        ITEM_ID bigint,        ORDER_ID bigint,        primary key (ORDER_ITEM_ID)    )Hibernate:         create table ORDERS (       id bigint not null,        status varchar(255),        MEMBER_ID bigint,        primary key (id)    )","dateCreated":"2020-02-23T23:32:55+09:00","dateModified":"2021-11-04T10:14:49+09:00","datePublished":"2020-02-23T23:32:55+09:00","description":"연관관계 매핑에서의 @ManyToOne, @OneToMany 사용법과연관관계 주인을 지정해본다.","headline":"JPA-연관관계 매핑","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2020/02/23/%EC%97%B0%EA%B4%80%EA%B4%80%EA%B3%84-%EB%A7%A4%ED%95%91/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2020/02/23/%EC%97%B0%EA%B4%80%EA%B4%80%EA%B3%84-%EB%A7%A4%ED%95%91/","keywords":"JPA"}</script>
                                     <meta name="description" content="연관관계 매핑에서의 @ManyToOne, @OneToMany 사용법과연관관계 주인을 지정해본다.">
 <meta property="og:type" content="blog">
 <meta property="og:title" content="JPA-연관관계 매핑">
@@ -31,7 +26,7 @@
 <meta property="og:description" content="연관관계 매핑에서의 @ManyToOne, @OneToMany 사용법과연관관계 주인을 지정해본다.">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2020-02-23T14:32:55.000Z">
-<meta property="article:modified_time" content="2020-04-28T01:36:01.153Z">
+<meta property="article:modified_time" content="2021-11-04T01:14:49.637Z">
 <meta property="article:author" content="Suyan Kim">
 <meta property="article:tag" content="JPA">
 <meta name="twitter:card" content="summary">
@@ -77,6 +72,10 @@
     
 
 <header id="header" data-behavior="4">
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js"></script>
+    <script src="https://kit.fontawesome.com/cfcae25ced.js" crossorigin="anonymous"></script>
     <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
     <div class="header-title">
         <a
@@ -122,13 +121,35 @@
                 </a>
                 <h4 class="sidebar-profile-name">Suyan Kim</h4>
                 
-                    <h5 class="sidebar-profile-bio"><p>▲ Who Am I</p>
+                    <h5 class="sidebar-profile-bio"><p><strong><a target="_blank" rel="noopener" href="https://nice-spectrum-2aa.notion.site/Suyeon-Kim-09e271916a504e24a5307e9f67d7bc16">Click 👀 Resume</a></strong></p>
 </h5>
                 
             </div>
         
         
             <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="https://nice-spectrum-2aa.notion.site/Suyeon-Kim-09e271916a504e24a5307e9f67d7bc16" target="_blank" rel="noopener" title="resume 👀">
+                    
+                    <i class="sidebar-button-icon far fa-smile-wink" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">resume 👀</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="https://github.com/ksso730" target="_blank" rel="noopener" title="github">
+                    
+                    <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">github</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
             
                 <li class="sidebar-button">
                     
@@ -179,7 +200,7 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (10)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (15)</a></li>
                             
                         
                             
@@ -195,7 +216,7 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Git/">☁️ Git (3)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Git/">☁️ Git (4)</a></li>
                             
                         
                             
@@ -215,7 +236,9 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-NodeJS/">☁️ NodeJS (1)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-NodeJS/">☁️ NodeJS (8)</a></li>
+                            
+                        
                             
                         
                             
@@ -231,11 +254,11 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Spring/">☁️ Spring (1)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Spring/">☁️ Spring (2)</a></li>
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-TIL/">☁️ TIL (10)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-TIL/">☁️ TIL (9)</a></li>
                             
                         
                     
@@ -256,35 +279,9 @@
                     
                 </li>
             
-                <li class="sidebar-button">
-                    
-                        <a  class="sidebar-button-link "
-                             
-                                title="about"href="#about"
-                                
-                                >
-                    
-                    <i class="sidebar-button-icon fa fa-question" aria-hidden="true"></i>
-                    <span class="sidebar-button-desc">about</span>
-                        </a>
-                    <!-- add -->
-                    
-                </li>
-            
         </ul>
         
             <ul class="sidebar-buttons">
-            
-                <li class="sidebar-button">
-                    
-                        <a  class="sidebar-button-link " href="https://github.com/ksso730" target="_blank" rel="noopener" title="github">
-                    
-                    <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
-                    <span class="sidebar-button-desc">github</span>
-                        </a>
-                    <!-- add -->
-                    
-                </li>
             
                 <li class="sidebar-button">
                     
@@ -340,13 +337,18 @@
     <div class="post-content markdown">
         <div class="main-content-wrap">
             <!-- excerpt -->
-<h1 id="table-of-contents">Contents</h1><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%EC%97%B0%EA%B4%80%EA%B4%80%EA%B3%84-%EB%A7%A4%ED%95%91"><span class="toc-text">연관관계 매핑</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#ManyToOne"><span class="toc-text">@ManyToOne</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#OneToMany"><span class="toc-text">@OneToMany</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%EC%97%B0%EA%B4%80%EA%B4%80%EA%B3%84-%EC%A3%BC%EC%9D%B8"><span class="toc-text">연관관계 주인</span></a></li></ol></li></ol>
+<h1 id="table-of-contents">Contents</h1><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%EC%97%B0%EA%B4%80%EA%B4%80%EA%B3%84-%EB%A7%A4%ED%95%91"><span class="toc-text">연관관계 매핑</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#ManyToOne"><span class="toc-text">@ManyToOne</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#OneToMany"><span class="toc-text">@OneToMany</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%EC%97%B0%EA%B4%80%EA%B4%80%EA%B3%84-%EC%A3%BC%EC%9D%B8"><span class="toc-text">연관관계 주인</span></a></li></ol>
 
-<h3 id="연관관계-매핑"><a href="#연관관계-매핑" class="headerlink" title="연관관계 매핑"></a>연관관계 매핑</h3><blockquote>
-<p>단방향, 양방향 매핑이 있다. 항상 기본이 되는것은 단방향 매핑이고,<br>여기에 양방향으로 조회를 가능토록 해준다면 양방향.<br>여기서는 양방향에 단방향이 포함되므로 양방향을 기록하도록 하겠다.</p>
+<h1 id="연관관계-매핑"><a href="#연관관계-매핑" class="headerlink" title="연관관계 매핑"></a>연관관계 매핑</h1><blockquote>
+<p>단방향, 양방향 매핑이 있다. 항상 기본이 되는것은 단방향 매핑이고, 여기에 양방향으로 조회를 가능토록 해준다면 양방향이다.<br>여기서는 양방향에 단방향이 포함되므로 양방향을 설명한다.</p>
 </blockquote>
-<p>우선 기본 설계를 구두화하자면,<br>MEMBER, ORDERS, ORDERITEM, ITEM 테이블이 존재한다.</p>
-<p>각 테이블의 연관관계는 아래와 같다.</p>
+<ul>
+<li>테이블 데이터<ul>
+<li>MEMBER, ORDERS, ORDERITEM, ITEM 테이블이 존재한다</li>
+<li>각 테이블의 연관관계는 아래와 같다.</li>
+</ul>
+</li>
+</ul>
 <table>
 <thead>
 <tr>
@@ -370,40 +372,65 @@
 <td>N : 1</td>
 <td>ORDERITEM(ITEM_ID)</td>
 </tr>
-<tr>
-<td><br/></td>
-<td></td>
-<td></td>
-</tr>
 </tbody></table>
-<h4 id="ManyToOne"><a href="#ManyToOne" class="headerlink" title="@ManyToOne"></a>@ManyToOne</h4><blockquote>
+<br/>
+
+<h2 id="ManyToOne"><a href="#ManyToOne" class="headerlink" title="@ManyToOne"></a>@ManyToOne</h2><blockquote>
 <p>1:N 관계에서 N 인쪽 객체에 설정해준다.<br>아래는 <strong>Order.java</strong> 객체 일부이다.<br>위 연관관계를 기준으로 MEMBER 는 여러 ORDER 를 생성할 수 있다.</p>
 </blockquote>
 <p>@ManyToOne 을 MEMBER_ID 에 설정해 주었는데,<br>Order 객체가 MEMBER_ID 를 FK 로 갖는다는 의미이다.<br>그리고 member 의 타입은 MEMBER 객체를 가져와 사용한다.</p>
 <p><strong>Order.java</strong></p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Entity</span></span><br><span class="line"><span class="meta">@Table(name=&quot;ORDERS&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Order</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@ManyToOne</span></span><br><span class="line">    <span class="meta">@JoinColumn(&quot;MEMBER_ID&quot;)</span></span><br><span class="line">    <span class="keyword">private</span> Member member;</span><br><span class="line"></span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<h4 id="OneToMany"><a href="#OneToMany" class="headerlink" title="@OneToMany"></a>@OneToMany</h4><p>위에서 @ManyToOne 을 MEMBER_ID 에 설정해 주었다면,<br>그 MEMBER_ID 가 있는 MEMBER 객체에<br>ORDER 객체로 orderList 를 생성해준다.</p>
-<h4 id="연관관계-주인"><a href="#연관관계-주인" class="headerlink" title="연관관계 주인"></a>연관관계 주인</h4><p>여기서 연관관계 주인이 결정된다.<br><code>@OneToMany(mappedBy = &quot;&quot;)</code> mappedBy 속성에 연관관계 주인을 넣어준다.<br>여기서 연관관계 주인은 Order.java 에서 <code>@ManyToOne</code> 으로 설정해준 Member 객체의 member 변수 이다.</p>
+<h2 id="OneToMany"><a href="#OneToMany" class="headerlink" title="@OneToMany"></a>@OneToMany</h2><p>위에서 @ManyToOne 을 MEMBER_ID 에 설정해 주었다면,<br>그 MEMBER_ID 가 있는 MEMBER 객체에<br>ORDER 객체로 orderList 를 생성해준다.</p>
+<h1 id="연관관계-주인"><a href="#연관관계-주인" class="headerlink" title="연관관계 주인"></a>연관관계 주인</h1><p>여기서 연관관계 주인이 결정된다.<br><code>@OneToMany(mappedBy = &quot;&quot;)</code> mappedBy 속성에 연관관계 주인을 넣어준다.<br>여기서 연관관계 주인은 Order.java 에서 <code>@ManyToOne</code> 으로 설정해준 Member 객체의 member 변수 이다.</p>
 <blockquote>
 <p><strong>연관관계 주인은 FK 에 설정해준다.</strong></p>
 </blockquote>
-<p>아래와 같이 Member 객체 내에 <code>orderList</code> 리스트 객체가 만들어진다.</p>
-<p><strong>Member.java</strong></p>
+<ul>
+<li><strong>Member.java</strong><ul>
+<li>Member 객체 내에 <code>orderList</code> 리스트 객체가 만들어진다.</li>
+</ul>
+</li>
+</ul>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Entity</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Member</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Id</span></span><br><span class="line">    <span class="meta">@GeneratedValue</span></span><br><span class="line">    <span class="meta">@Column(name = &quot;MEMBER_ID&quot;)</span></span><br><span class="line">    <span class="keyword">private</span> Long id;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// mappedBy -&gt; Order.java 의 member 변수</span></span><br><span class="line">    <span class="meta">@OneToMany(mappedBy = &quot;member&quot;)</span></span><br><span class="line">    <span class="keyword">private</span> List&lt;Order&gt; orderList = <span class="keyword">new</span> ArrayList&lt;Order&gt;();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<br>
 
-<p><strong>OrderItem.java</strong> 도 마찬가지로 ORDER_ID 와 ITEM_ID 가 FK 이므로<br>@ManyToOne 을 설정해주고 객체타입을 각 Order, Item 객체로.</p>
+<ul>
+<li><strong>OrderItem.java</strong> <ul>
+<li>마찬가지로 ORDER_ID 와 ITEM_ID 가 FK 이므로 @ManyToOne 을 설정해주고 객체타입을 각 Order, Item 객체로.</li>
+</ul>
+</li>
+</ul>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Entity</span></span><br><span class="line"><span class="meta">@Table(name = &quot;ORDER_ITEM&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">OrderItem</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Id</span></span><br><span class="line">    <span class="meta">@GeneratedValue</span></span><br><span class="line">    <span class="meta">@Column(name = &quot;ORDER_ITEM_ID&quot;)</span></span><br><span class="line">    <span class="keyword">private</span> Long orderItemId;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="meta">@ManyToOne</span></span><br><span class="line">    <span class="meta">@JoinColumn(name = &quot;ORDER_ID&quot;)</span></span><br><span class="line">    <span class="keyword">private</span> Order order;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@ManyToOne</span></span><br><span class="line">    <span class="meta">@JoinColumn(name = &quot;ITEM_ID&quot;)</span></span><br><span class="line">    <span class="keyword">private</span> Item item;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
-<p>Order 객체에는<br>@OneToMany 를 추가해준다.<br>Order 는 OderItem 리스트를 갖는다.</p>
-<p><strong>Order.java</strong></p>
+
+<br>
+
+<ul>
+<li><strong>Order.java</strong><ul>
+<li>Order 객체에는 @OneToMany 를 추가해준다.</li>
+<li>Order 는 OderItem 리스트를 갖는다.</li>
+</ul>
+</li>
+</ul>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Entity</span></span><br><span class="line"><span class="meta">@Table(name=&quot;ORDERS&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Order</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@ManyToOne</span></span><br><span class="line">    <span class="meta">@Column(&quot;MEMBER_ID&quot;)</span></span><br><span class="line">    <span class="keyword">private</span> Member member;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@OneToMany(mappedBy=&quot;order&quot;)</span></span><br><span class="line">    List&lt;OrderItem&gt; orderItemList = <span class="keyword">new</span> ArrayList()&lt;&gt;;</span><br><span class="line"></span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>Item 에서는 조회할 필요없으니 원래대로 기본키만 지정.</p>
-<p><strong>Item.java</strong></p>
+<br>
+
+<ul>
+<li><strong>Item.java</strong><ul>
+<li>Item 에서는 조회할 필요없으니 원래대로 기본키만 지정.</li>
+</ul>
+</li>
+</ul>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Entity</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Item</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Id</span> <span class="meta">@GeneratedValue</span></span><br><span class="line">    <span class="meta">@Column(name = &quot;ITEM_ID&quot;)</span></span><br><span class="line">    <span class="keyword">private</span> Long itemId;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>위의 방식대로 매핑을 마치면 터미널에서 아래와 같이<br>객체를 기준으로 한 테이블이 생성되는걸 확인할 수 있다.</p>
+<br>
+
+<ul>
+<li>위의 방식대로 매핑을 마치면 터미널에서 아래와 같이 객체를 기준으로 한 테이블이 생성되는걸 확인할 수 있다.</li>
+</ul>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">   create table ITEM (</span><br><span class="line">       ITEM_ID bigint not null,</span><br><span class="line">        name varchar(255),</span><br><span class="line">        price <span class="built_in">integer</span> not null,</span><br><span class="line">        stockQuantity <span class="built_in">integer</span> not null,</span><br><span class="line">        primary key (ITEM_ID)</span><br><span class="line">    )</span><br><span class="line">Hibernate: </span><br><span class="line">    </span><br><span class="line">    create table Member (</span><br><span class="line">       MEMBER_ID bigint not null,</span><br><span class="line">        city varchar(255),</span><br><span class="line">        name varchar(255),</span><br><span class="line">        street varchar(255),</span><br><span class="line">        zipcode varchar(255),</span><br><span class="line">        primary key (MEMBER_ID)</span><br><span class="line">    )</span><br><span class="line">Hibernate: </span><br><span class="line">    </span><br><span class="line">    create table ORDER_ITEM (</span><br><span class="line">       ORDER_ITEM_ID bigint not null,</span><br><span class="line">        count <span class="built_in">integer</span> not null,</span><br><span class="line">        orderPrice <span class="built_in">integer</span> not null,</span><br><span class="line">        ITEM_ID bigint,</span><br><span class="line">        ORDER_ID bigint,</span><br><span class="line">        primary key (ORDER_ITEM_ID)</span><br><span class="line">    )</span><br><span class="line">Hibernate: </span><br><span class="line">    </span><br><span class="line">    create table ORDERS (</span><br><span class="line">       id bigint not null,</span><br><span class="line">        status varchar(255),</span><br><span class="line">        MEMBER_ID bigint,</span><br><span class="line">        primary key (id)</span><br><span class="line">    )</span><br></pre></td></tr></table></figure>
             
 
@@ -545,6 +572,7 @@
         Copyrights &copy; 2021 Suyan Kim. All Rights Reserved.
     </span>
 </footer>
+
             </div>
             
                 <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">

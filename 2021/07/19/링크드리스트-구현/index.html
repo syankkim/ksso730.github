@@ -4,11 +4,6 @@
     
 
     <head>
-        <script type="text/javascript" src="http://code.jquery.com/jquery-3.2.1.min.js"></script>
-        <script type="text/java script">
-            var $= jquery.noConflict();
-        </script>
-
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="generator" content="동글씨">
@@ -22,7 +17,7 @@
                         
                             <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
                             
-                                <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\n\n\nLinked List\nLinked List 구조\n\n\n연결 리스트\n배열은 순차적으로 연결된 공간에 데이터를 나열\n링크드 리스트는 떨어진 곳에 존재하는 데이터를 화살표로 연결\n\n\n기본 용어\n\n\n노드\n포인터\n\n\nNode 객체를 생성할 클래스1234class Node:    def __init__(self, data):        self.data = data        self.next = None\n\n\n\n아래와 같이도 쓸 수 있다.\nnext 인자에 아무것도 넣지 않으면 default 값으로 None이 들어감\n\n\n\n1234class Node:    def __init__(self, data, next=None):        self.data = data        self.next = next\n\n\n* Node 객체 하나(0)를 할당하고, add함수를 활용하여 1-9까지의 노드를 더한다.\n\n12345678910111213141516# 1. 입력node1= Node(0)head = node1for i in range(1,10):    print(&#x27;add &#x27;,i)    add(i)# 2. 출력node = head#node 다음 객체가 있을 때까지while node.next :     print(node.data)    node = node.next# 가장 마지막 node의 next값은 없기 때문에 for문을 마치고 마지막에 한번더 출력print(node.data) \n\n\n\n\n파이썬 객체지향 Linked List 구현1234567891011121314151617181920212223class Node:    def __init__(self, data, next=None):        self.data=data        self.next=next        class NodeMgt:    def __init__(self, data):        self.head = Node(data)    def add(self, data):        if self.head==&#x27;&#x27;:            self.head=Node(data)        else:            node=self.head            while node.next:                node=node.next            node.next=Node(data)        def printDesc(self):        node = self.head        while node:            print(node.data)            node = node.next\n\n\n\n구현한 Linked List 사용\n\n\n\n","dateCreated":"2021-07-19T00:39:43+09:00","dateModified":"2021-07-23T13:25:49+09:00","datePublished":"2021-07-19T00:39:43+09:00","description":"Linked List with Python링크드 리스트의 Node, Data#node #data #linked_list","headline":"Linked List 구현","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2021/07/19/%EB%A7%81%ED%81%AC%EB%93%9C%EB%A6%AC%EC%8A%A4%ED%8A%B8-%EA%B5%AC%ED%98%84/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2021/07/19/%EB%A7%81%ED%81%AC%EB%93%9C%EB%A6%AC%EC%8A%A4%ED%8A%B8-%EA%B5%AC%ED%98%84/","keywords":"linked_list"}</script>
+                                <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\n\n\nLinked List\nLinked List 구조\n\n\n연결 리스트\n배열은 순차적으로 연결된 공간에 데이터를 나열\n링크드 리스트는 떨어진 곳에 존재하는 데이터를 화살표로 연결\n\n\n기본 용어\n\n\n노드\n포인터\n\n\nNode 객체를 생성할 클래스1234class Node:    def __init__(self, data):        self.data = data        self.next = None\n\n\n\n아래와 같이도 쓸 수 있다.\nnext 인자에 아무것도 넣지 않으면 default 값으로 None이 들어감\n\n\n\n1234class Node:    def __init__(self, data, next=None):        self.data = data        self.next = next\n\n\n* Node 객체 하나(0)를 할당하고, add함수를 활용하여 1-9까지의 노드를 더한다.\n\n12345678910111213141516# 1. 입력node1= Node(0)head = node1for i in range(1,10):    print(&#x27;add &#x27;,i)    add(i)# 2. 출력node = head#node 다음 객체가 있을 때까지while node.next :     print(node.data)    node = node.next# 가장 마지막 node의 next값은 없기 때문에 for문을 마치고 마지막에 한번더 출력print(node.data) \n\n\n\n\n파이썬 객체지향 Linked List 구현1234567891011121314151617181920212223class Node:    def __init__(self, data, next=None):        self.data=data        self.next=next        class NodeMgt:    def __init__(self, data):        self.head = Node(data)    def add(self, data):        if self.head==&#x27;&#x27;:            self.head=Node(data)        else:            node=self.head            while node.next:                node=node.next            node.next=Node(data)        def printDesc(self):        node = self.head        while node:            print(node.data)            node = node.next\n\n\n\n구현한 Linked List 사용\n\n\n\n","dateCreated":"2021-07-19T00:39:43+09:00","dateModified":"2021-07-23T13:25:49+09:00","datePublished":"2021-07-19T00:39:43+09:00","description":"Linked List with Python링크드 리스트의 Node, Data#node #data #linked_list","headline":"Linked List 구현","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2021/07/19/%EB%A7%81%ED%81%AC%EB%93%9C%EB%A6%AC%EC%8A%A4%ED%8A%B8-%EA%B5%AC%ED%98%84/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2021/07/19/%EB%A7%81%ED%81%AC%EB%93%9C%EB%A6%AC%EC%8A%A4%ED%8A%B8-%EA%B5%AC%ED%98%84/","keywords":"linked_list"}</script>
                                     <meta name="description" content="Linked List with Python링크드 리스트의 Node, Data#node #data #linked_list">
 <meta property="og:type" content="blog">
 <meta property="og:title" content="Linked List 구현">
@@ -80,6 +75,10 @@
     
 
 <header id="header" data-behavior="4">
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js"></script>
+    <script src="https://kit.fontawesome.com/cfcae25ced.js" crossorigin="anonymous"></script>
     <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
     <div class="header-title">
         <a
@@ -125,13 +124,35 @@
                 </a>
                 <h4 class="sidebar-profile-name">Suyan Kim</h4>
                 
-                    <h5 class="sidebar-profile-bio"><p>▲ Who Am I</p>
+                    <h5 class="sidebar-profile-bio"><p><strong><a target="_blank" rel="noopener" href="https://nice-spectrum-2aa.notion.site/Suyeon-Kim-09e271916a504e24a5307e9f67d7bc16">Click 👀 Resume</a></strong></p>
 </h5>
                 
             </div>
         
         
             <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="https://nice-spectrum-2aa.notion.site/Suyeon-Kim-09e271916a504e24a5307e9f67d7bc16" target="_blank" rel="noopener" title="resume 👀">
+                    
+                    <i class="sidebar-button-icon far fa-smile-wink" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">resume 👀</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="https://github.com/ksso730" target="_blank" rel="noopener" title="github">
+                    
+                    <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">github</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
             
                 <li class="sidebar-button">
                     
@@ -182,7 +203,7 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (10)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (15)</a></li>
                             
                         
                             
@@ -198,7 +219,7 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Git/">☁️ Git (3)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Git/">☁️ Git (4)</a></li>
                             
                         
                             
@@ -218,7 +239,9 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-NodeJS/">☁️ NodeJS (1)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-NodeJS/">☁️ NodeJS (8)</a></li>
+                            
+                        
                             
                         
                             
@@ -234,11 +257,11 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Spring/">☁️ Spring (1)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Spring/">☁️ Spring (2)</a></li>
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-TIL/">☁️ TIL (10)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-TIL/">☁️ TIL (9)</a></li>
                             
                         
                     
@@ -259,35 +282,9 @@
                     
                 </li>
             
-                <li class="sidebar-button">
-                    
-                        <a  class="sidebar-button-link "
-                             
-                                title="about"href="#about"
-                                
-                                >
-                    
-                    <i class="sidebar-button-icon fa fa-question" aria-hidden="true"></i>
-                    <span class="sidebar-button-desc">about</span>
-                        </a>
-                    <!-- add -->
-                    
-                </li>
-            
         </ul>
         
             <ul class="sidebar-buttons">
-            
-                <li class="sidebar-button">
-                    
-                        <a  class="sidebar-button-link " href="https://github.com/ksso730" target="_blank" rel="noopener" title="github">
-                    
-                    <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
-                    <span class="sidebar-button-desc">github</span>
-                        </a>
-                    <!-- add -->
-                    
-                </li>
             
                 <li class="sidebar-button">
                     
@@ -532,6 +529,7 @@
         Copyrights &copy; 2021 Suyan Kim. All Rights Reserved.
     </span>
 </footer>
+
             </div>
             
                 <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">

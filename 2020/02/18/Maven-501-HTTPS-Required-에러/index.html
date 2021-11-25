@@ -4,11 +4,6 @@
     
 
     <head>
-        <script type="text/javascript" src="http://code.jquery.com/jquery-3.2.1.min.js"></script>
-        <script type="text/java script">
-            var $= jquery.noConflict();
-        </script>
-
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="generator" content="동글씨">
@@ -22,7 +17,7 @@
                         
                             <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
                             
-                                <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\nMaven Repository 정책변경2020.01.15 이후 Maven Repository 정책이 아래와 같이 변경되었다.\n12Effective January 15, 2020, The Central Repository no longer supports insecure communication over plain HTTP and requires that all requests to the repository are encrypted over HTTPS.If you&#x27;re receiving this error, then you need to replace all URL references to Maven Central with their canonical HTTPS counterparts.\n\n\nCentral Repository  는 일반 HTTP를 통한 통신을 지원하지 않으며 HTTPS 를 통해 암호화 되어야 한다는 이야기다. settings.xml 에 Maven Central 에 대한 URL 참조를 HTTP -&gt; HTTPS 로 바꿔주면 된다.\n아래와 같이  값을 바꿔주고  설정을 추가해준다.\n\nmaven 501 해결법 ?settings.xml 에 수정\n1234567891011121314151617181920212223242526272829303132&lt;profile&gt;         &lt;id&gt;myprofile&lt;/id&gt;         &lt;repositories&gt;            &lt;repository&gt;               &lt;releases&gt;                  &lt;enabled&gt;true&lt;/enabled&gt;               &lt;/releases&gt;               &lt;id&gt;central&lt;/id&gt;\t\t\t   &lt;name&gt;Central Repository&lt;/name&gt;               &lt;url&gt;https://repo.maven.apache.org/maven2&lt;/url&gt;         \t\t\t    &lt;layout&gt;default&lt;/layout&gt;\t\t\t\t&lt;snapshots&gt;\t\t\t\t\t&lt;enabled&gt;false&lt;/enabled&gt;\t\t\t\t&lt;/snapshots&gt;            &lt;/repository&gt;         &lt;/repositories&gt;         &lt;pluginRepositories&gt;            &lt;pluginRepository&gt;               &lt;releases&gt;                  &lt;enabled&gt;true&lt;/enabled&gt;\t\t\t\t  &lt;updatePolicy&gt;never&lt;/updatePolicy&gt;               &lt;/releases&gt;               &lt;id&gt;central&lt;/id&gt;\t\t\t   &lt;name&gt;Central Repository&lt;/name&gt;               &lt;url&gt;https://repo.maven.apache.org/maven2&lt;/url&gt;\t\t\t   &lt;layout&gt;default&lt;/layout&gt;\t\t\t\t&lt;snapshots&gt;\t\t\t\t\t&lt;enabled&gt;false&lt;/enabled&gt;\t\t\t\t&lt;/snapshots&gt;            &lt;/pluginRepository&gt;         &lt;/pluginRepositories&gt;      &lt;/profile&gt;\n\n\nReceived fatal alert: protocol_version501 에러는 벗어났지만 위와 같은 설정후에도 또 다른 오류가 났다.이번엔 프로토콜 오류.\nReceived fatal alert: protocol_version아래 로그에서 이 오류를 찾을 수 있다.\n1234[ERROR] The build could not read 1 project -&gt; [Help 1][ERROR][ERROR]   The project com.olleh.gigaeyes:gigaeyes-cvsaas-ems:1.3.3 (C:\\Users\\ksso7\\eclipse_trunk\\vsaas-api-center\\gigaeyes-cvsaas-ems\\pom.xml) has 1 error[ERROR]     Non-resolvable parent POM for com.olleh.gigaeyes:gigaeyes-cvsaas-ems:1.3.3: Could not transfer artifact org.springframework.boot:spring-boot-starter-parent:pom:1.5.2.RELEASE from/to central (https://repo.maven.apache.org/maven2): Transfer failed for https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-starter-parent/1.5.2.RELEASE/spring-boot-starter-parent-1.5.2.RELEASE.pom and &#x27;parent.relativePath&#x27; points at no local POM @ line 12, column 10: Received fatal alert: protocol_version -&gt; [Help 2]\n\nprotocol_version 해결법 ?JDK 버전에 따라 지원하는 TLS 버전이 달랐다\n\n\n\nJDK version\n지원 프로토콜 버전\n\n\n\nJDK 1.7\nTLS v1.0~v1.1\n\n\nJDK 1.8\nTLS ~v1.2\n\n\n\nJDK 버전이 1.7 이라면 1.8 로 버전업 시켜주거나\nmaven build 시에 아래 옵션을 추가해준다.-Dhttps.protocols=TLSv1.2\n\n1$ mvn install -Dhttps.protocols=TLSv1.2\n\ncached in the local repository, resolution will not be reattempted그리고 또다른 오류 직면 ..\n1[ERROR] Failed to execute goal on project gigaeyes-cvsaas-ems: Could not resolve dependencies for project com.olleh.gigaeyes:gigaeyes-cvsaas-ems:war:1.3.3: Failure to find com.olleh.gigaeyes:gigaeyes-cvsaas-lib-commons:jar:1.1.0 in https://repo.maven.apache.org/maven2 was cached in the local repository, resolution will not be reattempted until the update interval of central has elapsed or updates are forced -&gt; [Help 1]\n\n메이븐 강제 업데이트하기-U 를 추가해준다. 메이븐 강제 업데이트 옵션이다.\n\n-U 명령어 = Force Update of Snapshots/Releases\n\n1$ mvn -Dhttps.protocols=TLSv1.2 -U install","dateCreated":"2020-02-18T14:58:11+09:00","dateModified":"2021-07-19T09:43:03+09:00","datePublished":"2020-02-18T14:58:11+09:00","description":"+Maven 빌드 중, 501 HTTPS Required 에러+jdk 버전에 따른 protocol_version 버전 불일치 에러+cached in the local repository, resolution will not be reattempted","headline":"Maven 501 HTTPS Required , protocol_version Error","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2020/02/18/Maven-501-HTTPS-Required-%EC%97%90%EB%9F%AC/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2020/02/18/Maven-501-HTTPS-Required-%EC%97%90%EB%9F%AC/","keywords":"maven, maven-err"}</script>
+                                <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\nMaven Repository 정책변경2020.01.15 이후 Maven Repository 정책이 아래와 같이 변경되었다.\n12Effective January 15, 2020, The Central Repository no longer supports insecure communication over plain HTTP and requires that all requests to the repository are encrypted over HTTPS.If you&#x27;re receiving this error, then you need to replace all URL references to Maven Central with their canonical HTTPS counterparts.\n\n\nCentral Repository  는 일반 HTTP를 통한 통신을 지원하지 않으며 HTTPS 를 통해 암호화 되어야 한다는 이야기다. settings.xml 에 Maven Central 에 대한 URL 참조를 HTTP -&gt; HTTPS 로 바꿔주면 된다.\n아래와 같이  값을 바꿔주고  설정을 추가해준다.\n\nmaven 501 해결법 ?settings.xml 에 수정\n1234567891011121314151617181920212223242526272829303132&lt;profile&gt;         &lt;id&gt;myprofile&lt;/id&gt;         &lt;repositories&gt;            &lt;repository&gt;               &lt;releases&gt;                  &lt;enabled&gt;true&lt;/enabled&gt;               &lt;/releases&gt;               &lt;id&gt;central&lt;/id&gt;\t\t\t   &lt;name&gt;Central Repository&lt;/name&gt;               &lt;url&gt;https://repo.maven.apache.org/maven2&lt;/url&gt;         \t\t\t    &lt;layout&gt;default&lt;/layout&gt;\t\t\t\t&lt;snapshots&gt;\t\t\t\t\t&lt;enabled&gt;false&lt;/enabled&gt;\t\t\t\t&lt;/snapshots&gt;            &lt;/repository&gt;         &lt;/repositories&gt;         &lt;pluginRepositories&gt;            &lt;pluginRepository&gt;               &lt;releases&gt;                  &lt;enabled&gt;true&lt;/enabled&gt;\t\t\t\t  &lt;updatePolicy&gt;never&lt;/updatePolicy&gt;               &lt;/releases&gt;               &lt;id&gt;central&lt;/id&gt;\t\t\t   &lt;name&gt;Central Repository&lt;/name&gt;               &lt;url&gt;https://repo.maven.apache.org/maven2&lt;/url&gt;\t\t\t   &lt;layout&gt;default&lt;/layout&gt;\t\t\t\t&lt;snapshots&gt;\t\t\t\t\t&lt;enabled&gt;false&lt;/enabled&gt;\t\t\t\t&lt;/snapshots&gt;            &lt;/pluginRepository&gt;         &lt;/pluginRepositories&gt;      &lt;/profile&gt;\n\n\nReceived fatal alert: protocol_version501 에러는 벗어났지만 위와 같은 설정후에도 또 다른 오류가 났다.이번엔 프로토콜 오류.\nReceived fatal alert: protocol_version아래 로그에서 이 오류를 찾을 수 있다.\n1234[ERROR] The build could not read 1 project -&gt; [Help 1][ERROR][ERROR]   The project com.olleh.gigaeyes:gigaeyes-cvsaas-ems:1.3.3 (C:\\Users\\ksso7\\eclipse_trunk\\vsaas-api-center\\gigaeyes-cvsaas-ems\\pom.xml) has 1 error[ERROR]     Non-resolvable parent POM for com.olleh.gigaeyes:gigaeyes-cvsaas-ems:1.3.3: Could not transfer artifact org.springframework.boot:spring-boot-starter-parent:pom:1.5.2.RELEASE from/to central (https://repo.maven.apache.org/maven2): Transfer failed for https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-starter-parent/1.5.2.RELEASE/spring-boot-starter-parent-1.5.2.RELEASE.pom and &#x27;parent.relativePath&#x27; points at no local POM @ line 12, column 10: Received fatal alert: protocol_version -&gt; [Help 2]\n\nprotocol_version 해결법 ?JDK 버전에 따라 지원하는 TLS 버전이 달랐다\n\n\n\nJDK version\n지원 프로토콜 버전\n\n\n\nJDK 1.7\nTLS v1.0~v1.1\n\n\nJDK 1.8\nTLS ~v1.2\n\n\n\nJDK 버전이 1.7 이라면 1.8 로 버전업 시켜주거나\nmaven build 시에 아래 옵션을 추가해준다.-Dhttps.protocols=TLSv1.2\n\n1$ mvn install -Dhttps.protocols=TLSv1.2\n\ncached in the local repository, resolution will not be reattempted그리고 또다른 오류 직면 ..\n1[ERROR] Failed to execute goal on project gigaeyes-cvsaas-ems: Could not resolve dependencies for project com.olleh.gigaeyes:gigaeyes-cvsaas-ems:war:1.3.3: Failure to find com.olleh.gigaeyes:gigaeyes-cvsaas-lib-commons:jar:1.1.0 in https://repo.maven.apache.org/maven2 was cached in the local repository, resolution will not be reattempted until the update interval of central has elapsed or updates are forced -&gt; [Help 1]\n\n메이븐 강제 업데이트하기-U 를 추가해준다. 메이븐 강제 업데이트 옵션이다.\n\n-U 명령어 = Force Update of Snapshots/Releases\n\n1$ mvn -Dhttps.protocols=TLSv1.2 -U install","dateCreated":"2020-02-18T14:58:11+09:00","dateModified":"2021-07-19T09:43:03+09:00","datePublished":"2020-02-18T14:58:11+09:00","description":"+Maven 빌드 중, 501 HTTPS Required 에러+jdk 버전에 따른 protocol_version 버전 불일치 에러+cached in the local repository, resolution will not be reattempted","headline":"Maven 501 HTTPS Required , protocol_version Error","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2020/02/18/Maven-501-HTTPS-Required-%EC%97%90%EB%9F%AC/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2020/02/18/Maven-501-HTTPS-Required-%EC%97%90%EB%9F%AC/","keywords":"maven, maven-err"}</script>
                                     <meta name="description" content="+Maven 빌드 중, 501 HTTPS Required 에러+jdk 버전에 따른 protocol_version 버전 불일치 에러+cached in the local repository, resolution will not be reattempted">
 <meta property="og:type" content="blog">
 <meta property="og:title" content="Maven 501 HTTPS Required , protocol_version Error">
@@ -80,6 +75,10 @@
     
 
 <header id="header" data-behavior="4">
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js"></script>
+    <script src="https://kit.fontawesome.com/cfcae25ced.js" crossorigin="anonymous"></script>
     <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
     <div class="header-title">
         <a
@@ -125,13 +124,35 @@
                 </a>
                 <h4 class="sidebar-profile-name">Suyan Kim</h4>
                 
-                    <h5 class="sidebar-profile-bio"><p>▲ Who Am I</p>
+                    <h5 class="sidebar-profile-bio"><p><strong><a target="_blank" rel="noopener" href="https://nice-spectrum-2aa.notion.site/Suyeon-Kim-09e271916a504e24a5307e9f67d7bc16">Click 👀 Resume</a></strong></p>
 </h5>
                 
             </div>
         
         
             <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="https://nice-spectrum-2aa.notion.site/Suyeon-Kim-09e271916a504e24a5307e9f67d7bc16" target="_blank" rel="noopener" title="resume 👀">
+                    
+                    <i class="sidebar-button-icon far fa-smile-wink" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">resume 👀</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="https://github.com/ksso730" target="_blank" rel="noopener" title="github">
+                    
+                    <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">github</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
             
                 <li class="sidebar-button">
                     
@@ -182,7 +203,7 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (10)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (15)</a></li>
                             
                         
                             
@@ -198,7 +219,7 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Git/">☁️ Git (3)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Git/">☁️ Git (4)</a></li>
                             
                         
                             
@@ -218,7 +239,9 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-NodeJS/">☁️ NodeJS (1)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-NodeJS/">☁️ NodeJS (8)</a></li>
+                            
+                        
                             
                         
                             
@@ -234,11 +257,11 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Spring/">☁️ Spring (1)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Spring/">☁️ Spring (2)</a></li>
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-TIL/">☁️ TIL (10)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-TIL/">☁️ TIL (9)</a></li>
                             
                         
                     
@@ -259,35 +282,9 @@
                     
                 </li>
             
-                <li class="sidebar-button">
-                    
-                        <a  class="sidebar-button-link "
-                             
-                                title="about"href="#about"
-                                
-                                >
-                    
-                    <i class="sidebar-button-icon fa fa-question" aria-hidden="true"></i>
-                    <span class="sidebar-button-desc">about</span>
-                        </a>
-                    <!-- add -->
-                    
-                </li>
-            
         </ul>
         
             <ul class="sidebar-buttons">
-            
-                <li class="sidebar-button">
-                    
-                        <a  class="sidebar-button-link " href="https://github.com/ksso730" target="_blank" rel="noopener" title="github">
-                    
-                    <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
-                    <span class="sidebar-button-desc">github</span>
-                        </a>
-                    <!-- add -->
-                    
-                </li>
             
                 <li class="sidebar-button">
                     
@@ -415,9 +412,9 @@
                     
                 <a
                     class="post-action-btn btn btn--default tooltip--top"
-                    href="/2020/02/20/Node-%EB%A1%9C-%EC%84%9C%EB%B2%84-%EC%83%9D%EC%84%B1%ED%95%98%EA%B8%B0/"
-                    data-tooltip="Node 로 서버 생성하기"
-                    aria-label="PREVIOUS: Node 로 서버 생성하기"
+                    href="/2020/02/20/%EA%B8%B0%EB%B3%B8%ED%82%A4-%EB%A7%A4%ED%95%91/"
+                    data-tooltip="JPA 기본키 매핑"
+                    aria-label="PREVIOUS: JPA 기본키 매핑"
                 >
                     
                         <i class="fa fa-angle-left" aria-hidden="true"></i>
@@ -532,6 +529,7 @@
         Copyrights &copy; 2021 Suyan Kim. All Rights Reserved.
     </span>
 </footer>
+
             </div>
             
                 <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">
@@ -543,9 +541,9 @@
                     
                 <a
                     class="post-action-btn btn btn--default tooltip--top"
-                    href="/2020/02/20/Node-%EB%A1%9C-%EC%84%9C%EB%B2%84-%EC%83%9D%EC%84%B1%ED%95%98%EA%B8%B0/"
-                    data-tooltip="Node 로 서버 생성하기"
-                    aria-label="PREVIOUS: Node 로 서버 생성하기"
+                    href="/2020/02/20/%EA%B8%B0%EB%B3%B8%ED%82%A4-%EB%A7%A4%ED%95%91/"
+                    data-tooltip="JPA 기본키 매핑"
+                    aria-label="PREVIOUS: JPA 기본키 매핑"
                 >
                     
                         <i class="fa fa-angle-left" aria-hidden="true"></i>

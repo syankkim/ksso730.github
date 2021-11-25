@@ -4,11 +4,6 @@
     
 
     <head>
-        <script type="text/javascript" src="http://code.jquery.com/jquery-3.2.1.min.js"></script>
-        <script type="text/java script">
-            var $= jquery.noConflict();
-        </script>
-
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="generator" content="동글씨">
@@ -22,7 +17,7 @@
                         
                             <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
                             
-                                <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\n💬 해당 강의는 fastcampus 에서 ‘컴공 전공자 따라잡기 온라인 완주반’ 강의를 들으며 스스로의 학습을 위해 작성한 포스팅입니다. 문제가 된다면 연락 부탁드립니다.\n\n\n프로세스 스케줄링\n배치 처리시스템\n시분할 시스템\n멀티 태스킹\n\n\n\n배치처리 시스템\n여러 응용 프로그램들이 순차적으로 자동 실행되도록 하는 시스템\n문제점\n시간이 긴 응용프로그램이 수행중일 경우 다음 프로그램 수행까지 많은 시간을 대기해야함. (응답시간 증가)\n동시에 여러 작업을 할 수 없음. (동시성X)\n다중 사용자를 지원해주지 않음. (다중성X)\n\n\n\n시분할 시스템\n다중 사용자 지원을 위해 컴퓨터 응답시간을 최소화\n\n\n\n멀티 태스킹\n단일 CPU 에서 여러 응용 프로그램이 동시에 실행되는 것 처럼 보이도록 함.\n\n실제 멀티 태스킹은 어떻게?\n1000 ms = 1s\n10~20 ms 단위로 실행 응용 프로그램이 바뀐다.\n사용자는 동시에 실행되는 것 처럼 느낀다.\n\n\n\n멀티 태스킹과 멀티 프로세싱\n멀티 태스킹 : 단일 CPU\n멀티 프로세싱 : 하나의 응용프로그램을 여러 CPU에서 병렬로 처리함으로써 실행속도를 극대화 한다.\n\n\n\n멀티 프로그래밍\n최대한 CPU 를 많이 활용하도록 하는 시스템\n시간 대비 CPU 활용도 높임.\n응용 프로그램을 짧은 시간 안에 실행완료 시킬 수 있음.\n\n\n응용 프로그램은 CPU 만 온전히 쓰는것이 아니다.\n\n응용 프로그램 실행 중 파일을 읽는다.\n응용 프로그램이 실행되다가 프린팅을 한다.\n\n\n마무리\n실제로는 시분할 시스템, 멀티 프로그래밍, 멀티 태스킹이 유사한 의미로 통용된다.\n\n\n배치 처리 시스템\n시분할 시스템 (다중사용자 지원, 응답시간 최소화)\n멀티 태스킹 (동시 실행되는것 처럼 보임)\n멀티 프로세싱 (여러 CPU 가 하나의 프로그램을 병렬로 처리)\n멀티 프로그래밍 : 시간대비 CPU 활용도를 최대한으로 높임.\n","dateCreated":"2021-05-04T22:23:32+09:00","dateModified":"2021-05-12T17:43:45+09:00","datePublished":"2021-05-04T22:23:32+09:00","description":"세 가지 프로세스 스케줄링 기법을 배운다.#batch #multi_tasking #time_sharing","headline":"〰️ 운영체제의 스케줄링 기법","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2021/05/04/%EC%9A%B4%EC%98%81%EC%B2%B4%EC%A0%9C-%EC%8A%A4%EC%BC%80%EC%A4%84%EB%A7%81/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2021/05/04/%EC%9A%B4%EC%98%81%EC%B2%B4%EC%A0%9C-%EC%8A%A4%EC%BC%80%EC%A4%84%EB%A7%81/","keywords":"OS, scheduling"}</script>
+                                <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\n💬 해당 강의는 fastcampus 에서 ‘컴공 전공자 따라잡기 온라인 완주반’ 강의를 들으며 스스로의 학습을 위해 작성한 포스팅입니다. 문제가 된다면 연락 부탁드립니다.\n\n\n프로세스 스케줄링\n배치 처리시스템\n시분할 시스템\n멀티 태스킹\n\n\n\n배치처리 시스템\n여러 응용 프로그램들이 순차적으로 자동 실행되도록 하는 시스템\n문제점\n시간이 긴 응용프로그램이 수행중일 경우 다음 프로그램 수행까지 많은 시간을 대기해야함. (응답시간 증가)\n동시에 여러 작업을 할 수 없음. (동시성X)\n다중 사용자를 지원해주지 않음. (다중성X)\n\n\n\n시분할 시스템\n다중 사용자 지원을 위해 컴퓨터 응답시간을 최소화\n\n\n\n멀티 태스킹\n단일 CPU 에서 여러 응용 프로그램이 동시에 실행되는 것 처럼 보이도록 함.\n\n실제 멀티 태스킹은 어떻게?\n1000 ms = 1s\n10~20 ms 단위로 실행 응용 프로그램이 바뀐다.\n사용자는 동시에 실행되는 것 처럼 느낀다.\n\n\n\n멀티 태스킹과 멀티 프로세싱\n멀티 태스킹 : 단일 CPU\n멀티 프로세싱 : 하나의 응용프로그램을 여러 CPU에서 병렬로 처리함으로써 실행속도를 극대화 한다.\n\n\n\n멀티 프로그래밍\n최대한 CPU 를 많이 활용하도록 하는 시스템\n시간 대비 CPU 활용도 높임.\n응용 프로그램을 짧은 시간 안에 실행완료 시킬 수 있음.\n\n\n응용 프로그램은 CPU 만 온전히 쓰는것이 아니다.\n\n응용 프로그램 실행 중 파일을 읽는다.\n응용 프로그램이 실행되다가 프린팅을 한다.\n\n\n마무리\n실제로는 시분할 시스템, 멀티 프로그래밍, 멀티 태스킹이 유사한 의미로 통용된다.\n\n\n배치 처리 시스템\n시분할 시스템 (다중사용자 지원, 응답시간 최소화)\n멀티 태스킹 (동시 실행되는것 처럼 보임)\n멀티 프로세싱 (여러 CPU 가 하나의 프로그램을 병렬로 처리)\n멀티 프로그래밍 : 시간대비 CPU 활용도를 최대한으로 높임.\n","dateCreated":"2021-05-04T22:23:32+09:00","dateModified":"2021-05-12T17:43:45+09:00","datePublished":"2021-05-04T22:23:32+09:00","description":"세 가지 프로세스 스케줄링 기법을 배운다.#batch #multi_tasking #time_sharing","headline":"〰️ 운영체제의 스케줄링 기법","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2021/05/04/%EC%9A%B4%EC%98%81%EC%B2%B4%EC%A0%9C-%EC%8A%A4%EC%BC%80%EC%A4%84%EB%A7%81/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2021/05/04/%EC%9A%B4%EC%98%81%EC%B2%B4%EC%A0%9C-%EC%8A%A4%EC%BC%80%EC%A4%84%EB%A7%81/","keywords":"OS, scheduling"}</script>
                                     <meta name="description" content="세 가지 프로세스 스케줄링 기법을 배운다.#batch #multi_tasking #time_sharing">
 <meta property="og:type" content="blog">
 <meta property="og:title" content="〰️ 운영체제의 스케줄링 기법">
@@ -78,6 +73,10 @@
     
 
 <header id="header" data-behavior="4">
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js"></script>
+    <script src="https://kit.fontawesome.com/cfcae25ced.js" crossorigin="anonymous"></script>
     <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
     <div class="header-title">
         <a
@@ -123,13 +122,35 @@
                 </a>
                 <h4 class="sidebar-profile-name">Suyan Kim</h4>
                 
-                    <h5 class="sidebar-profile-bio"><p>▲ Who Am I</p>
+                    <h5 class="sidebar-profile-bio"><p><strong><a target="_blank" rel="noopener" href="https://nice-spectrum-2aa.notion.site/Suyeon-Kim-09e271916a504e24a5307e9f67d7bc16">Click 👀 Resume</a></strong></p>
 </h5>
                 
             </div>
         
         
             <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="https://nice-spectrum-2aa.notion.site/Suyeon-Kim-09e271916a504e24a5307e9f67d7bc16" target="_blank" rel="noopener" title="resume 👀">
+                    
+                    <i class="sidebar-button-icon far fa-smile-wink" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">resume 👀</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="https://github.com/ksso730" target="_blank" rel="noopener" title="github">
+                    
+                    <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">github</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
             
                 <li class="sidebar-button">
                     
@@ -180,7 +201,7 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (10)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (15)</a></li>
                             
                         
                             
@@ -196,7 +217,7 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Git/">☁️ Git (3)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Git/">☁️ Git (4)</a></li>
                             
                         
                             
@@ -216,7 +237,9 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-NodeJS/">☁️ NodeJS (1)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-NodeJS/">☁️ NodeJS (8)</a></li>
+                            
+                        
                             
                         
                             
@@ -232,11 +255,11 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Spring/">☁️ Spring (1)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Spring/">☁️ Spring (2)</a></li>
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-TIL/">☁️ TIL (10)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-TIL/">☁️ TIL (9)</a></li>
                             
                         
                     
@@ -257,35 +280,9 @@
                     
                 </li>
             
-                <li class="sidebar-button">
-                    
-                        <a  class="sidebar-button-link "
-                             
-                                title="about"href="#about"
-                                
-                                >
-                    
-                    <i class="sidebar-button-icon fa fa-question" aria-hidden="true"></i>
-                    <span class="sidebar-button-desc">about</span>
-                        </a>
-                    <!-- add -->
-                    
-                </li>
-            
         </ul>
         
             <ul class="sidebar-buttons">
-            
-                <li class="sidebar-button">
-                    
-                        <a  class="sidebar-button-link " href="https://github.com/ksso730" target="_blank" rel="noopener" title="github">
-                    
-                    <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
-                    <span class="sidebar-button-desc">github</span>
-                        </a>
-                    <!-- add -->
-                    
-                </li>
             
                 <li class="sidebar-button">
                     
@@ -546,6 +543,7 @@
         Copyrights &copy; 2021 Suyan Kim. All Rights Reserved.
     </span>
 </footer>
+
             </div>
             
                 <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">

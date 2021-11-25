@@ -4,11 +4,6 @@
     
 
     <head>
-        <script type="text/javascript" src="http://code.jquery.com/jquery-3.2.1.min.js"></script>
-        <script type="text/java script">
-            var $= jquery.noConflict();
-        </script>
-
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="generator" content="동글씨">
@@ -22,7 +17,7 @@
                         
                             <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
                             
-                                <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\n\n\n@BeforeEach각 테스트를 실행하기 전에 값을 세팅해준다.\n12345678910111213141516171819@BeforeEach    public void before()&#123;        queryFactory = new JPAQueryFactory(em);        Team teamA = new Team(&quot;teamA&quot;);        Team teamB = new Team(&quot;teamB&quot;);        em.persist(teamA);        em.persist(teamB);        Member mem1 = new Member(&quot;mem1&quot;, 10, teamA);        Member mem2 = new Member(&quot;mem2&quot;,20, teamA);        Member mem3 = new Member(&quot;mem3&quot;,30, teamB);        Member mem4 = new Member(&quot;mem4&quot;,40, teamB);        em.persist(mem1);        em.persist(mem2);        em.persist(mem3);        em.persist(mem4);    &#125;\n\nQ-type 활용1234567891011121314151617@Testpublic void startQuerydsl()&#123;        queryFactory = new JPAQueryFactory(em);// Q-type 활용 방법1//        QMember m1 = new QMember(&quot;m1&quot;);// Q-type 활용 방법2//        QMember m1 = QMember.member;// Q-type 활용 방법3 -권장 static method QMember.member        Member findMember = queryFactory                .select(member)                .from(member)                .where(member.username.eq(&quot;mem1&quot;))  // PrepareStatement 의 parameterBinding 방식을 사용함.                .fetchOne();        assertThat(findMember.getUsername()).isEqualTo(&quot;mem1&quot;);    &#125;\n\n검색 조건fetch : 리스트 조회, 데이터 없으면 null 반환fetchOne : 단건 조회&nbsp;&nbsp;&nbsp; - 결과 없으면 null&nbsp;&nbsp;&nbsp; - 둘 이상이면 com.querydsl.core.NoneUniqueResultExceptionfetchFirst = limit(1).fetchOne()fetchResults : 페이징 정보를 포함. (+)total count 쿼리fetchCount : count 쿼리로 변경하여 실행\n123456789101112131415161718192021222324252627282930313233@Test    public void resultFetch()&#123;        // 1 여러건 조회       List&lt;Member&gt; fetch = queryFactory               .select(member)               .fetch();       // 2 단건조회       Member fetchOne = queryFactory               .selectFrom(member)               .fetchOne();       // 3 처음 한건 조회       Member fetchFirst = queryFactory               .selectFrom(member)               .fetchFirst();        // 4 페이징에서 사용.        //   쿼리를 두 번 실행함.        QueryResults&lt;Member&gt; results = queryFactory                .selectFrom(member)                .fetchResults();        long total = results.getTotal();        System.out.println(&quot;total =&gt; &quot;+total);        List&lt;Member&gt; content = results.getResults();        // 5 count 만 조회       long count = queryFactory               .selectFrom(member)               .fetchCount();    &#125;\n\n\n4 페이징에서 사용 QueryResults 를 사용하여 실행되는 쿼리를 확인해보면count 를 조회하는 쿼리, 실제 member데이터들을 조회하는 쿼리, 2번 실행되는 것을 볼 수 있다.\n\n따라서 성능을 따진다면 count 쿼리를 따로 작성하여 실행해야 한다.\n\n12345678910111213142020-05-06 22:22:57.278 DEBUG 15676 --- [    Test worker] org.hibernate.SQL                        :     select        count(member0_.member_id) as col_0_0_     from        member member0_2020-05-06 22:22:57.418 DEBUG 15676 --- [    Test worker] org.hibernate.SQL                        :     select        member0_.member_id as member_i1_0_,        member0_.age as age2_0_,        member0_.team_id as team_id4_0_,        member0_.username as username3_0_     from        member member0_total =&gt; 4\n\n\n5 count 만 조회\n1234select       count(member0_.member_id) as col_0_0_    from       member member0_\n\n\n페이징1234567891011121314151617181920212223242526@Test   public void paging1()&#123;       List&lt;Member&gt; results = queryFactory               .select(member)               .orderBy(member.username.desc())               .offset(1)               .limit(2)               .fetch();       assertThat(results.size()).isEqualTo(2);   &#125;   @Test   public void paging2()&#123;       QueryResults&lt;Member&gt; results = queryFactory               .select(member)               .orderBy(member.username.desc())               .offset(1)               .limit(2)               .fetchResults();       assertThat(results.getTotal()).isEqualTo(4);       assertThat(results.getLimit()).isEqualTo(2);       assertThat(results.getTotal()).isEqualTo(1);       assertThat(results.getResults().size()).isEqualTo(2);   &#125;\n\n\n집합 함수12345678910111213141516171819202122// 집합함수    @Test    public void aggregation()&#123;        List&lt;Tuple&gt; result = queryFactory                .select(                        member.count(),                        member.age.sum(),                        member.age.avg(),                        member.age.max(),                        member.age.min()                )                .from(member)                .fetch();        // 한개만 조회됨        Tuple tuple = result.get(0);        assertThat(tuple.get(member.count())).isEqualTo(4);        assertThat(tuple.get(member.age.sum())).isEqualTo(100);        assertThat(tuple.get(member.age.avg())).isEqualTo(25);        assertThat(tuple.get(member.age.max())).isEqualTo(40);        assertThat(tuple.get(member.age.min())).isEqualTo(10);    &#125;\n\n\n그룹 groupBy , having\n팀의 이름과 각 팀의 평균연령을 구하는 예제\n\n1234567891011121314151617@Testpublic void groupBy()&#123;    List&lt;Tuple&gt; results = queryFactory            .select(team.name, member.age.avg())            .from(member)            .join(member.team, team)            .groupBy(team.name)            .fetch();    Tuple teamA = results.get(0);    Tuple teamB = results.get(1);    assertThat(teamA.get(team.name)).isEqualTo(&quot;teamA&quot;);    assertThat(teamA.get(member.age.avg())).isEqualTo(15);    assertThat(teamB.get(team.name)).isEqualTo(&quot;teamB&quot;);    assertThat(teamB.get(member.age.avg())).isEqualTo(35);&#125;","dateCreated":"2020-05-05T02:45:47+09:00","dateModified":"2020-05-28T14:39:32+09:00","datePublished":"2020-05-05T02:45:47+09:00","description":"JPA 의 Querydsl 여러 문법에 활용하는 예제를 통해 쿼리를 작성해봅니다.Q-type 검색조건 fetch() fetchCount() QueryResults 페이징집합함수 groupBy","headline":"JPA-QueryDsl 간단 쿼리 작성법","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2020/05/05/JPA-Projection/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2020/05/05/JPA-Projection/","keywords":"jpa, querydsl"}</script>
+                                <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\n\n\n@BeforeEach각 테스트를 실행하기 전에 값을 세팅해준다.\n12345678910111213141516171819@BeforeEach    public void before()&#123;        queryFactory = new JPAQueryFactory(em);        Team teamA = new Team(&quot;teamA&quot;);        Team teamB = new Team(&quot;teamB&quot;);        em.persist(teamA);        em.persist(teamB);        Member mem1 = new Member(&quot;mem1&quot;, 10, teamA);        Member mem2 = new Member(&quot;mem2&quot;,20, teamA);        Member mem3 = new Member(&quot;mem3&quot;,30, teamB);        Member mem4 = new Member(&quot;mem4&quot;,40, teamB);        em.persist(mem1);        em.persist(mem2);        em.persist(mem3);        em.persist(mem4);    &#125;\n\nQ-type 활용1234567891011121314151617@Testpublic void startQuerydsl()&#123;        queryFactory = new JPAQueryFactory(em);// Q-type 활용 방법1//        QMember m1 = new QMember(&quot;m1&quot;);// Q-type 활용 방법2//        QMember m1 = QMember.member;// Q-type 활용 방법3 -권장 static method QMember.member        Member findMember = queryFactory                .select(member)                .from(member)                .where(member.username.eq(&quot;mem1&quot;))  // PrepareStatement 의 parameterBinding 방식을 사용함.                .fetchOne();        assertThat(findMember.getUsername()).isEqualTo(&quot;mem1&quot;);    &#125;\n\n검색 조건fetch : 리스트 조회, 데이터 없으면 null 반환fetchOne : 단건 조회&nbsp;&nbsp;&nbsp; - 결과 없으면 null&nbsp;&nbsp;&nbsp; - 둘 이상이면 com.querydsl.core.NoneUniqueResultExceptionfetchFirst = limit(1).fetchOne()fetchResults : 페이징 정보를 포함. (+)total count 쿼리fetchCount : count 쿼리로 변경하여 실행\n123456789101112131415161718192021222324252627282930313233@Test    public void resultFetch()&#123;        // 1 여러건 조회       List&lt;Member&gt; fetch = queryFactory               .select(member)               .fetch();       // 2 단건조회       Member fetchOne = queryFactory               .selectFrom(member)               .fetchOne();       // 3 처음 한건 조회       Member fetchFirst = queryFactory               .selectFrom(member)               .fetchFirst();        // 4 페이징에서 사용.        //   쿼리를 두 번 실행함.        QueryResults&lt;Member&gt; results = queryFactory                .selectFrom(member)                .fetchResults();        long total = results.getTotal();        System.out.println(&quot;total =&gt; &quot;+total);        List&lt;Member&gt; content = results.getResults();        // 5 count 만 조회       long count = queryFactory               .selectFrom(member)               .fetchCount();    &#125;\n\n\n4 페이징에서 사용 QueryResults 를 사용하여 실행되는 쿼리를 확인해보면count 를 조회하는 쿼리, 실제 member데이터들을 조회하는 쿼리, 2번 실행되는 것을 볼 수 있다.\n\n따라서 성능을 따진다면 count 쿼리를 따로 작성하여 실행해야 한다.\n\n12345678910111213142020-05-06 22:22:57.278 DEBUG 15676 --- [    Test worker] org.hibernate.SQL                        :     select        count(member0_.member_id) as col_0_0_     from        member member0_2020-05-06 22:22:57.418 DEBUG 15676 --- [    Test worker] org.hibernate.SQL                        :     select        member0_.member_id as member_i1_0_,        member0_.age as age2_0_,        member0_.team_id as team_id4_0_,        member0_.username as username3_0_     from        member member0_total =&gt; 4\n\n\n5 count 만 조회\n1234select       count(member0_.member_id) as col_0_0_    from       member member0_\n\n\n페이징1234567891011121314151617181920212223242526@Test   public void paging1()&#123;       List&lt;Member&gt; results = queryFactory               .select(member)               .orderBy(member.username.desc())               .offset(1)               .limit(2)               .fetch();       assertThat(results.size()).isEqualTo(2);   &#125;   @Test   public void paging2()&#123;       QueryResults&lt;Member&gt; results = queryFactory               .select(member)               .orderBy(member.username.desc())               .offset(1)               .limit(2)               .fetchResults();       assertThat(results.getTotal()).isEqualTo(4);       assertThat(results.getLimit()).isEqualTo(2);       assertThat(results.getTotal()).isEqualTo(1);       assertThat(results.getResults().size()).isEqualTo(2);   &#125;\n\n\n집합 함수12345678910111213141516171819202122// 집합함수    @Test    public void aggregation()&#123;        List&lt;Tuple&gt; result = queryFactory                .select(                        member.count(),                        member.age.sum(),                        member.age.avg(),                        member.age.max(),                        member.age.min()                )                .from(member)                .fetch();        // 한개만 조회됨        Tuple tuple = result.get(0);        assertThat(tuple.get(member.count())).isEqualTo(4);        assertThat(tuple.get(member.age.sum())).isEqualTo(100);        assertThat(tuple.get(member.age.avg())).isEqualTo(25);        assertThat(tuple.get(member.age.max())).isEqualTo(40);        assertThat(tuple.get(member.age.min())).isEqualTo(10);    &#125;\n\n\n그룹 groupBy , having\n팀의 이름과 각 팀의 평균연령을 구하는 예제\n\n1234567891011121314151617@Testpublic void groupBy()&#123;    List&lt;Tuple&gt; results = queryFactory            .select(team.name, member.age.avg())            .from(member)            .join(member.team, team)            .groupBy(team.name)            .fetch();    Tuple teamA = results.get(0);    Tuple teamB = results.get(1);    assertThat(teamA.get(team.name)).isEqualTo(&quot;teamA&quot;);    assertThat(teamA.get(member.age.avg())).isEqualTo(15);    assertThat(teamB.get(team.name)).isEqualTo(&quot;teamB&quot;);    assertThat(teamB.get(member.age.avg())).isEqualTo(35);&#125;","dateCreated":"2020-05-05T02:45:47+09:00","dateModified":"2020-05-28T14:39:32+09:00","datePublished":"2020-05-05T02:45:47+09:00","description":"JPA 의 Querydsl 여러 문법에 활용하는 예제를 통해 쿼리를 작성해봅니다.Q-type 검색조건 fetch() fetchCount() QueryResults 페이징집합함수 groupBy","headline":"JPA-QueryDsl 간단 쿼리 작성법","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2020/05/05/JPA-Projection/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2020/05/05/JPA-Projection/","keywords":"jpa, querydsl"}</script>
                                     <meta name="description" content="JPA 의 Querydsl 여러 문법에 활용하는 예제를 통해 쿼리를 작성해봅니다.Q-type 검색조건 fetch() fetchCount() QueryResults 페이징집합함수 groupBy">
 <meta property="og:type" content="blog">
 <meta property="og:title" content="JPA-QueryDsl 간단 쿼리 작성법">
@@ -78,6 +73,10 @@
     
 
 <header id="header" data-behavior="4">
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js"></script>
+    <script src="https://kit.fontawesome.com/cfcae25ced.js" crossorigin="anonymous"></script>
     <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
     <div class="header-title">
         <a
@@ -123,13 +122,35 @@
                 </a>
                 <h4 class="sidebar-profile-name">Suyan Kim</h4>
                 
-                    <h5 class="sidebar-profile-bio"><p>▲ Who Am I</p>
+                    <h5 class="sidebar-profile-bio"><p><strong><a target="_blank" rel="noopener" href="https://nice-spectrum-2aa.notion.site/Suyeon-Kim-09e271916a504e24a5307e9f67d7bc16">Click 👀 Resume</a></strong></p>
 </h5>
                 
             </div>
         
         
             <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="https://nice-spectrum-2aa.notion.site/Suyeon-Kim-09e271916a504e24a5307e9f67d7bc16" target="_blank" rel="noopener" title="resume 👀">
+                    
+                    <i class="sidebar-button-icon far fa-smile-wink" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">resume 👀</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="https://github.com/ksso730" target="_blank" rel="noopener" title="github">
+                    
+                    <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">github</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
             
                 <li class="sidebar-button">
                     
@@ -180,7 +201,7 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (10)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (15)</a></li>
                             
                         
                             
@@ -196,7 +217,7 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Git/">☁️ Git (3)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Git/">☁️ Git (4)</a></li>
                             
                         
                             
@@ -216,7 +237,9 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-NodeJS/">☁️ NodeJS (1)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-NodeJS/">☁️ NodeJS (8)</a></li>
+                            
+                        
                             
                         
                             
@@ -232,11 +255,11 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Spring/">☁️ Spring (1)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Spring/">☁️ Spring (2)</a></li>
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-TIL/">☁️ TIL (10)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-TIL/">☁️ TIL (9)</a></li>
                             
                         
                     
@@ -257,35 +280,9 @@
                     
                 </li>
             
-                <li class="sidebar-button">
-                    
-                        <a  class="sidebar-button-link "
-                             
-                                title="about"href="#about"
-                                
-                                >
-                    
-                    <i class="sidebar-button-icon fa fa-question" aria-hidden="true"></i>
-                    <span class="sidebar-button-desc">about</span>
-                        </a>
-                    <!-- add -->
-                    
-                </li>
-            
         </ul>
         
             <ul class="sidebar-buttons">
-            
-                <li class="sidebar-button">
-                    
-                        <a  class="sidebar-button-link " href="https://github.com/ksso730" target="_blank" rel="noopener" title="github">
-                    
-                    <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
-                    <span class="sidebar-button-desc">github</span>
-                        </a>
-                    <!-- add -->
-                    
-                </li>
             
                 <li class="sidebar-button">
                     
@@ -516,6 +513,7 @@
         Copyrights &copy; 2021 Suyan Kim. All Rights Reserved.
     </span>
 </footer>
+
             </div>
             
                 <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">

@@ -4,11 +4,6 @@
     
 
     <head>
-        <script type="text/javascript" src="http://code.jquery.com/jquery-3.2.1.min.js"></script>
-        <script type="text/java script">
-            var $= jquery.noConflict();
-        </script>
-
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="generator" content="동글씨">
@@ -22,7 +17,7 @@
                         
                             <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
                             
-                                <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\nQueue일반적인 큐 FIFO12import queuedata_q = queue.Queue()\n\n12data_q.put(&quot;red&quot;)data_q.put(1)\n\n\n\n\n\n\nStack\n스택은 단순하고 빠른 성능을 위해 사용되므로, 보통 배열 구조를 활용해서 구현하는것이 일반적\n\n\nPros &amp; Cons\n\n데이터를 제한적으로 접근 LIFO\n\n구조가 단순, 구현 쉽다.\n\n데이터 저장/읽기 속도가 빠름.\n\n데이터 최대갯수를 미리 정해야함.\n\n파이썬의 경우 재귀함수는 1000번까지만 호출 가능\n\n\n저장공간의 낭비 발생\n\n미리 최대 갯수만큼 저장공간 확보 필요\n\n\n\n\n\nStack - 프로세스 함수 동작 방식에서 많이 쓰인다.\n재귀함수의 동작방식과 비슷하다.\n\n12345678# 재귀함수의 동작 방식def recursive(data):    if data&lt;0:        print(&quot;ended&quot;)    else:        print(data)        recursive(data-1)        print(&quot;returned&quot;, data)\n\n\n\n위 recursive 함수를 실행시켜보면, 4-0 까지 stack data에 쌓인 뒤, 0이 되면 “ended” 를 찍는다.그리고 다시 stack data에서 맨 상단의 0부터 4까지 다시 꺼낸다. -&gt; “returned ~” 에 찍힌 data로 확인된다.\n\n\n\n\n\nStack - 파이썬 리스트 기능을 이용1234stack_ = list()stack_.append(1)stack_.append(2)\n\n\n\n\n\npop(), push() 함수 없이 직접 stack 구현123456789st = list()def push(data):    st.append(data)    def pop():    data = st[-1]    del st[-1]    return data\n\n\n\n","dateCreated":"2021-07-18T23:57:33+09:00","dateModified":"2021-07-23T13:25:49+09:00","datePublished":"2021-07-18T23:57:33+09:00","description":"Queue, Stack, Recursive Funtion큐, 스택, 재귀함수를 python으로 구현해본다.#queue #stack #linked_list","headline":"Queue 그리고 Statck 과 Recursive 재귀함수의 연관성","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2021/07/18/%ED%81%90-%EC%8A%A4%ED%83%9D/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2021/07/18/%ED%81%90-%EC%8A%A4%ED%83%9D/","keywords":"queue, stack"}</script>
+                                <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\nQueue일반적인 큐 FIFO12import queuedata_q = queue.Queue()\n\n12data_q.put(&quot;red&quot;)data_q.put(1)\n\n\n\n\n\n\nStack\n스택은 단순하고 빠른 성능을 위해 사용되므로, 보통 배열 구조를 활용해서 구현하는것이 일반적\n\n\nPros &amp; Cons\n\n데이터를 제한적으로 접근 LIFO\n\n구조가 단순, 구현 쉽다.\n\n데이터 저장/읽기 속도가 빠름.\n\n데이터 최대갯수를 미리 정해야함.\n\n파이썬의 경우 재귀함수는 1000번까지만 호출 가능\n\n\n저장공간의 낭비 발생\n\n미리 최대 갯수만큼 저장공간 확보 필요\n\n\n\n\n\nStack - 프로세스 함수 동작 방식에서 많이 쓰인다.\n재귀함수의 동작방식과 비슷하다.\n\n12345678# 재귀함수의 동작 방식def recursive(data):    if data&lt;0:        print(&quot;ended&quot;)    else:        print(data)        recursive(data-1)        print(&quot;returned&quot;, data)\n\n\n\n위 recursive 함수를 실행시켜보면, 4-0 까지 stack data에 쌓인 뒤, 0이 되면 “ended” 를 찍는다.그리고 다시 stack data에서 맨 상단의 0부터 4까지 다시 꺼낸다. -&gt; “returned ~” 에 찍힌 data로 확인된다.\n\n\n\n\n\nStack - 파이썬 리스트 기능을 이용1234stack_ = list()stack_.append(1)stack_.append(2)\n\n\n\n\n\npop(), push() 함수 없이 직접 stack 구현123456789st = list()def push(data):    st.append(data)    def pop():    data = st[-1]    del st[-1]    return data\n\n\n\n","dateCreated":"2021-07-18T23:57:33+09:00","dateModified":"2021-07-23T13:25:49+09:00","datePublished":"2021-07-18T23:57:33+09:00","description":"Queue, Stack, Recursive Funtion큐, 스택, 재귀함수를 python으로 구현해본다.#queue #stack #linked_list","headline":"Queue 그리고 Statck 과 Recursive 재귀함수의 연관성","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2021/07/18/%ED%81%90-%EC%8A%A4%ED%83%9D/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2021/07/18/%ED%81%90-%EC%8A%A4%ED%83%9D/","keywords":"queue, stack"}</script>
                                     <meta name="description" content="Queue, Stack, Recursive Funtion큐, 스택, 재귀함수를 python으로 구현해본다.#queue #stack #linked_list">
 <meta property="og:type" content="blog">
 <meta property="og:title" content="Queue 그리고 Statck 과 Recursive 재귀함수의 연관성">
@@ -83,6 +78,10 @@
     
 
 <header id="header" data-behavior="4">
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js"></script>
+    <script src="https://kit.fontawesome.com/cfcae25ced.js" crossorigin="anonymous"></script>
     <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
     <div class="header-title">
         <a
@@ -128,13 +127,35 @@
                 </a>
                 <h4 class="sidebar-profile-name">Suyan Kim</h4>
                 
-                    <h5 class="sidebar-profile-bio"><p>▲ Who Am I</p>
+                    <h5 class="sidebar-profile-bio"><p><strong><a target="_blank" rel="noopener" href="https://nice-spectrum-2aa.notion.site/Suyeon-Kim-09e271916a504e24a5307e9f67d7bc16">Click 👀 Resume</a></strong></p>
 </h5>
                 
             </div>
         
         
             <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="https://nice-spectrum-2aa.notion.site/Suyeon-Kim-09e271916a504e24a5307e9f67d7bc16" target="_blank" rel="noopener" title="resume 👀">
+                    
+                    <i class="sidebar-button-icon far fa-smile-wink" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">resume 👀</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="https://github.com/ksso730" target="_blank" rel="noopener" title="github">
+                    
+                    <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">github</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
             
                 <li class="sidebar-button">
                     
@@ -185,7 +206,7 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (10)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (15)</a></li>
                             
                         
                             
@@ -201,7 +222,7 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Git/">☁️ Git (3)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Git/">☁️ Git (4)</a></li>
                             
                         
                             
@@ -221,7 +242,9 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-NodeJS/">☁️ NodeJS (1)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-NodeJS/">☁️ NodeJS (8)</a></li>
+                            
+                        
                             
                         
                             
@@ -237,11 +260,11 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Spring/">☁️ Spring (1)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Spring/">☁️ Spring (2)</a></li>
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-TIL/">☁️ TIL (10)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-TIL/">☁️ TIL (9)</a></li>
                             
                         
                     
@@ -262,35 +285,9 @@
                     
                 </li>
             
-                <li class="sidebar-button">
-                    
-                        <a  class="sidebar-button-link "
-                             
-                                title="about"href="#about"
-                                
-                                >
-                    
-                    <i class="sidebar-button-icon fa fa-question" aria-hidden="true"></i>
-                    <span class="sidebar-button-desc">about</span>
-                        </a>
-                    <!-- add -->
-                    
-                </li>
-            
         </ul>
         
             <ul class="sidebar-buttons">
-            
-                <li class="sidebar-button">
-                    
-                        <a  class="sidebar-button-link " href="https://github.com/ksso730" target="_blank" rel="noopener" title="github">
-                    
-                    <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
-                    <span class="sidebar-button-desc">github</span>
-                        </a>
-                    <!-- add -->
-                    
-                </li>
             
                 <li class="sidebar-button">
                     
@@ -547,6 +544,7 @@
         Copyrights &copy; 2021 Suyan Kim. All Rights Reserved.
     </span>
 </footer>
+
             </div>
             
                 <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">

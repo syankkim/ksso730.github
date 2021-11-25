@@ -1,0 +1,803 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="generator" content="동글씨">
+        <title>
+            🌳 알고리즘 - 트리 구조 - 동글씨
+        </title>
+        <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+        <meta name="author" content="Suyan Kim">
+        
+                
+                        
+                            <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
+                            
+                                <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\n트리 구조\n\nNode 와 Branch 를 이용해서 사이클을 이루지 않도록 구성된 데이터 구조\n트리 중 이진트리(Binary Search Tree) 형태의 구조로, 탐색(검색) 알고리즘 구현을 위해 많이 사용된다.\n\n\n용어\nNode : 트리에서 데이터를 저장하는 기본 요소 (데이터와 다른 연결된 Branch 정보 포함)\nRoot Node : 트리의 맨 위에 있는 노드\nLevel : 최상위 노드를 Level 0으로 하였을 때, 하위  Branch 로 연결된 노드의 깊이\nParent Node : 어떤 노드의 다음 레벨에 연결된 노드\nChild Node : 어떤 노드의 상위 레벨에 연결된 노드\nLeaf Node (Terminal Node) : Child Node가 하나도 없는 노드\nSibling (Brother Node) : 동일한 Parent Node를 가진 노드\nDepth : 트리에서 Node가 가질 수 있는 최대 Level\n\n이진 트리 VS 이진 탐색 트리\n이진 트리\n노드의 최대 Branch가 2인 트리\n\n\n이진 탐색 트리(BST): 이진 트리에서 추가적인 조건이 있음.\n왼쪽 노드는 작은 값, 오른쪽 노드는 큰 값을 저장한다.\n\n\n\n이진 탐색 트리의 주요 용도\n주요 용도: 데이터 검색(탐색)\n탐색 속도를 개선할 수 있는 장점이 있다.\n\n\n이진 탐색 트리 구현이진 탐색 트리를 위한 링크드리스트 구현\n노드에 필요한 데이터 : value, left, right\n\n123456789101112131415161718192021222324252627282930313233343536373839404142434445class Node:    def __init__(self, val):        self.val = val        self.right = None        self.left = Noneclass NodeMgt:    def __init__(self, head):        self.head = head## 데이터 입력      def insert(self, val):        self.cur = self.head        while True:            if val &lt; self.cur.val:                if self.cur.left != None:                    # 이미 left branch 가 있다면 계속 순회                    self.cur = self.cur.left                else:                    # left branch 가 없다면 노드 생성                    self.cur.left = Node(val)                    break            else:                if self.cur.right != None:                    # 이미 right branch 가 있다면 계속 순회                    self.cur = self.cur.right                else:                    # right branch 가 없다면 노드 생성                    self.cur.right = Node(val)                    break## 데이터 탐색        def search(self, val):        self.cur = self.head        while self.cur:            if self.cur.val == val:                print(&#x27;cur: %d = %d !!&#x27; % (self.cur.val, val))                return True            elif val &lt; self.cur.val:                print(&#x27;cur: %d &lt; %d&#x27; % (self.cur.val, val))                self.cur = self.cur.left            else:                print(&#x27;cur: %d &gt;= %d&#x27; % (self.cur.val, val))                self.cur = self.cur.right        return False\n\n\n이진 탐색 트리에 데이터 넣기\nNode head 생성\n초기값을 확인해 보면, 초기화 함수에 정의한 것을 확인할 수 있다.\n\n\n\n12345head = Node(1)print(head)print(head.val)print(head.left)print(head.right)\n\n\n\n\n\n이진 트리에 데이터 넣기\n\n1234567bts = NodeMgt(head)bts.insert(2)bts.insert(3)bts.insert(4)bts.insert(0)bts.insert(113)bts.insert(44)\n\n\n\n\n이진 트리에서 특정 데이터 탐색\n\n1234# True 있는 값 탐색bts.search(44)# False 없는 값 탐색bts.search(6)\n\n\n\n트리를 순회하면서 현재값보다 작으면 왼쪽으로, 크거나 같으면 오른쪽으로 노드를 옮겨가며 특정 데이터를 찾는다.\n\n\n\n\n\n이진 탐색 트리 삭제\n총 3가지 경우로 나눠서 삭제하는 함수를 구현할 수 있다.\nLeaf Node 삭제 : 삭제할 Node 의 Parent Node 가 삭제할 Node 를 가리키지 않도록 한다.\nChild Node 가 하나일 떼 : 삭제할 Node 의 Parent Node 가 삭제할 Node 의 Child Node 를 가리키도록 한다.\nChild Node 가 두 개 일 때\n삭제할 Node 의 오른쪽 자식 선택\n오른쪽 자식의 가장 왼쪽에 있는 Node를 선택\n해당 Node를 삭제할 Node의 Parent Node의 왼쪽 Branch가 가리키게 한다.\n해당 Node의 왼쪽 Branch가 삭제할 Node의 왼쪽 Child Node를 가리키게 함\n\n\n\n\n\n이진 탐색 트리 삭제 구현삭제할 Node 탐색12345678910111213141516171819202122#def delete(self, val)        searhed = False    self.cur = self.head    self.parent = self.head        while self.cur:        # 해당 노드를 찾음        if self.cur.val == val:            searched = True            break        # 해당 노드가 현재노드보다 작음        elif self.cur.val &gt; val:            self.parent = self.cur            self.cur = self.cur.left        # 해당 노드가 현재노드보다 큼        else:            self.parent = self.cur            self.cur = self.cur.right                if searched == False:        return False","dateCreated":"2021-08-18T16:23:23+09:00","dateModified":"2021-09-10T11:14:11+09:00","datePublished":"2021-08-18T16:23:23+09:00","description":"기본 알고리즘 트리 Tree 구조에 대해 공부한다.#tree #binary_search_tree","headline":"🌳 알고리즘 - 트리 구조","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2021/08/18/%ED%8A%B8%EB%A6%AC%EA%B5%AC%EC%A1%B01/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2021/08/18/%ED%8A%B8%EB%A6%AC%EA%B5%AC%EC%A1%B01/","keywords":"algorithm, tree"}</script>
+                                    <meta name="description" content="기본 알고리즘 트리 Tree 구조에 대해 공부한다.#tree #binary_search_tree">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="🌳 알고리즘 - 트리 구조">
+<meta property="og:url" content="http://yoursite.com/2021/08/18/%ED%8A%B8%EB%A6%AC%EA%B5%AC%EC%A1%B01/index.html">
+<meta property="og:site_name" content="동글씨">
+<meta property="og:description" content="기본 알고리즘 트리 Tree 구조에 대해 공부한다.#tree #binary_search_tree">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://user-images.githubusercontent.com/28856435/129865156-60ef7638-1370-4141-9cce-f91e56e4bafa.png">
+<meta property="og:image" content="https://user-images.githubusercontent.com/28856435/129865254-7092ba9a-7652-4d73-acd7-bbb0ed2ab12a.png">
+<meta property="article:published_time" content="2021-08-18T07:23:23.000Z">
+<meta property="article:modified_time" content="2021-09-10T02:14:11.686Z">
+<meta property="article:author" content="Suyan Kim">
+<meta property="article:tag" content="algorithm">
+<meta property="article:tag" content="tree">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://user-images.githubusercontent.com/28856435/129865156-60ef7638-1370-4141-9cce-f91e56e4bafa.png">
+                                        
+                                                
+                                                    
+                                                            
+                                                                
+                                                                    <meta property="og:image" content="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=640" />
+                                                                    
+                                                                            
+                                                                                    
+                                                                                            
+                                                                                                            <!--STYLES-->
+                                                                                                            
+<link rel="stylesheet" href="/assets/css/tranquilpeak.css">
+
+                                                                                                            <!--STYLES END-->
+                                                                                                                
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-158530470-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-158530470-1');
+    </script>
+
+
+                                                                                                                    
+
+                                                                                                                        
+                                                                                                                            
+                                                                                                                                                
+    </head>
+    <body>
+        <div id="blog">
+            <!-- Define author's picture -->
+
+
+    
+        
+    
+
+<header id="header" data-behavior="4">
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js"></script>
+    <script src="https://kit.fontawesome.com/cfcae25ced.js" crossorigin="anonymous"></script>
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <div class="header-title">
+        <a
+            class="header-title-link"
+            href="/index.html"
+            aria-label=""
+        >
+            동글씨
+        </a>
+    </div>
+    
+        
+            <a
+                class="header-right-picture "
+                href="#about"
+                aria-label="Open the link: /#about"
+            >
+        
+        
+            <img class="header-picture" src="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=90" alt="Author&#39;s picture"/>
+        
+        </a>
+    
+</header>
+
+            <!-- function -->
+
+
+<!-- Define author's picture -->
+
+
+    
+
+<nav id="sidebar" data-behavior="4">
+    <div class="sidebar-container">
+        
+            <div class="sidebar-profile">
+                <a
+                    href="/#about"
+                    aria-label="Read more about the author"
+                >
+                    <img class="sidebar-profile-picture" src="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=800" alt="Author&#39;s picture"/>
+                </a>
+                <h4 class="sidebar-profile-name">Suyan Kim</h4>
+                
+                    <h5 class="sidebar-profile-bio"><p><strong><a target="_blank" rel="noopener" href="https://nice-spectrum-2aa.notion.site/Suyeon-Kim-09e271916a504e24a5307e9f67d7bc16">Click 👀 Resume</a></strong></p>
+</h5>
+                
+            </div>
+        
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="https://nice-spectrum-2aa.notion.site/Suyeon-Kim-09e271916a504e24a5307e9f67d7bc16" target="_blank" rel="noopener" title="resume 👀">
+                    
+                    <i class="sidebar-button-icon far fa-smile-wink" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">resume 👀</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="https://github.com/ksso730" target="_blank" rel="noopener" title="github">
+                    
+                    <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">github</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="home"href="/index.html"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-home" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">home</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="archives"href="/all-archives"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-archive" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">archives</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="categories"href="/all-categories"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-bookmark" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">categories</span>
+                        </a>
+                    <!-- add -->
+                    
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-AWS/">☁️ AWS (0)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (15)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Config/">☁️ Config (2)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-DataBase/">☁️ DataBase (1)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Django/">☁️ Django (1)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Git/">☁️ Git (4)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-JPA/">☁️ JPA (10)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Java/">☁️ Java (0)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Linux/">☁️ Linux (6)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Network/">☁️ Network (1)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-NodeJS/">☁️ NodeJS (8)</a></li>
+                            
+                        
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-OS/">☁️ OS (14)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Python/">☁️ Python (2)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-React/">☁️ React (3)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Spring/">☁️ Spring (2)</a></li>
+                            
+                        
+                            
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-TIL/">☁️ TIL (9)</a></li>
+                            
+                        
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             
+                                title="tags"href="/all-tags"
+                                
+                                >
+                    
+                    <i class="sidebar-button-icon fa fa-tags" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">tags</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="https://www.instagram.com/syankkim/" target="_blank" rel="noopener" title="life">
+                    
+                    <i class="sidebar-button-icon fab fa-instagram" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">life</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+        </ul>
+        
+    </div>
+</nav>
+
+            
+            <div id="main" data-behavior="4"
+                 class="
+                        hasCoverMetaIn
+                        ">
+                
+<article class="post">
+    
+    
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title">
+            🌳 알고리즘 - 트리 구조
+        </h1>
+    
+    
+        <div class="post-meta">
+    <time datetime="2021-08-18T16:23:23+09:00">
+	
+		    Aug 18, 2021
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm</a>
+
+
+    
+</div>
+
+    
+</div>
+
+    
+    <div class="post-content markdown">
+        <div class="main-content-wrap">
+            <!-- excerpt -->
+<h1 id="table-of-contents">Contents</h1><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%ED%8A%B8%EB%A6%AC-%EA%B5%AC%EC%A1%B0"><span class="toc-text">트리 구조</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%EC%9A%A9%EC%96%B4"><span class="toc-text">용어</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%EC%9D%B4%EC%A7%84-%ED%8A%B8%EB%A6%AC-VS-%EC%9D%B4%EC%A7%84-%ED%83%90%EC%83%89-%ED%8A%B8%EB%A6%AC"><span class="toc-text">이진 트리 VS 이진 탐색 트리</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%EC%9D%B4%EC%A7%84-%ED%83%90%EC%83%89-%ED%8A%B8%EB%A6%AC%EC%9D%98-%EC%A3%BC%EC%9A%94-%EC%9A%A9%EB%8F%84"><span class="toc-text">이진 탐색 트리의 주요 용도</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%EC%9D%B4%EC%A7%84-%ED%83%90%EC%83%89-%ED%8A%B8%EB%A6%AC-%EA%B5%AC%ED%98%84"><span class="toc-text">이진 탐색 트리 구현</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%EC%9D%B4%EC%A7%84-%ED%83%90%EC%83%89-%ED%8A%B8%EB%A6%AC%EB%A5%BC-%EC%9C%84%ED%95%9C-%EB%A7%81%ED%81%AC%EB%93%9C%EB%A6%AC%EC%8A%A4%ED%8A%B8-%EA%B5%AC%ED%98%84"><span class="toc-text">이진 탐색 트리를 위한 링크드리스트 구현</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%EC%9D%B4%EC%A7%84-%ED%83%90%EC%83%89-%ED%8A%B8%EB%A6%AC%EC%97%90-%EB%8D%B0%EC%9D%B4%ED%84%B0-%EB%84%A3%EA%B8%B0"><span class="toc-text">이진 탐색 트리에 데이터 넣기</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%EC%9D%B4%EC%A7%84-%ED%83%90%EC%83%89-%ED%8A%B8%EB%A6%AC-%EC%82%AD%EC%A0%9C"><span class="toc-text">이진 탐색 트리 삭제</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%EC%9D%B4%EC%A7%84-%ED%83%90%EC%83%89-%ED%8A%B8%EB%A6%AC-%EC%82%AD%EC%A0%9C-%EA%B5%AC%ED%98%84"><span class="toc-text">이진 탐색 트리 삭제 구현</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%EC%82%AD%EC%A0%9C%ED%95%A0-Node-%ED%83%90%EC%83%89"><span class="toc-text">삭제할 Node 탐색</span></a></li></ol></li></ol></li></ol></li></ol>
+
+<hr>
+<h1 id="트리-구조"><a href="#트리-구조" class="headerlink" title="트리 구조"></a>트리 구조</h1><blockquote>
+<ul>
+<li>Node 와 Branch 를 이용해서 사이클을 이루지 않도록 구성된 데이터 구조</li>
+<li>트리 중 <code>이진트리</code>(Binary Search Tree) 형태의 구조로, <code>탐색(검색) 알고리즘 구현</code>을 위해 많이 사용된다.</li>
+</ul>
+</blockquote>
+<h2 id="용어"><a href="#용어" class="headerlink" title="용어"></a>용어</h2><ul>
+<li><strong>Node</strong> : 트리에서 데이터를 저장하는 기본 요소 (데이터와 다른 연결된 Branch 정보 포함)</li>
+<li><strong>Root Node</strong> : 트리의 맨 위에 있는 노드</li>
+<li><strong>Level</strong> : 최상위 노드를 Level 0으로 하였을 때, 하위  Branch 로 연결된 노드의 깊이</li>
+<li><strong>Parent Node</strong> : 어떤 노드의 다음 레벨에 연결된 노드</li>
+<li><strong>Child Node</strong> : 어떤 노드의 상위 레벨에 연결된 노드</li>
+<li><strong>Leaf Node (Terminal Node)</strong> : Child Node가 하나도 없는 노드</li>
+<li><strong>Sibling (Brother Node)</strong> : 동일한 Parent Node를 가진 노드</li>
+<li><strong>Depth</strong> : 트리에서 Node가 가질 수 있는 최대 Level</li>
+</ul>
+<h2 id="이진-트리-VS-이진-탐색-트리"><a href="#이진-트리-VS-이진-탐색-트리" class="headerlink" title="이진 트리 VS 이진 탐색 트리"></a>이진 트리 VS 이진 탐색 트리</h2><ul>
+<li>이진 트리<ul>
+<li>노드의 <code>최대 Branch가 2</code>인 트리</li>
+</ul>
+</li>
+<li>이진 탐색 트리(BST): 이진 트리에서 추가적인 조건이 있음.<ul>
+<li>왼쪽 노드는 작은 값, 오른쪽 노드는 큰 값을 저장한다.</li>
+</ul>
+</li>
+</ul>
+<h2 id="이진-탐색-트리의-주요-용도"><a href="#이진-탐색-트리의-주요-용도" class="headerlink" title="이진 탐색 트리의 주요 용도"></a>이진 탐색 트리의 주요 용도</h2><ul>
+<li>주요 용도: 데이터 <code>검색</code>(탐색)</li>
+<li><code>탐색 속도를 개선</code>할 수 있는 장점이 있다.</li>
+</ul>
+<hr>
+<h1 id="이진-탐색-트리-구현"><a href="#이진-탐색-트리-구현" class="headerlink" title="이진 탐색 트리 구현"></a>이진 탐색 트리 구현</h1><h2 id="이진-탐색-트리를-위한-링크드리스트-구현"><a href="#이진-탐색-트리를-위한-링크드리스트-구현" class="headerlink" title="이진 탐색 트리를 위한 링크드리스트 구현"></a>이진 탐색 트리를 위한 링크드리스트 구현</h2><ul>
+<li>노드에 필요한 데이터 : <code>value</code>, <code>left</code>, <code>right</code></li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Node</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, val</span>):</span></span><br><span class="line">        self.val = val</span><br><span class="line">        self.right = <span class="literal">None</span></span><br><span class="line">        self.left = <span class="literal">None</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">NodeMgt</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, head</span>):</span></span><br><span class="line">        self.head = head</span><br><span class="line"></span><br><span class="line"><span class="comment">## 데이터 입력  </span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">insert</span>(<span class="params">self, val</span>):</span></span><br><span class="line">        self.cur = self.head</span><br><span class="line">        <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">            <span class="keyword">if</span> val &lt; self.cur.val:</span><br><span class="line">                <span class="keyword">if</span> self.cur.left != <span class="literal">None</span>:</span><br><span class="line">                    <span class="comment"># 이미 left branch 가 있다면 계속 순회</span></span><br><span class="line">                    self.cur = self.cur.left</span><br><span class="line">                <span class="keyword">else</span>:</span><br><span class="line">                    <span class="comment"># left branch 가 없다면 노드 생성</span></span><br><span class="line">                    self.cur.left = Node(val)</span><br><span class="line">                    <span class="keyword">break</span></span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                <span class="keyword">if</span> self.cur.right != <span class="literal">None</span>:</span><br><span class="line">                    <span class="comment"># 이미 right branch 가 있다면 계속 순회</span></span><br><span class="line">                    self.cur = self.cur.right</span><br><span class="line">                <span class="keyword">else</span>:</span><br><span class="line">                    <span class="comment"># right branch 가 없다면 노드 생성</span></span><br><span class="line">                    self.cur.right = Node(val)</span><br><span class="line">                    <span class="keyword">break</span></span><br><span class="line"></span><br><span class="line"><span class="comment">## 데이터 탐색    </span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">search</span>(<span class="params">self, val</span>):</span></span><br><span class="line">        self.cur = self.head</span><br><span class="line">        <span class="keyword">while</span> self.cur:</span><br><span class="line">            <span class="keyword">if</span> self.cur.val == val:</span><br><span class="line">                <span class="built_in">print</span>(<span class="string">&#x27;cur: %d = %d !!&#x27;</span> % (self.cur.val, val))</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">            <span class="keyword">elif</span> val &lt; self.cur.val:</span><br><span class="line">                <span class="built_in">print</span>(<span class="string">&#x27;cur: %d &lt; %d&#x27;</span> % (self.cur.val, val))</span><br><span class="line">                self.cur = self.cur.left</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                <span class="built_in">print</span>(<span class="string">&#x27;cur: %d &gt;= %d&#x27;</span> % (self.cur.val, val))</span><br><span class="line">                self.cur = self.cur.right</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">False</span></span><br></pre></td></tr></table></figure>
+
+
+<h2 id="이진-탐색-트리에-데이터-넣기"><a href="#이진-탐색-트리에-데이터-넣기" class="headerlink" title="이진 탐색 트리에 데이터 넣기"></a>이진 탐색 트리에 데이터 넣기</h2><ul>
+<li>Node <code>head</code> 생성<ul>
+<li>초기값을 확인해 보면, 초기화 함수에 정의한 것을 확인할 수 있다.</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">head = Node(<span class="number">1</span>)</span><br><span class="line"><span class="built_in">print</span>(head)</span><br><span class="line"><span class="built_in">print</span>(head.val)</span><br><span class="line"><span class="built_in">print</span>(head.left)</span><br><span class="line"><span class="built_in">print</span>(head.right)</span><br></pre></td></tr></table></figure>
+<img width="913" alt="스크린샷 2021-08-18 오후 5 28 27" src="https://user-images.githubusercontent.com/28856435/129865156-60ef7638-1370-4141-9cce-f91e56e4bafa.png">
+
+<br>
+
+<ul>
+<li>이진 트리에 데이터 넣기</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">bts = NodeMgt(head)</span><br><span class="line">bts.insert(<span class="number">2</span>)</span><br><span class="line">bts.insert(<span class="number">3</span>)</span><br><span class="line">bts.insert(<span class="number">4</span>)</span><br><span class="line">bts.insert(<span class="number">0</span>)</span><br><span class="line">bts.insert(<span class="number">113</span>)</span><br><span class="line">bts.insert(<span class="number">44</span>)</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<ul>
+<li>이진 트리에서 특정 데이터 탐색</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># True 있는 값 탐색</span></span><br><span class="line">bts.search(<span class="number">44</span>)</span><br><span class="line"><span class="comment"># False 없는 값 탐색</span></span><br><span class="line">bts.search(<span class="number">6</span>)</span><br></pre></td></tr></table></figure>
+<br>
+
+<ul>
+<li>트리를 순회하면서 현재값보다 작으면 왼쪽으로, 크거나 같으면 오른쪽으로 노드를 옮겨가며 특정 데이터를 찾는다.</li>
+</ul>
+<img width="920" alt="스크린샷 2021-08-18 오후 5 28 43" src="https://user-images.githubusercontent.com/28856435/129865254-7092ba9a-7652-4d73-acd7-bbb0ed2ab12a.png">
+
+<br>
+
+<h2 id="이진-탐색-트리-삭제"><a href="#이진-탐색-트리-삭제" class="headerlink" title="이진 탐색 트리 삭제"></a>이진 탐색 트리 삭제</h2><ul>
+<li>총 <code>3가지 경우</code>로 나눠서 삭제하는 함수를 구현할 수 있다.<ol>
+<li>Leaf Node 삭제 : 삭제할 Node 의 Parent Node 가 삭제할 Node 를 가리키지 않도록 한다.</li>
+<li>Child Node 가 하나일 떼 : 삭제할 Node 의 Parent Node 가 삭제할 Node 의 Child Node 를 가리키도록 한다.</li>
+<li>Child Node 가 두 개 일 때<ul>
+<li>삭제할 Node 의 오른쪽 자식 선택</li>
+<li>오른쪽 자식의 가장 왼쪽에 있는 Node를 선택</li>
+<li>해당 Node를 삭제할 Node의 Parent Node의 왼쪽 Branch가 가리키게 한다.</li>
+<li>해당 Node의 왼쪽 Branch가 삭제할 Node의 왼쪽 Child Node를 가리키게 함</li>
+</ul>
+</li>
+</ol>
+</li>
+</ul>
+<h3 id="이진-탐색-트리-삭제-구현"><a href="#이진-탐색-트리-삭제-구현" class="headerlink" title="이진 탐색 트리 삭제 구현"></a>이진 탐색 트리 삭제 구현</h3><h4 id="삭제할-Node-탐색"><a href="#삭제할-Node-탐색" class="headerlink" title="삭제할 Node 탐색"></a>삭제할 Node 탐색</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#def delete(self, val)</span></span><br><span class="line">    </span><br><span class="line">    searhed = <span class="literal">False</span></span><br><span class="line">    self.cur = self.head</span><br><span class="line">    self.parent = self.head</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">while</span> self.cur:</span><br><span class="line">        <span class="comment"># 해당 노드를 찾음</span></span><br><span class="line">        <span class="keyword">if</span> self.cur.val == val:</span><br><span class="line">            searched = <span class="literal">True</span></span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line">        <span class="comment"># 해당 노드가 현재노드보다 작음</span></span><br><span class="line">        <span class="keyword">elif</span> self.cur.val &gt; val:</span><br><span class="line">            self.parent = self.cur</span><br><span class="line">            self.cur = self.cur.left</span><br><span class="line">        <span class="comment"># 해당 노드가 현재노드보다 큼</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            self.parent = self.cur</span><br><span class="line">            self.cur = self.cur.right</span><br><span class="line">            </span><br><span class="line">    <span class="keyword">if</span> searched == <span class="literal">False</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">False</span></span><br></pre></td></tr></table></figure>
+            
+
+
+        </div>
+    </div>
+    <div id="post-footer" class="post-footer main-content-wrap">
+        
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">TAGGED IN</span><br/>
+                
+    <a class="tag tag--primary tag--small t-none-link" href="/tags/algorithm/" rel="tag">algorithm</a> <a class="tag tag--primary tag--small t-none-link" href="/tags/tree/" rel="tag">tree</a>
+
+            </div>
+        
+        
+            <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2021/09/09/nodejs_wetube_1/"
+                    data-tooltip="NodeJS란? 프로젝트 시작."
+                    aria-label="PREVIOUS: NodeJS란? 프로젝트 시작."
+                >
+                    
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                    </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2021/08/16/%ED%95%B4%EC%89%AC%ED%85%8C%EC%9D%B4%EB%B8%942/"
+                    data-tooltip="✌️✌️ 해시 테이블.2 - 충돌 해결 알고리즘"
+                    aria-label="NEXT: ✌️✌️ 해시 테이블.2 - 충돌 해결 알고리즘"
+                >
+                    
+                        <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a
+                class="post-action-btn btn btn--default btn-open-shareoptions"
+                href="#btn-open-shareoptions"
+                aria-label="Share this post"
+            >
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2021/08/18/%ED%8A%B8%EB%A6%AC%EA%B5%AC%EC%A1%B01/"
+                    title="Share on Facebook"
+                    aria-label="Share on Facebook"
+                >
+                    <i class="fab fa-facebook" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2021/08/18/%ED%8A%B8%EB%A6%AC%EA%B5%AC%EC%A1%B01/"
+                    title="Share on Twitter"
+                    aria-label="Share on Twitter"
+                >
+                    <i class="fab fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://plus.google.com/share?url=http://yoursite.com/2021/08/18/%ED%8A%B8%EB%A6%AC%EA%B5%AC%EC%A1%B01/"
+                    title="Share on Google+"
+                    aria-label="Share on Google+"
+                >
+                    <i class="fab fa-google-plus" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+                <li class="post-action">
+                    <a
+                        class="post-action-btn btn btn--default"
+                        href="#disqus_thread"
+                        aria-label="Leave a comment"
+                    >
+                        <i class="fa fa-comment"></i>
+                    </a>
+                </li>
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#table-of-contents" aria-label="Contents">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+        
+        
+            
+                <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+            
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2021 Suyan Kim. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2021/09/09/nodejs_wetube_1/"
+                    data-tooltip="NodeJS란? 프로젝트 시작."
+                    aria-label="PREVIOUS: NodeJS란? 프로젝트 시작."
+                >
+                    
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                    </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2021/08/16/%ED%95%B4%EC%89%AC%ED%85%8C%EC%9D%B4%EB%B8%942/"
+                    data-tooltip="✌️✌️ 해시 테이블.2 - 충돌 해결 알고리즘"
+                    aria-label="NEXT: ✌️✌️ 해시 테이블.2 - 충돌 해결 알고리즘"
+                >
+                    
+                        <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a
+                class="post-action-btn btn btn--default btn-open-shareoptions"
+                href="#btn-open-shareoptions"
+                aria-label="Share this post"
+            >
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2021/08/18/%ED%8A%B8%EB%A6%AC%EA%B5%AC%EC%A1%B01/"
+                    title="Share on Facebook"
+                    aria-label="Share on Facebook"
+                >
+                    <i class="fab fa-facebook" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2021/08/18/%ED%8A%B8%EB%A6%AC%EA%B5%AC%EC%A1%B01/"
+                    title="Share on Twitter"
+                    aria-label="Share on Twitter"
+                >
+                    <i class="fab fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://plus.google.com/share?url=http://yoursite.com/2021/08/18/%ED%8A%B8%EB%A6%AC%EA%B5%AC%EC%A1%B01/"
+                    title="Share on Google+"
+                    aria-label="Share on Google+"
+                >
+                    <i class="fab fa-google-plus" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+                <li class="post-action">
+                    <a
+                        class="post-action-btn btn btn--default"
+                        href="#disqus_thread"
+                        aria-label="Leave a comment"
+                    >
+                        <i class="fa fa-comment"></i>
+                    </a>
+                </li>
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#table-of-contents" aria-label="Contents">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                
+    <div id="share-options-bar" class="share-options-bar" data-behavior="4">
+        <i id="btn-close-shareoptions" class="fa fa-times"></i>
+        <ul class="share-options">
+            
+                
+                
+                <li class="share-option">
+                    <a
+                        class="share-option-btn"
+                        target="new"
+                        href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2021/08/18/%ED%8A%B8%EB%A6%AC%EA%B5%AC%EC%A1%B01/"
+                        aria-label="Share on Facebook"
+                    >
+                        <i class="fab fa-facebook" aria-hidden="true"></i><span>Share on Facebook</span>
+                    </a>
+                </li>
+            
+                
+                
+                <li class="share-option">
+                    <a
+                        class="share-option-btn"
+                        target="new"
+                        href="https://twitter.com/intent/tweet?text=http://yoursite.com/2021/08/18/%ED%8A%B8%EB%A6%AC%EA%B5%AC%EC%A1%B01/"
+                        aria-label="Share on Twitter"
+                    >
+                        <i class="fab fa-twitter" aria-hidden="true"></i><span>Share on Twitter</span>
+                    </a>
+                </li>
+            
+                
+                
+                <li class="share-option">
+                    <a
+                        class="share-option-btn"
+                        target="new"
+                        href="https://plus.google.com/share?url=http://yoursite.com/2021/08/18/%ED%8A%B8%EB%A6%AC%EA%B5%AC%EC%A1%B01/"
+                        aria-label="Share on Google+"
+                    >
+                        <i class="fab fa-google-plus" aria-hidden="true"></i><span>Share on Google+</span>
+                    </a>
+                </li>
+            
+        </ul>
+    </div>
+
+
+            
+        </div>
+        
+
+
+    
+
+<div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-times"></i>
+        </div>
+        
+            <img id="about-card-picture" src="https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d?s=110" alt="Author&#39;s picture"/>
+        
+            <h4 id="about-card-name">Suyan Kim</h4>
+        <!--  -->
+            <!-- <div id="about-card-bio"><p>author.bio</p>
+</div> -->
+            <div id="about-card-bio">안녕하세요, 서버 백엔드 개발자 동글씨입니다.</div>
+        <!--  -->
+        <!--  -->
+            <div id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <!-- <p>Backend Developer</p>
+ -->
+                Backend Developer
+            </div>
+        <!--  -->
+        
+            <div id="about-card-location">
+                <i class="fa fa-map-marker-alt"></i>
+                <br/>
+                Korea
+            </div>
+        
+    </div>
+</div>
+
+        
+        
+<div id="cover" style="background-image:url('/assets/images/null');"></div>
+        <!--SCRIPTS-->
+
+<script src="/assets/js/tranquilpeak.js"></script>
+
+<!--SCRIPTS END-->
+
+
+    
+        <script>
+          var disqus_config = function() {
+            this.page.url = 'http://yoursite.com/2021/08/18/%ED%8A%B8%EB%A6%AC%EA%B5%AC%EC%A1%B01/';
+              
+            this.page.identifier = '2021/08/18/트리구조1/';
+              
+          };
+          (function() {
+            var d = document, s = d.createElement('script');
+            var disqus_shortname = 'ksso730-github-io';
+            s.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+          })();
+        </script>
+    
+
+
+
+
+    </body>
+</html>

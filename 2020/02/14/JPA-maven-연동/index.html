@@ -4,11 +4,6 @@
     
 
     <head>
-        <script type="text/javascript" src="http://code.jquery.com/jquery-3.2.1.min.js"></script>
-        <script type="text/java script">
-            var $= jquery.noConflict();
-        </script>
-
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="generator" content="동글씨">
@@ -22,7 +17,7 @@
                         
                             <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
                             
-                                <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\n\n\nJPA - maven 연동설정pom.xml\njpa 하이버네이트추후에 스프링과 연동시 다운받은 스프링 버전과 같이 선택해주는것이 좋다.\nH2 데이터베이스설치한 버전과 같은 dependency 를 넣어줘야함.\n\npersistance.xml (rezsources/META-INF/persistance.xml)javax.~     속성: 라이브러리를 바꿔도 사용 가능.hibernate.~ 속성: 하이버네이트 라이브러리에서만 사용 가능.\n123456789101112131415161718192021&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;persistence version=&quot;2.2&quot;             xmlns=&quot;http://xmlns.jcp.org/xml/ns/persistence&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;             xsi:schemaLocation=&quot;http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_2.xsd&quot;&gt;    &lt;persistence-unit name=&quot;hello&quot;&gt;        &lt;properties&gt;            &lt;!-- 필수 속성 --&gt;            &lt;property name=&quot;javax.persistence.jdbc.driver&quot; value=&quot;org.h2.Driver&quot;/&gt;            &lt;property name=&quot;javax.persistence.jdbc.user&quot; value=&quot;sa&quot;/&gt;            &lt;property name=&quot;javax.persistence.jdbc.password&quot; value=&quot;&quot;/&gt;            &lt;property name=&quot;javax.persistence.jdbc.url&quot; value=&quot;jdbc:h2:tcp://localhost/~/test&quot;/&gt;            &lt;property name=&quot;hibernate.dialect&quot; value=&quot;org.hibernate.dialect.H2Dialect&quot;/&gt;            &lt;!-- 옵션 --&gt;            &lt;property name=&quot;hibernate.show_sql&quot; value=&quot;true&quot;/&gt;            &lt;property name=&quot;hibernate.format_sql&quot; value=&quot;true&quot;/&gt;            &lt;property name=&quot;hibernate.use_sql_comments&quot; value=&quot;true&quot;/&gt;            &lt;!--&lt;property name=&quot;hibernate.hbm2ddl.auto&quot; value=&quot;create&quot; /&gt;--&gt;        &lt;/properties&gt;    &lt;/persistence-unit&gt;&lt;/persistence&gt;\n\n\n\n\n\nHello JPA 실습Could not load requested class : org.h2.Driverh2 는 우선 설치해준다.\n\n\n\n분명히  pom.xml 에 H2 데이터베이스를 넣고, persistence.xml 에도 Database Driver 를 설정해주었는데도JpaMain 코드를 실행하여 데이터베이스 연결을 테스트 했을 때 다음과 같은 connection 오류가 발생했다.\nCould not load requested class : org.h2.Driver\n12345public class JpaMain &#123;    public static void main(String[] args)&#123;        EntityManagerFactory emf  = Persistence.createEntityManagerFactory(&quot;hello&quot;);    &#125;&#125;\n알고 보니 pom.xml 의 scope 값에\n&lt;scope&gt;[database_name]&lt;/scope&gt;\n이 부분의 database_name 이 잘못 들어가 있던것.\nstatck overflow 검색 결과..\nOn maven docs, it says that &lt;scope&gt;test&lt;/scope&gt; dependency is not required for normal use of the application, and is only available for the test compilation and execution phases\n​메이븐 docs 에느 scope 종속성은 일반적인 어플리케이션에서는 사용되지 않으며,test 컴파일 및 실행단계에서만  사용된다.\n​뭐 그렇다고 한다. 이런 기본적인 상식을 모르고 있었다니… &#128580;아무튼 scopse 종속성을 제거후 실행하니 연결에 성공했다.\n\n\n\n\n\n\n\nINCERT, SELECT, UPDATE (JPQL)\n\nINCERT\n\n123456789101112131415161718192021public class JpaMain &#123;    public static void main(String[] args)&#123;        EntityManagerFactory emf  = Persistence.createEntityManagerFactory(&quot;hello&quot;);        // 객체를 대신 저장해줌        EntityManager em = emf.createEntityManager();        EntityTransaction tx = em.getTransaction();        tx.begin();        try&#123;            Member member = new Member();            member.setId(1L);            member.setName(&quot;HelloA&quot;);            em.persist(member);            tx.commit();        &#125;catch (Exception e)&#123;            em.close();        &#125;finally &#123;            emf.close();        &#125;    &#125;&#125;\n\n실행결과\n\n\n\n\n\n\n\n\nUPDATE12345678910111213141516171819202122public class JpaMain &#123;    public static void main(String[] args)&#123;        EntityManagerFactory emf  = Persistence.createEntityManagerFactory(&quot;hello&quot;);        // 객체를 대신 저장해줌        EntityManager em = emf.createEntityManager();        EntityTransaction tx = em.getTransaction();        tx.begin();        try&#123;            Member findMember = em.find(Member.class, 1L);            System.out.println(&quot;findMember.id = &quot;+ findMember.getId());            System.out.println(&quot;findMember.id = &quot;+ findMember.getName());            findMember.setName(&quot;HelloJPA&quot;);            tx.commit();        &#125;catch (Exception e)&#123;            em.close();        &#125;finally &#123;            emf.close();        &#125;    &#125;&#125;\n\n실행결과\n\nJPQL - SELECT12345678910111213141516171819202122232425262728public class JpaMain &#123;    public static void main(String[] args)&#123;        EntityManagerFactory emf  = Persistence.createEntityManagerFactory(&quot;hello&quot;);        // 객체를 대신 저장해줌        EntityManager em = emf.createEntityManager();        EntityTransaction tx = em.getTransaction();        tx.begin();        try&#123;            //jpql 사용 - database 의 방언에 맞춰짐            List&lt;Member&gt; result = em.createQuery(&quot;select m from Member as m&quot;, Member.class)                    .setFirstResult(1)                    .setMaxResults(4)                    .getResultList();            for(Member member: result)&#123;                System.out.println(&quot;member.name = &quot;+member.getName());            &#125;            tx.commit();        &#125;catch (Exception e)&#123;            em.close();        &#125;finally &#123;            emf.close();        &#125;    &#125;&#125;\n실행결과\n1member.name = HelloJPA\n\n\n\n\n\n\n\n\n\nEntityManagerFactory 는 하나만 생성, 애플리케이션 전체공유.EntityManager  는  thread 간 공유가 안됨.\n\nJPQL ? 객체지향 SQL\n\n단순한 조회는 EntityManager.find()\nID 가 4이상 조회하고 싶다면?​\nSQL 을 추상화한 JPQL 이라는 객체지향 쿼리언어 제공.\nJPQL 은 엔티티 객체를 대상으로 쿼리\nSQL 은 데이터베이스 테이블을 대상으로 쿼리\n","dateCreated":"2020-02-14T01:19:04+09:00","dateModified":"2020-04-28T10:36:01+09:00","datePublished":"2020-02-14T01:19:04+09:00","description":"JPA 처음 시작하기. 연동과정을 알아보고 H2 를 이용한 기본 CRUD 를 연습해봅니다.​","headline":"JPA - maven 연동","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2020/02/14/JPA-maven-%EC%97%B0%EB%8F%99/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://github.com/ksso730","https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2020/02/14/JPA-maven-%EC%97%B0%EB%8F%99/","keywords":"JPA, maven"}</script>
+                                <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Suyan Kim","sameAs":["https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"},"articleBody":"\n\n\n\n\n\nJPA - maven 연동설정pom.xml\njpa 하이버네이트추후에 스프링과 연동시 다운받은 스프링 버전과 같이 선택해주는것이 좋다.\nH2 데이터베이스설치한 버전과 같은 dependency 를 넣어줘야함.\n\npersistance.xml (rezsources/META-INF/persistance.xml)javax.~     속성: 라이브러리를 바꿔도 사용 가능.hibernate.~ 속성: 하이버네이트 라이브러리에서만 사용 가능.\n123456789101112131415161718192021&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;persistence version=&quot;2.2&quot;             xmlns=&quot;http://xmlns.jcp.org/xml/ns/persistence&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;             xsi:schemaLocation=&quot;http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_2.xsd&quot;&gt;    &lt;persistence-unit name=&quot;hello&quot;&gt;        &lt;properties&gt;            &lt;!-- 필수 속성 --&gt;            &lt;property name=&quot;javax.persistence.jdbc.driver&quot; value=&quot;org.h2.Driver&quot;/&gt;            &lt;property name=&quot;javax.persistence.jdbc.user&quot; value=&quot;sa&quot;/&gt;            &lt;property name=&quot;javax.persistence.jdbc.password&quot; value=&quot;&quot;/&gt;            &lt;property name=&quot;javax.persistence.jdbc.url&quot; value=&quot;jdbc:h2:tcp://localhost/~/test&quot;/&gt;            &lt;property name=&quot;hibernate.dialect&quot; value=&quot;org.hibernate.dialect.H2Dialect&quot;/&gt;            &lt;!-- 옵션 --&gt;            &lt;property name=&quot;hibernate.show_sql&quot; value=&quot;true&quot;/&gt;            &lt;property name=&quot;hibernate.format_sql&quot; value=&quot;true&quot;/&gt;            &lt;property name=&quot;hibernate.use_sql_comments&quot; value=&quot;true&quot;/&gt;            &lt;!--&lt;property name=&quot;hibernate.hbm2ddl.auto&quot; value=&quot;create&quot; /&gt;--&gt;        &lt;/properties&gt;    &lt;/persistence-unit&gt;&lt;/persistence&gt;\n\n\n\n\n\nHello JPA 실습Could not load requested class : org.h2.Driverh2 는 우선 설치해준다.\n\n\n\n분명히  pom.xml 에 H2 데이터베이스를 넣고, persistence.xml 에도 Database Driver 를 설정해주었는데도JpaMain 코드를 실행하여 데이터베이스 연결을 테스트 했을 때 다음과 같은 connection 오류가 발생했다.\nCould not load requested class : org.h2.Driver\n12345public class JpaMain &#123;    public static void main(String[] args)&#123;        EntityManagerFactory emf  = Persistence.createEntityManagerFactory(&quot;hello&quot;);    &#125;&#125;\n알고 보니 pom.xml 의 scope 값에\n&lt;scope&gt;[database_name]&lt;/scope&gt;\n이 부분의 database_name 이 잘못 들어가 있던것.\nstatck overflow 검색 결과..\nOn maven docs, it says that &lt;scope&gt;test&lt;/scope&gt; dependency is not required for normal use of the application, and is only available for the test compilation and execution phases\n​메이븐 docs 에느 scope 종속성은 일반적인 어플리케이션에서는 사용되지 않으며,test 컴파일 및 실행단계에서만  사용된다.\n​뭐 그렇다고 한다. 이런 기본적인 상식을 모르고 있었다니… &#128580;아무튼 scopse 종속성을 제거후 실행하니 연결에 성공했다.\n\n\n\n\n\n\n\nINCERT, SELECT, UPDATE (JPQL)\n\nINCERT\n\n123456789101112131415161718192021public class JpaMain &#123;    public static void main(String[] args)&#123;        EntityManagerFactory emf  = Persistence.createEntityManagerFactory(&quot;hello&quot;);        // 객체를 대신 저장해줌        EntityManager em = emf.createEntityManager();        EntityTransaction tx = em.getTransaction();        tx.begin();        try&#123;            Member member = new Member();            member.setId(1L);            member.setName(&quot;HelloA&quot;);            em.persist(member);            tx.commit();        &#125;catch (Exception e)&#123;            em.close();        &#125;finally &#123;            emf.close();        &#125;    &#125;&#125;\n\n실행결과\n\n\n\n\n\n\n\n\nUPDATE12345678910111213141516171819202122public class JpaMain &#123;    public static void main(String[] args)&#123;        EntityManagerFactory emf  = Persistence.createEntityManagerFactory(&quot;hello&quot;);        // 객체를 대신 저장해줌        EntityManager em = emf.createEntityManager();        EntityTransaction tx = em.getTransaction();        tx.begin();        try&#123;            Member findMember = em.find(Member.class, 1L);            System.out.println(&quot;findMember.id = &quot;+ findMember.getId());            System.out.println(&quot;findMember.id = &quot;+ findMember.getName());            findMember.setName(&quot;HelloJPA&quot;);            tx.commit();        &#125;catch (Exception e)&#123;            em.close();        &#125;finally &#123;            emf.close();        &#125;    &#125;&#125;\n\n실행결과\n\nJPQL - SELECT12345678910111213141516171819202122232425262728public class JpaMain &#123;    public static void main(String[] args)&#123;        EntityManagerFactory emf  = Persistence.createEntityManagerFactory(&quot;hello&quot;);        // 객체를 대신 저장해줌        EntityManager em = emf.createEntityManager();        EntityTransaction tx = em.getTransaction();        tx.begin();        try&#123;            //jpql 사용 - database 의 방언에 맞춰짐            List&lt;Member&gt; result = em.createQuery(&quot;select m from Member as m&quot;, Member.class)                    .setFirstResult(1)                    .setMaxResults(4)                    .getResultList();            for(Member member: result)&#123;                System.out.println(&quot;member.name = &quot;+member.getName());            &#125;            tx.commit();        &#125;catch (Exception e)&#123;            em.close();        &#125;finally &#123;            emf.close();        &#125;    &#125;&#125;\n실행결과\n1member.name = HelloJPA\n\n\n\n\n\n\n\n\n\nEntityManagerFactory 는 하나만 생성, 애플리케이션 전체공유.EntityManager  는  thread 간 공유가 안됨.\n\nJPQL ? 객체지향 SQL\n\n단순한 조회는 EntityManager.find()\nID 가 4이상 조회하고 싶다면?​\nSQL 을 추상화한 JPQL 이라는 객체지향 쿼리언어 제공.\nJPQL 은 엔티티 객체를 대상으로 쿼리\nSQL 은 데이터베이스 테이블을 대상으로 쿼리\n","dateCreated":"2020-02-14T01:19:04+09:00","dateModified":"2020-04-28T10:36:01+09:00","datePublished":"2020-02-14T01:19:04+09:00","description":"JPA 처음 시작하기. 연동과정을 알아보고 H2 를 이용한 기본 CRUD 를 연습해봅니다.​","headline":"JPA - maven 연동","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2020/02/14/JPA-maven-%EC%97%B0%EB%8F%99/"},"publisher":{"@type":"Organization","name":"Suyan Kim","sameAs":["https://www.instagram.com/syankkim/"],"image":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/221eb22c21ff8475b8c63271e349b77d"}},"url":"http://yoursite.com/2020/02/14/JPA-maven-%EC%97%B0%EB%8F%99/","keywords":"JPA, maven"}</script>
                                     <meta name="description" content="JPA 처음 시작하기. 연동과정을 알아보고 H2 를 이용한 기본 CRUD 를 연습해봅니다.​">
 <meta property="og:type" content="blog">
 <meta property="og:title" content="JPA - maven 연동">
@@ -86,6 +81,10 @@
     
 
 <header id="header" data-behavior="4">
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js"></script>
+    <script src="https://kit.fontawesome.com/cfcae25ced.js" crossorigin="anonymous"></script>
     <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
     <div class="header-title">
         <a
@@ -131,13 +130,35 @@
                 </a>
                 <h4 class="sidebar-profile-name">Suyan Kim</h4>
                 
-                    <h5 class="sidebar-profile-bio"><p>▲ Who Am I</p>
+                    <h5 class="sidebar-profile-bio"><p><strong><a target="_blank" rel="noopener" href="https://nice-spectrum-2aa.notion.site/Suyeon-Kim-09e271916a504e24a5307e9f67d7bc16">Click 👀 Resume</a></strong></p>
 </h5>
                 
             </div>
         
         
             <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="https://nice-spectrum-2aa.notion.site/Suyeon-Kim-09e271916a504e24a5307e9f67d7bc16" target="_blank" rel="noopener" title="resume 👀">
+                    
+                    <i class="sidebar-button-icon far fa-smile-wink" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">resume 👀</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="https://github.com/ksso730" target="_blank" rel="noopener" title="github">
+                    
+                    <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
+                    <span class="sidebar-button-desc">github</span>
+                        </a>
+                    <!-- add -->
+                    
+                </li>
             
                 <li class="sidebar-button">
                     
@@ -188,7 +209,7 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (10)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Algorithm/">☁️ Algorithm (15)</a></li>
                             
                         
                             
@@ -204,7 +225,7 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Git/">☁️ Git (3)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Git/">☁️ Git (4)</a></li>
                             
                         
                             
@@ -224,7 +245,9 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-NodeJS/">☁️ NodeJS (1)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-NodeJS/">☁️ NodeJS (8)</a></li>
+                            
+                        
                             
                         
                             
@@ -240,11 +263,11 @@
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Spring/">☁️ Spring (1)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-Spring/">☁️ Spring (2)</a></li>
                             
                         
                             
-                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-TIL/">☁️ TIL (10)</a></li>
+                                <li class="side-tag-li"><a class="side-tag" href="/categories/%E2%98%81%EF%B8%8F-TIL/">☁️ TIL (9)</a></li>
                             
                         
                     
@@ -265,35 +288,9 @@
                     
                 </li>
             
-                <li class="sidebar-button">
-                    
-                        <a  class="sidebar-button-link "
-                             
-                                title="about"href="#about"
-                                
-                                >
-                    
-                    <i class="sidebar-button-icon fa fa-question" aria-hidden="true"></i>
-                    <span class="sidebar-button-desc">about</span>
-                        </a>
-                    <!-- add -->
-                    
-                </li>
-            
         </ul>
         
             <ul class="sidebar-buttons">
-            
-                <li class="sidebar-button">
-                    
-                        <a  class="sidebar-button-link " href="https://github.com/ksso730" target="_blank" rel="noopener" title="github">
-                    
-                    <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
-                    <span class="sidebar-button-desc">github</span>
-                        </a>
-                    <!-- add -->
-                    
-                </li>
             
                 <li class="sidebar-button">
                     
@@ -567,6 +564,7 @@
         Copyrights &copy; 2021 Suyan Kim. All Rights Reserved.
     </span>
 </footer>
+
             </div>
             
                 <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">

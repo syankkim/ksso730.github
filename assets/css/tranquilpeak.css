@@ -76,9 +76,9 @@ h5,
 h6 {
   letter-spacing: -0.04em;
   font-family: Avenir, "Noto Sans KR", SpoqaHanSans, "Apple SD Gothic Neo", "Malgun Gothic", "맑은 고딕", "Nanum Gothic", Dotum, "돋움", Helvetica, sans-serif;
-  font-weight: 700;
+  font-weight: 500;
   line-height: 1.45em;
-  color: #4a4a4a; }
+  color: #d8d8d8; }
 
 h1,
 h2,
@@ -118,11 +118,11 @@ dl {
 
 a, a:hover, a:active, a:visited {
   cursor: pointer;
-  color: #ff61aa;
+  color: #BD71E0;
   text-decoration: none; }
 
 a:hover {
-  color: #ff61aa;
+  color: #BD71E0;
   text-decoration: underline; }
 
 table {
@@ -144,7 +144,7 @@ hr {
   margin: 1.5em 0 0;
   outline: none;
   border: none;
-  border-top: 1px solid #eef2f8; }
+  border-top: 1px solid #4c4c4c; }
 
 dl dt {
   font-weight: bold; }
@@ -172,25 +172,26 @@ code {
   font-weight: 400;
   line-height: 2.1rem;
   padding: 0 7px;
-  color: #ff33b7;
-  background: #fffcd3;
+  color: #FF6D53;
+  background: #FF6D531a;
   border-radius: 1px;
   margin: 0 0.1em; }
 
 acronym,
 abbr {
-  border-bottom: 1px dotted #5d686f; }
+  border-bottom: 1px dotted #acc1cf; }
 
 blockquote {
-  color: #000000;
-  border-left: 2px solid #ff33b7;
+  color: #ffffff;
+  border-left: 2px solid #FF6D53;
   font-style: initial;
   margin: 1.5em 0 0;
-  background-color: #fff4fedb;
+  background-color: #271f24;
   padding: 3% 3% 3% 3%;
   margin-bottom: 50px;
   line-height: 1.9;
-  font-size: 0.9em; }
+  font-size: 0.9em;
+  border-radius: 0.5em; }
   blockquote cite:before {
     content: ' — ';
     padding: 0 0.3em; }
@@ -326,7 +327,7 @@ blockquote {
   position: fixed;
   bottom: 0;
   height: 60px;
-  background: white;
+  background: #1c171a;
   margin: 0;
   border-top: 1px solid #eef2f8;
   padding: 0 15px;
@@ -543,7 +544,7 @@ blockquote {
 #main {
   display: block;
   min-height: 100%;
-  background: #fff;
+  background: #191919;
   transition: transform .25s ease-in-out;
   -webkit-transition: -webkit-transform .25s ease-in-out; }
   #main.hasCover.hasCoverCaption, #main.hasCover.hasCoverMetaOut {
@@ -658,7 +659,7 @@ blockquote {
   height: 100%;
   position: fixed;
   top: 0;
-  background: rgba(255, 255, 255, 0.9);
+  background: #141414;
   overflow: auto;
   z-index: 20;
   font-weight: 700;
@@ -669,7 +670,7 @@ blockquote {
   #sidebar .sidebar-container {
     overflow: auto; }
   #sidebar .sidebar-profile {
-    color: #4f6674;
+    color: #ffffff;
     text-align: center;
     padding-top: 18px;
     margin-bottom: 3%; }
@@ -680,7 +681,7 @@ blockquote {
       height: 60%; }
     #sidebar .sidebar-profile .sidebar-profile-name {
       font-size: 1.1em;
-      color: black; }
+      color: #ffffff; }
   #sidebar ul.sidebar-buttons {
     padding: 0;
     margin: 40px 0 20px 0; }
@@ -690,12 +691,12 @@ blockquote {
       height: 50px;
       line-height: 50px; }
       #sidebar ul.sidebar-buttons li.sidebar-button .sidebar-button-link {
-        color: #4f6674;
+        color: #5378C6;
         display: block;
         height: 100%; }
         #sidebar ul.sidebar-buttons li.sidebar-button .sidebar-button-link:hover, #sidebar ul.sidebar-buttons li.sidebar-button .sidebar-button-link:active {
           text-decoration: none;
-          color: #07090a;
+          color: #33549a;
           border-color: rgba(255, 27, 27, 0.662745); }
     #sidebar ul.sidebar-buttons:first-child {
       margin-top: 5px; }
@@ -1435,7 +1436,7 @@ blockquote {
   display: none; }
 
 .archive .archive-title {
-  color: #5d686f; }
+  color: #acc1cf; }
   .archive .archive-title:hover {
     text-decoration: underline; }
 
@@ -1443,7 +1444,7 @@ blockquote {
   list-style: none; }
   .archive .archive-posts .archive-post .archive-post-title {
     margin-left: 10px;
-    color: #5d686f; }
+    color: #acc1cf; }
     .archive .archive-posts .archive-post .archive-post-title:hover {
       text-decoration: underline; }
   .archive .archive-posts .archive-post .archive-post-date {
@@ -1465,7 +1466,7 @@ blockquote {
 .btn {
   width: auto;
   height: auto;
-  background: white;
+  background: #1c171a;
   border-radius: 3px;
   padding: 8px 15px;
   margin: 0;
@@ -1517,6 +1518,9 @@ blockquote {
 .btn--small {
   font-size: 1.3rem;
   padding: 8px 15px; }
+
+.textarea-outer-wrapper .textarea-wrapper {
+  background: #1c171a; }
 
 .caption {
   display: block;
@@ -1688,7 +1692,7 @@ figure.highlight,
   width: 100%;
   border: none;
   outline: none;
-  color: #5d686f;
+  color: #acc1cf;
   font-weight: 300; }
   .form-control:hover, .form-control:focus {
     outline: none; }
@@ -1811,8 +1815,9 @@ figure.highlight,
 
 a.link-unstyled, a.link-unstyled:hover, a.link-unstyled:active {
   cursor: pointer !important;
-  color: inherit !important;
-  text-decoration: none !important; }
+  color: #57D9FF !important;
+  text-decoration: none !important;
+  font-weight: 500; }
 
 a.link-unstyled a.link, a.link-unstyled a.link:hover, a.link-unstyled a.link:active {
   text-decoration: underline !important; }
@@ -1886,7 +1891,7 @@ a.fancybox {
   color: #9eabb3; }
 
 .media-content {
-  color: #5d686f; }
+  color: #acc1cf; }
 
 .modal-container {
   position: fixed;
@@ -1925,7 +1930,7 @@ a.fancybox {
     position: absolute;
     top: 9px;
     right: 15px;
-    color: #5d686f;
+    color: #acc1cf;
     cursor: pointer; }
 
 .overlay {
@@ -1991,7 +1996,7 @@ a.fancybox {
     text-rendering: optimizelegibility;
     letter-spacing: -0.3px;
     font-family: Avenir, "Noto Sans KR", SpoqaHanSans, "Apple SD Gothic Neo", "Malgun Gothic", "맑은 고딕", "Nanum Gothic", Dotum, "돋움", Helvetica, sans-serif;
-    color: #5d686f;
+    color: #acc1cf;
     margin-top: 20px;
     font-weight: 400;
     overflow: hidden;
@@ -2083,7 +2088,7 @@ a.fancybox {
     float: right;
     margin: 1.5em 0 1.5em 35px; }
   .pullquote.blur {
-    background-color: #eef0f1; }
+    background-color: white; }
 
 .post-header .post-title {
   margin: 0;
@@ -2273,14 +2278,14 @@ a.fancybox {
   .postShorten .postShorten-excerpt_link {
     font-family: Avenir, "Noto Sans KR", SpoqaHanSans, "Apple SD Gothic Neo", "Malgun Gothic", "맑은 고딕", "Nanum Gothic", Dotum, "돋움", Helvetica, sans-serif;
     font-size: 1.3rem;
-    font-weight: 400; }
+    font-weight: 300; }
   .postShorten .postShorten-excerpt,
   .postShorten .postShorten-content {
     text-rendering: optimizelegibility;
     letter-spacing: -0.3px;
     font-family: Avenir, "Noto Sans KR", SpoqaHanSans, "Apple SD Gothic Neo", "Malgun Gothic", "맑은 고딕", "Nanum Gothic", Dotum, "돋움", Helvetica, sans-serif;
-    color: #5d686f;
-    font-weight: 400;
+    color: #b3b3b3;
+    font-weight: 300;
     overflow: hidden;
     -webkit-hypens: auto;
     -moz-hypens: auto;
@@ -2391,7 +2396,7 @@ a.fancybox {
   top: 15px;
   right: 15px;
   font-size: 20px;
-  color: #5d686f;
+  color: #acc1cf;
   cursor: pointer; }
 
 @media only screen and (max-width: 767px) {
@@ -2422,7 +2427,7 @@ a.fancybox {
 a.tag,
 .tag {
   display: inline-block;
-  background: #fff;
+  background: #1c171a;
   width: auto;
   height: auto;
   border-radius: 3px;
@@ -2445,7 +2450,7 @@ a.side-tag,
   height: 40px;
   cursor: pointer;
   line-height: 40px;
-  color: #020808d1;
+  color: #e1ffffd1;
   text-decoration: none;
   text-decoration-style: none;
   padding-left: 30px;
@@ -2456,7 +2461,7 @@ a.side-tag,
   font-weight: 700; }
   a.side-tag:hover,
   .side-tag:hover {
-    color: #ff61aa;
+    color: #BD71E0;
     text-decoration: underline; }
 
 a.tag--default,
@@ -2570,13 +2575,13 @@ a.tag--small,
   text-decoration: underline !important; }
 
 .text-color-base {
-  color: #5d686f !important; }
+  color: #acc1cf !important; }
 
 .text-color-light {
   color: #9eabb3 !important; }
 
 .text-color-link {
-  color: #ff61aa !important; }
+  color: #BD71E0 !important; }
 
 .font-merryweather {
   font-family: "Merriweather", serif; }
@@ -2720,7 +2725,7 @@ a.tag--small,
     margin-top: 0; }
 
 .toc-text {
-  color: #868686;
+  color: #bbbbbb;
   font-size: 0.7em; }
 
 #table-of-contents {
@@ -2736,8 +2741,8 @@ a.tag--small,
 
 .toc {
   padding: 0.6em 1.7em;
-  background-color: #efefef;
-  border-top: 2px solid #ff33b7;
+  background-color: #272024;
+  border-top: 2px solid #FF6D53;
   border-radius: 0.5em;
   overflow-y: auto;
   max-height: 60%;
@@ -2752,7 +2757,7 @@ a.tag--small,
 /* 스크롤바 막대 설정*/
 .toc::-webkit-scrollbar-thumb {
   height: 17%;
-  background-color: #ff33b738;
+  background-color: #FF6D5338;
   border-radius: 10px; }
 
 /* 스크롤바 뒷 배경 설정*/
@@ -2784,7 +2789,7 @@ a.tag--small,
         display: inline; }
         .popular-posts .popular-posts-item .popular-posts-title h3 a {
           margin-left: 10px;
-          color: #5d686f;
+          color: #acc1cf;
           font-weight: 300;
           font-size: 1.6rem; }
       .popular-posts .popular-posts-item .popular-posts-title:hover {
@@ -2801,7 +2806,7 @@ a.tag--small,
     position: absolute;
     top: 15px;
     left: 15px;
-    color: #5d686f; }
+    color: #acc1cf; }
   #algolia-search-modal .media-content {
     font-size: 0.95em; }
   #algolia-search-modal .search-input {
@@ -2819,7 +2824,7 @@ a.tag--small,
     margin-top: 0; }
   #algolia-search-modal .results-count {
     line-height: 50px;
-    color: #5d686f; }
+    color: #acc1cf; }
   #algolia-search-modal .searchby-algolia {
     position: absolute;
     top: 15px;
