@@ -8,22 +8,8 @@
     </url>
 
     <url>
-        <loc>http://yoursite.com/categories/%25E2%2598%2581%25EF%25B8%258F-Spring/%25E2%2598%2581%25EF%25B8%258F-NodeJS/</loc>
-        <lastmod>2021-11-25T08:12:43.007Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://yoursite.com/categories/%25E2%2598%2581%25EF%25B8%258F-Spring/</loc>
-        <lastmod>2021-11-25T08:12:43.007Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
         <loc>http://yoursite.com/categories/%25E2%2598%2581%25EF%25B8%258F-NodeJS/</loc>
-        <lastmod>2021-11-25T08:12:07.840Z</lastmod>
+        <lastmod>2021-12-20T05:45:30.835Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
@@ -122,6 +108,13 @@
     <url>
         <loc>http://yoursite.com/categories/%25E2%2598%2581%25EF%25B8%258F-React/</loc>
         <lastmod>2020-06-01T06:30:42.521Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://yoursite.com/categories/%25E2%2598%2581%25EF%25B8%258F-Spring/</loc>
+        <lastmod>2020-04-28T01:36:01.152Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
